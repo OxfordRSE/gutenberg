@@ -1,0 +1,37 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  name      String?
+  isAdmin   Boolean
+  completed Problem[]
+}
+
+model Problem {
+  id         Int      @id @default(autoincrement())
+  courseTag  String
+  themeTag   String
+  problemTag String
+  createdAt  DateTime @default(now())
+  User       User?    @relation(fields: [userId], references: [id])
+  userId     Int?
+
+  @@unique([courseTag, themeTag, problemTag])
+}
+
+model Theme {
+  id  Int    @id @default(autoincrement())
+  url String @unique
+  commit String
+}

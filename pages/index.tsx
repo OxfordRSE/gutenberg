@@ -72,41 +72,69 @@ const Home: NextPage<Theme[]> = (themes) => {
   )
 }
 
+export async function getTheme(themeRef: DbTheme) : Promise<Theme> {
+  const dir = `./${themeRef.id}`;
+  try {
+    //await access(dir, constants.R_OK)
+    await git.pull({
+      fs,
+      http,
+      dir,
+      ref: themeRef.commit,
+      singleBranch: true
+    })
+  } catch {
+    await git.clone({
+      fs,
+      http,
+      dir,
+      corsProxy: 'https://cors.isomorphic-git.org',
+      url: themeRef.url,
+      ref: themeRef.commit,
+      singleBranch: true,
+      depth: 10
+    });
+  }
+  const themeBuffer = await fs.readFile(`${dir}/index.md`);
+  const themeObject = fm(themeBuffer);
+  const id = themeObject.attributes.id as string
+  const name = themeObject.attributes.name as string
+  const description = themeObject.attributes.description as string
+  const markdown = themeObject.body as string
+  const courseRefs = themeObject.attributes.courses as Map<string, CourseRef>;
+
+  return {
+    id: id,
+    name: name,
+    description: description,
+    markdown: markdown,
+    courses: courseRefs,
+  }
+}
+
+// assumes that git repo has already been pulled/cloned by getTheme
+export async function getCourse(themeRef: DbTheme, courseRef: CourseRef) : Promise<Course> {
+  const dir = `./${themeRef.id}`;
+  const courseBuffer = await fs.readFile(`${dir}/${courseRef.file}`);
+  const courseObject = fm(courseBuffer);
+  const id = courseObject.attributes.id as string
+  const name = courseObject.attributes.name as string
+  const markdown = themeObject.body as string
+
+  return {
+    id: id,
+    name: name,
+    markdown: markdown,
+  }
+}
+
 export const getStaticProps: GetStaticProps = async (context) => {
   const prisma = new PrismaClient()
-  const themeRefs: DbTheme[] = await prisma.theme.findMany()
+  const themeRefs = await prisma.theme.findMany()
   let themes: Theme[] = []
-  for (const themeRef in themeRefs) {
-    const dir = `./${themeRef.id}`;
-    try {
-      //await access(dir, constants.R_OK)
-      await git.pull({
-        fs,
-        http,
-        dir,
-        ref: themeRef.commit,
-        singleBranch: true
-      })
-    } catch {
-      await git.clone({
-        fs,
-        http,
-        dir,
-        corsProxy: 'https://cors.isomorphic-git.org',
-        url: themeRef.url,
-        ref: themeRef.commit,
-        singleBranch: true,
-        depth: 10
-      });
-    }
-    const themeBuffer = await fs.readFile(`${dir}/index.md`);
-    const themeObject = fm(themeBuffer);
-    themes.push({
-      id: themeObject.attributes.id,
-      name: themeObject.attributes.name,
-      description: themeObject.attributes.description,
-      markdown: themeObject.body,
-    })
+  for (const themeRef of themeRefs) {
+    const theme = await getTheme(themeRef)
+    themes.push(theme)
   }
     
   return {
