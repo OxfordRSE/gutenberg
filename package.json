@@ -6,17 +6,23 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cypress": "cypress open"
   },
   "dependencies": {
     "@prisma/client": "^4.4.0",
+    "@types/dompurify": "^2.3.4",
     "@types/marked": "^4.0.7",
+    "cypress": "^10.9.0",
+    "dompurify": "^2.4.0",
     "front-matter": "^4.0.2",
+    "isomorphic-dompurify": "^0.23.0",
     "isomorphic-git": "^1.21.0",
     "marked": "^4.1.1",
     "next": "12.3.1",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-html-parser": "^2.0.2"
   },
   "devDependencies": {
     "@types/node": "18.8.3",
