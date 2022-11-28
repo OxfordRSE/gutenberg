@@ -29,9 +29,3 @@ model Problem {
 
   @@unique([courseTag, themeTag, problemTag])
 }
-
-model Theme {
-  id  Int    @id @default(autoincrement())
-  url String @unique
-  commit String
-}

@@ -1,7 +1,6 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from 'next'
 import { Theme as DbTheme } from '@prisma/client'
 import prisma from 'lib/prisma'
-import styles from 'styles/Home.module.css'
 import { Course, Theme } from 'pages/index'
 import {getCourse, getTheme} from '../..';
 import Layout from 'components/Layout'
@@ -18,7 +17,7 @@ type CourseComponentProps = {
 const CourseComponent: NextPage<CourseComponentProps> = ({theme, course}: CourseComponentProps) => {
   return (
     <Layout>
-      <h1 className={styles.title}>
+      <h1>
         {course.name}
       </h1>
       { ReactHtmlParser(DOMPurify.sanitize(marked.parse(course.markdown))) }

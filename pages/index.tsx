@@ -6,29 +6,29 @@ import { Theme as DbTheme } from '@prisma/client'
 import prisma from 'lib/prisma'
 import fs from 'fs'
 import fsPromises from 'fs/promises'
-import styles from 'styles/Home.module.css'
 import Layout from 'components/Layout'
 import { makeSerializable } from 'lib/utils'
 
-export type CourseRef = {
-  file: string,
-  dependsOn: string[],
-  content?: Course,
-}
-
 export type Course = {
-  uid: string,
+  id: string,
+  theme: string,
   name: string,
   markdown: string,
+  dependsOn: string[],
+  files: string[],
 }
 
 export type Theme = {
-  id: number,
-  uid: string,
+  id: string,
   name: string,
-  description: string,
   markdown: string,
-  courses: Map<string, CourseRef>,
+  courses: Course[],
+}
+
+export type Material = {
+  name: string,
+  markdown: string,
+  themes: Theme[],
 }
 
 type HomeProps = {
@@ -38,19 +38,19 @@ type HomeProps = {
 const Home: NextPage<HomeProps> = ({ themes }) => {
   return (
     <Layout>
-      <h1 className={styles.title}>
+      <h1>
         Themes
       </h1>
 
-      <p className={styles.description}>
+      <p>
         Click on a theme to get started
       </p>
 
-      <div className={styles.grid}>
+      <div>
         {themes.map(theme => (
-        <a key={theme.id} href={`/themes/${theme.id}`} className={styles.card}>
+        <a key={theme.id} href={`/themes/${theme.id}`}>
           <h2>{theme.name}</h2>
-          <p>{theme.description}</p>
+          <p>{theme.markdown}</p>
         </a>
         ))}
       </div>
@@ -58,76 +58,53 @@ const Home: NextPage<HomeProps> = ({ themes }) => {
   )
 }
 
-const materialDir = './.material'
+const materialDir = process.env.MATERIAL_DIR;
 
-export async function getTheme(themeRef: DbTheme) : Promise<Theme> {
-  const dir = `${materialDir}/${themeRef.id}`;
-  try {
-    //await access(dir, constants.R_OK)
-    await git.pull({
-      fs,
-      http,
-      dir,
-      ref: themeRef.commit,
-      singleBranch: true
-    })
-  } catch {
-    await git.clone({
-      fs,
-      http,
-      dir,
-      corsProxy: 'https://cors.isomorphic-git.org',
-      url: themeRef.url,
-      ref: themeRef.commit,
-      singleBranch: true,
-      depth: 10
-    });
-  }
-  const themeBuffer = await fsPromises.readFile(`${dir}/index.md`, {encoding: "utf8"});
-  const themeObject = fm(themeBuffer);
-  const uid = themeObject.attributes.id as string
-  const name = themeObject.attributes.name as string
-  const description = themeObject.attributes.description as string
-  const markdown = themeObject.body as string
-  const courseRefs = new Map<string, CourseRef>(Object.entries(themeObject.attributes.courses))
+export async function getMaterial() : Promise<Material> {
+  const dir = `${materialDir}`;
+  const buffer = await fsPromises.readFile(`${dir}/index.md`, {encoding: "utf8"});
+  const material = fm(buffer);
+  const name = material.attributes.name as string
+  const markdown = material.body as string
+  const themesId = material.attributes.themes as [string];
+  const themes = await Promise.all(themesId.map(theme => getTheme(theme)));
 
-  return {
-    id: themeRef.id,
-    uid: uid,
-    name: name,
-    description: description,
-    markdown: markdown,
-    courses: courseRefs,
-  }
+  return { name, markdown, themes };
 }
 
-// assumes that git repo has already been pulled/cloned by getTheme
-export async function getCourse(themeRef: DbTheme, courseRef: CourseRef) : Promise<Course> {
-  const dir = `${materialDir}/${themeRef.id}`;
-  const courseBuffer = await fsPromises.readFile(`${dir}/${courseRef.file}`, {encoding: "utf8"});
-  const courseObject = fm(courseBuffer);
-  const uid = courseObject.attributes.id as string
-  const name = courseObject.attributes.name as string
-  const markdown = courseObject.body as string
+export async function getTheme(theme: string) : Promise<Theme> {
+  const dir = `${materialDir}/${theme}`;
+  const themeBuffer = await fsPromises.readFile(`${dir}/index.md`, {encoding: "utf8"});
+  const themeObject = fm(themeBuffer);
+  const name = themeObject.attributes.name as string
+  const markdown = themeObject.body as string
+  const id = theme;
+  const coursesId = themeObject.attributes.courses as [string];
+  const courses = await Promise.all(coursesId.map(course => getCourse(course)));
 
-  return {
-    uid: uid,
-    name: name,
-    markdown: markdown,
-  }
+  return { id, name, markdown, courses };
+}
+
+export async function getCourse(theme: string, course: string) : Promise<Course> {
+  const dir = `${materialDir}/${theme}/${course}`;
+  const courseBuffer = await fsPromises.readFile(`${dir}/index.md`, {encoding: "utf8"});
+  const courseObject = fm(courseBuffer);
+  const name = courseObject.attributes.name as string
+  const filenames = courseObject.attributes.files as [string];
+  const dependsOn = courseObject.attributes.dependsOn as [string];
+  const markdown = courseObject.body as string
+  const id = course;
+  const files = await Promise.all(filenames.map(filename => fsPromises.readFile(`${dir}/${filename}`, {encoding: "utf8"})));
+
+  return { id, theme, name, files, dependsOn, markdown }
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const themeRefs = await prisma.theme.findMany()
-  let themes: Theme[] = []
-  for (const themeRef of themeRefs) {
-    const theme = await getTheme(themeRef)
-    themes.push(theme)
-  }
+  const material = await getMaterial();
     
   return {
     props: {
-      themes: makeSerializable(themes),
+      themes: makeSerializable(material.themes),
     },
   }
 }
