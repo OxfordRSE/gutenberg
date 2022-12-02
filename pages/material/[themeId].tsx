@@ -1,30 +1,29 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from 'next'
 import { Theme as DbTheme } from '@prisma/client'
 import prisma from 'lib/prisma'
-import { getTheme, Theme } from 'pages/index'
+import { getMaterial, Theme, Material, remove_markdown, markdown_to_html } from 'lib/material'
 import Layout from 'components/Layout'
-import { marked } from 'marked';
 import {makeSerializable} from 'lib/utils'
-import ReactHtmlParser from 'react-html-parser';
-import DOMPurify from 'isomorphic-dompurify';
+import Content from 'components/Content'
 
 type ThemeComponentProps = {
-  theme: Theme
+  theme: Theme,
+  material: Material
 }
 
-const ThemeComponent: NextPage<ThemeComponentProps> = ({ theme }) => {
+const ThemeComponent: NextPage<ThemeComponentProps> = ({ theme, material }) => {
   return (
-    <Layout>
+    <Layout theme={theme}>
       <h1>
         {theme.name}
       </h1>
 
-      { ReactHtmlParser(DOMPurify.sanitize(marked.parse(theme.markdown))) }
+      <Content markdown={theme.markdown} />
 
       <div>
-        {theme.courses.map((courseId) => (
-        <a key={courseId} href={`${theme.id}/${courseId}`}>
-          <h2>{course}</h2>
+        {theme.courses.map((course) => (
+        <a key={course.id} href={`${theme.id}/${course.id}`}>
+          <h2>{course.name}</h2>
         </a>
         ))}
       </div>
@@ -34,23 +33,26 @@ const ThemeComponent: NextPage<ThemeComponentProps> = ({ theme }) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const material = await getMaterial();
-  let themes: Theme[] = []
-  for (const theme of material.themes) {
-    themes.push(await getTheme(theme))
-  }
   return {
-    paths: themes.map((t) => ({ params: { themeId: `${t.id}` } })),
+    paths: material.themes.map((t) => ({ params: { themeId: `${t.id}` } })),
     fallback: false,
   };
 }
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
+  let material = await getMaterial();
   const themeId= context?.params?.themeId;
   if (!themeId || Array.isArray(themeId)) {
-    return { notFound: true }
+    return { notFound: true };
   }
-  const theme = await getTheme(themeId);
+  const theme = material.themes.find(t => t.id === themeId);
+  if (!theme) {
+    return { notFound: true };
+  }
+
+  remove_markdown(material, theme)
+
   return { 
     props: makeSerializable({ theme: theme }),
   }
