@@ -24,7 +24,7 @@ const Solution: React.FC<SolutionProps> = ({ content }) => {
   return (
     <div className="flex flex-col">
       <button
-        className="rounded-t bg-slate-700 dark:bg-slate-100 text-slate-100 dark:text-slate-700 font-bold appearance-none cursor-pointer focus:outline-none flex items-center justify-between"
+        className="rounded bg-slate-200 dark:bg-slate-700 font-bold appearance-none cursor-pointer focus:outline-none flex items-center justify-between"
 
         onClick={toggleAccordion}
       >

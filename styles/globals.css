@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 body {
-  @apply cursor-default antialiased bg-white dark:bg-slate-800 text-black dark:text-white;
+  @apply cursor-default antialiased bg-white dark:bg-slate-900 text-black dark:text-white;
 }

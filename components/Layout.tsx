@@ -54,7 +54,7 @@ const Layout: React.FC<Props> = ( props ) => {
         }
       </ol>
       </nav>
-      <div class="prose prose-base dark:prose-invert">
+      <div class="prose prose-base prose-slate dark:prose-invert prose-pre:bg-[#263E52] prose-pre:p-0">
         {props.children}
       </div>
     </main>

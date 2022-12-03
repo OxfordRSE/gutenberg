@@ -8,11 +8,11 @@ interface ChallengeProps {
 
 const Challenge: React.FC<ChallengeProps> = ({ content, title, id }) => {
   return (
-    <div className="rounded-t bg-slate-700/10 dark:bg-slate-100/10  ">
-      <div className="rounded-t bg-slate-700 dark:bg-slate-100">
-        <h3 className="mx-2 text-slate-100 dark:text-slate-700">{title}</h3>
+    <div className="border border-gray-200 rounded-lg bg-slate-50 dark:bg-slate-800 dark:border-gray-700">
+      <div className="rounded-t-lg bg-slate-700 dark:bg-slate-300">
+        <h3 className="mx-2 my-0 text-slate-100 dark:text-black">{title}</h3>
       </div>
-      <div className="mx-2">
+      <div className="mx-2 pb-2">
         {content}
       </div>
     </div>
