@@ -52,6 +52,7 @@ function code({node, inline, className, children, ...props}) {
       <SyntaxHighlighter
         children={String(children).replace(/\n$/, '')}
         style={lucario}
+        codeTagProps={{className: "text-sm"}}
         language={match[1]}
         PreTag="div"
         {...props}
@@ -81,12 +82,14 @@ type Props = {
 
 const Content: React.FC<Props> = ( { markdown }) => {
   return (
-    <ReactMarkdown 
-      remarkPlugins={[directive, reactMarkdownRemarkDirective]}
-      components={{solution, challenge, code}} 
-    >
-      {markdown}
-    </ReactMarkdown>
+    <div class="prose prose-base prose-slate dark:prose-invert prose-pre:bg-[#263E52] prose-pre:p-0">
+      <ReactMarkdown 
+        remarkPlugins={[directive, reactMarkdownRemarkDirective]}
+        components={{solution, challenge, code}} 
+      >
+        {markdown}
+      </ReactMarkdown>
+    </div>
   )
 }
 

@@ -15,7 +15,6 @@ const Layout: React.FC<Props> = ( props ) => {
   <div class="container mx-auto max-w-2xl">
     <Header theme={props.theme} course={props.course}/>
     <main>
-
       <nav class="flex px-5 py-3 mb-5 text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
       <ol class="list-none inline-flex items-center space-x-1 md:space-x-3">
         <li class="inline-flex items-center">
@@ -54,9 +53,7 @@ const Layout: React.FC<Props> = ( props ) => {
         }
       </ol>
       </nav>
-      <div class="prose prose-base prose-slate dark:prose-invert prose-pre:bg-[#263E52] prose-pre:p-0">
-        {props.children}
-      </div>
+      {props.children}
     </main>
     <Footer />
   </div>

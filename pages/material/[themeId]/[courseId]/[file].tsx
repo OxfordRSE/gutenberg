@@ -15,12 +15,7 @@ type SectionComponentProps = {
 const SectionComponent: NextPage<SectionComponentProps> = ({theme, course, section}: SectionComponentProps) => {
   return (
     <Layout theme={theme} course={course} section={section}>
-      <h1>
-        {section.name}
-      </h1>
-
       <Content markdown={section.markdown} />
-      
     </Layout>
   )
 }

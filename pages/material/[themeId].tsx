@@ -14,17 +14,13 @@ type ThemeComponentProps = {
 const ThemeComponent: NextPage<ThemeComponentProps> = ({ theme, material }) => {
   return (
     <Layout theme={theme}>
-      <h1>
-        {theme.name}
-      </h1>
-
       <Content markdown={theme.markdown} />
-
-      <div>
+      <div className="grid m-2 gap-3 grid-cols-2">
         {theme.courses.map((course) => (
-        <a key={course.id} href={`${theme.id}/${course.id}`}>
-          <h2>{course.name}</h2>
-        </a>
+          <a key={course.id} href={`${theme.id}/${course.id}`} className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+              <h5 className="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">{course.name}</h5>
+              <p className="font-normal truncate ... text-gray-700 dark:text-gray-400">{course.summary}</p>
+          </a>
         ))}
       </div>
     </Layout>
