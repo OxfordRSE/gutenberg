@@ -10,18 +10,20 @@ import Content from 'components/Content'
 type CourseComponentProps = {
   theme: Theme, 
   course: Course,
+  material: Material,
 }
 
-const CourseComponent: NextPage<CourseComponentProps> = ({theme, course}: CourseComponentProps) => {
+const CourseComponent: NextPage<CourseComponentProps> = ({theme, course, material}: CourseComponentProps) => {
   return (
     <Layout theme={theme} course={course}>
       <Content markdown={course.markdown} />
+      <NavDiagram markdown={material} theme={theme} course={course} />
       <div className="m-4 bg-white border rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
       <ol role="list" className="grid grid-cols-1 justify-center divide-y divide-gray-200 dark:divide-gray-700">
         {course.sections.map((s, i) => (
           <li key={s.file} className="">
             <a  href={`${course.id}/${s.file}`} className="flex items-center space-x-4 p-4 hover:bg-gray-100  dark:hover:bg-gray-700">
-              <h5 className="text-2xl font-bold text-gray-900 dark:text-white">{s.name}</h5>
+              <h5 className="text-lg font-bold text-gray-900 dark:text-white">{s.name}</h5>
               <p className="font-normal truncate ... text-gray-700 dark:text-gray-400">{s.summary}</p>
             </a>
           </li>
@@ -68,7 +70,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     return { notFound: true }
   }
   remove_markdown(material, course);
-  return { props: makeSerializable({ theme, course }) }
+  return { props: makeSerializable({ theme, course, material }) }
 }
 
 export default CourseComponent 

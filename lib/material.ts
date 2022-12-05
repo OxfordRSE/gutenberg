@@ -9,6 +9,8 @@ export type Section = {
   theme: string,
   name: string,
   markdown: string,
+  dependsOn: string[],
+  tags: string[],
   index: number,
   type: string,
 }
@@ -17,8 +19,8 @@ export type Course = {
   id: string,
   theme: string,
   name: string,
-  markdown: string,
   dependsOn: string[],
+  markdown: string,
   sections: Section[],
   type: string,
 }
@@ -95,9 +97,9 @@ export async function getCourse(theme: string, course: string, no_markdown=false
   const courseBuffer = await fsPromises.readFile(`${dir}/index.md`, {encoding: "utf8"});
   const courseObject = fm(courseBuffer);
   const name = courseObject.attributes.name as string
-  const filenames = courseObject.attributes.files as [string];
+  const dependsOn = courseObject.attributes.dependsOn as string[] || [];
+  const filenames = courseObject.attributes.files as string[] || [];
   const markdown = no_markdown ? '' : courseObject.body as string
-  const dependsOn = courseObject.attributes.dependsOn as [string];
   const files = courseObject.attributes.files as [string];
   const id = course;
   const sections = await Promise.all(files.map((file, i) => getSection(theme, course, i, file)));
@@ -119,9 +121,11 @@ export async function getSection(theme: string, course: string, index: number, f
   const dir = `${materialDir}/${theme}/${course}`;
   const sectionBuffer = await fsPromises.readFile(`${dir}/${file}`, {encoding: "utf8"});
   const sectionObject = fm(sectionBuffer);
+  const dependsOn = sectionObject.attributes.dependsOn as string[] || [];
+  const tags = sectionObject.attributes.tags as string[] || [];
   const name = sectionObject.attributes.name as string || humanize(file)
   const markdown = no_markdown ? '' : sectionObject.body as string
   const type = 'Section';
 
-  return { file, theme, course, name, markdown, index, type }
+  return { file, theme, course, name, markdown, index, type, tags, dependsOn }
 }
