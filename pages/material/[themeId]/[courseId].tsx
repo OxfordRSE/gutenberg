@@ -6,6 +6,7 @@ import Layout from 'components/Layout'
 import { makeSerializable } from 'lib/utils'
 import { remove } from 'cypress/types/lodash'
 import Content from 'components/Content'
+import NavDiagram from 'components/NavDiagram'
 
 type CourseComponentProps = {
   theme: Theme, 
@@ -17,7 +18,6 @@ const CourseComponent: NextPage<CourseComponentProps> = ({theme, course, materia
   return (
     <Layout theme={theme} course={course}>
       <Content markdown={course.markdown} />
-      <NavDiagram markdown={material} theme={theme} course={course} />
       <div className="m-4 bg-white border rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
       <ol role="list" className="grid grid-cols-1 justify-center divide-y divide-gray-200 dark:divide-gray-700">
         {course.sections.map((s, i) => (
