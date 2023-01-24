@@ -1,7 +1,6 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from 'next'
-import { Theme as DbTheme } from '@prisma/client'
 import prisma from 'lib/prisma'
-import { getMaterial, Theme, Material, remove_markdown, markdown_to_html } from 'lib/material'
+import { getMaterial, Theme, Material, remove_markdown } from 'lib/material'
 import Layout from 'components/Layout'
 import {makeSerializable} from 'lib/utils'
 import Content from 'components/Content'
@@ -20,7 +19,6 @@ const ThemeComponent: NextPage<ThemeComponentProps> = ({ theme, material }) => {
         {theme.courses.map((course) => (
           <a key={course.id} href={`${theme.id}/${course.id}`} className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
               <h5 className="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">{course.name}</h5>
-              <p className="font-normal truncate ... text-gray-700 dark:text-gray-400">{course.summary}</p>
           </a>
         ))}
       </div>

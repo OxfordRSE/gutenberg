@@ -3,7 +3,7 @@
 // Useful to convert an object which may contain non-serializeable data such as
 // Dates to an object that doesn't
 
-function replacer(key, value) {
+function replacer(key: string, value: any) {
   if(value instanceof Map) {
     return Object.fromEntries(value);
   } else {

@@ -5,6 +5,17 @@ import NavDiagramSectionNode from './NavDiagramSectionNode';
 import NavDiagramCourseNode from './NavDiagramCourseNode';
 import NavDiagramThemeNode from './NavDiagramThemeNode';
 
+export type NodeData = {
+  label: string,
+  width: number,
+  height: number,
+  theme: Theme,
+  course?: Course,
+  section?: Section,
+};
+
+type CustomNode = Node<NodeData>;
+
 const nodeTypes = {
   theme: NavDiagramThemeNode,
   course: NavDiagramCourseNode,
@@ -244,7 +255,8 @@ interface NavDiagramProps {
 }
 
 const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course }) => {
-  const [nodes, setNodes] = useState(null);
+  const defaultNodes: Node[] = [];
+  const [nodes, setNodes] = useState(defaultNodes);
   const stringifyMaterial = JSON.stringify(material);
   const edges = useMemo(() => {
     if (course) {

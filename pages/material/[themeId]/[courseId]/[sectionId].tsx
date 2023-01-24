@@ -1,5 +1,4 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from 'next'
-import { Theme as DbTheme } from '@prisma/client'
 import prisma from 'lib/prisma'
 import { getMaterial, Course, Theme, Material, Section, remove_markdown } from 'lib/material'
 import Layout from 'components/Layout'
@@ -27,7 +26,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     for (const course of theme.courses) {
       for (const section of course.sections) {
         paths.push({
-          params: { themeId: `${theme.id}`, courseId: `${course.id}`, file: `${section.file}`}
+          params: { themeId: `${theme.id}`, courseId: `${course.id}`, sectionId: `${section.id}`}
         })
       }
     }
@@ -48,8 +47,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
   if (!courseId || Array.isArray(courseId)) {
     return { notFound: true }
   }
-  const file = context?.params?.file;
-  if (!file || Array.isArray(file)) {
+  const sectionId = context?.params?.sectionId;
+  if (!sectionId || Array.isArray(sectionId)) {
     return { notFound: true }
   }
   const material = await getMaterial()
@@ -61,7 +60,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   if (!course) {
     return { notFound: true }
   }
-  const section = course.sections.find(s => s.file === file);
+  const section = course.sections.find(s => s.id === sectionId);
   if (!section) {
     return { notFound: true }
   }

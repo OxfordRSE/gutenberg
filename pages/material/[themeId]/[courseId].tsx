@@ -1,5 +1,4 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from 'next'
-import { Theme as DbTheme } from '@prisma/client'
 import prisma from 'lib/prisma'
 import { getMaterial, Course, Theme, Material, remove_markdown } from 'lib/material'
 import Layout from 'components/Layout'
@@ -22,9 +21,8 @@ const CourseComponent: NextPage<CourseComponentProps> = ({theme, course, materia
       <ol role="list" className="grid grid-cols-1 justify-center divide-y divide-gray-200 dark:divide-gray-700">
         {course.sections.map((s, i) => (
           <li key={s.file} className="">
-            <a  href={`${course.id}/${s.file}`} className="flex items-center space-x-4 p-4 hover:bg-gray-100  dark:hover:bg-gray-700">
+            <a  href={`${course.id}/${s.id}`} className="flex items-center space-x-4 p-4 hover:bg-gray-100  dark:hover:bg-gray-700">
               <h5 className="text-lg font-bold text-gray-900 dark:text-white">{s.name}</h5>
-              <p className="font-normal truncate ... text-gray-700 dark:text-gray-400">{s.summary}</p>
             </a>
           </li>
         ))}

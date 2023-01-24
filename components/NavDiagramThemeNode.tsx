@@ -1,7 +1,12 @@
 import React, { memo } from 'react';
 import { Handle, Position } from 'reactflow';
+import { NodeData } from './NavDiagram';
 
-function NavDiagramThemeNode({ data }) {
+type NodeProps = {
+  data: NodeData,
+}
+
+function NavDiagramThemeNode({ data }: NodeProps) {
   console.log(data)
   return (
     <a href={`/material/${data.theme.id}`} >
