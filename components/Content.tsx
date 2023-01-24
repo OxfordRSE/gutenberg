@@ -3,10 +3,15 @@ import ReactDom from 'react-dom'
 import ReactMarkdown, {Components, uriTransformer} from 'react-markdown'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 
-import { materialDark as codeStyle } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { lucario as codeStyle } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 import directive from "remark-directive";
 import { visit } from "unist-util-visit";
+
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
+import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for you
+
 
 
 import Challenge from './Challenge';
@@ -57,7 +62,6 @@ function code({node, inline, className, children, ...props}: CodeProps): JSX.Ele
     if (match) {
       return (
       <SyntaxHighlighter
-        // @ts-expect-error
         style={codeStyle}
         codeTagProps={{className: "text-sm"}}
         language={match[1]}
@@ -97,15 +101,17 @@ type Props = {
 
 const Content: React.FC<Props> = ( { markdown }) => {
   return (
-    <div className="prose prose-base prose-slate dark:prose-invert prose-pre:bg-[#263E52] prose-pre:p-0">
+    <div className="mx-auto prose prose-base max-w-2xl prose-slate dark:prose-invert prose-pre:bg-[#263E52] prose-pre:p-0">
       <ReactMarkdown 
-        remarkPlugins={[directive, reactMarkdownRemarkDirective]}
+        remarkPlugins={[directive, reactMarkdownRemarkDirective, remarkMath]}
+        rehypePlugins={[rehypeKatex]}
         components={{
           // @ts-expect-error
           solution,
           challenge,
           code
         }} 
+
       >
         {markdown}
       </ReactMarkdown>

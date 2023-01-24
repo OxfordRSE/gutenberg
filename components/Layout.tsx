@@ -13,7 +13,7 @@ type Props = {
 
 const Layout: React.FC<Props> = ( props ) => {
   return (
-  <div className="container mx-auto max-w-2xl">
+  <div className="container mx-auto">
     <Header theme={props.theme} course={props.course}/>
     <main>
       <nav className="flex px-5 py-3 mb-5 text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">

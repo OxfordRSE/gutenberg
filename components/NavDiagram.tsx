@@ -303,7 +303,7 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course }) => {
   }
   console.log(nodes, edges)
   return (
-    <div style={{ height: '500px', width: '100%' }}>
+    <div style={{ aspectRatio : '16 / 9', width: '100%' }} className="border border-gray-200 rounded-lg shadow-md dark:border-gray-700">
       <ReactFlow 
         nodes={nodes} edges={edges}
         nodeTypes={nodeTypes}
