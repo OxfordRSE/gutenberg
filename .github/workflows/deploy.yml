@@ -5,12 +5,13 @@
 name: Deploy Next.js site to Pages
 
 on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: ["main"]
-
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      material_repo:
+        description: 'Github path of material repository'
+        required: true
+        default: 'UNIVERSE-HPC/course-material'
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -30,6 +31,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Checkout material repo
+        uses: actions/checkout@v3
+        with:
+          repository: '${{ github.event.inputs.material_repo }}'
+          path: .material
       - name: Detect package manager
         id: detect-package-manager
         run: |
