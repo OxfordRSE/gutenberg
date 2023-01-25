@@ -16,8 +16,8 @@ function NavDiagramSectionNode({ data }: NodeProps) {
         </div>
       </div>
       <div className="flex justify-start">
-        {data.section?.tags.map((tag) => (
-            <div className="px-2 pb-1 bg-indigo-500 rounded-lg">{tag}</div>
+        {data.section?.tags.map((tag, i) => (
+            <div key={i} className="px-2 pb-1 bg-indigo-500 rounded-lg">{tag}</div>
         ))}
       </div>
 
