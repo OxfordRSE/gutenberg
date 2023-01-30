@@ -21,6 +21,7 @@ import { first } from 'cypress/types/lodash';
 import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
 import { CodeComponent, CodeProps, ReactMarkdownProps } from 'react-markdown/lib/ast-to-react';
+import Callout from './Callout';
 
 
 function reactMarkdownRemarkDirective() {
@@ -43,6 +44,12 @@ function reactMarkdownRemarkDirective() {
 function solution({node, children, ...props}: ReactMarkdownProps) {
   return (
     <Solution content={children} />
+  );
+}
+
+function callout({node, children, ...props}: ReactMarkdownProps) {
+  return (
+    <Callout content={children} />
   );
 }
 
@@ -108,6 +115,7 @@ const Content: React.FC<Props> = ( { markdown }) => {
         components={{
           // @ts-expect-error
           solution,
+          callout,
           challenge,
           code
         }} 

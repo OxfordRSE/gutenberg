@@ -41,7 +41,6 @@ export type Material = {
   type: string,
 }
 
-
 export function remove_markdown(material: Material, except: Material | Theme | Course | Section) {
   if (except.type !== 'Material') {
     material.markdown = ''
