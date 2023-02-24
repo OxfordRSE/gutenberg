@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React, { memo } from 'react';
 import { Handle, Position } from 'reactflow';
 import { NodeData } from './NavDiagram';
@@ -8,7 +9,7 @@ type NodeProps = {
 
 function NavDiagramSectionNode({ data }: NodeProps) {
   return (
-    <a href={`/material/${data.theme}/${data.course?.id}/${data.section?.id}`} >
+    <Link href={`/material/${data.theme}/${data.course?.id}/${data.section?.id}`} >
     <div className={`px-4 py-2 h-full w-full border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600`}>
       <div className="flex">
         <div className="ml-2">
