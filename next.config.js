@@ -7,7 +7,7 @@ const nextConfig = {
 
     return config;
   },
-  basePath: process.env.BASEPATH,
+  basePath: "gutenberg",
 }
 
 module.exports = nextConfig
