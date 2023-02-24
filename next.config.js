@@ -6,7 +6,8 @@ const nextConfig = {
     config.resolve.fallback = { fs: false };
 
     return config;
-  }
+  },
+  basePath: process.env.BASEPATH,
 }
 
 module.exports = nextConfig
