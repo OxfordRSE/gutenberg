@@ -21,7 +21,7 @@ function NavDiagramThemeNode({ data }: NodeProps) {
       <Handle type="target" position={Position.Top} className="w-16 !bg-teal-500" />
       <Handle type="source" position={Position.Bottom} className="w-16 !bg-teal-500" />
     </div>
-    </a>
+    </Link>
   );
 }
 
