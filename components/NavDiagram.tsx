@@ -33,15 +33,32 @@ const layoutOptions = {
   'elk.algorithm': 'layered',
   'elk.nodePlacement.strategy': 'NETWORK_SIMPLEX',
   'elk.direction': 'DOWN',
+  'elk.alignment': 'CENTER',
+  'elk.contentAlignment': 'H_CENTER',
   'elk.spacing.nodeNode': '20',
   'elk.nodeLabels.placement': "INSIDE V_TOP H_CENTER",
-  'elk.layered.spacing.nodeNodeBetweenLayers': '90',
-  'elk.aspectRatio': '2.0',
+  'elk.nodeSize.minimum': '(300, 100)',
+  'elk.nodeSize.constraints': 'MINIMUM_SIZE',
+  'elk.layered.spacing.nodeNodeBetweenLayers': '20',
+  'elk.aspectRatio': '1.7',
+};
+
+const layoutOptionsTheme = { 
+  'elk.algorithm': 'layered',
+  'elk.nodePlacement.strategy': 'NETWORK_SIMPLEX',
+  'elk.direction': 'DOWN',
+  'elk.spacing.nodeNode': '20',
+  'elk.nodeLabels.placement': "INSIDE V_TOP H_CENTER",
+  'elk.nodeSize.minimum': '(400, 100)',
+  'elk.nodeSize.constraints': 'MINIMUM_SIZE',
+  'elk.layered.spacing.nodeNodeBetweenLayers': '20',
+  'elk.aspectRatio': '1.7',
 };
 
 const padding = "[top=50.0,left=12.0,bottom=12.0,right=12.0]";
 
 const labels = [{width: 200, height: 70}];
+const labelsTheme = [{width: 200, height: 90}];
 
 function generate_section_edges(section: Section) {
   const edges: Edge[] = section.dependsOn.map(dep => {
@@ -88,8 +105,8 @@ function generate_course_nodes_elk(course: Course) {
   const nodes: ElkNode[] = course.sections.map(section => (
     { 
       id: `${section.theme}.${course.id}.${section.file}`, 
-      width: 200, 
-      height: 80,
+      width: 150, 
+      height: 60,
     }
   ));
   if (nodes.length == 0) {
@@ -151,7 +168,7 @@ function generate_theme_nodes_elk(theme: Theme) {
   const nodes: ElkNode[] = theme.courses.map(course => (
     { 
       id: `${theme.id}.${course.id}`, 
-      width: 1, 
+      width: 150, 
       height: 1,
       labels,
       layoutOptions,
@@ -239,8 +256,8 @@ function generate_material_nodes_elk(material: Material) {
       id: theme.id, 
       width: 1, 
       height: 1,
-      layoutOptions,
-      labels,
+      layoutOptions: layoutOptionsTheme,
+      labels: labelsTheme,
       children: generate_theme_nodes_elk(theme),
       edges: generate_theme_edges_elk(theme),
     }

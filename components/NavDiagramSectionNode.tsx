@@ -2,6 +2,7 @@ import Link from 'next/link';
 import React, { memo } from 'react';
 import { Handle, Position } from 'reactflow';
 import { NodeData } from './NavDiagram';
+import { basePath } from 'lib/basePath';
 
 type NodeProps = {
   data: NodeData,
@@ -9,23 +10,21 @@ type NodeProps = {
 
 function NavDiagramSectionNode({ data }: NodeProps) {
   return (
-    <Link href={`/material/${data.theme}/${data.course?.id}/${data.section?.id}`} >
-    <div className={`px-4 py-2 h-full w-full border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600`}>
-      <div className="flex">
-        <div className="ml-2">
-          <div className="mb-2 text-xl font-extrabold">{data.label}</div>
+    <a href={`${basePath}/material/${data.theme}/${data.course?.id}/${data.section?.id}`} >
+    <div className={`px-1 py-1 h-full w-full border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600`}>
+      <div className="flex grow justify-between h-full">
+        <div className="self-start text-xs font-extrabold">{data.label}</div>
+        <div className="self-end justify-self-end">
+          {data.section?.tags.map((tag, i) => (
+              <div key={i} className="px-2 pb-1 text-xs bg-indigo-500 rounded-lg">{tag}</div>
+          ))}
         </div>
-      </div>
-      <div className="flex justify-start">
-        {data.section?.tags.map((tag, i) => (
-            <div key={i} className="px-2 pb-1 bg-indigo-500 rounded-lg">{tag}</div>
-        ))}
       </div>
 
       <Handle type="target" position={Position.Top} className="w-16 !bg-teal-500" />
       <Handle type="source" position={Position.Bottom} className="w-16 !bg-teal-500" />
     </div>
-    </Link>
+    </a>
   );
 }
 

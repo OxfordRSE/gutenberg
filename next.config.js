@@ -7,7 +7,7 @@ const nextConfig = {
 
     return config;
   },
-  basePath: process.env.BASEPATH,
+  basePath: process.env.NEXT_PUBLIC_BASEPATH,
 }
 
 module.exports = nextConfig
