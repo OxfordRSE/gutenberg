@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useMemo, useCallback } from 'react'
-import ReactFlow, { Background, Controls, Node, Edge, FitViewOptions, applyNodeChanges } from 'reactflow';
+import ReactFlow, { Background, Controls, Node, Edge, FitViewOptions, applyNodeChanges, NodeChange } from 'reactflow';
 
 import 'reactflow/dist/style.css';
 import NavDiagramSectionNode from './NavDiagramSectionNode';
@@ -344,7 +344,7 @@ interface NavDiagramProps {
 const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course }) => {
   const defaultNodes: Node[] = [];
   const [nodes, setNodes] = useState(defaultNodes);
-  const onNodesChange = useCallback( (changes) => {
+  const onNodesChange = useCallback( (changes: NodeChange[]) => {
     console.log('onNodesChange', changes)
     setNodes((nds) => applyNodeChanges(changes, nds))
   }, []);
