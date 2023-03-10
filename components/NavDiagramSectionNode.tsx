@@ -10,7 +10,7 @@ type NodeProps = {
 
 function NavDiagramSectionNode({ data }: NodeProps) {
   return (
-    <a href={`${basePath}/material/${data.theme}/${data.course?.id}/${data.section?.id}`} >
+    <a href={`/${basePath}/material/${data.theme}/${data.course?.id}/${data.section?.id}`} >
     <div className={`px-1 py-1 h-full w-full border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600`}>
       <div className="flex grow justify-between h-full">
         <div className="self-start text-xs font-extrabold">{data.label}</div>

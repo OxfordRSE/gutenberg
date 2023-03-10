@@ -13,6 +13,7 @@ export type NodeData = {
   theme: Theme,
   course?: Course,
   section?: Section,
+  external: boolean,
 };
 
 type CustomNode = Node<NodeData>;
@@ -67,6 +68,7 @@ function generate_section_edges(section: Section) {
   const edges: Edge[] = section.dependsOn
     .filter(dep => dep.startsWith(course))
     .map(dep => {
+      console.log('create dep for', section.id, '->', dep)
       const source = dep + '.md'; 
       const target = `${section.theme}.${section.course}.${section.file}`;
       return (
@@ -78,8 +80,12 @@ function generate_section_edges(section: Section) {
 
 function generate_course_edges_elk(course: Course) {
   let edges: ElkExtendedEdge[] = [];
+  console.log('generate_course_edges_elk', course)
   for (const section of course.sections) {
-    edges = edges.concat(section.dependsOn.map(dep => {
+    // only create edges for this course
+    edges = edges.concat(section.dependsOn
+      .filter(dep => dep.startsWith(`${section.theme}.${course.id}`))
+      .map(dep => {
       console.log('create dep', dep)
       const source = dep + '.md'; 
       const target = `${section.theme}.${course.id}.${section.file}`;
@@ -169,8 +175,8 @@ function generate_theme_edges_elk(theme: Theme) {
   return edges;
 }
 
-function generate_theme_nodes_elk(theme: Theme) {
-  const nodes: ElkNode[] = theme.courses.map(course => (
+function generate_theme_nodes_elk(theme: Theme, includeExternalDeps: boolean = false) {
+  let nodes: ElkNode[] = theme.courses.map(course => (
     { 
       id: `${theme.id}.${course.id}`, 
       width: 150, 
@@ -181,13 +187,33 @@ function generate_theme_nodes_elk(theme: Theme) {
       edges: generate_course_edges_elk(course),
     }
   ));
+  if (includeExternalDeps) {
+    const nodeDeps: ElkNode[] = theme.courses.map(course => (
+      course.dependsOn
+      .filter(dep => !dep.startsWith(theme.id))
+      .map(dep => (
+        { 
+          id: dep, 
+          width: 150, 
+          height: 1,
+          labels,
+          layoutOptions,
+          children: [],
+          edges: [],
+        }
+      ))
+    )).flat();
+    nodes = nodes.concat(nodeDeps);
+  }
+  
   if (nodes.length == 0) {
     return undefined 
   }
   return nodes;
 }
 
-function generate_theme_nodes(theme: Theme, graph: ElkNode) {
+function generate_theme_nodes(material: Material, theme: Theme, graph: ElkNode, includeExternalDeps: boolean = false) {
+  const nCourses = theme.courses.length;
   let nodes: Node[] = theme.courses.map((course, i) => (
     { 
       id: `${theme.id}.${course.id}`, 
@@ -200,6 +226,7 @@ function generate_theme_nodes(theme: Theme, graph: ElkNode) {
         height: graph.children?.[i].height,
         theme: theme,
         course: course,
+        external: false,
       }, 
       position: { x: graph.children?.[i].x || 0, y: graph.children?.[i].y || 0 },
       style: {
@@ -215,6 +242,44 @@ function generate_theme_nodes(theme: Theme, graph: ElkNode) {
       return []
     }
   }));
+  if (includeExternalDeps) {
+    let index = nCourses;
+    const nodeDeps: Node[] = theme.courses.map(course => (
+      course.dependsOn
+      .filter(dep => !dep.startsWith(theme.id))
+      .map(dep => {
+        const materialId = dep.split('.')[0];
+        const courseId = dep.split('.')[1];
+        console.log('trying to find ', materialId, ' course with id ', dep, ' material is ', material);
+        let depCourseData = material.themes.find(t => t.id == materialId)?.courses.find(c => c.id == courseId);
+        if (!depCourseData) {
+          depCourseData = course;
+        }
+        const depCourse = { 
+          id: dep, 
+          type: 'course',
+          parentNode: graph.id == 'root' ? undefined : theme.id, 
+          zIndex: 1, 
+          data: { 
+            label: depCourseData.name,
+            width: graph.children?.[index].width,
+            height: graph.children?.[index].height,
+            theme: theme,
+            course: depCourseData,
+            external: true,
+          }, 
+          position: { x: graph.children?.[index].x || 0, y: graph.children?.[index].y || 0 },
+          style: {
+              width: graph.children?.[index].width,
+              height: graph.children?.[index].height,
+          },
+        };
+        index += 1;
+        return depCourse;
+      })
+    )).flat();
+    nodes = nodes.concat(nodeDeps);
+  }
   console.log('generate_theme_nodes', theme, graph, nodes)
   return nodes;
 }
@@ -246,7 +311,7 @@ function generate_material_nodes(material: Material, graph: ElkNode) {
   ));
   nodes = nodes.concat(...material.themes.map((theme, i) => {
     if (graph.children?.[i]) {
-      return generate_theme_nodes(theme, graph.children?.[i]);
+      return generate_theme_nodes(material, theme, graph.children?.[i]);
     } else {
       console.log('WARNING, graph does not map')
       return [];
@@ -296,10 +361,13 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course }) => {
   }, [stringifyMaterial]);
   useEffect(() => {
       let children = null;
+      let edges = undefined;
       if (course) {
         children = generate_course_nodes_elk(course)
+        edges = generate_course_edges_elk(course)
       } else if (theme) {
-        children = generate_theme_nodes_elk(theme)
+        children = generate_theme_nodes_elk(theme, true)
+        edges = generate_theme_edges_elk(theme)
       } else {
         children = generate_material_nodes_elk(material)
       }
@@ -307,6 +375,7 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course }) => {
         id: "root",
         layoutOptions,
         children,
+        edges,
       }
       console.log(graph)
       elk.layout(graph).then(graph => {
@@ -314,7 +383,7 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course }) => {
         if (course) {
           nodes = generate_course_nodes(course, graph);
         } else if (theme) {
-          nodes = generate_theme_nodes(theme, graph);
+          nodes = generate_theme_nodes(material, theme, graph, true);
         } else {
           nodes = generate_material_nodes(material, graph);
         }

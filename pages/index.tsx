@@ -17,13 +17,6 @@ const Home: NextPage<HomeProps> = ({ material }) => {
   return (
     <Layout>
       <Content markdown={material.markdown} />
-      <div className="mx-auto justify-center max-w-2xl grid m-2 gap-3 grid-cols-2">
-        {material.themes.map((theme) => (
-          <a key={theme.id} href={`material/${theme.id}`} className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-              <h5 className="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">{theme.name}</h5>
-          </a>
-        ))}
-      </div>
       <NavDiagram material={material}/>
     </Layout>
   )
