@@ -17,9 +17,7 @@ const CourseComponent: NextPage<CourseComponentProps> = ({theme, course, materia
   return (
     <Layout theme={theme} course={course}>
       <Content markdown={course.markdown} />
-      <div className="m-4 bg-white border rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
       <NavDiagram material={material} theme={theme} course={course} />
-      </div>
     </Layout>
   )
 }
