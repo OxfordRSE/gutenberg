@@ -398,8 +398,14 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course }) => {
     return <div>Generating diagram...</div>
   }
   console.log(nodes, edges)
+  const style = course ? 
+    { aspectRatio : '12 / 9', width: '50%' } : 
+    theme ? 
+      { aspectRatio : '14 / 9', width: '70%' } :
+      { aspectRatio : '16 / 9', width: '100%' };
   return (
-    <div style={{ aspectRatio : '16 / 9', width: '100%' }} className="border border-gray-200 rounded-lg shadow-md dark:border-gray-700">
+    <div className="flex justify-center mb-5" >
+    <div style={style} className="border border-gray-200 rounded-lg shadow-md dark:border-gray-700">
       <ReactFlow 
         nodes={nodes} edges={edges}
         nodeTypes={nodeTypes}
@@ -408,6 +414,7 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course }) => {
         fitViewOptions={fitViewOptions}
       >
       </ReactFlow>
+    </div>
     </div>
   )
 }

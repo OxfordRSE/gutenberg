@@ -16,7 +16,7 @@ const Layout: React.FC<Props> = ( props ) => {
   <div className="container mx-auto">
     <Header theme={props.theme} course={props.course}/>
     <main>
-      <nav className="flex px-5 py-3 mb-5 text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
+      <nav className="flex px-5 py-3 mt-1 mb-5 text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
       <ol className="list-none inline-flex items-center space-x-1 md:space-x-3">
         <li className="inline-flex items-center">
           <Link href="/">

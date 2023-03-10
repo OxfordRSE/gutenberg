@@ -5,6 +5,7 @@ import Layout from 'components/Layout'
 import {makeSerializable} from 'lib/utils'
 import Content from 'components/Content'
 import NavDiagram from 'components/NavDiagram'
+import Title from 'components/Title'
 
 type ThemeComponentProps = {
   theme: Theme,
@@ -14,8 +15,9 @@ type ThemeComponentProps = {
 const ThemeComponent: NextPage<ThemeComponentProps> = ({ theme, material }) => {
   return (
     <Layout theme={theme}>
-      <Content markdown={theme.markdown} />
+      <Title text={theme.name} />
       <NavDiagram material={material} theme={theme} />
+      <Content markdown={theme.markdown} />
     </Layout>
   )
 }

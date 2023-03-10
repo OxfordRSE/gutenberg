@@ -6,6 +6,7 @@ import { makeSerializable } from 'lib/utils'
 import { remove } from 'cypress/types/lodash'
 import Content from 'components/Content'
 import NavDiagram from 'components/NavDiagram'
+import Title from 'components/Title'
 
 type CourseComponentProps = {
   theme: Theme, 
@@ -16,8 +17,9 @@ type CourseComponentProps = {
 const CourseComponent: NextPage<CourseComponentProps> = ({theme, course, material}: CourseComponentProps) => {
   return (
     <Layout theme={theme} course={course}>
-      <Content markdown={course.markdown} />
+      <Title text={course.name} />
       <NavDiagram material={material} theme={theme} course={course} />
+      <Content markdown={course.markdown} />
     </Layout>
   )
 }

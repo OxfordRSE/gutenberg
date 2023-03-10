@@ -4,6 +4,7 @@ import { getMaterial, Course, Theme, Material, Section, remove_markdown } from '
 import Layout from 'components/Layout'
 import { makeSerializable } from 'lib/utils'
 import Content from 'components/Content'
+import Title from 'components/Title'
 
 type SectionComponentProps = {
   theme: Theme, 
@@ -14,6 +15,7 @@ type SectionComponentProps = {
 const SectionComponent: NextPage<SectionComponentProps> = ({theme, course, section}: SectionComponentProps) => {
   return (
     <Layout theme={theme} course={course} section={section}>
+      <Title text={section.name} />
       <Content markdown={section.markdown} />
     </Layout>
   )
