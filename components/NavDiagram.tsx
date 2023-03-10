@@ -1,5 +1,6 @@
-import React, { useRef, useState, useEffect, useMemo } from 'react'
-import ReactFlow, { Background, Controls, Node, Edge, FitViewOptions } from 'reactflow';
+import React, { useRef, useState, useEffect, useMemo, useCallback } from 'react'
+import ReactFlow, { Background, Controls, Node, Edge, FitViewOptions, applyNodeChanges } from 'reactflow';
+
 import 'reactflow/dist/style.css';
 import NavDiagramSectionNode from './NavDiagramSectionNode';
 import NavDiagramCourseNode from './NavDiagramCourseNode';
@@ -61,13 +62,17 @@ const labels = [{width: 200, height: 70}];
 const labelsTheme = [{width: 200, height: 90}];
 
 function generate_section_edges(section: Section) {
-  const edges: Edge[] = section.dependsOn.map(dep => {
-    const source = dep + '.md'; 
-    const target = `${section.theme}.${section.course}.${section.file}`;
-    return (
-      { id: `e${source}-${target}`, source, target, zIndex: 3 }
-    )
-   });
+  const course = `${section.theme}.${section.course}`;
+  // only create edges for this course
+  const edges: Edge[] = section.dependsOn
+    .filter(dep => dep.startsWith(course))
+    .map(dep => {
+      const source = dep + '.md'; 
+      const target = `${section.theme}.${section.course}.${section.file}`;
+      return (
+        { id: `e${source}-${target}`, source, target, zIndex: 3 }
+      )
+    });
   return edges;
 }
 
@@ -274,6 +279,11 @@ interface NavDiagramProps {
 const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course }) => {
   const defaultNodes: Node[] = [];
   const [nodes, setNodes] = useState(defaultNodes);
+  const onNodesChange = useCallback( (changes) => {
+    console.log('onNodesChange', changes)
+    setNodes((nds) => applyNodeChanges(changes, nds))
+  }, []);
+
   const stringifyMaterial = JSON.stringify(material);
   const edges = useMemo(() => {
     if (course) {
@@ -324,7 +334,7 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course }) => {
       <ReactFlow 
         nodes={nodes} edges={edges}
         nodeTypes={nodeTypes}
-
+        onNodesChange={onNodesChange}
         fitView
         fitViewOptions={fitViewOptions}
       >

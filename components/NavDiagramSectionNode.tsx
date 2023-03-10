@@ -16,7 +16,7 @@ function NavDiagramSectionNode({ data }: NodeProps) {
         <div className="self-start text-xs font-extrabold">{data.label}</div>
         <div className="self-end justify-self-end">
           {data.section?.tags.map((tag, i) => (
-              <div key={i} className="px-2 pb-1 text-xs bg-indigo-500 rounded-lg">{tag}</div>
+              <div key={i} className="px-2 pb-1 text-[9px] bg-indigo-500 rounded-lg">{tag}</div>
           ))}
         </div>
       </div>
