@@ -1,23 +1,33 @@
 import { Course, Section, Theme } from 'lib/material'
+import { useSession, signIn, signOut } from "next-auth/react"
 import Link from 'next/link'
+import { useState, useEffect, useLayoutEffect } from 'react'
 import React,{ ReactNode } from 'react'
 import Footer from './Footer'
 import Header from './Header'
+import { Dropdown } from "flowbite-react"
+import { Event } from 'lib/types' 
+import {AiOutlineUser} from 'react-icons/ai'
+import {FaUser} from 'react-icons/fa'
+import { Avatar } from 'flowbite-react'
 
 type Props = {
   theme?: Theme,
   course?: Course,
   section?: Section,
   children: ReactNode,
+  activeEvent?: Event,
 }
 
 const Layout: React.FC<Props> = ( props ) => {
+  const { data: session } = useSession()
+
   return (
   <div className="container mx-auto">
     <Header theme={props.theme} course={props.course}/>
     <main>
       <nav className="flex px-5 py-3 mt-1 mb-5 text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
-      <ol className="list-none inline-flex items-center space-x-1 md:space-x-3">
+      <ol className="list-none inline-flex items-center w-full space-x-1 md:space-x-3">
         <li className="inline-flex items-center">
           <Link href="/">
             <a className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
@@ -59,6 +69,63 @@ const Layout: React.FC<Props> = ( props ) => {
           </li>
         }
       </ol>
+      <div className="relative flex items-center">
+        <Dropdown
+          label={
+          <div className="inline-flex items-center text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+            <div className="mr-2 whitespace-nowrap text-sm font-medium" >
+              {props.activeEvent?.name}
+            </div>
+            {session ? (
+              <Avatar
+                  img={session.user?.image}
+                  rounded={true}
+                  size="sm"
+                />
+              
+            ) : (
+              <Avatar
+                  rounded={true}
+                  size="sm"
+                />
+
+            )
+          }
+          </div>
+          }
+          arrowIcon={false}
+          inline={true}
+        >
+          { session && (
+          <Dropdown.Header>
+              <>
+              <span className="block text-sm">
+                {session.user?.name}
+              </span>
+              <span className="block truncate text-sm font-medium">
+                {session.user?.email}
+              </span>
+              </>
+          </Dropdown.Header>
+          )}
+          <Dropdown.Item>
+            Set active event
+          </Dropdown.Item>
+          <Dropdown.Item>
+            Settings
+          </Dropdown.Item>
+          <Dropdown.Item>
+            Earnings
+          </Dropdown.Item>
+          <Dropdown.Item>
+            { session ? (
+              <button onClick={() => signOut()}>Sign out</button>
+            ) : (
+              <button onClick={() => signIn()}>Sign in</button>
+            )}
+          </Dropdown.Item>
+        </Dropdown>
+      </div>
       </nav>
       {props.children}
     </main>
