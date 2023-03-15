@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { Material } from 'lib/material';
 import { Event, EventFull } from 'lib/types';
 import { basePath } from 'lib/basePath'
-import { useActiveEvent } from 'lib/hooks'
+import { useActiveEvent, useSidebarOpen } from 'lib/hooks'
 import useSWR, { Fetcher } from 'swr'
 import { Button, Sidebar } from 'flowbite-react';
 import EventView from './EventView';
@@ -23,20 +23,23 @@ const MySidebar: React.FC<SidebarProps> = ({ material, events }) => {
   const { data: myEvents, error } = useSWR(`${basePath}/api/events`, fetcher)
 
   const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
-  const [open, setOpen] = useState<boolean>(true)
+  const [sidebarOpen, setSidebarOpen] = useSidebarOpen(false)
 
   const handleDeactivate = () => {
     setActiveEvent(null)
   }
   const handleClose = () => {
-    setOpen(false)
+    setSidebarOpen(false)
   }
 
-  console.log('XXX1111', setActiveEvent)
+  const handleOpen = () => {
+    setSidebarOpen(true)
+  }
+
   return (
     <>
-    {open ? (
-      <Sidebar style={{width: open ? 400 : 0}} className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0">
+    {sidebarOpen ? (
+      <Sidebar style={{width: 400 }} className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0">
         { activeEvent ? (
           <>
           <div className="flex justify-between">
@@ -64,7 +67,7 @@ const MySidebar: React.FC<SidebarProps> = ({ material, events }) => {
       </Sidebar>
     ) : (
       <div className="fixed top-0 left-0 z-40 m-2">
-        <Button size="xs" color="gray" pill={true} onClick={() => setOpen(true)}>
+        <Button size="xs" color="gray" pill={true} onClick={handleOpen}>
           <HiArrowNarrowRight className="h-6 w-6" />
         </Button>
       </div>

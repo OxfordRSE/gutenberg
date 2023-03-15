@@ -6,15 +6,17 @@ import {makeSerializable} from 'lib/utils'
 import Content from 'components/Content'
 import NavDiagram from 'components/NavDiagram'
 import Title from 'components/Title'
+import { Event } from 'lib/types'
 
 type ThemeComponentProps = {
   theme: Theme,
   material: Material
+  events: Event[],
 }
 
-const ThemeComponent: NextPage<ThemeComponentProps> = ({ theme, material }) => {
+const ThemeComponent: NextPage<ThemeComponentProps> = ({ theme, material, events }) => {
   return (
-    <Layout theme={theme}>
+    <Layout material={material} theme={theme} events={events}>
       <Title text={theme.name} />
       <NavDiagram material={material} theme={theme} />
       <Content markdown={theme.markdown} />
@@ -32,6 +34,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
+  const events = await prisma.event.findMany();
   let material = await getMaterial();
   const themeId= context?.params?.themeId;
   if (!themeId || Array.isArray(themeId)) {
@@ -45,7 +48,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   remove_markdown(material, theme)
 
   return { 
-    props: makeSerializable({ material, theme }),
+    props: makeSerializable({ material, theme, events }),
   }
 }
 
