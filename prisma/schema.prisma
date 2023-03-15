@@ -66,18 +66,20 @@ model Problem {
 }
 
 model UserOnEvent {
-  user    User   @relation(fields: [userId], references: [id])
-  userId  String // relation scalar field (used in the `@relation` attribute above)
+  user    User?   @relation(fields: [userEmail], references: [email])
+  userEmail String // relation scalar field (used in the `@relation` attribute above)
   event   Event  @relation(fields: [eventId], references: [id])
   eventId Int // relation scalar field (used in the `@relation` attribute above)
 
-  @@id([userId, eventId])
+  @@id([userEmail, eventId])
 }
 
 model Event {
   id          Int           @id @default(autoincrement())
   name        String
   summary     String
+  start       DateTime
+  end         DateTime
   EventGroup  EventGroup[]
   UserOnEvent UserOnEvent[]
 }

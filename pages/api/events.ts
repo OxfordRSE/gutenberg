@@ -1,13 +1,11 @@
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "./auth/[...nextauth]"
-import { Event } from "lib/types"
+import { EventFull as Event } from "lib/types"
 import prisma from 'lib/prisma'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-type Data = {
-  events: Event[] 
-}
+type Data = Event[] 
 
 export default async (
   req: NextApiRequest,

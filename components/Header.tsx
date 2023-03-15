@@ -16,6 +16,8 @@ const Header: React.FC<Props> = ( props ) =>  {
       <title>Training Courses</title>
       <meta name="description" content="Created by OxRSE team" />
       <link rel="icon" href="/favicon.ico" />
+
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.css" rel="stylesheet" />
     </Head>
   )
 }

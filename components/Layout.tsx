@@ -1,4 +1,6 @@
 import { Course, Section, Theme } from 'lib/material'
+
+import { useRouter } from 'next/router'
 import { useSession, signIn, signOut } from "next-auth/react"
 import Link from 'next/link'
 import { useState, useEffect, useLayoutEffect } from 'react'
@@ -6,20 +8,26 @@ import React,{ ReactNode } from 'react'
 import Footer from './Footer'
 import Header from './Header'
 import { Dropdown } from "flowbite-react"
-import { Event } from 'lib/types' 
+import { EventFull, Event } from 'lib/types' 
 import {AiOutlineUser} from 'react-icons/ai'
 import {FaUser} from 'react-icons/fa'
 import { Avatar } from 'flowbite-react'
+import { basePath } from 'lib/basePath'
+import { Material } from 'lib/material'
+import EventView from './EventView'
+import Sidebar from './Sidebar'
 
 type Props = {
+  material: Material,
   theme?: Theme,
   course?: Course,
   section?: Section,
   children: ReactNode,
-  activeEvent?: Event,
+  events: Event[],
 }
 
 const Layout: React.FC<Props> = ( props ) => {
+  const router = useRouter()
   const { data: session } = useSession()
 
   return (
@@ -73,9 +81,6 @@ const Layout: React.FC<Props> = ( props ) => {
         <Dropdown
           label={
           <div className="inline-flex items-center text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
-            <div className="mr-2 whitespace-nowrap text-sm font-medium" >
-              {props.activeEvent?.name}
-            </div>
             {session ? (
               <Avatar
                   img={session.user?.image}
@@ -109,15 +114,6 @@ const Layout: React.FC<Props> = ( props ) => {
           </Dropdown.Header>
           )}
           <Dropdown.Item>
-            Set active event
-          </Dropdown.Item>
-          <Dropdown.Item>
-            Settings
-          </Dropdown.Item>
-          <Dropdown.Item>
-            Earnings
-          </Dropdown.Item>
-          <Dropdown.Item>
             { session ? (
               <button onClick={() => signOut()}>Sign out</button>
             ) : (
@@ -127,6 +123,9 @@ const Layout: React.FC<Props> = ( props ) => {
         </Dropdown>
       </div>
       </nav>
+      { session && (
+        <Sidebar material={props.material} events={props.events}  />
+      )}
       {props.children}
     </main>
     <Footer />

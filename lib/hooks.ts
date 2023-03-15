@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Event } from './types';
+import { Event, EventFull } from './types';
 
-export function useActiveEvent(events: Event[]): [Event | null, (event: Event) => void] {
+
+export function useActiveEvent(events: EventFull[]): [EventFull | undefined, (event: Event | EventFull | null) => void] {
   const [activeEventId, setActiveEventId] = useState<number | null>(null)
 
   useEffect(() => {
@@ -18,7 +19,7 @@ export function useActiveEvent(events: Event[]): [Event | null, (event: Event) =
     }
   }, [activeEventId])
 
-  const setActiveEvent = (event: Event) => setActiveEventId(event.id)
+  const setActiveEvent = (event: Event | EventFull | null) => event ? setActiveEventId(event.id) : setActiveEventId(null)
 
   const activeEvent = events.find(event => event.id === activeEventId)
   

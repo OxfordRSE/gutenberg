@@ -51,11 +51,11 @@ CREATE TABLE "Problem" (
 
 -- CreateTable
 CREATE TABLE "UserOnEvent" (
-    "userId" TEXT NOT NULL,
+    "userEmail" TEXT NOT NULL,
     "eventId" INTEGER NOT NULL,
 
-    PRIMARY KEY ("userId", "eventId"),
-    CONSTRAINT "UserOnEvent_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    PRIMARY KEY ("userEmail", "eventId"),
+    CONSTRAINT "UserOnEvent_userEmail_fkey" FOREIGN KEY ("userEmail") REFERENCES "User" ("email") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "UserOnEvent_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "Event" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
@@ -63,7 +63,9 @@ CREATE TABLE "UserOnEvent" (
 CREATE TABLE "Event" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "name" TEXT NOT NULL,
-    "summary" TEXT NOT NULL
+    "summary" TEXT NOT NULL,
+    "start" DATETIME NOT NULL,
+    "end" DATETIME NOT NULL
 );
 
 -- CreateTable

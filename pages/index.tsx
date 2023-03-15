@@ -9,7 +9,7 @@ import { Material, getMaterial, remove_markdown } from 'lib/material'
 import Content from 'components/Content'
 import NavDiagram from 'components/NavDiagram'
 import { useActiveEvent } from 'lib/hooks';
-import { Event } from 'lib/types';
+import { EventFull as Event } from 'lib/types';
 
 import useSWR, { Fetcher } from 'swr'
 import { basePath } from 'lib/basePath'
@@ -18,17 +18,15 @@ import { basePath } from 'lib/basePath'
 
 type HomeProps = {
   material: Material,
+  events: Event[],
 }
 
 
 const fetcher: Fetcher<Event[], string> = url => fetch(url).then(r => r.json())
 
-const Home: NextPage<HomeProps> = ({ material }) => {
-  const { data: events, error } = useSWR(`${basePath}/api/events`, fetcher)
-  const [activeEvent, setActiveEvent] = useActiveEvent(events ? events: [])
-
+const Home: NextPage<HomeProps> = ({ material, events }) => {
   return (
-    <Layout activeEvent={activeEvent ? activeEvent : undefined}>
+    <Layout material={material} events={events}>
       <Content markdown={material.markdown} />
       <NavDiagram material={material}/>
     </Layout>
@@ -38,12 +36,14 @@ const Home: NextPage<HomeProps> = ({ material }) => {
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
+  const events = await prisma.event.findMany();
   let material = await getMaterial()
   remove_markdown(material, material);
     
   return {
     props: {
       material: makeSerializable(material),
+      events: makeSerializable(events),
     },
   }
 }
