@@ -36,6 +36,7 @@
     "postcss": "^8.4.19",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.43.5",
     "react-icons": "^4.8.0",
     "react-markdown": "^8.0.4",
     "react-string-replace": "^1.1.0",

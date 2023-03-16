@@ -7,7 +7,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 type Data = Event[] 
 
-export default async (
+const Events = async (
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) => {
@@ -21,3 +21,5 @@ export default async (
   }
   res.status(200).json(events)
 }
+
+export default Events

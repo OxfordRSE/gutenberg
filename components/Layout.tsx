@@ -83,7 +83,7 @@ const Layout: React.FC<Props> = ( props ) => {
           <div className="inline-flex items-center text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
             {session ? (
               <Avatar
-                  img={session.user?.image}
+                  img={session.user?.image ? session.user?.image : undefined}
                   rounded={true}
                   size="sm"
                 />

@@ -45,8 +45,12 @@ CREATE TABLE "Problem" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "tag" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "userId" TEXT NOT NULL,
-    CONSTRAINT "Problem_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    "userEmail" TEXT NOT NULL,
+    "complete" BOOLEAN NOT NULL DEFAULT false,
+    "solution" TEXT NOT NULL DEFAULT '',
+    "difficulty" INTEGER NOT NULL DEFAULT 5,
+    "notes" TEXT NOT NULL DEFAULT '',
+    CONSTRAINT "Problem_userEmail_fkey" FOREIGN KEY ("userEmail") REFERENCES "User" ("email") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -103,3 +107,6 @@ CREATE UNIQUE INDEX "VerificationToken_token_key" ON "VerificationToken"("token"
 
 -- CreateIndex
 CREATE UNIQUE INDEX "VerificationToken_identifier_token_key" ON "VerificationToken"("identifier", "token");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Problem_userEmail_tag_key" ON "Problem"("userEmail", "tag");

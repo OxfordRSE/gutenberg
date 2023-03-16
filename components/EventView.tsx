@@ -57,7 +57,7 @@ const EventView: React.FC<EventsProps> = ({ material, event }) => {
               const split = item.section.split('.')
               if (split.length !== 3) {
                 return  (
-                  <ListGroup.Item href={item.section}>
+                  <ListGroup.Item key={item.id} href={item.section}>
                     Error:{item.section}
                   </ListGroup.Item>
                 )
@@ -68,7 +68,7 @@ const EventView: React.FC<EventsProps> = ({ material, event }) => {
               const courseData = themeData?.courses.find((c) => c.id === course)
               const sectionData = courseData?.sections.find((s) => s.id === section)
               return (
-               <ListGroup.Item href={url}>
+               <ListGroup.Item href={url} key={item.id}>
                   {sectionData?.name}
                 </ListGroup.Item>
               )

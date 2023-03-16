@@ -68,7 +68,6 @@ function generate_section_edges(section: Section) {
   const edges: Edge[] = section.dependsOn
     .filter(dep => dep.startsWith(course))
     .map(dep => {
-      console.log('create dep for', section.id, '->', dep)
       const source = dep + '.md'; 
       const target = `${section.theme}.${section.course}.${section.file}`;
       return (
@@ -80,13 +79,11 @@ function generate_section_edges(section: Section) {
 
 function generate_course_edges_elk(course: Course) {
   let edges: ElkExtendedEdge[] = [];
-  console.log('generate_course_edges_elk', course)
   for (const section of course.sections) {
     // only create edges for this course
     edges = edges.concat(section.dependsOn
       .filter(dep => dep.startsWith(`${section.theme}.${course.id}`))
       .map(dep => {
-      console.log('create dep', dep)
       const source = dep + '.md'; 
       const target = `${section.theme}.${course.id}.${section.file}`;
       return (
@@ -250,7 +247,6 @@ function generate_theme_nodes(material: Material, theme: Theme, graph: ElkNode, 
       .map(dep => {
         const materialId = dep.split('.')[0];
         const courseId = dep.split('.')[1];
-        console.log('trying to find ', materialId, ' course with id ', dep, ' material is ', material);
         let depCourseData = material.themes.find(t => t.id == materialId)?.courses.find(c => c.id == courseId);
         if (!depCourseData) {
           depCourseData = course;
@@ -280,7 +276,6 @@ function generate_theme_nodes(material: Material, theme: Theme, graph: ElkNode, 
     )).flat();
     nodes = nodes.concat(nodeDeps);
   }
-  console.log('generate_theme_nodes', theme, graph, nodes)
   return nodes;
 }
 
@@ -313,7 +308,6 @@ function generate_material_nodes(material: Material, graph: ElkNode) {
     if (graph.children?.[i]) {
       return generate_theme_nodes(material, theme, graph.children?.[i]);
     } else {
-      console.log('WARNING, graph does not map')
       return [];
     }
   }));
@@ -345,7 +339,6 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course }) => {
   const defaultNodes: Node[] = [];
   const [nodes, setNodes] = useState(defaultNodes);
   const onNodesChange = useCallback( (changes: NodeChange[]) => {
-    console.log('onNodesChange', changes)
     setNodes((nds) => applyNodeChanges(changes, nds))
   }, []);
 
@@ -377,7 +370,6 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course }) => {
         children,
         edges,
       }
-      console.log(graph)
       elk.layout(graph).then(graph => {
         let nodes: Node[] = [];
         if (course) {
@@ -397,7 +389,6 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course }) => {
   if (!nodes) {
     return <div>Generating diagram...</div>
   }
-  console.log(nodes, edges)
   const style = course ? 
     { aspectRatio : '12 / 9', width: '50%' } : 
     theme ? 

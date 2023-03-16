@@ -6,3 +6,8 @@ export type EventFull = Prisma.EventGetPayload<{
 
 export type Event = Prisma.EventGetPayload<{
 }>
+
+export type Problem = Prisma.ProblemGetPayload<{
+}>
+
+export type ProblemUpdate = Prisma.ProblemUpdateInput

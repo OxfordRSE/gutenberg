@@ -43,3 +43,5 @@ env
 dev.db*
 
 .material
+gut
+gut-cert.pub

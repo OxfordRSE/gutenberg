@@ -38,8 +38,8 @@ export const authOptions: NextAuthOptions = {
     }),
     */
     GithubProvider({
-      clientId: process.env.GITHUB_ID,
-      clientSecret: process.env.GITHUB_SECRET,
+      clientId: process.env.GITHUB_ID ? process.env.GITHUB_ID : "clientId",
+      clientSecret: process.env.GITHUB_SECRET ? process.env.GITHUB_SECRET : "clientSecret",
     }),
     /*
     GoogleProvider({

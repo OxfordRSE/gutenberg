@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -61,8 +62,13 @@ model Problem {
   id        Int      @id @default(autoincrement())
   tag       String
   createdAt DateTime @default(now())
-  User      User     @relation(fields: [userId], references: [id])
-  userId    String
+  User      User     @relation(fields: [userEmail], references: [email])
+  userEmail String
+  complete  Boolean  @default(false)
+  solution  String   @default("")
+  difficulty Int     @default(5)
+  notes     String   @default("")
+  @@unique([userEmail, tag])
 }
 
 model UserOnEvent {
