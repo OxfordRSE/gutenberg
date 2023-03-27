@@ -7,8 +7,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Account {
@@ -76,6 +76,7 @@ model UserOnEvent {
   userEmail String // relation scalar field (used in the `@relation` attribute above)
   event   Event  @relation(fields: [eventId], references: [id])
   eventId Int // relation scalar field (used in the `@relation` attribute above)
+  is_instructor Boolean @default(false)
 
   @@id([userEmail, eventId])
 }
