@@ -36,6 +36,8 @@ const MySidebar: React.FC<SidebarProps> = ({ material, events }) => {
     setSidebarOpen(true)
   }
 
+  const eventsWithMyEvents = events.concat(myEvents ? myEvents : []);
+
   return (
     <>
     {sidebarOpen ? (

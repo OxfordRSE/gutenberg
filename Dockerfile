@@ -16,6 +16,12 @@ ENV NEXT_TELEMETRY_DISABLED 1
 # Example:
 # ARG NEXT_PUBLIC_EXAMPLE="value here"
 
+# need to make sure database exists and tables are there before we build
+# for some reason, this is not working with the .env.local file
+# so we'll use dotenv to load the .env.local file
+RUN npm install -g dotenv-cli
+RUN dotenv -e .env.local -- npx prisma migrate deploy
+
 RUN yarn build
 
 # If using npm comment out above and use below instead
@@ -34,6 +40,7 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder --chown=nextjs:nextjs /app ./
 
 USER nextjs
+
 
 CMD ["yarn", "start"]
 
