@@ -45,7 +45,8 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Deploy on Fly.io
 
-Make sure you have set the .env.local file with the correct values for the production deployment. You will also need to install the [Fly CLI](https://fly.io/docs/hands-on/installing-the-fly-cli/).
+Make sure you have set the .env.local file with the correct values for the
+production deployment. You will also need to install the [Fly CLI](https://fly.io/docs/hands-on/installing-the-fly-cli/).
 
 Then run the following commands:
 
@@ -54,3 +55,26 @@ fly deploy
 ```
 
 The deployment uses Docker and the Dockerfile is included in the repository.
+
+If you are hosting your database on fly.io as well, you can proxy the
+database connection to your development machine. This is useful for debugging
+using your fly.io database, or for running the prisma studio.
+
+```bash
+fly proxy 5432 -a <database app name>
+```
+
+## Prisma Studio
+
+Prisma Studio is a GUI for viewing and editing the database. It can be started with:
+
+```bash
+npx prisma studio
+```
+
+The `prisma` command only reads from `.env` and not `.env.local`, so you will need to either copy the values from `.env.local` to `.env`, or use a command like `dotenv` to populate the environment variables. For example:
+
+```bash
+npm install dotenv-cli -g
+dotenv -e .env.local npx prisma studio
+```
