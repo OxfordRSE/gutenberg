@@ -60,7 +60,11 @@ const Home: NextPage<HomeProps> = ({ material, events }) => {
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const events = await prisma.event.findMany();
+  
+  const events = await prisma.event.findMany().catch((e) => {
+    console.log(e);
+    return [];
+  });
   let material = await getMaterial()
   remove_markdown(material, material);
     

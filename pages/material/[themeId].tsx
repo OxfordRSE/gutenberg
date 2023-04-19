@@ -34,7 +34,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const events = await prisma.event.findMany();
+  const events = await prisma.event.findMany().catch((e) => {
+    console.log(e)
+    return []
+  });
   let material = await getMaterial();
   const themeId= context?.params?.themeId;
   if (!themeId || Array.isArray(themeId)) {
