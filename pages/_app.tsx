@@ -11,7 +11,6 @@ export default function MyApp({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps<{ session: Session }>) {
-  console.log('session', session, `${basePath}/api/auth`)
   return (
     <SessionProvider session={session} basePath={`${basePath}/api/auth`}>
       <Component {...pageProps} />

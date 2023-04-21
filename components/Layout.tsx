@@ -24,6 +24,7 @@ type Props = {
   section?: Section,
   children: ReactNode,
   events: Event[],
+  activeEvent: EventFull | undefined
 }
 
 const Layout: React.FC<Props> = ( props ) => {
@@ -123,7 +124,7 @@ const Layout: React.FC<Props> = ( props ) => {
         </Dropdown>
       </div>
       </nav>
-      { session && (
+      { props.activeEvent && (
         <Sidebar material={props.material} events={props.events}  />
       )}
       {props.children}

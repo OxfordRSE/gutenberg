@@ -1,18 +1,18 @@
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "./auth/[...nextauth]"
-import { EventFull as Event } from "lib/types"
+import { EventFull } from "lib/types"
 import prisma from 'lib/prisma'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-type Data = Event[] 
+type Data = EventFull[] 
 
-const Events = async (
+const EventsFull = async (
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) => {
   const session = await getServerSession(req, res, authOptions)
-  let events: Event[] = []
+  let events: EventFull[] = []
   if (session) {
     events = await prisma.event.findMany({
       where: { UserOnEvent: { some: { user: { is: { name: session.user?.name } } } } },
@@ -22,4 +22,4 @@ const Events = async (
   res.status(200).json(events)
 }
 
-export default Events
+export default EventsFull

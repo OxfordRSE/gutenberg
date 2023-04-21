@@ -12,6 +12,7 @@ import { MdClose } from 'react-icons/md';
 import { HiArrowNarrowRight } from 'react-icons/hi';
 import { HiArrowNarrowLeft } from 'react-icons/hi';
 
+
 type SidebarProps = {
   material: Material,
   events: Event[], 
@@ -20,10 +21,12 @@ type SidebarProps = {
 const fetcher: Fetcher<EventFull[], string> = url => fetch(url).then(r => r.json())
 
 const MySidebar: React.FC<SidebarProps> = ({ material, events }) => {
-  const { data: myEvents, error } = useSWR(`${basePath}/api/events`, fetcher)
+  const { data: myEvents, error } = useSWR(`${basePath}/api/eventFull`, fetcher)
 
   const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
-  const [sidebarOpen, setSidebarOpen] = useSidebarOpen(false)
+  const [sidebarOpen, setSidebarOpen] = useSidebarOpen(true)
+
+  console.log('sidebar activeEvent: ', activeEvent)
 
   const handleDeactivate = () => {
     setActiveEvent(null)
@@ -40,34 +43,17 @@ const MySidebar: React.FC<SidebarProps> = ({ material, events }) => {
 
   return (
     <>
-    {sidebarOpen ? (
-      <Sidebar style={{width: 400 }} className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0">
-        { activeEvent ? (
-          <>
-          <div className="flex justify-between">
+    {sidebarOpen && activeEvent ? (
+      <Sidebar style={{width: 400 }} className="fixed h-screen top-0 left-0 z-40">
+        <Button className="absolute top-4 right-6 z-50" size="xs" color="gray" pill={true} onClick={handleClose}>
+          <HiArrowNarrowLeft className="h-6 w-6" />
+        </Button>
+        <div className="p-1 overflow-y-auto h-full">
           <p className="w-full text-2xl font-bold" >{activeEvent.name}</p>
-          <Button className="mr-2" size="xs" color="gray" pill={true} onClick={handleDeactivate}>
-            <MdClose className="h-6 w-6" />
-          </Button>
-          <Button size="xs" color="gray" pill={true} onClick={handleClose}>
-            <HiArrowNarrowLeft className="h-6 w-6" />
-          </Button>
-          </div>
           <EventView material={material} event={activeEvent}/>
-          </>
-        ) : ( 
-          <>
-          <div className="flex justify-between mb-2">
-          <p className="w-full text-2xl font-bold" >Available Courses</p>
-          <Button size="xs" color="gray" pill={true} onClick={handleClose}>
-            <HiArrowNarrowLeft className="h-6 w-6" />
-          </Button>
-          </div>
-          <EventsView material={material} events={events} myEvents={myEvents} setActiveEvent={setActiveEvent} />
-          </>
-        )}
+        </div>
       </Sidebar>
-    ) : (
+    ) : activeEvent && (
       <div className="fixed top-0 left-0 z-40 m-2">
         <Button size="xs" color="gray" pill={true} onClick={handleOpen}>
           <HiArrowNarrowRight className="h-6 w-6" />

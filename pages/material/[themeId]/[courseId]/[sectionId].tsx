@@ -5,7 +5,10 @@ import Layout from 'components/Layout'
 import { makeSerializable } from 'lib/utils'
 import Content from 'components/Content'
 import Title from 'components/Title'
-import { Event } from 'lib/types'
+import { Event, EventFull } from 'lib/types'
+import useSWR, { Fetcher } from 'swr'
+import { basePath } from 'lib/basePath'
+import { useActiveEvent } from 'lib/hooks'
 
 type SectionComponentProps = {
   theme: Theme, 
@@ -15,9 +18,28 @@ type SectionComponentProps = {
   events: Event[],
 }
 
+const myEventsFetcher: Fetcher<EventFull[], string> = url => fetch(url).then(r => r.json())
+
 const SectionComponent: NextPage<SectionComponentProps> = ({theme, course, section, events, material}: SectionComponentProps) => {
+  const { data: myEvents, error } = useSWR(`${basePath}/api/eventFull`, myEventsFetcher)
+  const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
+
+  // check if this section is part of the active event
+  if (activeEvent) {
+    for (const group of activeEvent.EventGroup) {
+      for (const item of group.EventItem) {
+        if (item.section == `${theme.id}.${course.id}.${section.id}`) {
+          
+
+        }
+      }
+
+    }
+
+  }
+
   return (
-    <Layout theme={theme} course={course} section={section} events={events} material={material}>
+    <Layout theme={theme} course={course} section={section} events={events} material={material} activeEvent={activeEvent}>
       <Title text={section.name} />
       <Content markdown={section.markdown} />
     </Layout>

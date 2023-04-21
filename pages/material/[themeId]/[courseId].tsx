@@ -7,7 +7,10 @@ import { remove } from 'cypress/types/lodash'
 import Content from 'components/Content'
 import NavDiagram from 'components/NavDiagram'
 import Title from 'components/Title'
-import { Event } from 'lib/types'
+import { Event, EventFull } from 'lib/types'
+import useSWR, { Fetcher } from 'swr'
+import { basePath } from 'lib/basePath'
+import { useActiveEvent } from 'lib/hooks'
 
 type CourseComponentProps = {
   theme: Theme, 
@@ -16,9 +19,15 @@ type CourseComponentProps = {
   events: Event[],
 }
 
+const myEventsFetcher: Fetcher<EventFull[], string> = url => fetch(url).then(r => r.json())
+
 const CourseComponent: NextPage<CourseComponentProps> = ({theme, course, material, events}: CourseComponentProps) => {
+
+  const { data: myEvents, error } = useSWR(`${basePath}/api/eventFull`, myEventsFetcher)
+  const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
+
   return (
-    <Layout theme={theme} course={course} events={events} material={material}>
+    <Layout theme={theme} course={course} events={events} material={material} activeEvent={activeEvent}>
       <Title text={course.name} />
       <NavDiagram material={material} theme={theme} course={course} />
       <Content markdown={course.markdown} />

@@ -3,29 +3,45 @@ import prisma from 'lib/prisma'
 import Layout from 'components/Layout'
 import { makeSerializable } from 'lib/utils'
 import { Material, getMaterial, remove_markdown } from 'lib/material'
+import { basePath } from 'lib/basePath'
 import Content from 'components/Content'
 import NavDiagram from 'components/NavDiagram'
-import { EventFull as Event } from 'lib/types';
+import { EventFull, Event } from 'lib/types';
 import { Button, Card } from 'flowbite-react'
 import Link from 'next/link'
+import EventsView from 'components/EventsView'
+import useSWR, { Fetcher } from 'swr'
+import { useActiveEvent } from 'lib/hooks'
 
 type HomeProps = {
   material: Material,
   events: Event[],
 }
 
+const myEventsFetcher: Fetcher<EventFull[], string> = url => fetch(url).then(r => r.json())
+const eventsFetcher: Fetcher<Event[], string> = url => fetch(url).then(r => r.json())
 
 const Home: NextPage<HomeProps> = ({ material, events }) => {
+  const { data: myEvents, error } = useSWR(`${basePath}/api/eventFull`, myEventsFetcher)
+  const { data: currentEvents , error: currentEventserror } = useSWR(`${basePath}/api/event`, eventsFetcher)
+  const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
+  console.log('homepage: activeEvnet', activeEvent, events, currentEvents)
+  if (currentEvents) {
+    events = currentEvents;
+  }
   return (
-    <Layout material={material} events={events}>
+    <Layout material={material} events={events} activeEvent={activeEvent}>
       <div className="grid grid-cols-2 gap-4">
       <Card>
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
           Course Events
         </h5>
         <p className="font-normal text-gray-700 dark:text-gray-400">
-          Please login to see the upcoming course eventsa in the lhs sidebar
+          Login to request a place on an upcoming course, or to select an active course.
         </p>
+        <EventsView 
+          material={material} events={events} myEvents={myEvents} setActiveEvent={setActiveEvent} activeEvent={activeEvent}
+        />
       </Card>
       <Card>
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">

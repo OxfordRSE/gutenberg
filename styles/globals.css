@@ -5,3 +5,20 @@
 body {
   @apply cursor-default antialiased bg-white dark:bg-slate-900 text-black dark:text-white;
 }
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  @apply w-2 h-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-200 rounded;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-500 rounded;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-700;
+}
