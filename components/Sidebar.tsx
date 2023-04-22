@@ -9,7 +9,7 @@ import { Button, Sidebar } from 'flowbite-react';
 import EventView from './EventView';
 import EventsView from './EventsView';
 import { MdClose } from 'react-icons/md';
-import { HiArrowNarrowRight } from 'react-icons/hi';
+import { HiArrowNarrowRight, HiCalendar, HiMenuAlt1, HiXCircle } from 'react-icons/hi';
 import { HiArrowNarrowLeft } from 'react-icons/hi';
 
 
@@ -44,20 +44,16 @@ const MySidebar: React.FC<SidebarProps> = ({ material, events }) => {
   return (
     <>
     {sidebarOpen && activeEvent ? (
-      <Sidebar style={{width: 400 }} className="fixed h-screen top-0 left-0 z-40">
-        <Button className="absolute top-4 right-6 z-50" size="xs" color="gray" pill={true} onClick={handleClose}>
-          <HiArrowNarrowLeft className="h-6 w-6" />
-        </Button>
+      <div className="fixed pl-2 h-full overflow-x-hidden rounded top-0 left-0 z-40 bg-white dark:bg-slate-900 w-96">
+        <HiXCircle className="absolute top-2 right-4 z-50 text-gray-500 hover:text-gray-400 opacity-50 w-10 h-10" onClick={handleClose}/>
         <div className="p-1 overflow-y-auto h-full">
           <p className="w-full text-2xl font-bold" >{activeEvent.name}</p>
           <EventView material={material} event={activeEvent}/>
         </div>
-      </Sidebar>
+      </div>
     ) : activeEvent && (
       <div className="fixed top-0 left-0 z-40 m-2">
-        <Button size="xs" color="gray" pill={true} onClick={handleOpen}>
-          <HiArrowNarrowRight className="h-6 w-6" />
-        </Button>
+        <HiCalendar className="opacity-50 text-gray-700 hover:text-gray-600 w-10 h-10" onClick={handleOpen}/>
       </div>
     )}
     </>

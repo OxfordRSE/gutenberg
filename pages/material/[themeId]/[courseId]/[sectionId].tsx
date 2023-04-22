@@ -9,6 +9,10 @@ import { Event, EventFull } from 'lib/types'
 import useSWR, { Fetcher } from 'swr'
 import { basePath } from 'lib/basePath'
 import { useActiveEvent } from 'lib/hooks'
+import { HiArrowCircleRight } from 'react-icons/hi'
+import { HiArrowCircleLeft } from 'react-icons/hi'
+import { Tooltip } from 'flowbite-react'
+import Link from 'next/link'
 
 type SectionComponentProps = {
   theme: Theme, 
@@ -25,21 +29,48 @@ const SectionComponent: NextPage<SectionComponentProps> = ({theme, course, secti
   const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
 
   // check if this section is part of the active event
+  let isInEvent = false;
+  let prevUrl = null;
+  let nextUrl = null;
   if (activeEvent) {
     for (const group of activeEvent.EventGroup) {
-      for (const item of group.EventItem) {
+      for (let i = 0; i < group.EventItem.length; i++) {
+        const item = group.EventItem[i];
         if (item.section == `${theme.id}.${course.id}.${section.id}`) {
-          
-
+          isInEvent = true
+          if (i > 0) {
+            const prevItem = group.EventItem[i - 1];
+            prevUrl = prevItem.section.replaceAll('.', '/')
+          }
+          if (i < group.EventItem.length - 1) {
+            const nextItem = group.EventItem[i + 1];
+            nextUrl = nextItem.section.replaceAll('.', '/')
+          }
         }
       }
-
     }
-
   }
+  console.log('isInEvent: ', isInEvent)
+  console.log('prevUrl: ', prevUrl)
+  console.log('nextUrl: ', nextUrl)
+
 
   return (
     <Layout theme={theme} course={course} section={section} events={events} material={material} activeEvent={activeEvent}>
+      {isInEvent && (
+        <div className="fixed bottom-20 left-0 w-full flex justify-between px-4 py-2">
+          {prevUrl && (
+            <a href={`/material/${prevUrl}`} className="text-gray-700 hover:text-gray-600 opacity-50">
+              <HiArrowCircleLeft className="w-14 h-14"/>
+            </a>
+          )}
+          {nextUrl && (
+            <a href={`/material/${nextUrl}`} className={`text-gray-700 hover:text-gray-600 opacity-50 ${prevUrl ? '' : 'absolute right-0 bottom-'}`}>
+              <HiArrowCircleRight className="w-14 h-14"/>
+            </a>
+          )}
+        </div>
+      )}
       <Title text={section.name} />
       <Content markdown={section.markdown} />
     </Layout>
