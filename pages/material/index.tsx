@@ -5,17 +5,24 @@ import { makeSerializable } from 'lib/utils'
 import { Material, getMaterial, remove_markdown } from 'lib/material'
 import Content from 'components/Content'
 import NavDiagram from 'components/NavDiagram'
-import { EventFull as Event } from 'lib/types';
+import { EventFull as Event, EventFull } from 'lib/types';
+import useSWR, { Fetcher } from 'swr'
+import { basePath } from 'lib/basePath'
+import { useActiveEvent } from 'lib/hooks'
 
 type HomeProps = {
   material: Material,
   events: Event[],
 }
 
+const myEventsFetcher: Fetcher<EventFull[], string> = url => fetch(url).then(r => r.json())
+const eventsFetcher: Fetcher<Event[], string> = url => fetch(url).then(r => r.json())
 
 const Home: NextPage<HomeProps> = ({ material, events }) => {
+  const { data: myEvents, error } = useSWR(`${basePath}/api/eventFull`, myEventsFetcher)
+  const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
   return (
-    <Layout material={material} events={events}>
+    <Layout material={material} events={events} activeEvent={activeEvent}>
       <Content markdown={material.markdown} />
       <NavDiagram material={material}/>
     </Layout>

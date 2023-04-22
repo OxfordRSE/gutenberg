@@ -30,7 +30,7 @@ const EventView: React.FC<EventsProps> = ({ material, event }) => {
 
   return (
     <div>
-      <p className="mb-3 text-lg font-normal text-gray-500 dark:text-gray-400">
+      <p className="mb-3 text-lg font-normal text-gray-700 dark:text-gray-400">
         <span className="font-bold">Description:</span> {event.summary}
       </p>
       <Timeline>
@@ -46,8 +46,8 @@ const EventView: React.FC<EventsProps> = ({ material, event }) => {
           </Timeline.Title>
           <Timeline.Body>
             <div className="ml-5">
-            <p><span className="font-bold">Description:</span> {group.summary}</p>
-            <p><span className="font-bold">Location:</span> {group.location}</p>
+            <p className="text-gray-700 dark:text-gray-400"><span className="font-bold">Description:</span> {group.summary}</p>
+            <p className="text-gray-700 dark:text-gray-400"><span className="font-bold">Location:</span> {group.location}</p>
             {group.EventItem.length > 0 && (
             <>
             <p><span className="font-bold">Material:</span></p>
