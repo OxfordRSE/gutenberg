@@ -125,7 +125,7 @@ const Layout: React.FC<Props> = ( props ) => {
       </div>
       </nav>
       { props.activeEvent && (
-        <Sidebar material={props.material} events={props.events}  />
+        <Sidebar material={props.material} events={props.events} activeEvent={props.activeEvent}  />
       )}
       {props.children}
     </main>

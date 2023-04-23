@@ -4,6 +4,7 @@
 generator client {
   provider = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-3.0.x"]
+  enums = true
 }
 
 datasource db {
@@ -71,12 +72,19 @@ model Problem {
   @@unique([userEmail, tag])
 }
 
+enum EventStatus {
+  REQUEST
+  STUDENT
+  INSTRUCTOR
+  REJECTED
+}
+
 model UserOnEvent {
   user    User?   @relation(fields: [userEmail], references: [email])
   userEmail String // relation scalar field (used in the `@relation` attribute above)
   event   Event  @relation(fields: [eventId], references: [id])
   eventId Int // relation scalar field (used in the `@relation` attribute above)
-  is_instructor Boolean @default(false)
+  status  EventStatus @default(REQUEST)
 
   @@id([userEmail, eventId])
 }
@@ -85,6 +93,7 @@ model Event {
   id          Int           @id @default(autoincrement())
   name        String
   summary     String
+  enrol       String        @default("")
   start       DateTime
   end         DateTime
   EventGroup  EventGroup[]

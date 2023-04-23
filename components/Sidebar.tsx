@@ -16,21 +16,17 @@ import { HiArrowNarrowLeft } from 'react-icons/hi';
 type SidebarProps = {
   material: Material,
   events: Event[], 
+  activeEvent: EventFull | undefined,
 }
 
 const fetcher: Fetcher<EventFull[], string> = url => fetch(url).then(r => r.json())
 
-const MySidebar: React.FC<SidebarProps> = ({ material, events }) => {
-  const { data: myEvents, error } = useSWR(`${basePath}/api/eventFull`, fetcher)
+const MySidebar: React.FC<SidebarProps> = ({ material, events, activeEvent }) => {
 
-  const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
   const [sidebarOpen, setSidebarOpen] = useSidebarOpen(true)
 
   console.log('sidebar activeEvent: ', activeEvent)
 
-  const handleDeactivate = () => {
-    setActiveEvent(null)
-  }
   const handleClose = () => {
     setSidebarOpen(false)
   }
@@ -38,8 +34,6 @@ const MySidebar: React.FC<SidebarProps> = ({ material, events }) => {
   const handleOpen = () => {
     setSidebarOpen(true)
   }
-
-  const eventsWithMyEvents = events.concat(myEvents ? myEvents : []);
 
   return (
     <>

@@ -8,6 +8,9 @@ import { ListGroup } from 'flowbite-react';
 import { basePath } from 'lib/basePath'
 import { useActiveEvent } from 'lib/hooks';
 import { useSession } from 'next-auth/react';
+import EnrolDialog from 'components/EnrolDialog';
+import useSWR, { Fetcher } from 'swr'
+import { UserOnEvent } from '@prisma/client';
 
 
 type EventsProps = {
@@ -18,7 +21,11 @@ type EventsProps = {
   setActiveEvent: (event: EventFull | Event | null) => void
 }
 
+const userOnEventFetcher: Fetcher<UserOnEvent[], string> = url => fetch(url).then(r => r.json())
+
 const EventsView: React.FC<EventsProps> = ({ material, events, myEvents, activeEvent, setActiveEvent }) => {
+  const [showEvent, setShowEvent] = React.useState<Event | null>(null)
+  const { data: userOnEvents, error, mutate } = useSWR(`${basePath}/api/userOnEvent`, userOnEventFetcher)
 
   const { data: session } = useSession()
 
@@ -33,15 +40,27 @@ const EventsView: React.FC<EventsProps> = ({ material, events, myEvents, activeE
     setActiveEvent(null)
   }
   const handleEnrol = (event: Event) => () => {
-    console.log('enrol')
+    setShowEvent(event)
   }
- 
+  
+  const setShow = (show: boolean) => {
+    setShowEvent(show ? showEvent : null)
+  }
+  
   const myEventIds = myEvents ? myEvents.map((event) => event.id) : []
+  
+  const onEnrol = (userOnEvent: UserOnEvent | null) => {
+    if (userOnEvents && userOnEvent) {
+      mutate([...userOnEvents, userOnEvent])
+    }
+    setShowEvent(null)
+  }
 
   return (
     <Timeline>
       {events.map((event) => {
         const isMyEvent = myEventIds.includes(event.id);
+        const isRequested = userOnEvents ? userOnEvents.some((userOnEvent) => userOnEvent.eventId == event.id && userOnEvent.status == 'REQUEST') : false
         const isActiveEvent = activeEvent ? activeEvent.id == event.id : false
         return (
           <Timeline.Item key={event.id}>
@@ -67,11 +86,18 @@ const EventsView: React.FC<EventsProps> = ({ material, events, myEvents, activeE
                     Select 
                     <HiArrowNarrowRight className="ml-2 h-3 w-3" />
                   </Button>
+              ): isRequested ? (
+                  <Button color="gray" disabled>
+                    Requested
+                  </Button>
               ): session && (
-                <Button color="gray" onClick={handleEnrol(event)}>
-                  Enroll 
-                  <HiArrowNarrowRight className="ml-2 h-3 w-3" />
-                </Button>
+                <>
+                  <Button color="gray" onClick={handleEnrol(event)}>
+                    Enroll 
+                    <HiArrowNarrowRight className="ml-2 h-3 w-3" />
+                  </Button>
+                  <EnrolDialog event={event} show={showEvent == event} onEnrol={onEnrol} />
+                </>
               )}
               </div>
             </Timeline.Content>

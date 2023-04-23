@@ -11,3 +11,6 @@ export type Problem = Prisma.ProblemGetPayload<{
 }>
 
 export type ProblemUpdate = Prisma.ProblemUpdateInput
+
+export type UserOnEvent = Prisma.UserOnEventGetPayload<{
+}>
