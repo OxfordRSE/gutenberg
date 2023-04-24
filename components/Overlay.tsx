@@ -22,10 +22,7 @@ const Overlay: NextPage<Props> = ({material, theme, course, section, activeEvent
   const openAttribution = () => setShowAttribution(true)
   const closeAttribution = () => setShowAttribution(false)
 
-  const sectionOrCourse = section ? section : course
-  if (!sectionOrCourse) {
-    return null
-  }
+  const pageLabel = `${theme?.id}.${course?.id}${section ? `.${section.id}` : ''}`
 
   // check if this section is part of the active event
   let isInEvent = false;
@@ -35,7 +32,7 @@ const Overlay: NextPage<Props> = ({material, theme, course, section, activeEvent
     for (const group of activeEvent.EventGroup) {
       for (let i = 0; i < group.EventItem.length; i++) {
         const item = group.EventItem[i];
-        if (item.section == `${theme.id}.${course.id}.${section.id}`) {
+        if (item.section == pageLabel) {
           isInEvent = true
           if (i > 0) {
             const prevItem = group.EventItem[i - 1];

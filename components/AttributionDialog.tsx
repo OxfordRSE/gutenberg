@@ -25,7 +25,7 @@ const License: React.FC<LicenseProps> = ({ name }) => {
       <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a>
     )
   }  else {
-    return (null)
+    return (<>unknown</>)
   }
 }
 
@@ -37,12 +37,14 @@ interface CitationListProps {
 const CitationList: React.FC<CitationListProps> = ({ citations }) => {
   return (
     <div className="flex flex-col space-y-4">
-      {citations.map((citation) => (
-        <a href={citation.url} key={citation.url} className="flex items-center space-x-4">
-          <img src={citation.image} alt={citation.citation} className="h-20 w-20 object-contain" />
+      {citations.map((citation, i) => (
+        <div key={i} className="flex items-center space-x-4">
+          <a href={citation.url}>
+            <img src={citation.image} alt={citation.citation} className="h-40 w-40" />
+          </a>
           <p className="text-lg font-normal text-gray-700 dark:text-gray-400">{citation.citation}</p>
           <License name={citation.license} />
-        </a>
+        </div>
       ))}
     </div>
   );
@@ -94,14 +96,15 @@ const AttributionDialog: React.FC<CitationDialogProps> = ({ citations, isOpen, o
 
 
 const overallLicense = (citations: Attribution[]) => {
-    return citations.map((citation) => citation.license).reduce((a: string, b: string) => {
-      if (a === b) {
-        return a
-      } 
-      const hasSA = a.includes("SA") || b.includes("SA");
-      const hasNC = a.includes("NC") || b.includes("NC");
-      return `CC-BY${hasNC ? "-NC" : ""}${hasSA ? "-SA" : ""}-4.0`
-    })
+  console.log('overallLicense', citations)
+  return citations.map((citation) => citation.license).reduce((a: string, b: string) => {
+    if (a === b) {
+      return a
+    } 
+    const hasSA = a.includes("SA") || b.includes("SA");
+    const hasNC = a.includes("NC") || b.includes("NC");
+    return `CC-BY${hasNC ? "-NC" : ""}${hasSA ? "-SA" : ""}-4.0`
+  }, "CC-BY-4.0")
 }
 
 export default AttributionDialog;

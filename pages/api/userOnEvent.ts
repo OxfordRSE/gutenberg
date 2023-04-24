@@ -1,13 +1,12 @@
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "./auth/[...nextauth]"
-import { EventFull, UserOnEventPost } from "lib/types"
 import prisma from 'lib/prisma'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { EventStatus, UserOnEvent } from "@prisma/client"
 
 type GetData = UserOnEvent | UserOnEvent[]
-type PostData = UserOnEventPost
+type PostData = UserOnEvent
 
 const UserOnEvent = async (
   req: NextApiRequest,
