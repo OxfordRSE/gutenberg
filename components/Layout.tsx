@@ -15,7 +15,7 @@ import { Avatar } from 'flowbite-react'
 import { basePath } from 'lib/basePath'
 import { Material } from 'lib/material'
 import EventView from './EventView'
-import Sidebar from './Sidebar'
+import Overlay from './Overlay'
 
 type Props = {
   material: Material,
@@ -124,9 +124,7 @@ const Layout: React.FC<Props> = ( props ) => {
         </Dropdown>
       </div>
       </nav>
-      { props.activeEvent && (
-        <Sidebar material={props.material} events={props.events} activeEvent={props.activeEvent}  />
-      )}
+      <Overlay material={props.material} course={props.course} theme={props.theme} activeEvent={props.activeEvent} section={props.section}  />
       {props.children}
     </main>
     <Footer />

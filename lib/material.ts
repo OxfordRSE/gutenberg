@@ -2,6 +2,12 @@ import fs from 'fs'
 import fsPromises from 'fs/promises'
 import fm from 'front-matter'
 
+export type Attribution = {
+  citation: string,
+  url: string,
+  image: string,
+  license: string,
+}
 
 export type Section = {
   id: string,
@@ -14,6 +20,7 @@ export type Section = {
   tags: string[],
   index: number,
   type: string,
+  attribution: Attribution[]
 }
 
 export type Course = {
@@ -24,6 +31,7 @@ export type Course = {
   markdown: string,
   sections: Section[],
   type: string,
+  attribution: Attribution[]
 }
 
 export type Theme = {
@@ -123,11 +131,13 @@ export async function getCourse(theme: string, course: string, no_markdown=false
   const markdown = no_markdown ? '' : courseObject.body as string
   // @ts-expect-error
   const files = courseObject.attributes.files as [string];
+  // @ts-expect-error
+  const attribution = courseObject.attributes.attribution as Attribution[] || [];
   const id = course;
   const sections = await Promise.all(files.map((file, i) => getSection(theme, course, i, file)));
   const type = 'Course';
 
-  return { id, theme, name, sections, dependsOn, markdown, type }
+  return { id, theme, name, sections, dependsOn, markdown, type, attribution }
 }
 
 // https://stackoverflow.com/questions/21792367/replace-underscores-with-spaces-and-capitalize-words
@@ -150,8 +160,10 @@ export async function getSection(theme: string, course: string, index: number, f
   const tags = sectionObject.attributes.tags as string[] || [];
   // @ts-expect-error
   const name = sectionObject.attributes.name as string || humanize(file)
+  // @ts-expect-error
+  const attribution = sectionObject.attributes.attribution as Attribution[] || [];
   const markdown = no_markdown ? '' : sectionObject.body as string
   const type = 'Section';
 
-  return { id, file, theme, course, name, markdown, index, type, tags, dependsOn }
+  return { id, file, theme, course, name, markdown, index, type, tags, dependsOn, attribution }
 }

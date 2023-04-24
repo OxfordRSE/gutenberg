@@ -9,10 +9,12 @@ import { Event, EventFull } from 'lib/types'
 import useSWR, { Fetcher } from 'swr'
 import { basePath } from 'lib/basePath'
 import { useActiveEvent } from 'lib/hooks'
-import { HiArrowCircleRight } from 'react-icons/hi'
+import { HiArrowCircleRight, HiAtSymbol } from 'react-icons/hi'
 import { HiArrowCircleLeft } from 'react-icons/hi'
 import { Tooltip } from 'flowbite-react'
 import Link from 'next/link'
+import AttributionDialog from 'components/AttributionDialog'
+import { useEffect, useState } from 'react'
 
 type SectionComponentProps = {
   theme: Theme, 
@@ -27,6 +29,11 @@ const myEventsFetcher: Fetcher<EventFull[], string> = url => fetch(url).then(r =
 const SectionComponent: NextPage<SectionComponentProps> = ({theme, course, section, events, material}: SectionComponentProps) => {
   const { data: myEvents, error } = useSWR(`${basePath}/api/eventFull`, myEventsFetcher)
   const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
+
+  const [showAttribution, setShowAttribution] = useState(false)
+  const openAttribution = () => setShowAttribution(true)
+  const closeAttribution = () => setShowAttribution(false)
+
 
   // check if this section is part of the active event
   let isInEvent = false;
@@ -50,27 +57,9 @@ const SectionComponent: NextPage<SectionComponentProps> = ({theme, course, secti
       }
     }
   }
-  console.log('isInEvent: ', isInEvent)
-  console.log('prevUrl: ', prevUrl)
-  console.log('nextUrl: ', nextUrl)
-
 
   return (
     <Layout theme={theme} course={course} section={section} events={events} material={material} activeEvent={activeEvent}>
-      {isInEvent && (
-        <div className="fixed bottom-20 left-0 w-full flex justify-between px-4 py-2">
-          {prevUrl && (
-            <a href={`/material/${prevUrl}`} className="text-gray-700 hover:text-gray-600 opacity-50">
-              <HiArrowCircleLeft className="w-14 h-14"/>
-            </a>
-          )}
-          {nextUrl && (
-            <a href={`/material/${nextUrl}`} className={`text-gray-700 hover:text-gray-600 opacity-50 ${prevUrl ? '' : 'absolute right-0 bottom-'}`}>
-              <HiArrowCircleRight className="w-14 h-14"/>
-            </a>
-          )}
-        </div>
-      )}
       <Title text={section.name} />
       <Content markdown={section.markdown} />
     </Layout>

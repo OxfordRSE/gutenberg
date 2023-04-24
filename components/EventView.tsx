@@ -42,7 +42,9 @@ const EventView: React.FC<EventsProps> = ({ material, event }) => {
             {new Date(group.start).toUTCString()}
           </Timeline.Time>
           <Timeline.Title>
+            <p className="font-bold text-gray-800 dark:text-gray-300">
             {group.name}
+            </p>
           </Timeline.Title>
           <Timeline.Body>
             <div className="ml-5">

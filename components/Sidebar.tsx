@@ -15,13 +15,12 @@ import { HiArrowNarrowLeft } from 'react-icons/hi';
 
 type SidebarProps = {
   material: Material,
-  events: Event[], 
   activeEvent: EventFull | undefined,
 }
 
 const fetcher: Fetcher<EventFull[], string> = url => fetch(url).then(r => r.json())
 
-const MySidebar: React.FC<SidebarProps> = ({ material, events, activeEvent }) => {
+const MySidebar: React.FC<SidebarProps> = ({ material, activeEvent }) => {
 
   const [sidebarOpen, setSidebarOpen] = useSidebarOpen(true)
 
@@ -38,16 +37,16 @@ const MySidebar: React.FC<SidebarProps> = ({ material, events, activeEvent }) =>
   return (
     <>
     {sidebarOpen && activeEvent ? (
-      <div className="fixed pl-2 h-full overflow-x-hidden rounded top-0 left-0 z-40 bg-white dark:bg-slate-900 w-96">
-        <HiXCircle className="absolute top-2 right-4 z-50 text-gray-500 hover:text-gray-400 opacity-50 w-10 h-10" onClick={handleClose}/>
+      <div className="fixed pl-2 h-full overflow-x-hidden rounded border top-15 left-0 z-40 text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 w-96">
+        <HiXCircle className="absolute top-1 right-1 z-50 text-gray-500 hover:text-gray-400 opacity-50 w-10 h-10" onClick={handleClose}/>
         <div className="p-1 overflow-y-auto h-full">
-          <p className="w-full text-2xl font-bold" >{activeEvent.name}</p>
+          <p className="w-full text-2xl text-gray-800 dark:text-gray-300 font-bold" >{activeEvent.name}</p>
           <EventView material={material} event={activeEvent}/>
         </div>
       </div>
     ) : activeEvent && (
-      <div className="fixed top-0 left-0 z-40 m-2">
-        <HiCalendar className="opacity-50 text-gray-700 hover:text-gray-600 w-10 h-10" onClick={handleOpen}/>
+      <div className="fixed top-15 left-0 z-40 m-2">
+        <HiCalendar className="opacity-50 text-gray-700 hover:text-gray-600 w-12 h-12" onClick={handleOpen}/>
       </div>
     )}
     </>
