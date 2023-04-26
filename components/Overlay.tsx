@@ -38,18 +38,21 @@ const Overlay: NextPage<Props> = ({material, theme, course, section, activeEvent
   let isInEvent = false;
   let prevUrl = null;
   let nextUrl = null;
+
   if (activeEvent) {
     for (const group of activeEvent.EventGroup) {
+      let orderedEvents = [...group.EventItem];
+      orderedEvents.sort((a, b) => a.order - b.order);
       for (let i = 0; i < group.EventItem.length; i++) {
-        const item = group.EventItem[i];
+        const item = orderedEvents[i];
         if (item.section == pageLabel) {
           isInEvent = true
           if (i > 0) {
-            const prevItem = group.EventItem[i - 1];
+            const prevItem = orderedEvents[i - 1];
             prevUrl = prevItem.section.replaceAll('.', '/')
           }
           if (i < group.EventItem.length - 1) {
-            const nextItem = group.EventItem[i + 1];
+            const nextItem = orderedEvents[i + 1];
             nextUrl = nextItem.section.replaceAll('.', '/')
           }
         }
