@@ -3,9 +3,10 @@ import { Course, Material, Section, Theme } from 'lib/material'
 import { EventFull } from 'lib/types'
 import { NextPage } from 'next'
 import React, { useState } from 'react'
-import { HiAtSymbol, HiArrowCircleLeft, HiArrowCircleRight } from 'react-icons/hi'
+import { HiAtSymbol, HiArrowCircleLeft, HiArrowCircleRight, HiCalendar } from 'react-icons/hi'
 import AttributionDialog from './AttributionDialog'
 import Sidebar from './Sidebar'
+import { useSidebarOpen } from 'lib/hooks'
 
 interface Props {
   material: Material,
@@ -21,6 +22,15 @@ const Overlay: NextPage<Props> = ({material, theme, course, section, activeEvent
   const [showAttribution, setShowAttribution] = useState(false)
   const openAttribution = () => setShowAttribution(true)
   const closeAttribution = () => setShowAttribution(false)
+  const [sidebarOpen, setSidebarOpen] = useSidebarOpen(true)
+
+  const handleClose = () => {
+    setSidebarOpen(false)
+  }
+
+  const handleOpen = () => {
+    setSidebarOpen(true)
+  }
 
   const pageLabel = `${theme?.id}.${course?.id}${section ? `.${section.id}` : ''}`
 
@@ -50,8 +60,15 @@ const Overlay: NextPage<Props> = ({material, theme, course, section, activeEvent
   const attribution = section ? section.attribution : course ? course.attribution : []
 
   return (
-    <>
-      <HiAtSymbol onClick={openAttribution} className="fixed top-15 right-0 w-12 h-12 text-gray-700 hover:text-gray-600 opacity-50"/>
+    <div className="container mx-auto">
+       <div className="fixed w-full left-0 flex justify-between px-4 py-2">
+        {activeEvent ? (
+        <HiCalendar className="opacity-50 text-gray-700 hover:text-gray-600 w-12 h-12" onClick={handleOpen}/>
+          ): (
+        <HiCalendar className="opacity-0 text-gray-700 hover:text-gray-600 w-12 h-12" />
+        )}
+        <HiAtSymbol onClick={openAttribution} className="w-12 h-12 text-gray-700 hover:text-gray-600 opacity-50"/>
+      </div>
       <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />
       {isInEvent && (
         <div className="fixed bottom-20 left-0 w-full flex justify-between px-4 py-2">
@@ -67,8 +84,8 @@ const Overlay: NextPage<Props> = ({material, theme, course, section, activeEvent
           )}
         </div>
       )}
-      <Sidebar material={material} activeEvent={activeEvent}  />
-    </>
+      <Sidebar material={material} activeEvent={activeEvent} sidebarOpen={sidebarOpen} handleClose={handleClose} />
+    </div>
   )
 }
 
