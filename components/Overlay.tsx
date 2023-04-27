@@ -28,8 +28,8 @@ const Overlay: NextPage<Props> = ({material, theme, course, section, activeEvent
     setSidebarOpen(false)
   }
 
-  const handleOpen = () => {
-    setSidebarOpen(true)
+  const handleToggle= () => {
+    setSidebarOpen(!sidebarOpen)
   }
 
   const pageLabel = `${theme?.id}.${course?.id}${section ? `.${section.id}` : ''}`
@@ -63,31 +63,25 @@ const Overlay: NextPage<Props> = ({material, theme, course, section, activeEvent
   const attribution = section ? section.attribution : course ? course.attribution : []
 
   return (
-    <div className="container mx-auto">
-       <div className="fixed w-full left-0 flex justify-between px-4 py-2">
-        {activeEvent ? (
-        <HiCalendar className="opacity-50 text-gray-700 hover:text-gray-600 w-12 h-12" onClick={handleOpen}/>
-          ): (
-        <HiCalendar className="opacity-0 text-gray-700 hover:text-gray-600 w-12 h-12" />
+    <div className="fixed container mx-auto">
+       <div className="relative h-screen w-full flex-col content-between">
+        {activeEvent && (
+        <HiCalendar className="absolute top-0 left-0 cursor-pointer opacity-50 text-gray-700 hover:text-gray-600 w-12 h-12" onClick={handleToggle}/>
         )}
-        <HiAtSymbol onClick={openAttribution} className="w-12 h-12 text-gray-700 hover:text-gray-600 opacity-50"/>
-      </div>
-      <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />
-      {isInEvent && (
-        <div className="fixed bottom-20 left-0 w-full flex justify-between px-4 py-2">
-          {prevUrl && (
-            <a href={`/material/${prevUrl}`} className="text-gray-700 hover:text-gray-600 opacity-50">
-              <HiArrowCircleLeft className="w-14 h-14"/>
-            </a>
-          )}
-          {nextUrl && (
-            <a href={`/material/${nextUrl}`} className={`text-gray-700 hover:text-gray-600 opacity-50 ${prevUrl ? '' : 'absolute right-0 bottom-'}`}>
-              <HiArrowCircleRight className="w-14 h-14"/>
-            </a>
-          )}
-        </div>
+        <HiAtSymbol onClick={openAttribution} className="absolute top-0 right-0 cursor-pointer w-12 h-12 text-gray-700 hover:text-gray-600 opacity-50"/>
+      {prevUrl && (
+        <a href={`/material/${prevUrl}`} className="absolute bottom-40 left-0 text-gray-700 hover:text-gray-600 opacity-50">
+          <HiArrowCircleLeft className="w-14 h-14"/>
+        </a>
       )}
+      {nextUrl && (
+        <a href={`/material/${nextUrl}`} className="absolute bottom-40 right-0 text-gray-700 hover:text-gray-600 opacity-50">
+          <HiArrowCircleRight className="w-14 h-14"/>
+        </a>
+      )}
+      <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />
       <Sidebar material={material} activeEvent={activeEvent} sidebarOpen={sidebarOpen} handleClose={handleClose} />
+      </div>
     </div>
   )
 }

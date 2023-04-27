@@ -32,8 +32,8 @@ const Home: NextPage<HomeProps> = ({ material, events }) => {
   const linkClassName = "text-blue-500 hover:underline"
   return (
     <Layout material={material} events={events} activeEvent={activeEvent}>
-      <div className="grid grid-cols-2 gap-4 items-start">
-      <Card>
+      <div className="pt-14 px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32  grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+      <Card  className='z-10'>
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
           Course Events
         </h5>
@@ -44,7 +44,7 @@ const Home: NextPage<HomeProps> = ({ material, events }) => {
           material={material} events={events} myEvents={myEvents} setActiveEvent={setActiveEvent} activeEvent={activeEvent}
         />
       </Card>
-      <Card>
+      <Card className='z-10'>
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
           Course Material
         </h5>
@@ -69,9 +69,8 @@ const Home: NextPage<HomeProps> = ({ material, events }) => {
 
           <p>To see a graph of all the materials provided here and the dependencies between them, click on the button below</p>
         </div>
-        <Link href="/material">
-        <Button>
-          Go to the material
+        <Button href={`${basePath}/material`}>
+          <p>Go to the material</p>
           <svg
             className="ml-2 -mr-1 h-4 w-4"
             fill="currentColor"
@@ -85,7 +84,6 @@ const Home: NextPage<HomeProps> = ({ material, events }) => {
             />
           </svg>
         </Button>
-        </Link>
       </Card>
       </div>
     </Layout>
