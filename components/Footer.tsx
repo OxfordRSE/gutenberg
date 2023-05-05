@@ -12,7 +12,7 @@ const Footer: React.FC = () => {
         </a>
       </span>
       <p className="flex flex-wrap items-center mt-3 text-sm text-gray-500 dark:text-gray-400 sm:mt-0">
-        For license information click the @ symbol at the top right of your screen
+        For attribution and license information click the @ symbol at the top right of your screen
       </p>
     </footer>
   )

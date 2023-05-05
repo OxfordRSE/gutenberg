@@ -63,19 +63,19 @@ const Overlay: NextPage<Props> = ({material, theme, course, section, activeEvent
   const attribution = section ? section.attribution : course ? course.attribution : []
 
   return (
-    <div className="fixed container mx-auto">
-       <div className="relative h-screen w-full flex-col content-between">
+    <div className="z-40 pointer-events-none fixed container mx-auto">
+      <div className="pointer-events-none relative h-screen w-full flex-col content-between">
         {activeEvent && (
-        <HiCalendar className="absolute top-0 left-0 cursor-pointer opacity-50 text-gray-700 hover:text-gray-600 w-12 h-12" onClick={handleToggle}/>
+        <HiCalendar className="pointer-events-auto absolute top-0 left-0 cursor-pointer opacity-50 text-gray-600 hover:text-gray-500 w-12 h-12" onClick={handleToggle}/>
         )}
-        <HiAtSymbol onClick={openAttribution} className="absolute top-0 right-0 cursor-pointer w-12 h-12 text-gray-700 hover:text-gray-600 opacity-50"/>
+        <HiAtSymbol onClick={openAttribution} className="pointer-events-auto absolute top-0 right-0 cursor-pointer w-12 h-12 text-gray-600 hover:text-gray-500 opacity-50"/>
       {prevUrl && (
-        <a href={`/material/${prevUrl}`} className="absolute bottom-40 left-0 text-gray-700 hover:text-gray-600 opacity-50">
+        <a href={`/material/${prevUrl}`} className="pointer-events-auto absolute bottom-40 left-0 text-gray-600 hover:text-gray-500 opacity-50">
           <HiArrowCircleLeft className="w-14 h-14"/>
         </a>
       )}
       {nextUrl && (
-        <a href={`/material/${nextUrl}`} className="absolute bottom-40 right-0 text-gray-700 hover:text-gray-600 opacity-50">
+        <a href={`/material/${nextUrl}`} className="pointer-events-auto absolute bottom-40 right-0 text-gray-600 hover:text-gray-500 opacity-50">
           <HiArrowCircleRight className="w-14 h-14"/>
         </a>
       )}
