@@ -2,6 +2,10 @@ import React,{ ReactNode } from 'react'
 import ReactDom from 'react-dom'
 import ReactMarkdown, {Components, uriTransformer} from 'react-markdown'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { FaClipboard } from 'react-icons/fa';
+
+
 
 import { lucario as codeStyle } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
@@ -66,22 +70,36 @@ function challenge({node, children, title, id, ...props}: ChallengeProps): JSX.E
 
 function code({node, inline, className, children, ...props}: CodeProps): JSX.Element {
   const match = /language-(\w+)/.exec(className || '')
+  const code = String(children).replace(/\n$/, '')
   if (!inline) {
     if (match) {
       return (
-      <SyntaxHighlighter
-        style={codeStyle}
-        codeTagProps={{className: "text-sm"}}
-        language={match[1]}
-        PreTag="div"
-        {...props}
-      >
-        {String(children).replace(/\n$/, '')}
-      </SyntaxHighlighter>
+        <div className="relative m-0">
+          <CopyToClipboard text={code}>
+            <button className="group absolute top-0 right-0 bg-transparent text-xs text-grey-700 hover:bg-grey-900 px-2 py-1 rounded flex items-center space-x-1">
+              <FaClipboard className='group-hover:text-white' /><span className='group-hover:text-white'>Copy</span>
+            </button>
+          </CopyToClipboard>
+          <SyntaxHighlighter
+            style={codeStyle}
+            codeTagProps={{className: "text-sm"}}
+            language={match[1]}
+            customStyle={{margin: 0}}
+            PreTag="div"
+            {...props}
+          >
+            {code}
+          </SyntaxHighlighter>
+        </div>
       );
     } else {
       return (
-        <div className="p-3">
+        <div className="p-3 relative">
+          <CopyToClipboard text={code}>
+            <button className="group absolute top-0 right-0 bg-transparent text-xs text-grey-700 hover:text-grey-900 px-2 py-1 rounded flex items-center space-x-1">
+              <FaClipboard className='group-hover:text-white' /><span className='group-hover:text-white'>Copy</span>
+            </button>
+          </CopyToClipboard>
           <code className={className} {...props}>
             {children}
           </code>
