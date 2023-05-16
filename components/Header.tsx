@@ -13,9 +13,9 @@ type Props = {
 const Header: React.FC<Props> = ( props ) =>  {
   return (
     <Head>
-      <title>Training Courses</title>
+      <title>OxRSE Training</title>
       <meta name="description" content="Created by OxRSE team" />
-      <link rel="icon" href="/favicon.ico" />
+      <link rel="icon" href="/ox_rse.svg" />
 
       <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.css" rel="stylesheet" />
     </Head>

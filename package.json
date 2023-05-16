@@ -21,6 +21,7 @@
     "@tailwindcss/typography": "^0.5.8",
     "@types/dompurify": "^2.3.4",
     "@types/marked": "^4.0.7",
+    "@types/react-copy-to-clipboard": "^5.0.4",
     "autoprefixer": "^10.4.13",
     "cypress": "^10.9.0",
     "dompurify": "^2.4.0",
