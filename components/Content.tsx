@@ -9,6 +9,7 @@ import directive from "remark-directive";
 import { visit } from "unist-util-visit";
 
 import remarkMath from 'remark-math'
+import remarkGfm from 'remark-gfm'
 import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for you
 
@@ -110,7 +111,7 @@ const Content: React.FC<Props> = ( { markdown }) => {
   return (
     <div className="mx-auto prose prose-base max-w-2xl prose-slate dark:prose-invert prose-pre:bg-[#263E52] prose-pre:p-0">
       <ReactMarkdown 
-        remarkPlugins={[directive, reactMarkdownRemarkDirective, remarkMath]}
+        remarkPlugins={[directive, reactMarkdownRemarkDirective, remarkMath, remarkGfm]}
         rehypePlugins={[rehypeKatex]}
         components={{
           // @ts-expect-error
