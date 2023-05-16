@@ -87,7 +87,9 @@ const AttributionDialog: React.FC<CitationDialogProps> = ({ citations, isOpen, o
       </Modal.Body>
       </Modal>
     ) : (
-      <CitationList citations={citations} />
+      <div style={{ display: "none" }}>
+        <CitationList citations={citations} />
+      </div>
     )}
     </>
   );
