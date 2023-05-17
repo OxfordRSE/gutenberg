@@ -16,6 +16,9 @@ import { basePath } from 'lib/basePath'
 import { Material } from 'lib/material'
 import EventView from './EventView'
 import Overlay from './Overlay'
+import Navbar from './Navbar'
+import { useSidebarOpen } from 'lib/hooks'
+
 
 type Props = {
   material: Material,
@@ -27,105 +30,48 @@ type Props = {
   activeEvent: EventFull | undefined
 }
 
-const Layout: React.FC<Props> = ( props ) => {
+const Layout: React.FC<Props> = ({ material, theme, course, section, children, events, activeEvent }) => {
   const router = useRouter()
   const { data: session } = useSession()
 
+  const [showAttribution, setShowAttribution] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useSidebarOpen(true)
+
+  const pageLabel = `${theme?.id}.${course?.id}${section ? `.${section.id}` : ''}`
+
+  // check if this section is part of the active event
+  let isInEvent = false;
+  let prevUrl = undefined;
+  let nextUrl = undefined;
+
+  if (activeEvent) {
+    for (const group of activeEvent.EventGroup) {
+      let orderedEvents = [...group.EventItem];
+      orderedEvents.sort((a, b) => a.order - b.order);
+      for (let i = 0; i < group.EventItem.length; i++) {
+        const item = orderedEvents[i];
+        if (item.section == pageLabel) {
+          isInEvent = true
+          if (i > 0) {
+            const prevItem = orderedEvents[i - 1];
+            prevUrl = prevItem.section.replaceAll('.', '/')
+          }
+          if (i < group.EventItem.length - 1) {
+            const nextItem = orderedEvents[i + 1];
+            nextUrl = nextItem.section.replaceAll('.', '/')
+          }
+        }
+      }
+    }
+  }
+
   return (
   <div className="container mx-auto">
-    <Header theme={props.theme} course={props.course}/>
+    <Header theme={theme} course={course}/>
     <main>
-      <nav className="flex px-5 py-3 mt-1 mb-5 text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
-      <ol className="list-none inline-flex items-center w-full space-x-1 md:space-x-3">
-        <li className="inline-flex items-center">
-          <Link href="/">
-            <a className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
-              <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
-              Home
-            </a>
-          </Link>
-        </li>
-        {props.theme && 
-          <li>
-            <div className="flex items-center">
-              <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-              <Link href={`/material/${props.theme.id}`}>
-                <a className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white">
-                  {props.theme.name}
-                </a>
-              </Link>
-            </div>
-          </li>
-        } {props.course && 
-          <li aria-current="page">
-            <div className="flex items-center">
-              <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-              <Link href={`/material/${props.theme?.id}/${props.course.id}`}>
-                <a className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white">
-                  {props.course.name}
-                </a>
-              </Link>
-            </div>
-          </li>
-        } { props.section && 
-          <li aria-current="page">
-            <div className="flex items-center">
-              <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-              <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">
-                {props.section.name}
-              </span>
-            </div>
-          </li>
-        }
-      </ol>
-      <div className="relative flex items-center">
-        <Dropdown
-          label={
-          <div className="inline-flex items-center text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
-            {session ? (
-              <Avatar
-                  img={session.user?.image ? session.user?.image : undefined}
-                  rounded={true}
-                  size="sm"
-                />
-              
-            ) : (
-              <Avatar
-                  rounded={true}
-                  size="sm"
-                />
-
-            )
-          }
-          </div>
-          }
-          arrowIcon={false}
-          inline={true}
-        >
-          { session && (
-          <Dropdown.Header>
-              <>
-              <span className="block text-sm">
-                {session.user?.name}
-              </span>
-              <span className="block truncate text-sm font-medium">
-                {session.user?.email}
-              </span>
-              </>
-          </Dropdown.Header>
-          )}
-          <Dropdown.Item>
-            { session ? (
-              <button onClick={() => signOut()}>Sign out</button>
-            ) : (
-              <button onClick={() => signIn()}>Sign in</button>
-            )}
-          </Dropdown.Item>
-        </Dropdown>
-      </div>
-      </nav>
-      <Overlay material={props.material} course={props.course} theme={props.theme} activeEvent={props.activeEvent} section={props.section}  />
-      {props.children}
+      <Navbar material={material} theme={theme} course={course} section={section} events={events} activeEvent={activeEvent} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} showAttribution={showAttribution} setShowAttribution={setShowAttribution} />  
+      <Overlay material={material} course={course} theme={theme} activeEvent={activeEvent} section={section} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}  showAttribution={showAttribution} setShowAttribution={setShowAttribution} prevUrl={prevUrl} nextUrl={nextUrl} />
+      {children}
     </main>
     <Footer />
   </div>
