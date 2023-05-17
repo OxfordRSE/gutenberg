@@ -29,11 +29,19 @@ const Navbar: React.FC<Props> = ({ theme, course, section, material, activeEvent
   const handleToggle= () => {
     setSidebarOpen(!sidebarOpen)
   }
-
+  
+  const handleSignout = () => {
+    signOut();
+  }
+  
+  const handleSignin = () => {
+    signIn();
+  }
+  
   return (
     <nav className="z-10 flex px-5 py-3 mt-1 mb-5 text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
       <ol className="z-10 list-none inline-flex items-center w-full space-x-1 md:space-x-3">
-        { session && (
+        { activeEvent && (
           <>
             <HiCalendar className="pointer-events-auto cursor-pointer text-gray-500 hover:text-gray-400 w-10 h-10" onClick={handleToggle} />
             <div className="h-full border-r border-gray-500"></div>
@@ -106,7 +114,7 @@ const Navbar: React.FC<Props> = ({ theme, course, section, material, activeEvent
           arrowIcon={false}
           inline={true}
         >
-          { session && (
+          { session ? (
           <Dropdown.Header>
               <>
               <span className="block text-sm">
@@ -117,14 +125,25 @@ const Navbar: React.FC<Props> = ({ theme, course, section, material, activeEvent
               </span>
               </>
           </Dropdown.Header>
+          ) : (
+          <Dropdown.Header>
+              <>
+              <div className="w-24 text-sm">
+                Not signed in 
+              </div>
+              </>
+          </Dropdown.Header>
           )}
-          <Dropdown.Item>
-            { session ? (
-              <button onClick={() => signOut()}>Sign out</button>
+        
+          { session ? (
+            <Dropdown.Item onClick={handleSignout}>
+              Sign out
+            </Dropdown.Item>
             ) : (
-              <button onClick={() => signIn()}>Sign in</button>
+            <Dropdown.Item onClick={handleSignin}>
+              Sign in 
+            </Dropdown.Item>
             )}
-          </Dropdown.Item>
         </Dropdown>
       </div>
       </nav>
