@@ -55,3 +55,4 @@ export function useSidebarOpen(defaultValue: boolean): [boolean, (value: boolean
 
   return [sidebarOpen, setSidebarOpen];
 }
+
