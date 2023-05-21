@@ -22,7 +22,7 @@ const Solution: React.FC<SolutionProps> = ({ content }) => {
   const title = "Solution"
 
   return (
-    <div className="flex flex-col">
+    <div className="pt-1 flex flex-col">
       <button
         className="rounded bg-slate-200 dark:bg-slate-700 font-bold appearance-none cursor-pointer focus:outline-none flex items-center justify-between"
 
