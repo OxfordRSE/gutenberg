@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  trailingSlash: false,
   webpack: (config) => {
     config.resolve.fallback = { fs: false };
 
