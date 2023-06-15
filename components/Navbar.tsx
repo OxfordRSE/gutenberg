@@ -11,7 +11,6 @@ interface Props {
   theme?: Theme,
   course?: Course,
   section?: Section,
-  events: Event[],
   activeEvent: EventFull | undefined
   setShowAttribution: (show: boolean) => void
   setSidebarOpen: (open: boolean) => void

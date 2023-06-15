@@ -31,7 +31,7 @@ const Home: NextPage<HomeProps> = ({ material, events }) => {
   }
   const linkClassName = "text-blue-500 hover:underline"
   return (
-    <Layout material={material} events={events} activeEvent={activeEvent}>
+    <Layout material={material} activeEvent={activeEvent}>
       <div className="pt-14 px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32  grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
       <Card>
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">

@@ -63,7 +63,6 @@ const MySidebar: React.FC<SidebarProps> = ({ material, activeEvent, sidebarOpen,
       <div className="pointer-events-auto fixed top-0 pl-2 h-screen overflow-x-hidden rounded border top-15 left-0 text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 w-96">
         <HiXCircle className="absolute top-1 right-2 z-50 text-gray-500 hover:text-gray-400 opacity-50 w-10 h-10" onClick={handleClose}/>
         <div id="sidebar" ref={sidebarRef} className="p-1 overflow-y-auto h-full">
-          <p className="w-full text-2xl text-gray-800 dark:text-gray-300 font-bold" >{activeEvent.name}</p>
           <EventView material={material} event={activeEvent}/>
         </div>
       </div>

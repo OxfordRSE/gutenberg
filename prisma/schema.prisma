@@ -94,6 +94,7 @@ model Event {
   name        String
   summary     String
   enrol       String        @default("")
+  content     String        @default("")
   start       DateTime
   end         DateTime
   EventGroup  EventGroup[]
@@ -104,6 +105,7 @@ model EventGroup {
   id        Int         @id @default(autoincrement())
   name      String
   summary   String
+  content   String        @default("")
   start     DateTime
   end       DateTime
   location  String

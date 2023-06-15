@@ -26,11 +26,10 @@ type Props = {
   course?: Course,
   section?: Section,
   children: ReactNode,
-  events: Event[],
   activeEvent: EventFull | undefined
 }
 
-const Layout: React.FC<Props> = ({ material, theme, course, section, children, events, activeEvent }) => {
+const Layout: React.FC<Props> = ({ material, theme, course, section, children, activeEvent }) => {
   const router = useRouter()
   const { data: session } = useSession()
 
@@ -69,7 +68,7 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, e
   <div className="container mx-auto">
     <Header theme={theme} course={course}/>
     <main>
-      <Navbar material={material} theme={theme} course={course} section={section} events={events} activeEvent={activeEvent} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} showAttribution={showAttribution} setShowAttribution={setShowAttribution} />  
+      <Navbar material={material} theme={theme} course={course} section={section} activeEvent={activeEvent} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} showAttribution={showAttribution} setShowAttribution={setShowAttribution} />  
       <Overlay material={material} course={course} theme={theme} activeEvent={activeEvent} section={section} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}  showAttribution={showAttribution} setShowAttribution={setShowAttribution} prevUrl={prevUrl} nextUrl={nextUrl} />
       {children}
     </main>
@@ -78,4 +77,4 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, e
   )
 }
 
-export default Layout
+export default Layout;
