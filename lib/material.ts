@@ -49,23 +49,23 @@ export type Material = {
   type: string,
 }
 
-export function remove_markdown(material: Material, except: Material | Theme | Course | Section) {
-  if (except.type !== 'Material') {
+export function remove_markdown(material: Material, except: Material | Theme | Course | Section | undefined) {
+  if (except === undefined || except.type !== 'Material') {
     material.markdown = ''
   }
   for (let theme of material.themes) {
     // @ts-expect-error
-    if (!(except.type === 'Theme' && except.id == theme.id)) {
+    if (except === undefined || !(except.type === 'Theme' && except.id == theme.id)) {
         theme.markdown = ''
     }
     for (let course of theme.courses) {
       // @ts-expect-error
-      if (!(except.type === 'Course' && except.id == course.id)) {
+      if (except === undefined || !(except.type === 'Course' && except.id == course.id)) {
         course.markdown = ''
       }
       for (let section of course.sections) {
         // @ts-expect-error
-        if (!(except.type === 'Section' && except.id == section.id)) {
+        if (except === undefined || !(except.type === 'Section' && except.id == section.id)) {
           section.markdown = ''
         }
       }
