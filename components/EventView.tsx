@@ -31,7 +31,7 @@ const EventView: React.FC<EventsProps> = ({ material, event }) => {
 
   return (
     <div>
-      <a href={`${basePath}/event/${event.id}`} className="w-full text-2xl text-gray-800 dark:text-gray-300 font-bold" >
+      <a href={`${basePath}/event/${event.id}`} className="w-full text-2xl text-gray-800 dark:text-gray-300 font-bold hover:underline" >
         {event.name}
       </a>
       <p className="mb-3 text-lg font-normal text-gray-700 dark:text-gray-400">
@@ -46,7 +46,7 @@ const EventView: React.FC<EventsProps> = ({ material, event }) => {
             {new Date(group.start).toUTCString()}
           </Timeline.Time>
           <Timeline.Title>
-            <a href={`${basePath}/event/${event.id}/${group.id}`}  className="font-bold text-gray-800 dark:text-gray-300">
+            <a href={`${basePath}/event/${event.id}/${group.id}`}  className="font-bold text-gray-800 dark:text-gray-300 hover:underline">
               {group.name}
             </a>
           </Timeline.Title>
@@ -58,28 +58,43 @@ const EventView: React.FC<EventsProps> = ({ material, event }) => {
             <>
             <p><span className="font-bold">Material:</span></p>
             <div className="flex">
-            <ListGroup className="ml-20">
+            <ul>
             {group.EventItem.map((item) => {
               const split = item.section.split('.')
-              if (split.length !== 3) {
-                return  (
-                  <ListGroup.Item key={item.id} href={item.section}>
-                    Error:{item.section}
-                  </ListGroup.Item>
-                )
+              let url = ''
+              let name = `Error: ${item.section}`
+              let key = item.id
+              let indent = 0
+
+              if (split.length === 3) {
+                const [theme, course, section] = split;
+                const themeData = material.themes.find((t) => t.id === theme)
+                const courseData = themeData?.courses.find((c) => c.id === course)
+                const sectionData = courseData?.sections.find((s) => s.id === section)
+                url = `${basePath}/material/${theme}/${course}/${section}`
+                name = sectionData?.name || `Error: ${item.section}`
+                indent = 6 
+              } else if (split.length === 2) {
+                const [theme, course] = split;
+                const themeData = material.themes.find((t) => t.id === theme)
+                const courseData = themeData?.courses.find((c) => c.id === course)
+                url = `${basePath}/material/${theme}/${course}`
+                name = courseData?.name || `Error: ${item.section}`
+                indent = 4
+              } else if (split.length === 1) {
+                const [theme] = split;
+                const themeData = material.themes.find((t) => t.id === theme)
+                url = `${basePath}/material/${theme}`
+                name = themeData?.name || `Error: ${item.section}`
+                indent = 2
               }
-              const [theme, course, section] = split;
-              const url = `${basePath}/material/${theme}/${course}/${section}`
-              const themeData = material.themes.find((t) => t.id === theme)
-              const courseData = themeData?.courses.find((c) => c.id === course)
-              const sectionData = courseData?.sections.find((s) => s.id === section)
-              return (
-               <ListGroup.Item href={url} key={item.id}>
-                  {sectionData?.name}
-                </ListGroup.Item>
+              return  (
+                <li key={key} className={`ml-${indent}`} >
+                  <a href={url} className="hover:underline">{name}</a>
+                </li>
               )
             })}
-            </ListGroup>
+            </ul>
             </div>
             </>
             )}
