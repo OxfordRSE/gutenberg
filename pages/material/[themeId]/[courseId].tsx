@@ -30,7 +30,7 @@ const CourseComponent: NextPage<CourseComponentProps> = ({theme, course, materia
     <Layout theme={theme} course={course} events={events} material={material} activeEvent={activeEvent}>
       <Title text={course.name} />
       <NavDiagram material={material} theme={theme} course={course} />
-      <Content markdown={course.markdown} />
+      <Content markdown={course.markdown} theme={theme} course={course} />
     </Layout>
   )
 }

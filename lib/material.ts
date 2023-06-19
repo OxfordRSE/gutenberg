@@ -21,6 +21,7 @@ export type Section = {
   index: number,
   type: string,
   attribution: Attribution[]
+  problems: string[],
 }
 
 export type Course = {
@@ -164,6 +165,7 @@ export async function getSection(theme: string, course: string, index: number, f
   const attribution = sectionObject.attributes.attribution as Attribution[] || [];
   const markdown = no_markdown ? '' : sectionObject.body as string
   const type = 'Section';
-
-  return { id, file, theme, course, name, markdown, index, type, tags, dependsOn, attribution }
+  const regex = /:{3,}challenge\s*\{id\s*=\s*"?(.+?)"?\s/g;
+  const problems = Array.from(markdown.matchAll(regex)).map(match => match[1]);
+  return { id, file, theme, course, name, markdown, index, type, tags, dependsOn, attribution, problems }
 }

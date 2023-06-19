@@ -27,6 +27,7 @@ import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
 import { CodeComponent, CodeProps, ReactMarkdownProps } from 'react-markdown/lib/ast-to-react';
 import Callout from './Callout';
+import { Course, Section, Theme } from 'lib/material';
 
 
 function reactMarkdownRemarkDirective() {
@@ -61,10 +62,11 @@ function callout({node, children, ...props}: ReactMarkdownProps) {
 type ChallengeProps = ReactMarkdownProps & {
     title: string,
     id: string,
-  }
-function challenge({node, children, title, id, ...props}: ChallengeProps): JSX.Element {
+}
+
+const challenge = (sectionStr: string) => ({node, children, title, id, ...props}: ChallengeProps): JSX.Element => {
   return (
-    <Challenge content={children} title={title} id={id}/>
+    <Challenge content={children} title={title} id={id} section={sectionStr}/>
   );
 }
 
@@ -123,9 +125,13 @@ function code({node, inline, className, children, ...props}: CodeProps): JSX.Ele
 
 type Props = {
   markdown: string,
+  theme?: Theme,
+  course?: Course,
+  section?: Section,
 }
 
-const Content: React.FC<Props> = ( { markdown }) => {
+const Content: React.FC<Props> = ( { markdown, theme, course, section }) => {
+  const sectionStr = `${theme ? theme.id + "." : ""}${course ? course.id + "." : ""}${section ? section.id : ""}`;
   return (
     <div className="mx-auto prose prose-base max-w-2xl prose-slate dark:prose-invert prose-pre:bg-[#263E52] prose-pre:p-0">
       <ReactMarkdown 
@@ -135,8 +141,8 @@ const Content: React.FC<Props> = ( { markdown }) => {
           // @ts-expect-error
           solution,
           callout,
-          challenge,
-          code
+          challenge: challenge(sectionStr),
+          code,
         }} 
 
       >

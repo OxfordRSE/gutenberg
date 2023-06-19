@@ -28,7 +28,7 @@ const ThemeComponent: NextPage<ThemeComponentProps> = ({ theme, material, events
     <Layout material={material} theme={theme} events={events} activeEvent={activeEvent}>
       <Title text={theme.name} />
       <NavDiagram material={material} theme={theme} />
-      <Content markdown={theme.markdown} />
+      <Content markdown={theme.markdown} theme={theme} />
     </Layout>
   )
 }

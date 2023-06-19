@@ -66,4 +66,4 @@ const UserOnEvent= async (req: NextApiRequest, res: NextApiResponse<ResponseData
     }
 }
 
-export default Problem
+export default UserOnEvent;

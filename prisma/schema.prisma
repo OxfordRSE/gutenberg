@@ -62,6 +62,7 @@ model VerificationToken {
 model Problem {
   id        Int      @id @default(autoincrement())
   tag       String
+  section   String   @default("")
   createdAt DateTime @default(now())
   User      User     @relation(fields: [userEmail], references: [email])
   userEmail String
@@ -69,7 +70,7 @@ model Problem {
   solution  String   @default("")
   difficulty Int     @default(5)
   notes     String   @default("")
-  @@unique([userEmail, tag])
+  @@unique([userEmail, tag, section])
 }
 
 enum EventStatus {
