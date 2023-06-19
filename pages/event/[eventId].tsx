@@ -11,6 +11,11 @@ import useSWR, { Fetcher } from 'swr'
 import { basePath } from 'lib/basePath'
 import { useActiveEvent } from 'lib/hooks'
 import EventActions from 'components/EventActions'
+import { UsersWithUserOnEvents } from 'pages/api/event/[eventId]/users'
+import { Avatar, Button, Card } from 'flowbite-react'
+import EventUsers from 'components/EventUsers'
+import { ResponseData as UserOnEventResponse } from 'pages/api/userOnEvent/[eventId]'
+import EventProblems from 'components/EventProblems'
 
 type EventProps = {
   material: Material,
@@ -19,6 +24,7 @@ type EventProps = {
 
 const myEventsFetcher: Fetcher<EventFull[], string> = url => fetch(url).then(r => r.json())
 const eventsFetcher: Fetcher<Event[], string> = url => fetch(url).then(r => r.json())
+const userOnEventFetcher: Fetcher<UserOnEventResponse, string> = url => fetch(url).then(r => r.json())
 
 const Event: NextPage<EventProps> = ({ material, event }) => {
 
@@ -26,7 +32,9 @@ const Event: NextPage<EventProps> = ({ material, event }) => {
   const { data: events, error: eventsError } = useSWR(`${basePath}/api/event`, eventsFetcher)
   const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
   const thisEvent = events ? events.find((e) => e.id == event.id) : undefined
-
+  const { data: userOnEvent, error: userOnEventError } = useSWR(`${basePath}/api/userOnEvent/${event.id}`, userOnEventFetcher)
+  const isInstructor = userOnEvent && typeof userOnEvent.userOnEvent !== 'string' && userOnEvent.userOnEvent.status === 'INSTRUCTOR';
+  const thisEventFull=  myEvents ? myEvents.find((e) => e.id == event.id) : undefined
   return (
     <Layout material={material} activeEvent={activeEvent}>
       <Title text={event.name} />
@@ -34,6 +42,12 @@ const Event: NextPage<EventProps> = ({ material, event }) => {
       <EventActions activeEvent={activeEvent} setActiveEvent={setActiveEvent} event={event} myEvents={myEvents} material={material} />
       </div>
       <Content markdown={thisEvent ? thisEvent.content : event.content} />
+      { (isInstructor && thisEventFull) && (
+        <div className={"flex-col items-center space-y-4"}>
+          <EventUsers event={event}/> 
+          <EventProblems event={thisEventFull} material={material} /> 
+        </div>
+      )}
     </Layout>
   )
 }
