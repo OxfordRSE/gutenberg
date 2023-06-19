@@ -4,7 +4,7 @@ import { Course, Material, Section, Theme } from 'lib/material'
 import { EventFull, Event, Problem } from 'lib/types'
 import useSWR, { Fetcher } from 'swr'
 import Title from 'components/Title'
-import { Avatar, Button, Card, Table, Timeline } from 'flowbite-react'
+import { Avatar, Button, Card, Table, Timeline, Tooltip } from 'flowbite-react'
 import { ListGroup } from 'flowbite-react';
 import { basePath } from 'lib/basePath'
 import { MdClose } from 'react-icons/md'
@@ -70,15 +70,15 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
             Problem
         </Table.HeadCell>
         { students?.map((user) => (
-          <>
-          <Table.HeadCell>
+          <Table.HeadCell key={user.userEmail} align="center">
+            <Tooltip className={'normal-case'} content={`${user?.user?.name} <${user?.userEmail}>`} placement="top">
             <Avatar
               img={user?.user?.image || undefined}
               rounded={true}
               size="sm"
             />
+            </Tooltip>
           </Table.HeadCell>
-          </>
         ))}
       </Table.Head>
       <Table.Body className="divide-y">
@@ -99,11 +99,19 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
                     <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                         {problem}
                     </Table.Cell>
-                    { students?.map((user, i) => (
-                      <Table.Cell key={`${user.userEmail}${problem}${eventItem.section}`} className="whitespace-nowrap font-medium text-gray-900 dark:text-white text-center">
-                        {haveProblems && problems.problems.find((p: Problem) => p.userEmail === user.userEmail && p.tag === problem && p.complete) ? '✅' : '❌'}
-                      </Table.Cell>
-                    ))}
+                    { students?.map((user, i) => {
+                        const problemStruct = problems.problems.find((p: Problem) => p.userEmail === user.userEmail && p.tag === problem)
+                        const problemStr = `difficulty: ${problemStruct?.difficulty} notes: ${problemStruct?.notes}`
+                        console.log('Problem', problem, user)
+                        return (
+                          <Table.Cell key={`${user.userEmail}${problem}${eventItem.section}`} align='center' className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                            {(haveProblems && problemStruct && problemStruct.complete) ? 
+                              <Tooltip content={problemStr} placement="top">✅</Tooltip> :
+                              '❌'
+                            }
+                          </Table.Cell>
+                        )
+                     })}
                     </Table.Row>
                     </>
                 ))}
