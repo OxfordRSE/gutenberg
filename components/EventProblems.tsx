@@ -50,7 +50,7 @@ const eventItemSplit = (eventItem: EventItem, material: Material): { theme?: The
 
 
 const usersFetcher: Fetcher<{ users: UsersWithUserOnEvents[]}, string> = url => fetch(url).then(r => r.json())
-const problemsFetcher: Fetcher<{ problems: ProblemsResponse}, string> = url => fetch(url).then(r => r.json())
+const problemsFetcher: Fetcher<ProblemsResponse, string> = url => fetch(url).then(r => r.json())
 
 // a table of eventItems vs users showing which users have completed which problems
 const EventProblems: React.FC<Props> = ({ material, event }) => {
@@ -100,7 +100,7 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
                         {problem}
                     </Table.Cell>
                     { students?.map((user, i) => {
-                        const problemStruct = problems.problems.find((p: Problem) => p.userEmail === user.userEmail && p.tag === problem)
+                        const problemStruct = typeof problems.problems !== 'string' ? problems.problems.find((p: Problem) => p.userEmail === user.userEmail && p.tag === problem) : undefined
                         const problemStr = `difficulty: ${problemStruct?.difficulty} notes: ${problemStruct?.notes}`
                         console.log('Problem', problem, user)
                         return (

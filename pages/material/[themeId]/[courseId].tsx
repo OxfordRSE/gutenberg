@@ -27,7 +27,7 @@ const CourseComponent: NextPage<CourseComponentProps> = ({theme, course, materia
   const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
 
   return (
-    <Layout theme={theme} course={course} events={events} material={material} activeEvent={activeEvent}>
+    <Layout theme={theme} course={course} material={material} activeEvent={activeEvent}>
       <Title text={course.name} />
       <NavDiagram material={material} theme={theme} course={course} />
       <Content markdown={course.markdown} theme={theme} course={course} />

@@ -34,7 +34,7 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
     solution: '',
     section,
   };
-  const { control, handleSubmit, reset, setValue } = useForm<ProblemUpdate>({ defaultValues: problem || defaultProblem });
+  const { control, handleSubmit, reset, setValue } = useForm<ProblemUpdate>({ defaultValues: defaultProblem });
   const problemApi = ( problem: ProblemUpdate ) => {
     console.log('problemApi', problem)
     if (typeof problem.difficulty === 'string') {
@@ -65,6 +65,7 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
     } else {
       problemApi({ ...problem, complete: newComplete })
     }
+    //@ts-ignore
     setValue('complete', newComplete)
     setShowModal(newComplete)
   }
@@ -83,7 +84,10 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
   if (problem && typeof problem !== 'string' && problem.complete) {
     headerColor = 'bg-green-600 dark:bg-green-400'
   }
-  const isComplete = problem?.complete || false
+  let isComplete = false;
+  if (problem && typeof problem !== 'string') {
+    isComplete = problem.complete
+  }
 
   return (
     <div className="border border-gray-200 rounded-lg bg-slate-50 dark:bg-slate-800 dark:border-gray-700 mb-4">
@@ -129,7 +133,7 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
                   render={({ field }) => {
                     console.log('field', field)
                     return (
-                    <Checkbox id="complete" {...field} checked={field.value} value={field.value ? 1 : 0} />
+                    <Checkbox id="complete" {...field} checked={Boolean(field.value)} value={field.value ? 1 : 0} />
                     )
                   }
                   }
@@ -153,6 +157,7 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
                       required={false}
                       rows={5}
                       {...field}
+                      value={field.value as string}
                     />
                   }
                 />
@@ -168,7 +173,7 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
                     name="difficulty"
                     control={control}
                     render={({ field }) => 
-                      <input id="difficulty" type="range" min="0" max="10" className="w-full h-2 bg-gray-500 rounded-lg appearance-none cursor-pointer dark:bg-gray-500"  {...field}></input>
+                      <input id="difficulty" type="range" min="0" max="10" className="w-full h-2 bg-gray-500 rounded-lg appearance-none cursor-pointer dark:bg-gray-500"  {...field} value={field.value as number}></input>
                     }
                   />
                 </div>
@@ -189,6 +194,7 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
                       required={false}
                       rows={3}
                       {...field}
+                      value={field.value as string}
                     />
                   }
                 />

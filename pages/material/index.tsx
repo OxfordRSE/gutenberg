@@ -22,7 +22,7 @@ const Home: NextPage<HomeProps> = ({ material, events }) => {
   const { data: myEvents, error } = useSWR(`${basePath}/api/eventFull`, myEventsFetcher)
   const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
   return (
-    <Layout material={material} events={events} activeEvent={activeEvent}>
+    <Layout material={material} activeEvent={activeEvent}>
       <Content markdown={material.markdown} />
       <NavDiagram material={material}/>
     </Layout>

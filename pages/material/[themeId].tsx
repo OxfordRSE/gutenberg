@@ -25,7 +25,7 @@ const ThemeComponent: NextPage<ThemeComponentProps> = ({ theme, material, events
   const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
 
   return (
-    <Layout material={material} theme={theme} events={events} activeEvent={activeEvent}>
+    <Layout material={material} theme={theme} activeEvent={activeEvent}>
       <Title text={theme.name} />
       <NavDiagram material={material} theme={theme} />
       <Content markdown={theme.markdown} theme={theme} />

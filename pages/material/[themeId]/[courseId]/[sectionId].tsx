@@ -59,7 +59,7 @@ const SectionComponent: NextPage<SectionComponentProps> = ({theme, course, secti
   }
 
   return (
-    <Layout theme={theme} course={course} section={section} events={events} material={material} activeEvent={activeEvent}>
+    <Layout theme={theme} course={course} section={section} material={material} activeEvent={activeEvent}>
       <Title text={section.name} />
       <Content markdown={section.markdown} theme={theme} course={course} section={section} />
     </Layout>

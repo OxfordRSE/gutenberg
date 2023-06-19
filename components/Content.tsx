@@ -64,10 +64,13 @@ type ChallengeProps = ReactMarkdownProps & {
     id: string,
 }
 
-const challenge = (sectionStr: string) => ({node, children, title, id, ...props}: ChallengeProps): JSX.Element => {
-  return (
-    <Challenge content={children} title={title} id={id} section={sectionStr}/>
-  );
+const challenge = (sectionStr: string) => {
+  function challenge({node, children, title, id, ...props}: ChallengeProps) {
+    return (
+      <Challenge content={children} title={title} id={id} section={sectionStr}/>
+    );
+  }
+  return challenge; 
 }
 
 function code({node, inline, className, children, ...props}: CodeProps): JSX.Element {
