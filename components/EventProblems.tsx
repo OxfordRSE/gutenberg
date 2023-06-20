@@ -21,28 +21,34 @@ type Props = {
     material: Material,
 }
 
-const eventItemSplit = (eventItem: EventItem, material: Material): { theme?: Theme, course?: Course, section?: Section } => {
+const eventItemSplit = (eventItem: EventItem, material: Material): { theme?: Theme, course?: Course, section?: Section, url?: string } => {
     const split = eventItem.section.split('.')
     if (split.length === 3) {
         const theme = material.themes.find((theme) => theme.id === split[0])
         const course = theme?.courses.find((course) => course.id === split[1])
         const section = course?.sections.find((section) => section.id === split[2])
+        const url = `${basePath}/material/${split[0]}/${split[1]}/${split[2]}`
         return {
             theme,
             course,
             section,
+            url,
         }
     } else if (split.length === 2) {
         const theme = material.themes.find((theme) => theme.id === split[0])
         const course = theme?.courses.find((course) => course.id === split[1])
+        const url = `${basePath}/material/${split[0]}/${split[1]}`
         return {   
             theme,
             course,
+            url,
         }
     } else if (split.length === 1) {
         const theme = material.themes.find((theme) => theme.id === split[0])
+        const url = `${basePath}/material/${split[0]}`
         return {
             theme,
+            url,
         }
     }
     return {}
@@ -90,14 +96,18 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
                 </Table.Cell>
             </Table.Row>
             { eventGroup.EventItem.map((eventItem) => {
-                const { theme, course, section } = eventItemSplit(eventItem, material)
+                const { theme, course, section, url } = eventItemSplit(eventItem, material)
                 return (
                 <>
                 { section && section.problems.map((problem) => (
                     <>
                     <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
                     <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                        {problem}
+                      {url ? (
+                        <a href={`${url}#${problem}`}>{problem}</a>
+                      ) : (
+                        <span>{problem}</span>
+                      )}
                     </Table.Cell>
                     { students?.map((user, i) => {
                         const problemStruct = typeof problems.problems !== 'string' ? problems.problems.find((p: Problem) => p.userEmail === user.userEmail && p.tag === problem) : undefined

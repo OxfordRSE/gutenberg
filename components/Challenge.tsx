@@ -90,7 +90,7 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
   }
 
   return (
-    <div className="border border-gray-200 rounded-lg bg-slate-50 dark:bg-slate-800 dark:border-gray-700 mb-4">
+    <div id={id} className="border border-gray-200 rounded-lg bg-slate-50 dark:bg-slate-800 dark:border-gray-700 mb-4">
       <div className={`flex items-center justify-between rounded-t-lg ${headerColor} pl-1 `}>
 
         
