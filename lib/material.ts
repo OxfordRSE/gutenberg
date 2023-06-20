@@ -165,7 +165,8 @@ export async function getSection(theme: string, course: string, index: number, f
   const attribution = sectionObject.attributes.attribution as Attribution[] || [];
   const markdown = no_markdown ? '' : sectionObject.body as string
   const type = 'Section';
-  const regex = /:{3,}challenge\s*\{id\s*=\s*"?(.+?)"?\s/g;
-  const problems = Array.from(markdown.matchAll(regex)).map(match => match[1]);
+  const regex = /:{3,}challenge\s*{\s*(?:id\s*=\s*"?([^"\s]+)"?\s*title\s*=\s*"[^"]+"|title\s*=\s*"[^"]+"\s*id\s*=\s*"?([^"\s]+)"?)\s*}/g;
+  const problems = Array.from(markdown.matchAll(regex)).map(match => match[1] || match[2]);
+  console.log("problems", dir, file, problems)
   return { id, file, theme, course, name, markdown, index, type, tags, dependsOn, attribution, problems }
 }

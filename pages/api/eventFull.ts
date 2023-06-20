@@ -17,7 +17,8 @@ const EventsFull = async (
     events = await prisma.event.findMany({
       // where user is user and status is not requested\
       where: { UserOnEvent: { some: { user: { is: { name: session?.user?.name } }, status: { in: [ "INSTRUCTOR", "STUDENT"] } } } },
-      include: { EventGroup: { include: { EventItem: true } }},
+      include: { EventGroup: { orderBy: { start: "asc" }, include: { EventItem: { orderBy: { order: "asc" } } } } },
+      orderBy: { start: "asc" } 
     });
   }
   res.status(200).json(events)
