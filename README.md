@@ -14,7 +14,9 @@ You will also need a postgres database that you can use.
 
 ## Getting Started
 
-First copy the `.env` file to `.env.local` and fill in the values. If you don't need to be able to authenticate, you only need to edit the `DATABASE_URL` value to the URL of your database.
+Clone the repository at https://github.com/UNIVERSE-HPC/course-material into the `.material` folder.
+
+Copy the `.env` file to `.env.local` and fill in the values. If you don't need to be able to authenticate, you only need to edit the `DATABASE_URL` value to the URL of your database.
 
 Then run the migrations:
 
