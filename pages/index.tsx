@@ -32,7 +32,7 @@ const Home: NextPage<HomeProps> = ({ material, events }) => {
   const linkClassName = "text-blue-500 hover:underline"
   return (
     <Layout material={material} activeEvent={activeEvent}>
-      <div className="pt-14 px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32  grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+      <div className="px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32  grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
       <Card>
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
           Course Events
@@ -51,26 +51,26 @@ const Home: NextPage<HomeProps> = ({ material, events }) => {
         <div className="font-normal text-gray-700 dark:text-gray-400">
 
           <p className="pb-2">
-          This is the teaching website for the <a href="https://www.rse.ox.ac.uk/" className={linkClassName}> Oxford Research Software
-          Engineering</a> team. Please see our list of past and upcoming courses
-          to the left.</p>
+          This is the teaching website for the <a href="https://www.rse.ox.ac.uk/" className={linkClassName} target="_blank"> Oxford Research Software
+          Engineering Group</a>. Please see our list of past and upcoming courses
+          on the left.</p>
 
           <p className="pb-2">The material for these courses is generated from a 
-          set of <a href="https://github.com/UNIVERSE-HPC/course-material" className={linkClassName}>markdown materials</a> collated by 
-          the <a href="https://universe-hpc.github.io/" className={linkClassName}>UNIVERSE-HPC project</a>,
+          set of <a href="https://github.com/UNIVERSE-HPC/course-material" className={linkClassName} target="_blank">markdown materials</a> collated by 
+          the <a href="https://universe-hpc.github.io/" className={linkClassName} target="_blank">UNIVERSE-HPC project</a>,
           a joint collaboration between RSE teams at Oxford, Southhampton,
           Imperial and Edinburgh, the Software Sustainability Institute and the
           Edinburgh Parallel Computing Centre.</p>
           
           <p className="pb-2">These materials have been
-          collated from a variety of sources published under different <a href="https://creativecommons.org/about/cclicenses/" className={linkClassName}>CC-BY</a> licenses, the
-          attributions for each course and section is given on the relevent
-          pages, along with the exact license of the original work (click the @ symbol at the top right of each page).</p>
+          collated from a variety of sources published under different <a href="https://creativecommons.org/about/cclicenses/" className={linkClassName} target="_blank">CC-BY</a> licenses. The
+          attributions for each course and section are given on the relevant
+          pages, alongside the exact license of the original work.</p>
 
-          <p>To see a graph of all the materials provided here and the dependencies between them, click on the button below</p>
+          {/* <p>To see a graph of all the materials provided here and the dependencies between them, click on the button below</p> */}
         </div>
         <Button href={`${basePath}/material`}>
-          <p>Go to the material</p>
+          <p>View the teaching materials</p>
           <svg
             className="ml-2 -mr-1 h-4 w-4"
             fill="currentColor"
