@@ -12,7 +12,7 @@ import Link from 'next/link';
 import EventItemView from './EventItemView';
 import { UsersWithUserOnEvents } from 'pages/api/event/[eventId]/users';
 import { useFieldArray, useForm } from 'react-hook-form';
-import SelectField from './SelectField';
+import SelectField from './forms/SelectField';
 
 type Props = {
     event: Event,

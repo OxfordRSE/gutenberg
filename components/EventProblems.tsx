@@ -13,7 +13,7 @@ import EventItemView from './EventItemView';
 import { UsersWithUserOnEvents } from 'pages/api/event/[eventId]/users';
 import { Data as ProblemsResponse} from 'pages/api/event/[eventId]/problems';
 import { useFieldArray, useForm } from 'react-hook-form';
-import SelectField from './SelectField';
+import SelectField from './forms/SelectField';
 import { EventItem } from '@prisma/client';
 
 type Props = {
