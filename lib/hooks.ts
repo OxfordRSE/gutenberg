@@ -20,12 +20,10 @@ export function useActiveEvent(events: EventFull[]): [EventFull | undefined, (ev
   }, [activeEventId])
 
   const setActiveEvent = (event: Event | EventFull | null) => {
-    console.log('setActiveEvent', event)
     return event ? setActiveEventId(event.id) : setActiveEventId(null)
   }
 
   const activeEvent = activeEventId ? events.find(event => event.id === activeEventId) : undefined
-  console.log('activeEvent', activeEvent, activeEventId, events)
   
   return [activeEvent, setActiveEvent];
 }

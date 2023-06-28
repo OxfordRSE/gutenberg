@@ -40,7 +40,6 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
   };
   const { control, handleSubmit, reset, setValue } = useForm<ProblemUpdate>({ defaultValues: defaultProblem });
   const problemApi = ( problem: ProblemUpdate ) => {
-    console.log('problemApi', problem)
     if (typeof problem.difficulty === 'string') {
       problem.difficulty = parseInt(problem.difficulty)
     }
@@ -127,13 +126,13 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
           <Modal.Body>
             <div className="space-y-6 px-6 pb-4 sm:pb-6 lg:px-8 xl:pb-8">
             <form onSubmit={handleSubmit(onSubmit)}>
-              <Stack spacing="4">
+              <Stack spacing={4}>
                 <p className="text-sm text-slate-100 dark:text-slate-400">
                   Submitted data is <span className='font-bold'>entirely optional</span> but allows us to improve this course. All data is saved securely, is only available to course instructors, and can be deleted on request.
                 </p>
                 <Checkbox name={'complete'} control={control} label="Mark as complete" />
                 <Textarea name={'solution'} control={control} label="Your solution" />
-                <Slider name={'difficulty'} control={control} label="Difficulty (1-10) compared with surrounding challenges" />
+                <Slider name={'difficulty'} control={control} label="Difficulty (1-10) compared with surrounding challenges" min={0} max={10} />
                 <Textarea name={'notes'} control={control} label="Feedback for course instructors" />
                 <Button type="submit">
                   Save

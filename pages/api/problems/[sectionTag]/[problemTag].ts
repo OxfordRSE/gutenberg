@@ -40,7 +40,6 @@ const Problem = async (req: NextApiRequest, res: NextApiResponse<ResponseData>) 
 
   switch (method) {
     case 'GET':
-      console.log("GET", userEmail, problemTag)
       problem = await prisma.problem.findUnique({
         where: { userEmail_tag_section: { userEmail: userEmail as string, tag: problemTag as string, section: sectionTag as string }},
       });
@@ -51,7 +50,6 @@ const Problem = async (req: NextApiRequest, res: NextApiResponse<ResponseData>) 
       }
       break;
     case 'PUT':
-      console.log("PUT", userEmail, problemTag, req.body)
       if (!("problem" in req.body)) {
         res.status(400).json({ problem: "No problem in body" });
       } 

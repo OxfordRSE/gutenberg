@@ -98,7 +98,6 @@ const AttributionDialog: React.FC<CitationDialogProps> = ({ citations, isOpen, o
 
 
 const overallLicense = (citations: Attribution[]) => {
-  console.log('overallLicense', citations)
   return citations.map((citation) => citation.license).reduce((a: string, b: string) => {
     if (a === b) {
       return a

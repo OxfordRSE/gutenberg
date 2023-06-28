@@ -25,7 +25,6 @@ const problemsFetcher: Fetcher<Data, string> = url => fetch(url).then(r => r.jso
 const EventView: React.FC<EventsProps> = ({ material, event }) => {
 
   const { data, error, mutate } = useSWR(`${basePath}/api/event/${event.id}/problems`, problemsFetcher)
-  console.log('eventveiw problems', data)
   const problems = data?.problems
 
   for (let i = 0; i < event.EventGroup.length; i++) {

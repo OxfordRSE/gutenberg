@@ -81,9 +81,7 @@ export async function getMaterial(no_markdown=false) : Promise<Material> {
   const rel_dir = `../${materialDir}`;
   const public_dir = `public/material`;
   fs.symlink(rel_dir, public_dir, 'dir', (err) => {
-    if (err)
-      console.log(err);
-    else {
+    if (!err) {
       console.log("\nSymlink created\n");
     }
   });
@@ -167,6 +165,5 @@ export async function getSection(theme: string, course: string, index: number, f
   const type = 'Section';
   const regex = /:{3,}challenge\s*{\s*(?:id\s*=\s*"?([^"\s]+)"?\s*title\s*=\s*"[^"]+"|title\s*=\s*"[^"]+"\s*id\s*=\s*"?([^"\s]+)"?)\s*}/g;
   const problems = Array.from(markdown.matchAll(regex)).map(match => match[1] || match[2]);
-  console.log("problems", dir, file, problems)
   return { id, file, theme, course, name, markdown, index, type, tags, dependsOn, attribution, problems }
 }

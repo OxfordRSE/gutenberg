@@ -112,7 +112,6 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
                     { students?.map((user, i) => {
                         const problemStruct = typeof problems.problems !== 'string' ? problems.problems.find((p: Problem) => p.userEmail === user.userEmail && p.tag === problem) : undefined
                         const problemStr = `difficulty: ${problemStruct?.difficulty} notes: ${problemStruct?.notes}`
-                        console.log('Problem', problem, user)
                         return (
                           <Table.Cell key={`${user.userEmail}${problem}${eventItem.section}`} align='center' className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                             {(haveProblems && problemStruct && problemStruct.complete) ? 

@@ -33,7 +33,6 @@ const UserOnEvent= async (req: NextApiRequest, res: NextApiResponse<ResponseData
 
   switch (method) {
     case 'GET':
-      console.log("GET", userEmail, eventId)
       userOnEvent = await prisma.userOnEvent.findUnique({
         where: { userEmail_eventId: { userEmail: userEmail as string, eventId: eventId }},
       });
@@ -44,7 +43,6 @@ const UserOnEvent= async (req: NextApiRequest, res: NextApiResponse<ResponseData
       }
       break;
     case 'PUT':
-      console.log("PUT", userEmail, userOnEvent, req.body)
       if (!("userOnEvent" in req.body)) {
         res.status(400).json({ userOnEvent: "No problem in body" });
       } 

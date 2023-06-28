@@ -12,6 +12,7 @@ import Link from 'next/link'
 import EventsView from 'components/EventsView'
 import useSWR, { Fetcher } from 'swr'
 import { useActiveEvent } from 'lib/hooks'
+import ExternalLink from 'components/ui/ExternalLink'
 
 type HomeProps = {
   material: Material,
@@ -25,7 +26,6 @@ const Home: NextPage<HomeProps> = ({ material, events }) => {
   const { data: myEvents, error } = useSWR(`${basePath}/api/eventFull`, myEventsFetcher)
   const { data: currentEvents , error: currentEventserror } = useSWR(`${basePath}/api/event`, eventsFetcher)
   const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
-  console.log('homepage: activeEvnet', activeEvent, events, currentEvents)
   if (currentEvents) {
     events = currentEvents;
   }
@@ -51,19 +51,19 @@ const Home: NextPage<HomeProps> = ({ material, events }) => {
         <div className="font-normal text-gray-700 dark:text-gray-400">
 
           <p className="pb-2">
-          This is the teaching website for the <a href="https://www.rse.ox.ac.uk/" className={linkClassName} target="_blank"> Oxford Research Software
-          Engineering Group</a>. Please see our list of past and upcoming courses
+          This is the teaching website for the <ExternalLink href="https://www.rse.ox.ac.uk/"> Oxford Research Software
+          Engineering Group</ExternalLink>. Please see our list of past and upcoming courses
           on the left.</p>
 
           <p className="pb-2">The material for these courses is generated from a 
-          set of <a href="https://github.com/UNIVERSE-HPC/course-material" className={linkClassName} target="_blank">markdown materials</a> collated by 
-          the <a href="https://universe-hpc.github.io/" className={linkClassName} target="_blank">UNIVERSE-HPC project</a>,
+          set of <ExternalLink href="https://github.com/UNIVERSE-HPC/course-material">markdown materials</ExternalLink> collated by 
+          the <ExternalLink href="https://universe-hpc.github.io/">UNIVERSE-HPC project</ExternalLink>,
           a joint collaboration between RSE teams at Oxford, Southhampton,
           Imperial and Edinburgh, the Software Sustainability Institute and the
           Edinburgh Parallel Computing Centre.</p>
           
           <p className="pb-2">These materials have been
-          collated from a variety of sources published under different <a href="https://creativecommons.org/about/cclicenses/" className={linkClassName} target="_blank">CC-BY</a> licenses. The
+          collated from a variety of sources published under different <ExternalLink href="https://creativecommons.org/about/cclicenses/">CC-BY</ExternalLink> licenses. The
           attributions for each course and section are given on the relevant
           pages, alongside the exact license of the original work.</p>
 
@@ -95,7 +95,7 @@ const Home: NextPage<HomeProps> = ({ material, events }) => {
 export const getStaticProps: GetStaticProps = async (context) => {
   
   const events = await prisma.event.findMany().catch((e) => {
-    console.log(e);
+    console.log('error', e);
     return [];
   });
   let material = await getMaterial()

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Control, Controller, FieldPath, FieldValues, useFormState } from 'react-hook-form';
-import { useFieldState } from '../app/hooks';
-import { Label, Textarea as FlowbiteTextarea, TextFieldProps } from 'flowbite-react';
+import { Label, Textarea as FlowbiteTextarea } from 'flowbite-react';
 
 type Props<T extends FieldValues> = {
   label?: string;

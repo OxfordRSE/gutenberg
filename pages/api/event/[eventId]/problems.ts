@@ -48,7 +48,6 @@ const Problems = async (
   if (isInstructor) {
     const students = event?.UserOnEvent.filter((userOnEvent) => userOnEvent.status === 'STUDENT').map((userOnEvent) => userOnEvent.user)
     const studentEmails = students.map((student) => student?.email || ""); 
-    console.log('isInstructor', eventItemTags)
     problems = await prisma.problem.findMany({
         where: { section: { in: eventItemTags }, userEmail: { in: studentEmails } },
     });
@@ -56,7 +55,6 @@ const Problems = async (
     problems = await prisma.problem.findMany({
         where: { section: { in: eventItemTags }, userEmail: user?.email as string },
     });
-    console.log('isStudent', eventItemTags, problems, user?.email)
   }
 
   res.status(200).json({ problems: problems })

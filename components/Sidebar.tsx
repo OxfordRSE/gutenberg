@@ -32,13 +32,11 @@ const MySidebar: React.FC<SidebarProps> = ({ material, activeEvent, sidebarOpen,
     const sidebarElement = sidebarRef.current;
 
     const saveScrollPosition = () => {
-      console.log('save', sidebarElement?.scrollTop);
       localStorage.setItem(`scrollPosition_${componentId}`, sidebarElement?.scrollTop.toString() || '0');
     };
 
     const loadScrollPosition = () => {
       const scrollPosition = localStorage.getItem(`scrollPosition_${componentId}`);
-      console.log('loat', sidebarElement, sidebarElement?.scrollTop, scrollPosition);
       if (scrollPosition && sidebarElement) {
         sidebarElement.scrollTo(0, parseInt(scrollPosition));
       }

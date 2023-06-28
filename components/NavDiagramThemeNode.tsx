@@ -10,7 +10,6 @@ type NodeProps = {
 
 
 function NavDiagramThemeNode({ data }: NodeProps) {
-  console.log(data)
   return (
     <div className={`px-4 py-2 h-full w-full border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600`}>
       <a href={`${basePath}/material/${data.theme.id}`}>
