@@ -79,16 +79,9 @@ jobs:
         uses: mxschmitt/action-tmate@v3
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
       - name: Run e2e tests
-        uses: cypress-io/github-action@v5
-        with:
-          # we have already installed all dependencies above
-          install: false
-          start: ${{ env.MANAGER }} start
-          wait-on: 'http://[::1]:3000'
-          wait-on-timeout: 120
-
-      - name: Run e2e tests
         run: ${{ env.MANAGER }} e2e
+      - name: Run component tests
+        run: ${{ env.MANAGER }} component
 
 
   deploy:
