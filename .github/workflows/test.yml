@@ -69,7 +69,7 @@ jobs:
           # we have already installed all dependencies above
           install: false
           start: ${{ env.MANAGER }} start
-          wait-on: 'http://[::1]:3000'
+          wait-on: 'start-server-and-test 0.0.0.0:3000'
 
 
   deploy:
