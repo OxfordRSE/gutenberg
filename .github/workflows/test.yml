@@ -1,0 +1,94 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch: 
+    inputs:
+      debug_enabled:
+          type: boolean
+          description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
+          required: false
+          default: false
+
+env:
+    MATERIAL_REPO: 'UNIVERSE-HPC/course-material'
+    MANAGER: 'yarn'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/gutenberg
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Checkout material repo
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ env.MATERIAL_REPO }}
+          path: .material
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "19"
+          cache: ${{ env.MANAGER }}
+      - name: Restore cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            .next/cache
+          # Generate a new cache whenever packages or source files change.
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          # If source files changed but packages didn't, rebuild from a prior cache.
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
+      - name: Install dependencies
+        run: ${{ env.MANAGER }} install 
+      - name: Migrate database
+        run: ${{ env.MANAGER }} prisma migrate deploy
+      - name: Seed database with test data
+        run: ${{ env.MANAGER }} prisma db seed
+      - name: Build with Next.js
+        run: ${{ env.MANAGER }} build
+      # Enable tmate debugging of manually-triggered workflows if the input option was provided
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+      - name: Run e2e tests
+        uses: cypress-io/github-action@v5
+        with:
+          # we have already installed all dependencies above
+          install: false
+          start: ${{ env.MANAGER }} start
+          wait-on: 'http://[::1]:3000'
+          wait-on-timeout: 120
+
+      - name: Run e2e tests
+        run: ${{ env.MANAGER }} e2e
+
+
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master' # Only deploy master
+    needs: build-and-test
+    steps:
+      - run: echo "Deploying!!"
+
