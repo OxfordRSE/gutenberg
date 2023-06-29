@@ -36,6 +36,12 @@ jobs:
         ports:
           - 5432:5432
     env:
+      MATERIAL_DIR: ".material"
+      NEXT_PUBLIC_BASEPATH: ""
+      NEXTAUTH_URL: http://localhost:3002/gutenberg/api/auth
+      NEXTAUTH_SECRET: "secret here"
+      GITHUB_SECRET: "github_secret"
+      GITHUB_ID: "github_id"
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/gutenberg
     steps:
       - name: Checkout
