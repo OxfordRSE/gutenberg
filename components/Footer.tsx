@@ -1,6 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import { HiArrowCircleLeft, HiArrowCircleRight } from 'react-icons/hi'
+import ExternalLink from './ui/ExternalLink'
 
 interface Props {
   prevUrl?: string,
@@ -17,8 +18,8 @@ const Footer: React.FC<Props> = ({ prevUrl, nextUrl }) => {
       )}
       <span className="flex flex-wrap text-sm text-gray-500 sm:text-center dark:text-gray-400">
         {"© 2023 "}  
-          University of Oxford, <a href="https://www.rse.ox.ac.uk/" target="_blank"> Oxford Research Software
-          Engineering</a>
+          University of Oxford, <ExternalLink href="https://www.rse.ox.ac.uk/"> Oxford Research Software
+          Engineering</ExternalLink>
       </span>
       <p className="flex flex-wrap items-center mt-3 text-sm text-gray-500 dark:text-gray-400 sm:mt-0">
         For attribution and license information click the @ symbol on the top right

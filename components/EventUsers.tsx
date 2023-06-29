@@ -41,7 +41,6 @@ const EventUsers: React.FC<Props> = ({ event }) => {
     const intervalId = setInterval(() => {
       if (isDirty) {
         handleSubmit((data) => {
-            console.log('submit', data)
             const requestOptions = {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
