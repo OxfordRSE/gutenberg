@@ -7,6 +7,13 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch: 
+    inputs:
+      debug_enabled:
+          type: boolean
+          description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
+          required: false
+          default: false
 
 env:
     MATERIAL_REPO: 'UNIVERSE-HPC/course-material'
@@ -61,6 +68,10 @@ jobs:
         run: ${{ env.MANAGER }} prisma db seed
       - name: Build with Next.js
         run: ${{ env.MANAGER }} build
+      # Enable tmate debugging of manually-triggered workflows if the input option was provided
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
       - name: Run e2e tests
         uses: cypress-io/github-action@v5
         with:
