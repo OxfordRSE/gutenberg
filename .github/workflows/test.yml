@@ -66,7 +66,6 @@ jobs:
         with:
           # we have already installed all dependencies above
           install: false
-          build: false
           start: ${{ env.MANAGER }} start
           wait-on: 'http://localhost:3000'
 
