@@ -62,14 +62,14 @@ jobs:
       - name: Build with Next.js
         run: ${{ env.MANAGER }} build
       - name: Run e2e tests
-        run: ${{ env.MANAGER }} e2e
-      - name: Run e2e tests
         uses: cypress-io/github-action@v5
         with:
           # we have already installed all dependencies above
           install: false
           start: ${{ env.MANAGER }} start
           wait-on: 'start-server-and-test 0.0.0.0:3000'
+      - name: Run e2e tests
+        run: ${{ env.MANAGER }} e2e
 
 
   deploy:
