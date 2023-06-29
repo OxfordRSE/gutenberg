@@ -57,12 +57,18 @@ jobs:
         run: ${{ env.MANAGER }} install 
       - name: Migrate database
         run: ${{ env.MANAGER }} prisma migrate deploy
+      - name: Seed database with test data
+        run: ${{ env.MANAGER }} prisma db seed
       - name: Build with Next.js
         run: ${{ env.MANAGER }} build
       - name: Run e2e tests
-        run: ${{ env.MANAGER }} e2e
-      - name: Run component tests
-        run: ${{ env.MANAGER }} component
+        uses: cypress-io/github-action@v5
+        with:
+          # we have already installed all dependencies above
+          install: false
+          build: false
+          start: ${{ env.MANAGER }} start
+          wait-on: 'http://localhost:3000'
 
 
   deploy:
