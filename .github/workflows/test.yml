@@ -36,6 +36,12 @@ jobs:
         ports:
           - 5432:5432
     env:
+      MATERIAL_DIR: ".material"
+      NEXT_PUBLIC_BASEPATH: ""
+      NEXTAUTH_URL: http://localhost:3002/gutenberg/api/auth
+      NEXTAUTH_SECRET: "secret here"
+      GITHUB_SECRET: "github_secret"
+      GITHUB_ID: "github_id"
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/gutenberg
     steps:
       - name: Checkout
@@ -73,16 +79,9 @@ jobs:
         uses: mxschmitt/action-tmate@v3
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
       - name: Run e2e tests
-        uses: cypress-io/github-action@v5
-        with:
-          # we have already installed all dependencies above
-          install: false
-          start: ${{ env.MANAGER }} start
-          wait-on: 'http://[::1]:3000'
-          wait-on-timeout: 120
-
-      - name: Run e2e tests
         run: ${{ env.MANAGER }} e2e
+      - name: Run component tests
+        run: ${{ env.MANAGER }} component
 
 
   deploy:

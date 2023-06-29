@@ -8,8 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "cypress": "cypress open",
-    "e2e": "start-server-and-test 'yarn start' 127.0.0.1:3000 \"cypress run --e2e\"",
-    "component": "start-server-and-test 'yarn start' 127.0.0.1:3000 \"cypress run --component\""
+    "e2e": "start-server-and-test 'yarn start' http://127.0.0.1:3000 \"cypress run --e2e\"",
+    "component": "start-server-and-test 'yarn start' http://127.0.0.1:3000 \"cypress run --component\""
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
