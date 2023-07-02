@@ -4,7 +4,7 @@ import { Material } from 'lib/material'
 import { EventFull, Event } from 'lib/types'
 import Title from 'components/Title'
 import { basePath } from 'lib/basePath'
-import { useActiveEvent } from 'lib/hooks';
+import { useActiveEvent, useProfile } from 'lib/hooks';
 import { useSession } from 'next-auth/react';
 import EnrolDialog from 'components/EnrolDialog';
 import useSWR, { Fetcher } from 'swr'

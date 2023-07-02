@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Event, EventFull } from './types';
+import { GetData as UsersData } from 'pages/api/user'
+import { basePath } from 'lib/basePath'
+import { useSession } from 'next-auth/react';
+import { data } from 'cypress/types/jquery';
+import { User } from '@prisma/client';
 
 
 export function useActiveEvent(events: EventFull[]): [EventFull | undefined, (event: Event | EventFull | null) => void] {
@@ -53,4 +58,6 @@ export function useSidebarOpen(defaultValue: boolean): [boolean, (value: boolean
 
   return [sidebarOpen, setSidebarOpen];
 }
+
+
 

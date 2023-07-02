@@ -19,12 +19,10 @@ interface ChallengeProps {
   section: string,
 }
 
-const fetcher: Fetcher<ApiProblem, string> = url => fetch(url).then(r => r.json())
 
 const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) => {
   const { data: session } = useSession()
-  const apiPath = `${basePath}/api/problems/${section}/${id}`
-  const { data, mutate } = useSWR(apiPath, fetcher)
+  const { data, mutate } = useProblem(section, id)
   const { mutate: mutateGlobal } = useSWRConfig()
 
   const [showModal, setShowModal] = useState(false)
@@ -43,17 +41,11 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
     if (typeof problem.difficulty === 'string') {
       problem.difficulty = parseInt(problem.difficulty)
     }
-    const requestOptions = {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ problem: problem })
-    };
-    fetch(apiPath, requestOptions)
-        .then(response => response.json())
-        .then(data => {
-            mutate(data.problem)
-            mutateGlobal((key: string) => key.startsWith(`${basePath}/api/event/`) && key.endsWith(`/problems`))
-        });
+    putProblem(section, id, problem)
+    .then(data => {
+        mutate(data.problem)
+        mutateGlobal((key: string) => key.startsWith(`${basePath}/api/event/`) && key.endsWith(`/problems`))
+    });
   };
 
   const onSubmit = (problem: ProblemUpdate) => {

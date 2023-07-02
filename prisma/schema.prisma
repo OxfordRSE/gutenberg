@@ -93,12 +93,12 @@ model UserOnEvent {
 
 model Event {
   id          Int           @id @default(autoincrement())
-  name        String
-  summary     String
+  name        String        @default("")
+  summary     String        @default("")
   enrol       String        @default("")
   content     String        @default("")
-  start       DateTime
-  end         DateTime
+  start       DateTime      @default(now())
+  end         DateTime      @default(now())
   EventGroup  EventGroup[]
   UserOnEvent UserOnEvent[]
 }

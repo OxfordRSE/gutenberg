@@ -32,6 +32,7 @@ type Props = {
 const Layout: React.FC<Props> = ({ material, theme, course, section, children, activeEvent }) => {
   const router = useRouter()
   const { data: session } = useSession()
+  
 
   const [showAttribution, setShowAttribution] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useSidebarOpen(true)

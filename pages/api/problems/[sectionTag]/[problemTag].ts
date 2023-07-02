@@ -3,10 +3,37 @@ import { Problem } from "lib/types"
 import prisma from 'lib/prisma'
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "../../auth/[...nextauth]"
+import { basePath } from 'lib/basePath'
+import useSWR, { Fetcher, KeyedMutator, useSWRConfig } from 'swr'
+
+import { Prisma } from "@prisma/client";
 
 export type ResponseData = {
-  problem: Problem | string;
+  problem?: Problem;
+  error?: string;
 }
+
+// hook that gets a problem
+const problemFetcher: Fetcher<ResponseData, string> = url => fetch(url).then(r => r.json())
+export const useProblem = (sectionId: string, problemTag: string): { problem: Problem | undefined, error: string, isLoading: boolean, mutate: KeyedMutator<ResponseData> } => {
+  const { data, isLoading, error, mutate } = useSWR(`${basePath}/api/problems/${sectionId}/${problemTag}`, problemFetcher)
+  const errorString = error ? error : data && 'error' in data ? data.error : undefined;
+  const problem = data && 'problem' in data ? data.problem : undefined;
+  return { problem, error: errorString, isLoading, mutate}
+}
+
+// function that returns a promise that does a PUT request for this endpoint
+export const putProblem = async (sectionId: string, problemTag: string, problem: Prisma.ProblemUpdateInput): Promise<Problem> => {
+  const apiPath = `${basePath}/api/problems/${sectionId}/${problemTag}`
+  const requestOptions = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ problem: problem })
+  };
+  return fetch(apiPath, requestOptions)
+      .then(response => response.json())
+}
+
 
 const Problem = async (req: NextApiRequest, res: NextApiResponse<ResponseData>) => {
   const { method } = req;
@@ -17,23 +44,23 @@ const Problem = async (req: NextApiRequest, res: NextApiResponse<ResponseData>) 
   const userEmail = session?.user?.email
 
   if (!problemTag) {
-    res.status(400).send({ problem: "No problem tag" });
+    res.status(400).send({ error: "No problem tag" });
   }
 
   if (!sectionTag) {
-    res.status(400).send({ problem: "No section tag" });
+    res.status(400).send({ error: "No section tag" });
   }
 
   if (!userEmail || userEmail === undefined) {
-    res.status(401).send({ problem: "Not logged in" });
+    res.status(401).send({ error: "Not logged in" });
   }
 
   if (typeof problemTag !== "string") {
-    res.status(400).send({ problem: "Problem tag is not a string" });
+    res.status(400).send({ error: "Problem tag is not a string" });
   }
 
   if (typeof sectionTag !== "string") {
-    res.status(400).send({ problem: "Section tag is not a string" });
+    res.status(400).send({ error: "Section tag is not a string" });
   }
 
   let problem = null;
@@ -46,12 +73,12 @@ const Problem = async (req: NextApiRequest, res: NextApiResponse<ResponseData>) 
       if (problem) {
         res.status(200).json({ problem: problem })
       } else {
-        res.status(404).json({ problem: "Problem not found for this user" });
+        res.status(404).json({ error: "Problem not found for this user" });
       }
       break;
     case 'PUT':
       if (!("problem" in req.body)) {
-        res.status(400).json({ problem: "No problem in body" });
+        res.status(400).json({ error: "No problem in body" });
       } 
       problem = await prisma.problem.upsert({
         where: {userEmail_tag_section: { userEmail: userEmail as string, tag: problemTag as string, section: sectionTag as string }},
@@ -61,7 +88,7 @@ const Problem = async (req: NextApiRequest, res: NextApiResponse<ResponseData>) 
       if (problem) {
         res.status(200).json({ problem: problem })
       } else {
-        res.status(404).json({ problem: "Problem not found for this user" });
+        res.status(404).json({ error: "Problem not found for this user" });
       }
       break;
     default:

@@ -4,6 +4,8 @@ import { EventFull, Event } from 'lib/types'
 import { Timeline } from 'flowbite-react'
 import EventActions from './EventActions';
 import Link from 'next/link';
+import { useEvents } from 'pages/api/event';
+import { useProfile } from 'pages/api/user';
 
 
 type EventsProps = {
@@ -15,6 +17,11 @@ type EventsProps = {
 }
 
 const EventsView: React.FC<EventsProps> = ({ material, events, myEvents, activeEvent, setActiveEvent }) => {
+  const { events: currentEvents } = useEvents();
+  if (currentEvents) {
+    events = currentEvents;
+  }
+  const userProfile = useProfile();
   for (let i = 0; i < events.length; i++) {
     events[i].start = new Date(events[i].start)
   }
@@ -38,6 +45,16 @@ const EventsView: React.FC<EventsProps> = ({ material, events, myEvents, activeE
             </Timeline.Content>
           </Timeline.Item>
         )}
+      )}
+      {userProfile?.admin && (
+        <Timeline.Item>
+          <Timeline.Point />
+          <Timeline.Content>
+            <Timeline.Title>
+              <Link href={`/event/new`}>Create new event</Link>
+            </Timeline.Title>
+          </Timeline.Content>
+        </Timeline.Item>
       )}
     </Timeline>
   )

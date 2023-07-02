@@ -11,7 +11,7 @@ import { Button, Card } from 'flowbite-react'
 import Link from 'next/link'
 import EventsView from 'components/EventsView'
 import useSWR, { Fetcher } from 'swr'
-import { useActiveEvent } from 'lib/hooks'
+import { useActiveEvent, useProfile } from 'lib/hooks'
 import ExternalLink from 'components/ui/ExternalLink'
 
 type HomeProps = {
@@ -20,15 +20,11 @@ type HomeProps = {
 }
 
 const myEventsFetcher: Fetcher<EventFull[], string> = url => fetch(url).then(r => r.json())
-const eventsFetcher: Fetcher<Event[], string> = url => fetch(url).then(r => r.json())
 
 const Home: NextPage<HomeProps> = ({ material, events }) => {
   const { data: myEvents, error } = useSWR(`${basePath}/api/eventFull`, myEventsFetcher)
-  const { data: currentEvents , error: currentEventserror } = useSWR(`${basePath}/api/event`, eventsFetcher)
   const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
-  if (currentEvents) {
-    events = currentEvents;
-  }
+
   const linkClassName = "text-blue-500 hover:underline"
   return (
     <Layout material={material} activeEvent={activeEvent}>
