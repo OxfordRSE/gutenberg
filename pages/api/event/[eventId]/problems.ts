@@ -4,12 +4,26 @@ import { getServerSession } from "next-auth/next"
 import { authOptions } from "../../auth/[...nextauth]"
 import { EventFull, Problem } from "lib/types"
 import prisma from 'lib/prisma'
+import useSWR, { Fetcher, KeyedMutator, useSWRConfig } from 'swr'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import _ from "cypress/types/lodash"
+import { basePath } from "lib/basePath"
 
-export type Data = { problems: Problem[] | string }
-type EventItemWithProblems = { event: EventFull, problems: Problem[] }
+export type Data = { 
+  problems?: Problem[],
+  error?: string ,
+}
+
+// hook that gets problems for an event
+const problemsFetcher: Fetcher<Data, string> = url => fetch(url).then(r => r.json())
+export const useProblems = (eventId: number): { problems: Problem[] | undefined, error: string, isLoading: boolean, mutate: KeyedMutator<Data> } => {
+  const { data, isLoading, error, mutate } = useSWR(`${basePath}/api/event/${id}/problems`, problemsFetcher)
+  const errorString = error ? error : data && 'error' in data ? data.error : undefined;
+  const problems = data && 'problems' in data ? data.problems: undefined;
+  return { problems, error: errorString, isLoading, mutate}
+}
+
 
 const Problems = async (
     req: NextApiRequest,
@@ -21,11 +35,11 @@ const Problems = async (
   const eventId = parseInt(req.query.eventId as string);
 
   if (!session) {
-    return res.status(401).json({ problems: 'Unauthorized' })
+    return res.status(401).json({ error: 'Unauthorized' })
   }
 
   if (!eventId) {
-    return res.status(400).json({ problems: 'Bad Request' })
+    return res.status(400).json({ error: 'Bad Request' })
   }
 
   const event = await prisma.event.findUnique({
@@ -34,7 +48,7 @@ const Problems = async (
   });
 
   if (!event) {
-    return res.status(404).json({ problems: 'Not Found' })
+    return res.status(404).json({ error: 'Event not Found' })
   }
 
   const eventItemTags = event.EventGroup.reduce((acc: string[], eventGroup) => {

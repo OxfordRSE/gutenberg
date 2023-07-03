@@ -12,42 +12,78 @@ import { basePath } from 'lib/basePath'
 import { useActiveEvent } from 'lib/hooks'
 import EventActions from 'components/EventActions'
 import { UsersWithUserOnEvents } from 'pages/api/event/[eventId]/users'
-import { Avatar, Button, Card } from 'flowbite-react'
+import { Avatar, Button, Card, Tabs } from 'flowbite-react'
 import EventUsers from 'components/EventUsers'
-import { ResponseData as UserOnEventResponse } from 'pages/api/userOnEvent/[eventId]'
+import { Data as UserOnEventResponse } from 'pages/api/userOnEvent/[eventId]'
 import EventProblems from 'components/EventProblems'
+import { useEvent, Event as EventWithUsers } from 'pages/api/event/[eventId]'
+import { useForm, Controller } from "react-hook-form";
+import { useSession } from 'next-auth/react'
+import { useProfile } from 'pages/api/user'
+import { MdEdit, MdPreview } from 'react-icons/md'
+import Textfield from 'components/forms/Textfield'
+import Textarea from 'components/forms/Textarea'
+import DateTimeField from 'components/forms/DateTimeField'
 
 type EventProps = {
   material: Material,
   event: Event,
 }
 
-const myEventsFetcher: Fetcher<EventFull[], string> = url => fetch(url).then(r => r.json())
-const eventsFetcher: Fetcher<Event[], string> = url => fetch(url).then(r => r.json())
-const userOnEventFetcher: Fetcher<UserOnEventResponse, string> = url => fetch(url).then(r => r.json())
-
 const Event: NextPage<EventProps> = ({ material, event }) => {
+  const { event: eventData, error: eventError, isLoading: eventIsLoading, mutate: mutateEvent } = useEvent(event.id)
+  const { data: session } = useSession()
+  const { userProfile, error: profileError, isLoading: profileLoading } = useProfile();
+  const { control, handleSubmit, reset, setValue } = useForm<EventWithUsers>({ defaultValues: eventData });
 
-  const { data: myEvents, error } = useSWR(`${basePath}/api/eventFull`, myEventsFetcher)
-  const { data: events, error: eventsError } = useSWR(`${basePath}/api/event`, eventsFetcher)
-  const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
-  const thisEvent = events ? events.find((e) => e.id == event.id) : undefined
-  const { data: userOnEvent, error: userOnEventError } = useSWR(`${basePath}/api/userOnEvent/${event.id}`, userOnEventFetcher)
-  const isInstructor = userOnEvent && typeof userOnEvent.userOnEvent !== 'string' && userOnEvent.userOnEvent.status === 'INSTRUCTOR';
-  const thisEventFull=  myEvents ? myEvents.find((e) => e.id == event.id) : undefined
-  return (
-    <Layout material={material} activeEvent={activeEvent}>
+  const myUserOnEvent = eventData?.UserOnEvent.find((e) => e.userEmail == session?.user?.email)
+  const [activeEvent , setActiveEvent] = useActiveEvent()
+  const isInstructor = myUserOnEvent?.status === 'INSTRUCTOR' || false;
+  const isAdmin = userProfile?.admin;
+
+  if (eventIsLoading) return <div>loading...</div>
+  if (!eventData) return <div>Error getting event...</div>
+
+  const eventView = (
+    <>
       <Title text={event.name} />
       <div className='flex items-center justify-center'>
-      <EventActions activeEvent={activeEvent} setActiveEvent={setActiveEvent} event={event} myEvents={myEvents} material={material} />
+      <EventActions activeEvent={activeEvent} setActiveEvent={setActiveEvent} event={event} />
       </div>
-      <Content markdown={thisEvent ? thisEvent.content : event.content} />
-      { (isInstructor && thisEventFull) && (
-        <div className={"flex-col items-center space-y-4"}>
+      <Content markdown={eventData ? eventData.content : event.content} />
+      <div className={"flex-col items-center space-y-4"}>
+      { isAdmin && eventData && (
           <EventUsers event={event}/> 
-          <EventProblems event={thisEventFull} material={material} /> 
-        </div>
       )}
+      { ((isInstructor || isAdmin) && eventData ) && (
+          <EventProblems event={eventData} material={material} /> 
+      )}
+      </div>
+    </>
+  )
+  const eventEditView = (
+    <>
+      <Textfield label="Title" name="name" control={control} />
+      <Textarea label="Enrol" name="enrol" control={control} />
+      <Textarea label="Summary" name="summary" control={control} />
+      <Textarea label="Content" name="content" control={control} />
+      <DateTimeField label="Start" name="start" control={control} />
+      <DateTimeField label="End" name="end" control={control} />
+      <EventUsers event={event}/> 
+    </>
+  )
+  return (
+    <Layout material={material} activeEvent={activeEvent}>
+      { isAdmin ? (
+        <Tabs.Group style="underline" >
+        <Tabs.Item active icon={MdPreview} title="Event">
+          {eventView}
+        </Tabs.Item>
+        <Tabs.Item icon={MdEdit} title="Edit">
+          {eventEditView}
+        </Tabs.Item>
+        </Tabs.Group>
+      ) : eventView}
     </Layout>
   )
 }

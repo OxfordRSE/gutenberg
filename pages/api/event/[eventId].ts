@@ -6,6 +6,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import useSWR, { Fetcher, KeyedMutator, useSWRConfig } from 'swr'
 import { basePath } from "lib/basePath"
 import { Prisma } from "@prisma/client"
+import { is } from "cypress/types/bluebird"
 
 export type Event = Prisma.EventGetPayload<{
     include: { EventGroup: { include: { EventItem: true } }, UserOnEvent: { include: { user: true } } },
@@ -70,8 +71,15 @@ const eventHandler = async (
     }
 
     const isInstructor = event?.UserOnEvent?.some((userOnEvent) => userOnEvent?.user?.email === userEmail && userOnEvent?.role === 'INSTRUCTOR');
+    const isStudent = event?.UserOnEvent?.some((userOnEvent) => userOnEvent?.user?.email === userEmail && userOnEvent?.role === 'STUDENT');
 
-    if (!isAdmin && !isInstructor) {
+    if (isStudent) {
+      // remove all userOnEvent that are not the current user
+      const userOnEvent = event.UserOnEvent.filter((userOnEvent) => userOnEvent?.user?.email === userEmail);
+      event.UserOnEvent = userOnEvent;
+    }
+
+    if (!isAdmin && !isInstructor && !isStudent) {
       res.status(401).json({ error: 'Unauthorized' });
       return;
     }

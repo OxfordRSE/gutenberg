@@ -5,9 +5,10 @@ import { basePath } from 'lib/basePath'
 import { useSession } from 'next-auth/react';
 import { data } from 'cypress/types/jquery';
 import { User } from '@prisma/client';
+import { useEvent } from 'pages/api/event/[eventId]';
 
 
-export function useActiveEvent(events: EventFull[]): [EventFull | undefined, (event: Event | EventFull | null) => void] {
+export function useActiveEvent(): [EventFull | undefined, (event: Event | EventFull | null) => void] {
   const [activeEventId, setActiveEventId] = useState<number | null>(null)
 
   useEffect(() => {
@@ -28,7 +29,7 @@ export function useActiveEvent(events: EventFull[]): [EventFull | undefined, (ev
     return event ? setActiveEventId(event.id) : setActiveEventId(null)
   }
 
-  const activeEvent = activeEventId ? events.find(event => event.id === activeEventId) : undefined
+  const { event: activeEvent } = activeEventId ? useEvent(activeEventId) : { event: undefined }
   
   return [activeEvent, setActiveEvent];
 }

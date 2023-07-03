@@ -10,22 +10,21 @@ import EnrolDialog from 'components/EnrolDialog';
 import useSWR, { Fetcher } from 'swr'
 import { UserOnEvent } from '@prisma/client';
 import { Button } from 'flowbite-react';
+import { useUserOnEvent } from 'pages/api/userOnEvent/[eventId]';
 
 
 type EventActionsProps = {
-  material: Material,
   activeEvent: EventFull | undefined,
   event: Event,
   setActiveEvent: (event: EventFull | Event | null) => void,
-  myEvents: EventFull[] | undefined,
 }
 
 const userOnEventFetcher: Fetcher<UserOnEvent, string> = url => fetch(url).then(r => r.json())
 
-const EventActions: React.FC<EventActionsProps> = ({ material, activeEvent, setActiveEvent, event, myEvents }) => {
+const EventActions: React.FC<EventActionsProps> = ({ activeEvent, setActiveEvent, event }) => {
   const { data: session } = useSession()
   const [showEvent, setShowEvent] = React.useState<Event | null>(null)
-  const { data: userOnEvent, error, mutate } = useSWR(`${basePath}/api/userOnEvent/${event.id}`, userOnEventFetcher)
+  const { userOnEvent, error, mutate } = useUserOnEvent(event.id)
 
   const handleActivate = (event: Event) => () => {
     setActiveEvent(event)
@@ -44,13 +43,12 @@ const EventActions: React.FC<EventActionsProps> = ({ material, activeEvent, setA
   
   const onEnrol = (userOnEvent: UserOnEvent | null) => {
     if (userOnEvent) {
-      mutate(userOnEvent)
+      mutate({ userOnEvent })
     }
     setShowEvent(null)
   }
 
-  const myEventIds = myEvents ? myEvents.map((event) => event.id) : []
-  const isMyEvent = myEventIds.includes(event.id);
+  const isMyEvent = !userOnEvent || !(userOnEvent.status == 'REQUEST' || userOnEvent.status == 'REJECTED' );
   const isRequested = userOnEvent ? userOnEvent.eventId == event.id && userOnEvent.status == 'REQUEST' : false
   const isActiveEvent = activeEvent ? activeEvent.id == event.id : false
 

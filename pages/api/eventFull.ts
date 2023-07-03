@@ -4,8 +4,23 @@ import { EventFull } from "lib/types"
 import prisma from 'lib/prisma'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
+import useSWR, { Fetcher, KeyedMutator } from "swr"
+import { basePath } from "lib/basePath"
 
-type Data = EventFull[] 
+type Data = {
+  events?: EventFull[],
+  error?: string,
+}
+
+const myEventsFetcher: Fetcher<Data, string> = url => fetch(url).then(r => r.json())
+
+// hook that gets my events
+export const useMyEvents = (): { events: EventFull[] | undefined, error: string, isLoading: boolean, mutate: KeyedMutator<Data> } => {
+  const { data, error, isLoading, mutate } = useSWR(`${basePath}/api/eventFull`, myEventsFetcher)
+  const errorString = error ? error : data && 'error' in data ? data.error : undefined;
+  const events = data && 'events' in data ? data.events : undefined;
+  return { events, error: errorString, isLoading, mutate}
+}
 
 const EventsFull = async (
   req: NextApiRequest,

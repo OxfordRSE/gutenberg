@@ -13,17 +13,17 @@ import EventsView from 'components/EventsView'
 import useSWR, { Fetcher } from 'swr'
 import { useActiveEvent, useProfile } from 'lib/hooks'
 import ExternalLink from 'components/ui/ExternalLink'
+import { useMyEvents } from './api/eventFull'
 
 type HomeProps = {
   material: Material,
   events: Event[],
 }
 
-const myEventsFetcher: Fetcher<EventFull[], string> = url => fetch(url).then(r => r.json())
 
 const Home: NextPage<HomeProps> = ({ material, events }) => {
-  const { data: myEvents, error } = useSWR(`${basePath}/api/eventFull`, myEventsFetcher)
-  const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
+  const { events: myEvents, error: myEventsError, isLoading: myEventsLoading } = useMyEvents();
+  const [activeEvent , setActiveEvent] = useActiveEvent()
 
   const linkClassName = "text-blue-500 hover:underline"
   return (

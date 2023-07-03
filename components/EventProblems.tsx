@@ -11,10 +11,11 @@ import { MdClose } from 'react-icons/md'
 import Link from 'next/link';
 import EventItemView from './EventItemView';
 import { UsersWithUserOnEvents } from 'pages/api/event/[eventId]/users';
-import { Data as ProblemsResponse} from 'pages/api/event/[eventId]/problems';
+import { Data as ProblemsResponse, useProblems} from 'pages/api/event/[eventId]/problems';
 import { useFieldArray, useForm } from 'react-hook-form';
 import SelectField from './forms/SelectField';
 import { EventItem } from '@prisma/client';
+import { useUsers } from 'pages/api/user';
 
 type Props = {
     event: EventFull,
@@ -60,14 +61,12 @@ const problemsFetcher: Fetcher<ProblemsResponse, string> = url => fetch(url).the
 
 // a table of eventItems vs users showing which users have completed which problems
 const EventProblems: React.FC<Props> = ({ material, event }) => {
-  const apiPath = `${basePath}/api/event/${event.id}/users`
-  const { data: users, error: usersError, mutate } = useSWR(apiPath, usersFetcher);
-  const { data: problems, error: problemsError } = useSWR(`${basePath}/api/event/${event.id}/problems`, problemsFetcher);
+  const { users, error: usersError } = useUsers(event.id);
+  const { problems, error: problemsError } = useProblems(event.id);
 
   if (usersError || problemsError) return <div>failed to load</div> 
   if (!users || !problems) return <div>loading...</div>
-  const haveProblems = typeof problems.problems != 'string';
-  const students = users.users.filter((user) => user.status === 'STUDENT')
+  const students = users.filter((user) => user.status === 'STUDENT')
 
   return (
     <Table className='border dark:border-gray-700'>
@@ -110,11 +109,11 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
                       )}
                     </Table.Cell>
                     { students?.map((user, i) => {
-                        const problemStruct = typeof problems.problems !== 'string' ? problems.problems.find((p: Problem) => p.userEmail === user.userEmail && p.tag === problem) : undefined
+                        const problemStruct = problems.find((p: Problem) => p.userEmail === user.userEmail && p.tag === problem)
                         const problemStr = `difficulty: ${problemStruct?.difficulty} notes: ${problemStruct?.notes}`
                         return (
                           <Table.Cell key={`${user.userEmail}${problem}${eventItem.section}`} align='center' className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                            {(haveProblems && problemStruct && problemStruct.complete) ? 
+                            {(!problems && problemStruct && problemStruct.complete) ? 
                               <Tooltip content={problemStr} placement="top">✅</Tooltip> :
                               '❌'
                             }

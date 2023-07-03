@@ -4,27 +4,51 @@ import prisma from 'lib/prisma'
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "../auth/[...nextauth]"
 import { UserOnEvent } from '@prisma/client'
+import useSWR, { Fetcher, KeyedMutator } from 'swr'
+import { basePath } from 'lib/basePath'
 
-export type ResponseData = {
-  userOnEvent: UserOnEvent | string;
+export type Data = {
+  userOnEvent?: UserOnEvent,
+  error?: string,
 }
 
-const UserOnEvent= async (req: NextApiRequest, res: NextApiResponse<ResponseData>) => {
+// hook that gets the userOnEvent for this event
+const eventFetcher: Fetcher<Data, string> = url => fetch(url).then(r => r.json())
+export const useUserOnEvent = (eventId: number): { userOnEvent: UserOnEvent | undefined, error: string, isLoading: boolean, mutate: KeyedMutator<Data> } => {
+  const { data, isLoading, error, mutate } = useSWR(`${basePath}/api/userOnEvent/${eventId}`, eventFetcher)
+  const errorString = error ? error : data && 'error' in data ? data.error : undefined;
+  const userOnEvent = data && 'userOnEvent' in data ? data.userOnEvent : undefined;
+  return { userOnEvent, error: errorString, isLoading, mutate}
+}
+
+// function that returns a promise that does a PUT request for this endpoint
+export const putUserOnEvent = async (eventId: number, userOnEvent: UserOnEvent): Promise<Event> => {
+  const apiPath = `${basePath}/api/userOnEvent/${eventId}`
+  const requestOptions = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userOnEvent })
+  };
+  return fetch(apiPath, requestOptions)
+      .then(response => response.json())
+}
+
+const UserOnEvent= async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   const { method } = req;
   const eventIdStr = req.query.eventId;
   const session = await getServerSession(req, res, authOptions)
   const userEmail = session?.user?.email
 
   if (!eventIdStr) {
-    res.status(400).send({ userOnEvent: "No event id" });
+    res.status(400).send({ error: "No event id" });
   }
 
   if (typeof eventIdStr !== "string") {
-    res.status(400).send({ userOnEvent: "eventId is not a string" });
+    res.status(400).send({ error: "eventId is not a string" });
   }
 
   if (!userEmail || userEmail === undefined) {
-    res.status(401).send({ userOnEvent: "Not logged in" });
+    res.status(401).send({ error: "Not logged in" });
   }
   
   const eventId = parseInt(eventIdStr as string)
@@ -39,12 +63,12 @@ const UserOnEvent= async (req: NextApiRequest, res: NextApiResponse<ResponseData
       if (userOnEvent) {
         res.status(200).json({ userOnEvent : userOnEvent })
       } else {
-        res.status(404).json({ userOnEvent: "Problem not found for this user" });
+        res.status(404).json({ error: "userOnEvent not found for this user" });
       }
       break;
     case 'PUT':
       if (!("userOnEvent" in req.body)) {
-        res.status(400).json({ userOnEvent: "No problem in body" });
+        res.status(400).json({ error: "No problem in body" });
       } 
       userOnEvent = await prisma.userOnEvent.upsert({
         where: {userEmail_eventId: { userEmail: userEmail as string, eventId: eventId}},
@@ -54,7 +78,7 @@ const UserOnEvent= async (req: NextApiRequest, res: NextApiResponse<ResponseData
       if (userOnEvent) {
         res.status(200).json({ userOnEvent: userOnEvent})
       } else {
-        res.status(404).json({ userOnEvent: "userOnEvent not found for this user" });
+        res.status(404).json({ error: "userOnEvent not found for this user" });
       }
       break;
     default:
