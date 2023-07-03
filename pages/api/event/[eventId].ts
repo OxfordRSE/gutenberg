@@ -3,39 +3,24 @@ import { authOptions } from "../auth/[...nextauth]"
 import prisma from 'lib/prisma'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
-import useSWR, { Fetcher, KeyedMutator, useSWRConfig } from 'swr'
-import { basePath } from "lib/basePath"
 import { Prisma } from "@prisma/client"
-import { is } from "cypress/types/bluebird"
 
 export type Event = Prisma.EventGetPayload<{
     include: { EventGroup: { include: { EventItem: true } }, UserOnEvent: { include: { user: true } } },
 }>
 
+export type UserOnEvent = Prisma.UserOnEventGetPayload<{
+  include: { user: true },
+}>
+
+export type EventGroup = Prisma.EventGroupGetPayload<{
+    include: { EventItem: true },
+}>  
+
+
 export type Data = {
   event?: Event;
   error?: string;
-}
-
-// hook that gets a event 
-const eventFetcher: Fetcher<Data, string> = url => fetch(url).then(r => r.json())
-export const useEvent = (id: number): { event: Event | undefined, error: string, isLoading: boolean, mutate: KeyedMutator<Data> } => {
-  const { data, isLoading, error, mutate } = useSWR(`${basePath}/api/event/${id}`, eventFetcher)
-  const errorString = error ? error : data && 'error' in data ? data.error : undefined;
-  const event = data && 'event' in data ? data.event : undefined;
-  return { event, error: errorString, isLoading, mutate}
-}
-
-// function that returns a promise that does a PUT request for this endpoint
-export const putEvent = async (id: number, event: Event): Promise<Event> => {
-  const apiPath = `${basePath}/api/event/${id}`
-  const requestOptions = {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ event })
-  };
-  return fetch(apiPath, requestOptions)
-      .then(response => response.json())
 }
 
 const eventHandler = async (
@@ -70,8 +55,8 @@ const eventHandler = async (
       return;
     }
 
-    const isInstructor = event?.UserOnEvent?.some((userOnEvent) => userOnEvent?.user?.email === userEmail && userOnEvent?.role === 'INSTRUCTOR');
-    const isStudent = event?.UserOnEvent?.some((userOnEvent) => userOnEvent?.user?.email === userEmail && userOnEvent?.role === 'STUDENT');
+    const isInstructor = event?.UserOnEvent?.some((userOnEvent) => userOnEvent?.user?.email === userEmail && userOnEvent?.status === 'INSTRUCTOR');
+    const isStudent = event?.UserOnEvent?.some((userOnEvent) => userOnEvent?.user?.email === userEmail && userOnEvent?.status === 'STUDENT');
 
     if (isStudent) {
       // remove all userOnEvent that are not the current user
@@ -86,7 +71,13 @@ const eventHandler = async (
 
     res.status(200).json({ event });
   } else if (req.method === 'PUT') {
-    const { name, enrol, content, start, end, summary, EventGroup, UserOnEvent } = req.body;
+    const { name, enrol, content, start, end, summary } = req.body.event;
+    const eventGroupData: EventGroup[] = req.body.event.EventGroup;
+    const userOnEventData: UserOnEvent[] = req.body.event.UserOnEvent;
+
+    console.log('eventGroupData', eventGroupData);
+    console.log('userOnEventData', userOnEventData);
+    console.log('req.body', req.body)
 
     if (!isAdmin) {
         res.status(401).json({ error: 'Unauthorized' });
@@ -105,20 +96,20 @@ const eventHandler = async (
         EventGroup: {
             deleteMany: {},
             createMany: {
-                data: EventGroup,
+                data: eventGroupData.map((group) => ({ ...group, eventId: undefined, id: undefined, EventItem: undefined })),
             }
         },
         UserOnEvent: {
             deleteMany: {},
             createMany: {
-                data: UserOnEvent,
+                data: userOnEventData.map((userOnEvent) => ({ ...userOnEvent, eventId: undefined, id: undefined, user: undefined }))
             }
         },
       },
       include: { EventGroup: { include: { EventItem: true } }, UserOnEvent: { include: { user: true } } },
     });
-    for (let i = 0; i < EventGroup.length; i++) {
-        const group = EventGroup[i];
+    for (let i = 0; i < eventGroupData.length; i++) {
+        const group = eventGroupData[i];
         let newGroup = updatedEvent.EventGroup[i];
         if (group.EventItem.length > 0) {
             const createdItems = await prisma.eventItem.createMany({
@@ -133,6 +124,7 @@ const eventHandler = async (
       where: { id: updatedEvent.id },
       include: { EventGroup: { include: { EventItem: true } }, UserOnEvent: { include: { user: true } } },
     });
+    console.log('updated event', event);
     if (!event) {
       res.status(404).json({ error: 'Problem updating event, could not get from dbase' });
       return;

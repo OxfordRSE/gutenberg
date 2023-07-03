@@ -4,21 +4,11 @@ import prisma from 'lib/prisma'
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "../auth/[...nextauth]"
 import { UserOnEvent } from '@prisma/client'
-import useSWR, { Fetcher, KeyedMutator } from 'swr'
 import { basePath } from 'lib/basePath'
 
 export type Data = {
   userOnEvent?: UserOnEvent,
   error?: string,
-}
-
-// hook that gets the userOnEvent for this event
-const eventFetcher: Fetcher<Data, string> = url => fetch(url).then(r => r.json())
-export const useUserOnEvent = (eventId: number): { userOnEvent: UserOnEvent | undefined, error: string, isLoading: boolean, mutate: KeyedMutator<Data> } => {
-  const { data, isLoading, error, mutate } = useSWR(`${basePath}/api/userOnEvent/${eventId}`, eventFetcher)
-  const errorString = error ? error : data && 'error' in data ? data.error : undefined;
-  const userOnEvent = data && 'userOnEvent' in data ? data.userOnEvent : undefined;
-  return { userOnEvent, error: errorString, isLoading, mutate}
 }
 
 // function that returns a promise that does a PUT request for this endpoint
@@ -40,15 +30,15 @@ const UserOnEvent= async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   const userEmail = session?.user?.email
 
   if (!eventIdStr) {
-    res.status(400).send({ error: "No event id" });
+    return res.status(400).send({ error: "No event id" });
   }
 
   if (typeof eventIdStr !== "string") {
-    res.status(400).send({ error: "eventId is not a string" });
+    return res.status(400).send({ error: "eventId is not a string" });
   }
 
   if (!userEmail || userEmail === undefined) {
-    res.status(401).send({ error: "Not logged in" });
+    return res.status(401).send({ error: "Not logged in" });
   }
   
   const eventId = parseInt(eventIdStr as string)

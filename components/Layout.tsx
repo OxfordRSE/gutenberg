@@ -17,7 +17,8 @@ import { Material } from 'lib/material'
 import EventView from './EventView'
 import Overlay from './Overlay'
 import Navbar from './Navbar'
-import { useSidebarOpen } from 'lib/hooks'
+import { useSidebarOpen } from 'lib/hooks/useSidebarOpen'
+import useActiveEvent from 'lib/hooks/useActiveEvents'
 
 
 type Props = {
@@ -26,10 +27,10 @@ type Props = {
   course?: Course,
   section?: Section,
   children: ReactNode,
-  activeEvent: EventFull | undefined
 }
 
-const Layout: React.FC<Props> = ({ material, theme, course, section, children, activeEvent }) => {
+const Layout: React.FC<Props> = ({ material, theme, course, section, children }) => {
+  const [ activeEvent, setActiveEvent ] = useActiveEvent();
   const router = useRouter()
   const { data: session } = useSession()
   

@@ -4,35 +4,11 @@ import { Event } from "lib/types"
 import prisma from 'lib/prisma'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Fetcher } from "swr"
-import { basePath } from "lib/basePath"
 
 export type Data = {
   events?: Event[], 
   event?: Event,
   error?: string, 
-}
-
-// GET /api/events
-const eventsFetcher: Fetcher<Event[], string> = url => fetch(url).then(r => r.json())
-export const useEvents = (): { events: Event[] | undefined, error: string, isLoading: boolean } => {
-  const { data, isLoading, error } = useSWR(`${basePath}/api/events`, eventsFetcher)
-  const errorString = error ? error : data && 'error' in data ? data.error : undefined;
-  const events = data && 'events' in data ? data.events : undefined;
-  return { events, error: errorString, isLoading }
-}
-
-// POST /api/events
-export const postEvent = async (): Promise<Event> => {
-  const apiPath = `${basePath}/api/events`
-  const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-  };
-  return fetch(apiPath, requestOptions).then(response => response.json()).then(data => {
-    if ('error' in data) throw data.error
-    if ('event' in data) return data.event
-  })
 }
 
 
@@ -68,7 +44,3 @@ const Events = async (
 }
 
 export default Events
-
-function useSWR(arg0: string, eventsFetcher: (arg: string) => import("swr/_internal").FetcherResponse<import(".prisma/client").Event[]>): { data: any; isLoading: any; error: any } {
-  throw new Error("Function not implemented.")
-}

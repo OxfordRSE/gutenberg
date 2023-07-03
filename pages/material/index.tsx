@@ -8,7 +8,6 @@ import NavDiagram from 'components/NavDiagram'
 import { EventFull as Event, EventFull } from 'lib/types';
 import useSWR, { Fetcher } from 'swr'
 import { basePath } from 'lib/basePath'
-import { useActiveEvent } from 'lib/hooks'
 
 type HomeProps = {
   material: Material,

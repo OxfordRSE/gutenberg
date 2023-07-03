@@ -1,30 +1,34 @@
 import React from 'react'
 import { Material } from 'lib/material'
 import { EventFull, Event } from 'lib/types'
-import { Timeline } from 'flowbite-react'
+import { Button, Timeline } from 'flowbite-react'
 import EventActions from './EventActions';
 import Link from 'next/link';
-import { useEvents } from 'pages/api/event';
-import { useProfile } from 'pages/api/user';
+import useEvents from 'lib/hooks/useEvents'
+import useProfile from 'lib/hooks/useProfile'
+import useActiveEvent from 'lib/hooks/useActiveEvents';
+import { postEvent } from 'lib/actions/postEvent';
 
 
 type EventsProps = {
   material: Material,
   events: Event[], 
-  myEvents: EventFull[] | undefined, 
-  activeEvent: EventFull | undefined,
-  setActiveEvent: (event: EventFull | Event | null) => void
 }
 
-const EventsView: React.FC<EventsProps> = ({ material, events, myEvents, activeEvent, setActiveEvent }) => {
-  const { events: currentEvents } = useEvents();
+const EventsView: React.FC<EventsProps> = ({ material, events }) => {
+  const { events: currentEvents, mutate } = useEvents();
   if (currentEvents) {
     events = currentEvents;
   }
-  const userProfile = useProfile();
+  const { userProfile } = useProfile();
   for (let i = 0; i < events.length; i++) {
     events[i].start = new Date(events[i].start)
   }
+
+  const handleCreateEvent = () => {
+    postEvent().then((event) => mutate([...(currentEvents || []), event]))
+  }
+
   return (
     <Timeline>
       {events.map((event) => {
@@ -33,15 +37,15 @@ const EventsView: React.FC<EventsProps> = ({ material, events, myEvents, activeE
             <Timeline.Point />
             <Timeline.Content>
               <Timeline.Time>
-                {event.start.toUTCString()}
+                <Link href={`/event/${event.id}`}>{event.start.toUTCString()}</Link>
               </Timeline.Time>
               <Timeline.Title>
                 <Link href={`/event/${event.id}`}>{event.name}</Link>
               </Timeline.Title>
               <Timeline.Body>
-                {event.summary}
+                <Link href={`/event/${event.id}`}>{event.summary}</Link>
               </Timeline.Body>
-              <EventActions activeEvent={activeEvent} setActiveEvent={setActiveEvent} event={event} myEvents={myEvents} material={material} />
+              <EventActions event={event} />
             </Timeline.Content>
           </Timeline.Item>
         )}
@@ -51,7 +55,9 @@ const EventsView: React.FC<EventsProps> = ({ material, events, myEvents, activeE
           <Timeline.Point />
           <Timeline.Content>
             <Timeline.Title>
-              <Link href={`/event/new`}>Create new event</Link>
+              <Button size="sm" onClick={handleCreateEvent}>
+                Create new Event
+              </Button>
             </Timeline.Title>
           </Timeline.Content>
         </Timeline.Item>

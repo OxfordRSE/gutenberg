@@ -10,12 +10,12 @@ import { basePath } from 'lib/basePath'
 import { MdClose } from 'react-icons/md'
 import Link from 'next/link';
 import EventItemView from './EventItemView';
-import { UsersWithUserOnEvents } from 'pages/api/event/[eventId]/users';
-import { Data as ProblemsResponse, useProblems} from 'pages/api/event/[eventId]/problems';
 import { useFieldArray, useForm } from 'react-hook-form';
 import SelectField from './forms/SelectField';
 import { EventItem } from '@prisma/client';
-import { useUsers } from 'pages/api/user';
+import useUsers from 'lib/hooks/useUsers';
+import { useProblems } from 'lib/hooks/useProblems';
+import useUsersOnEvent from 'lib/hooks/useUsersOnEvent';
 
 type Props = {
     event: EventFull,
@@ -56,12 +56,9 @@ const eventItemSplit = (eventItem: EventItem, material: Material): { theme?: The
 }
 
 
-const usersFetcher: Fetcher<{ users: UsersWithUserOnEvents[]}, string> = url => fetch(url).then(r => r.json())
-const problemsFetcher: Fetcher<ProblemsResponse, string> = url => fetch(url).then(r => r.json())
-
 // a table of eventItems vs users showing which users have completed which problems
 const EventProblems: React.FC<Props> = ({ material, event }) => {
-  const { users, error: usersError } = useUsers(event.id);
+  const { users, error: usersError } = useUsersOnEvent(event.id);
   const { problems, error: problemsError } = useProblems(event.id);
 
   if (usersError || problemsError) return <div>failed to load</div> 

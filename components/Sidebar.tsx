@@ -3,7 +3,6 @@ import Image from 'next/image'
 import { Material } from 'lib/material';
 import { Event, EventFull } from 'lib/types';
 import { basePath } from 'lib/basePath'
-import { useActiveEvent, useSidebarOpen } from 'lib/hooks'
 import useSWR, { Fetcher } from 'swr'
 import { Button, Sidebar } from 'flowbite-react';
 import EventView from './EventView';

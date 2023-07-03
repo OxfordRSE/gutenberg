@@ -8,32 +8,6 @@ import { User } from '@prisma/client';
 import { useEvent } from 'pages/api/event/[eventId]';
 
 
-export function useActiveEvent(): [EventFull | undefined, (event: Event | EventFull | null) => void] {
-  const [activeEventId, setActiveEventId] = useState<number | null>(null)
-
-  useEffect(() => {
-    const store = sessionStorage.getItem('activeEvent')
-    if (store) {
-      setActiveEventId(parseInt(store))
-    }
-  }, [])
-
-  useEffect(() => {
-    const store = activeEventId?.toString();
-    if (store) {
-      sessionStorage.setItem('activeEvent', store)
-    }
-  }, [activeEventId])
-
-  const setActiveEvent = (event: Event | EventFull | null) => {
-    return event ? setActiveEventId(event.id) : setActiveEventId(null)
-  }
-
-  const { event: activeEvent } = activeEventId ? useEvent(activeEventId) : { event: undefined }
-  
-  return [activeEvent, setActiveEvent];
-}
-
 export function useSidebarOpen(defaultValue: boolean): [boolean, (value: boolean) => void] {
   const [open, setOpen] = useState<number | null>(null)
 
@@ -59,6 +33,3 @@ export function useSidebarOpen(defaultValue: boolean): [boolean, (value: boolean
 
   return [sidebarOpen, setSidebarOpen];
 }
-
-
-

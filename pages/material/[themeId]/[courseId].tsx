@@ -10,7 +10,6 @@ import Title from 'components/Title'
 import { Event, EventFull } from 'lib/types'
 import useSWR, { Fetcher } from 'swr'
 import { basePath } from 'lib/basePath'
-import { useActiveEvent } from 'lib/hooks'
 
 type CourseComponentProps = {
   theme: Theme, 

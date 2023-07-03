@@ -9,9 +9,9 @@ import Title from 'components/Title'
 import { Event, EventFull } from 'lib/types'
 import useSWR, { Fetcher } from 'swr'
 import { basePath } from 'lib/basePath'
-import { useActiveEvent } from 'lib/hooks'
 import EventActions from 'components/EventActions'
 import Link from 'next/link'
+import { useActiveEvent } from 'lib/hooks/useActiveEvents'
 
 type EventGroupProps = {
   material: Material,
@@ -24,7 +24,7 @@ const myEventsFetcher: Fetcher<EventFull[], string> = url => fetch(url).then(r =
 const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroupId }) => {
 
   const { data: myEvents, error } = useSWR(`${basePath}/api/eventFull`, myEventsFetcher)
-  const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
+  const [activeEvent , setActiveEvent] = useActiveEvent()
   const thisEvent = myEvents ? myEvents.find((e) => e.id == event.id) : undefined
   const eventGroup = thisEvent ? thisEvent.EventGroup.find((e) => e.id == eventGroupId) : undefined 
 

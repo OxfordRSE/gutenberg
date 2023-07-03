@@ -6,7 +6,6 @@ import React, { useEffect, useState } from 'react'
 import { HiAtSymbol, HiArrowCircleLeft, HiArrowCircleRight, HiCalendar } from 'react-icons/hi'
 import AttributionDialog from './AttributionDialog'
 import Sidebar from './Sidebar'
-import { useSidebarOpen } from 'lib/hooks'
 
 interface Props {
   material: Material,

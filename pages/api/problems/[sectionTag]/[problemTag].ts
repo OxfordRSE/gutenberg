@@ -4,7 +4,6 @@ import prisma from 'lib/prisma'
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "../../auth/[...nextauth]"
 import { basePath } from 'lib/basePath'
-import useSWR, { Fetcher, KeyedMutator, useSWRConfig } from 'swr'
 
 import { Prisma } from "@prisma/client";
 
@@ -13,26 +12,8 @@ export type ResponseData = {
   error?: string;
 }
 
-// hook that gets a problem
-const problemFetcher: Fetcher<ResponseData, string> = url => fetch(url).then(r => r.json())
-export const useProblem = (sectionId: string, problemTag: string): { problem: Problem | undefined, error: string, isLoading: boolean, mutate: KeyedMutator<ResponseData> } => {
-  const { data, isLoading, error, mutate } = useSWR(`${basePath}/api/problems/${sectionId}/${problemTag}`, problemFetcher)
-  const errorString = error ? error : data && 'error' in data ? data.error : undefined;
-  const problem = data && 'problem' in data ? data.problem : undefined;
-  return { problem, error: errorString, isLoading, mutate}
-}
 
-// function that returns a promise that does a PUT request for this endpoint
-export const putProblem = async (sectionId: string, problemTag: string, problem: Prisma.ProblemUpdateInput): Promise<Problem> => {
-  const apiPath = `${basePath}/api/problems/${sectionId}/${problemTag}`
-  const requestOptions = {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ problem: problem })
-  };
-  return fetch(apiPath, requestOptions)
-      .then(response => response.json())
-}
+
 
 
 const Problem = async (req: NextApiRequest, res: NextApiResponse<ResponseData>) => {

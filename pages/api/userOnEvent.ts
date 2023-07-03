@@ -5,17 +5,19 @@ import prisma from 'lib/prisma'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { EventStatus, UserOnEvent } from "@prisma/client"
 
-type GetData = UserOnEvent | UserOnEvent[]
+export type Data = {
+  userOnEvent?: UserOnEvent,
+  error?: string
+}
 type PostData = UserOnEvent
 
 const UserOnEvent = async (
   req: NextApiRequest,
-  res: NextApiResponse<GetData>
+  res: NextApiResponse<Data>
 ) => {
   const session = await getServerSession(req, res, authOptions)
-  let userOnEvent: GetData = []
   if (!session) {
-    res.status(401).json(userOnEvent)
+    res.status(401).json({ error: 'Unauthorized' })
     return
   }
   if (req.method === 'POST') {
@@ -30,15 +32,15 @@ const UserOnEvent = async (
     if (!isInstructor) {
       data.status = EventStatus.REQUEST
     }
-    userOnEvent = await prisma.userOnEvent.create({data})
-    res.status(200).json(userOnEvent)
+    const userOnEvent = await prisma.userOnEvent.create({data})
+    res.status(200).json({ userOnEvent })
   } else if (req.method === 'GET') {
-    userOnEvent = await prisma.userOnEvent.findMany({
+    const userOnEvents = await prisma.userOnEvent.findMany({
       where: { user: { is: { name: session.user?.name } } },
     })
-    res.status(200).json(userOnEvent)
+    res.status(200).json({ userOnEvents })
   } else {
-    res.status(405).json(userOnEvent)
+    res.status(405).json({ error: 'Method not allowed' })
   }
 }
 

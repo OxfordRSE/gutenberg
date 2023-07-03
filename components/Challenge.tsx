@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import useSWR, { Fetcher, useSWRConfig } from 'swr'
-import { ResponseData as ApiProblem } from 'pages/api/problems/[sectionTag]/[problemTag]'
 import { useForm, Controller } from "react-hook-form";
 import { useSession, signIn, signOut } from "next-auth/react"
 import { basePath } from 'lib/basePath'
@@ -22,11 +21,10 @@ interface ChallengeProps {
 
 const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) => {
   const { data: session } = useSession()
-  const { data, mutate } = useProblem(section, id)
+  const { pro, mutate } = useProblem(section, id)
   const { mutate: mutateGlobal } = useSWRConfig()
 
   const [showModal, setShowModal] = useState(false)
-  const problem = data?.problem
   const noProblem = !problem || typeof problem === 'string'
   const defaultProblem = {
     tag: id,

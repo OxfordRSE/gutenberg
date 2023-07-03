@@ -3,6 +3,9 @@ import React from 'react';
 import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
 import { Label, Select, SelectProps } from 'flowbite-react';
 import DateTimePicker from 'react-datetime-picker';
+import 'react-datetime-picker/dist/DateTimePicker.css';
+import 'react-calendar/dist/Calendar.css';
+import 'react-clock/dist/Clock.css';
 
 type Props<T extends FieldValues> = {
   label?: string;
@@ -30,6 +33,7 @@ function DateTimeField<T extends FieldValues>({ label, name, control, rules }: P
             <DateTimePicker 
               id={name}
               name={name}
+              className="font-normal  text-gray-700 dark:text-gray-400"
               onChange={onChange} 
               onBlur={onBlur}
               value={value} 

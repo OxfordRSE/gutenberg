@@ -11,9 +11,9 @@ import { Button, Card } from 'flowbite-react'
 import Link from 'next/link'
 import EventsView from 'components/EventsView'
 import useSWR, { Fetcher } from 'swr'
-import { useActiveEvent, useProfile } from 'lib/hooks'
 import ExternalLink from 'components/ui/ExternalLink'
-import { useMyEvents } from './api/eventFull'
+import { useMyEvents } from 'lib/hooks/useEventFull'
+import { useActiveEvent } from 'lib/hooks/useActiveEvents'
 
 type HomeProps = {
   material: Material,
@@ -21,13 +21,13 @@ type HomeProps = {
 }
 
 
+
+
 const Home: NextPage<HomeProps> = ({ material, events }) => {
-  const { events: myEvents, error: myEventsError, isLoading: myEventsLoading } = useMyEvents();
-  const [activeEvent , setActiveEvent] = useActiveEvent()
 
   const linkClassName = "text-blue-500 hover:underline"
   return (
-    <Layout material={material} activeEvent={activeEvent}>
+    <Layout material={material}>
       <div className="px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32  grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
       <Card>
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -36,9 +36,7 @@ const Home: NextPage<HomeProps> = ({ material, events }) => {
         <p className="font-normal text-gray-700 dark:text-gray-400">
           Login to request a place on an upcoming course, or to select an active course.
         </p>
-        <EventsView 
-          material={material} events={events} myEvents={myEvents} setActiveEvent={setActiveEvent} activeEvent={activeEvent}
-        />
+        <EventsView material={material} events={events} />
       </Card>
       <Card className='z-60'>
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">

@@ -4,24 +4,24 @@ import { Material } from 'lib/material'
 import { EventFull, Event } from 'lib/types'
 import Title from 'components/Title'
 import { basePath } from 'lib/basePath'
-import { useActiveEvent, useProfile } from 'lib/hooks';
 import { useSession } from 'next-auth/react';
 import EnrolDialog from 'components/EnrolDialog';
 import useSWR, { Fetcher } from 'swr'
 import { UserOnEvent } from '@prisma/client';
 import { Button } from 'flowbite-react';
-import { useUserOnEvent } from 'pages/api/userOnEvent/[eventId]';
+import { useUserOnEvent } from 'lib/hooks/useUserOnEvent';
+import useActiveEvent from 'lib/hooks/useActiveEvents';
 
 
 type EventActionsProps = {
-  activeEvent: EventFull | undefined,
   event: Event,
-  setActiveEvent: (event: EventFull | Event | null) => void,
 }
 
 const userOnEventFetcher: Fetcher<UserOnEvent, string> = url => fetch(url).then(r => r.json())
 
-const EventActions: React.FC<EventActionsProps> = ({ activeEvent, setActiveEvent, event }) => {
+const EventActions: React.FC<EventActionsProps> = ({ event }) => {
+  const [activeEvent, setActiveEvent] = useActiveEvent();
+
   const { data: session } = useSession()
   const [showEvent, setShowEvent] = React.useState<Event | null>(null)
   const { userOnEvent, error, mutate } = useUserOnEvent(event.id)
@@ -48,7 +48,7 @@ const EventActions: React.FC<EventActionsProps> = ({ activeEvent, setActiveEvent
     setShowEvent(null)
   }
 
-  const isMyEvent = !userOnEvent || !(userOnEvent.status == 'REQUEST' || userOnEvent.status == 'REJECTED' );
+  const isMyEvent = userOnEvent && (userOnEvent.status == 'STUDENT' || userOnEvent.status == 'INSTRUCTOR');
   const isRequested = userOnEvent ? userOnEvent.eventId == event.id && userOnEvent.status == 'REQUEST' : false
   const isActiveEvent = activeEvent ? activeEvent.id == event.id : false
 
