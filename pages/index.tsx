@@ -4,16 +4,10 @@ import Layout from 'components/Layout'
 import { makeSerializable } from 'lib/utils'
 import { Material, getMaterial, remove_markdown } from 'lib/material'
 import { basePath } from 'lib/basePath'
-import Content from 'components/Content'
-import NavDiagram from 'components/NavDiagram'
-import { EventFull, Event } from 'lib/types';
+import { Event } from 'lib/types';
 import { Button, Card } from 'flowbite-react'
-import Link from 'next/link'
 import EventsView from 'components/EventsView'
-import useSWR, { Fetcher } from 'swr'
 import ExternalLink from 'components/ui/ExternalLink'
-import { useMyEvents } from 'lib/hooks/useEventFull'
-import { useActiveEvent } from 'lib/hooks/useActiveEvents'
 
 type HomeProps = {
   material: Material,

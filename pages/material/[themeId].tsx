@@ -6,9 +6,7 @@ import {makeSerializable} from 'lib/utils'
 import Content from 'components/Content'
 import NavDiagram from 'components/NavDiagram'
 import Title from 'components/ui/Title'
-import { Event, EventFull } from 'lib/types'
-import useSWR, { Fetcher } from 'swr'
-import { basePath } from 'lib/basePath'
+import { Event } from 'lib/types'
 
 type ThemeComponentProps = {
   theme: Theme,
@@ -16,15 +14,9 @@ type ThemeComponentProps = {
   events: Event[],
 }
 
-const myEventsFetcher: Fetcher<EventFull[], string> = url => fetch(url).then(r => r.json())
-
 const ThemeComponent: NextPage<ThemeComponentProps> = ({ theme, material, events }) => {
-
-  const { data: myEvents, error } = useSWR(`${basePath}/api/eventFull`, myEventsFetcher)
-  const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
-
   return (
-    <Layout material={material} theme={theme} activeEvent={activeEvent}>
+    <Layout material={material} theme={theme}>
       <Title text={theme.name} />
       <NavDiagram material={material} theme={theme} />
       <Content markdown={theme.markdown} theme={theme} />

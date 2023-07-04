@@ -5,15 +5,7 @@ import Layout from 'components/Layout'
 import { makeSerializable } from 'lib/utils'
 import Content from 'components/Content'
 import Title from 'components/ui/Title'
-import { Event, EventFull } from 'lib/types'
-import useSWR, { Fetcher } from 'swr'
-import { basePath } from 'lib/basePath'
-import { HiArrowCircleRight, HiAtSymbol } from 'react-icons/hi'
-import { HiArrowCircleLeft } from 'react-icons/hi'
-import { Tooltip } from 'flowbite-react'
-import Link from 'next/link'
-import AttributionDialog from 'components/AttributionDialog'
-import { useEffect, useState } from 'react'
+import { Event } from 'lib/types'
 
 type SectionComponentProps = {
   theme: Theme, 
@@ -23,42 +15,9 @@ type SectionComponentProps = {
   events: Event[],
 }
 
-const myEventsFetcher: Fetcher<EventFull[], string> = url => fetch(url).then(r => r.json())
-
 const SectionComponent: NextPage<SectionComponentProps> = ({theme, course, section, events, material}: SectionComponentProps) => {
-  const { data: myEvents, error } = useSWR(`${basePath}/api/eventFull`, myEventsFetcher)
-  const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
-
-  const [showAttribution, setShowAttribution] = useState(false)
-  const openAttribution = () => setShowAttribution(true)
-  const closeAttribution = () => setShowAttribution(false)
-
-
-  // check if this section is part of the active event
-  let isInEvent = false;
-  let prevUrl = null;
-  let nextUrl = null;
-  if (activeEvent) {
-    for (const group of activeEvent.EventGroup) {
-      for (let i = 0; i < group.EventItem.length; i++) {
-        const item = group.EventItem[i];
-        if (item.section == `${theme.id}.${course.id}.${section.id}`) {
-          isInEvent = true
-          if (i > 0) {
-            const prevItem = group.EventItem[i - 1];
-            prevUrl = prevItem.section.replaceAll('.', '/')
-          }
-          if (i < group.EventItem.length - 1) {
-            const nextItem = group.EventItem[i + 1];
-            nextUrl = nextItem.section.replaceAll('.', '/')
-          }
-        }
-      }
-    }
-  }
-
   return (
-    <Layout theme={theme} course={course} section={section} material={material} activeEvent={activeEvent}>
+    <Layout theme={theme} course={course} section={section} material={material}>
       <Title text={section.name} />
       <Content markdown={section.markdown} theme={theme} course={course} section={section} />
     </Layout>

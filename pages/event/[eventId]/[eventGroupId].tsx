@@ -24,7 +24,6 @@ import DateTimeField from 'components/forms/DateTimeField'
 import SelectField from 'components/forms/SelectField'
 import IntegerField from 'components/forms/IntegerField'
 import SubTitle from 'components/ui/SubTitle'
-import EventItemView from 'components/EventItemView'
 
 type EventGroupProps = {
   material: Material,

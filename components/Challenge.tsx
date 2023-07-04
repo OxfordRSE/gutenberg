@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import useSWR, { Fetcher, useSWRConfig } from 'swr'
 import { useForm, Controller } from "react-hook-form";
 import { useSession, signIn, signOut } from "next-auth/react"
 import { basePath } from 'lib/basePath'
@@ -12,6 +11,7 @@ import Slider from 'components/forms/Slider'
 import Stack from 'components/ui/Stack'
 import useProblem from 'lib/hooks/useProblem'
 import putProblem from 'lib/actions/putProblem'
+import { useSWRConfig } from 'swr'
 
 interface ChallengeProps {
   content: React.ReactNode,
@@ -19,7 +19,6 @@ interface ChallengeProps {
   id: string,
   section: string,
 }
-
 
 const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) => {
   const { data: session } = useSession()
@@ -43,8 +42,10 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
     }
     putProblem(section, id, problem)
     .then(data => {
+      if (data.problem) {
         mutate(data.problem)
         mutateGlobal((key: string) => key.startsWith(`${basePath}/api/event/`) && key.endsWith(`/problems`))
+      }
     });
   };
 
