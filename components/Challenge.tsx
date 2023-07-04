@@ -10,6 +10,8 @@ import Checkbox from 'components/forms/Checkbox'
 import Textarea from 'components/forms/Textarea'
 import Slider from 'components/forms/Slider'
 import Stack from 'components/ui/Stack'
+import useProblem from 'lib/hooks/useProblem'
+import putProblem from 'lib/actions/putProblem'
 
 interface ChallengeProps {
   content: React.ReactNode,
@@ -21,7 +23,7 @@ interface ChallengeProps {
 
 const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) => {
   const { data: session } = useSession()
-  const { pro, mutate } = useProblem(section, id)
+  const { problem, mutate } = useProblem(section, id)
   const { mutate: mutateGlobal } = useSWRConfig()
 
   const [showModal, setShowModal] = useState(false)

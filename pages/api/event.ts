@@ -37,9 +37,18 @@ const Events = async (
     }
     const event = await prisma.event.create({data: {}});
     res.status(201).json({ event: event });
+  } else if (req.method === 'GET') {
+    if (isAdmin) {
+      const events: Event[] = await prisma.event.findMany();
+      res.status(200).json({ events: events });
+    } else {
+      const events: Event[] = await prisma.event.findMany({
+        where: { hidden: false },
+      });
+      res.status(200).json({ events: events });
+    }
   } else {
-    let events: Event[] = await prisma.event.findMany();
-    res.status(200).json({ events: events });
+    res.status(405).json({ error: 'Method not allowed' });
   }
 }
 

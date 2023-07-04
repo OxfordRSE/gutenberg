@@ -8,26 +8,21 @@ import NavDiagram from 'components/NavDiagram'
 import { EventFull as Event, EventFull } from 'lib/types';
 import useSWR, { Fetcher } from 'swr'
 import { basePath } from 'lib/basePath'
+import useActiveEvent from 'lib/hooks/useActiveEvents'
 
 type HomeProps = {
   material: Material,
   events: Event[],
 }
 
-const myEventsFetcher: Fetcher<EventFull[], string> = url => fetch(url).then(r => r.json())
-const eventsFetcher: Fetcher<Event[], string> = url => fetch(url).then(r => r.json())
-
 const Home: NextPage<HomeProps> = ({ material, events }) => {
-  const { data: myEvents, error } = useSWR(`${basePath}/api/eventFull`, myEventsFetcher)
-  const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
   return (
-    <Layout material={material} activeEvent={activeEvent}>
+    <Layout material={material}>
       <Content markdown={material.markdown} />
       <NavDiagram material={material}/>
     </Layout>
   )
 }
-
 
 
 export const getStaticProps: GetStaticProps = async (context) => {

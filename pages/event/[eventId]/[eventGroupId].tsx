@@ -1,17 +1,17 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from 'next'
 import prisma from 'lib/prisma'
-import { getMaterial, Theme, Material, remove_markdown } from 'lib/material'
+import { getMaterial, Theme, Material, remove_markdown, eventItemSplit } from 'lib/material'
 import Layout from 'components/Layout'
 import {makeSerializable} from 'lib/utils'
 import Content from 'components/Content'
 import NavDiagram from 'components/NavDiagram'
-import Title from 'components/Title'
+import Title from 'components/ui/Title'
 import { Event, EventFull } from 'lib/types'
 import { basePath } from 'lib/basePath'
 import Link from 'next/link'
 import useEventGroup from 'lib/hooks/useEventGroup'
 import useProfile from 'lib/hooks/useProfile'
-import { Tabs } from 'flowbite-react'
+import { Button, Tabs } from 'flowbite-react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { EventGroup } from 'pages/api/eventGroup/[eventGroupId]'
 import { useEffect } from 'react'
@@ -21,6 +21,10 @@ import Textfield from 'components/forms/Textfield'
 import Textarea from 'components/forms/Textarea'
 import { MdEdit, MdPreview } from 'react-icons/md'
 import DateTimeField from 'components/forms/DateTimeField'
+import SelectField from 'components/forms/SelectField'
+import IntegerField from 'components/forms/IntegerField'
+import SubTitle from 'components/ui/SubTitle'
+import EventItemView from 'components/EventItemView'
 
 type EventGroupProps = {
   material: Material,
@@ -38,14 +42,53 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
     reset(eventGroup);
   }, [eventGroup]);
 
-  const { fields: eventItemss, append: appendItem, remove: removeItem } = useFieldArray({
+  const { fields: eventItems, append: appendItem, remove: removeItem } = useFieldArray({
     control,
     name: "EventItem",
   });
 
+  const eventMapToIndex = eventItems.reduce((acc, item, index) => {
+    acc[item.order] = index;
+    return acc;
+  }, {} as {[key: number]: number});
+
+  eventItems.sort((a, b) => (a.order - b.order));
+
+  const handleAddItem = () => {
+    appendItem({
+      id: 0,
+      groupId: eventGroupId,
+      order: eventItems.length,
+      section: '',
+    })
+  }
+
+  const handleRemoveItem = (index: number) => () => {
+    removeItem(index);
+  }
+
   const onSubmit = (data: EventGroup) => {
     putEventGroup(data).then((data) => data.eventGroup && mutateEventGroup(data.eventGroup));
   }
+
+  const sectionsOptions = material.themes.flatMap((theme) => {
+    return [{
+      value: `${theme.id}`,
+      label: `${theme.name}`,
+    }].concat(
+      theme.courses.flatMap((course) => {
+      return [{
+        value: `${theme.id}.${course.id}`,
+        label: `${theme.name} - ${course.name}`,
+      }].concat(
+        course.sections.map((section) => {
+        return {
+          value: `${theme.id}.${course.id}.${section.id}`,
+          label: `${theme.name} - ${course.name} - ${section.name}`,
+        }
+      }))
+    }))
+  })
 
   if (eventGroupIsLoading) return <div>Loading...</div>
   if (!eventGroup) return (
@@ -59,8 +102,29 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
 
   const eventGroupView = (
     <>
-      <Title text={`${eventGroup.name} in ${event.name}`} />
+      <a href={`/event/${event.id}`} >
+      <Title text={event.name} />
+      </a>
+      <SubTitle text={eventGroup.name} />
+      <SubTitle text={`Time: ${new Date(eventGroup.start).toUTCString()} - ${new Date(eventGroup.end).toUTCString()}`} />
+      <SubTitle text={`Location: ${eventGroup.location}`} />
       <Content markdown={eventGroup.content} />
+      <SubTitle text="Material" />
+      <ul className="text-center">
+      { eventGroup.EventItem.map((item, index) => {
+        const { theme, course, section, url } = eventItemSplit(item, material)
+        let label = theme?.name;
+        if (course) {
+          label = `${label} - ${course.name}`;
+        }
+        if (section) {
+          label = `${label} - ${section.name}`;
+        } 
+        return (
+          <a href={url} key={index}><p>{label}</p></a>
+        )
+      })}
+      </ul>
     </>
   )
 
@@ -69,10 +133,23 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
     <Stack>
       <Textfield label="Title" name="name" control={control} />
       <Textfield label="Location" name="location" control={control} />
-      <Textarea label="Summary" name="summary" control={control} />
+      <Textfield label="Summary" name="summary" control={control} />
       <Textarea label="Content" name="content" control={control} />
       <DateTimeField label="Start" name="start" control={control} />
       <DateTimeField label="End" name="end" control={control} />
+      <Title text="Items" />
+      { eventItems.map((item, order) => {
+        const index = eventMapToIndex[order];
+        return (
+          <Stack key={item.id} direction='row' className='items-end'>
+            <SelectField label="Section" name={`EventItem.${index}.section`} control={control} options={sectionsOptions} />
+            <IntegerField label="Order" name={`EventItem.${index}.order`} control={control} />
+            <Button onClick={handleRemoveItem(index)}>Remove</Button>
+          </Stack>
+        )
+      })}
+      <Button onClick={handleAddItem}>Add Item</Button>
+      <Button type="submit">Save</Button>
     </Stack>
     </form>
   )

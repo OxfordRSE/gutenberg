@@ -22,7 +22,6 @@ type HomeProps = {
 
 
 
-
 const Home: NextPage<HomeProps> = ({ material, events }) => {
 
   const linkClassName = "text-blue-500 hover:underline"

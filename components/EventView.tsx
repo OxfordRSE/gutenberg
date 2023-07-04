@@ -3,7 +3,7 @@ import { HiArrowNarrowRight } from 'react-icons/hi';
 import { Material } from 'lib/material'
 import { EventFull, Event, Problem } from 'lib/types'
 import useSWR, { Fetcher } from 'swr'
-import Title from 'components/Title'
+import Title from 'components/ui/Title'
 import { Button, Timeline } from 'flowbite-react'
 import { ListGroup } from 'flowbite-react';
 import { basePath } from 'lib/basePath'
@@ -70,7 +70,7 @@ const EventView: React.FC<EventsProps> = ({ material, event }) => {
             <div className="flex">
             <ul>
             {group.EventItem.map((item) => (
-              <EventItemView key={item.id} item={item} material={material} event={event} problems={problems} />
+              <EventItemView key={item.id} item={item} material={material} problems={problems} />
             ))}
             </ul>
             </div>

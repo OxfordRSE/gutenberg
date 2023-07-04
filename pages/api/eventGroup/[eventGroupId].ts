@@ -86,6 +86,10 @@ const eventHandler = async (
             end,
             summary,
             location,
+            EventItem: {
+                deleteMany: {},
+                create: eventItemData.map((eventItem) => ({...eventItem, id: undefined, groupId: undefined})),
+            },  
         },
         include: { EventItem: true },
     });

@@ -3,7 +3,7 @@ import { HiArrowNarrowRight } from 'react-icons/hi';
 import { Material } from 'lib/material'
 import { EventFull, Event, Problem } from 'lib/types'
 import useSWR, { Fetcher } from 'swr'
-import Title from 'components/Title'
+import Title from 'components/ui/Title'
 import { Button, Timeline } from 'flowbite-react'
 import { ListGroup } from 'flowbite-react';
 import { basePath } from 'lib/basePath'
@@ -13,13 +13,12 @@ import { EventItem } from '@prisma/client';
 
 type EventItemProps = {
   material: Material,
-  event: EventFull, 
   item: EventItem,
-  problems: Problem[] | undefined,
+  problems?: Problem[],
 }
 
 
-const EventView: React.FC<EventItemProps> = ({ material, event, item, problems }) => {
+const EventView: React.FC<EventItemProps> = ({ material, item, problems }) => {
   const split = item.section.split('.')
   let url = ''
   let name = `Error: ${item.section}`

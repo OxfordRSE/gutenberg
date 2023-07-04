@@ -5,15 +5,10 @@ import { getServerSession } from "next-auth/next"
 import { authOptions } from "../../auth/[...nextauth]"
 import { basePath } from 'lib/basePath'
 
-import { Prisma } from "@prisma/client";
-
 export type ResponseData = {
   problem?: Problem;
   error?: string;
 }
-
-
-
 
 
 const Problem = async (req: NextApiRequest, res: NextApiResponse<ResponseData>) => {

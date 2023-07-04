@@ -5,7 +5,7 @@ import Layout from 'components/Layout'
 import {makeSerializable} from 'lib/utils'
 import Content from 'components/Content'
 import NavDiagram from 'components/NavDiagram'
-import Title from 'components/Title'
+import Title from 'components/ui/Title'
 import { Event, EventFull } from 'lib/types'
 import useSWR, { Fetcher } from 'swr'
 import { basePath } from 'lib/basePath'
@@ -27,6 +27,8 @@ import { putEvent } from 'lib/actions/putEvent'
 import { useEffect } from 'react'
 import { Prisma } from '@prisma/client'
 import SelectField from 'components/forms/SelectField'
+import Checkbox from 'components/forms/Checkbox'
+import SubTitle from 'components/ui/SubTitle'
 
 type EventProps = {
   material: Material,
@@ -87,14 +89,13 @@ const Event: NextPage<EventProps> = ({ material, event }) => {
   const eventView = (
     <>
       <Title text={event.name} />
+      <SubTitle text={`${new Date(event.start).toUTCString()} - ${new Date(event.end).toUTCString()}`} />
       <Content markdown={eventData ? eventData.content : event.content} />
-      <Title text={"Enroll"} />
-      <Content markdown={event.enrol} />
-      <div className='flex items-center justify-center'>
-      <EventActions event={event} />
-      </div>
       { ((isInstructor || isAdmin) && eventData ) && (
+          <>
+          <Title text="Student Progress" />
           <EventProblems event={eventData} material={material} /> 
+          </>
       )}
     </>
   )
@@ -107,6 +108,7 @@ const Event: NextPage<EventProps> = ({ material, event }) => {
       <Textarea label="Content" name="content" control={control} />
       <DateTimeField label="Start" name="start" control={control} />
       <DateTimeField label="End" name="end" control={control} />
+      <Checkbox label="Hidden" name={`hidden`} control={control} />
       <Title text="Users" />
       <div className="grid grid-cols-4 gap-4">
       {eventUser.map((user, index) => (
@@ -141,7 +143,23 @@ const Event: NextPage<EventProps> = ({ material, event }) => {
           <DateTimeField label="End" name={`EventGroup.${index}.end`} control={control} />
           <div className="grid grid-cols-2 gap-4">
             <Button onClick={handleRemoveGroup(index)}>Delete</Button>
-            <Button>Edit</Button>
+            { eventData.EventGroup[index] && (
+            <Button href={`${basePath}/event/${eventData.id}/${eventData.EventGroup[index].id}`}>
+              <p>Go</p>
+              <svg
+                className="ml-2 -mr-1 h-4 w-4"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </Button>
+            )}
           </div>
         </Stack>
       ))}

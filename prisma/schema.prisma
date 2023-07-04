@@ -99,6 +99,7 @@ model Event {
   content     String        @default("")
   start       DateTime      @default(now())
   end         DateTime      @default(now())
+  hidden      Boolean       @default(true)
   EventGroup  EventGroup[]
   UserOnEvent UserOnEvent[]
 }
@@ -118,7 +119,7 @@ model EventGroup {
 
 model EventItem {
   id      Int        @id @default(autoincrement())
-  group   EventGroup @relation(fields: [groupId], references: [id])
+  group   EventGroup @relation(fields: [groupId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   groupId Int
   order   Int        @default(0)
   section String     @default("")

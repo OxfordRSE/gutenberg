@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import { HiArrowNarrowRight } from 'react-icons/hi';
-import { Course, Material, Section, Theme } from 'lib/material'
+import { Course, Material, Section, Theme, eventItemSplit } from 'lib/material'
 import { EventFull, Event, Problem } from 'lib/types'
 import useSWR, { Fetcher } from 'swr'
-import Title from 'components/Title'
+import Title from 'components/ui/Title'
 import { Avatar, Button, Card, Table, Timeline, Tooltip } from 'flowbite-react'
 import { ListGroup } from 'flowbite-react';
 import { basePath } from 'lib/basePath'
@@ -22,38 +22,7 @@ type Props = {
     material: Material,
 }
 
-const eventItemSplit = (eventItem: EventItem, material: Material): { theme?: Theme, course?: Course, section?: Section, url?: string } => {
-    const split = eventItem.section.split('.')
-    if (split.length === 3) {
-        const theme = material.themes.find((theme) => theme.id === split[0])
-        const course = theme?.courses.find((course) => course.id === split[1])
-        const section = course?.sections.find((section) => section.id === split[2])
-        const url = `${basePath}/material/${split[0]}/${split[1]}/${split[2]}`
-        return {
-            theme,
-            course,
-            section,
-            url,
-        }
-    } else if (split.length === 2) {
-        const theme = material.themes.find((theme) => theme.id === split[0])
-        const course = theme?.courses.find((course) => course.id === split[1])
-        const url = `${basePath}/material/${split[0]}/${split[1]}`
-        return {   
-            theme,
-            course,
-            url,
-        }
-    } else if (split.length === 1) {
-        const theme = material.themes.find((theme) => theme.id === split[0])
-        const url = `${basePath}/material/${split[0]}`
-        return {
-            theme,
-            url,
-        }
-    }
-    return {}
-}
+
 
 
 // a table of eventItems vs users showing which users have completed which problems

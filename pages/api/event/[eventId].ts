@@ -4,6 +4,7 @@ import prisma from 'lib/prisma'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { Prisma } from "@prisma/client"
+import { Event } from "cypress/types/jquery"
 
 export type Event = Prisma.EventGetPayload<{
     include: { EventGroup: { include: { EventItem: true } }, UserOnEvent: { include: { user: true } } },
@@ -71,7 +72,7 @@ const eventHandler = async (
 
     res.status(200).json({ event });
   } else if (req.method === 'PUT') {
-    const { name, enrol, content, start, end, summary } = req.body.event;
+    const { name, enrol, content, start, end, summary, hidden } = req.body.event;
     const eventGroupData: EventGroup[] = req.body.event.EventGroup;
     const userOnEventData: UserOnEvent[] = req.body.event.UserOnEvent;
 
@@ -93,6 +94,7 @@ const eventHandler = async (
         content,
         start,
         end,
+        hidden,
         EventGroup: {
             deleteMany: {},
             createMany: {
@@ -115,7 +117,7 @@ const eventHandler = async (
             const createdItems = await prisma.eventItem.createMany({
                 data: group.EventItem.map((item) => ({
                     ...item,
-                    EventGroup: { connect: { id: newGroup.id } },
+                    groupId: newGroup.id,
                 })),
             });
         }
