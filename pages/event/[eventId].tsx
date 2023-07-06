@@ -68,7 +68,6 @@ const Event: NextPage<EventProps> = ({ material, event }) => {
   }, [eventData]);
 
   if (eventIsLoading) return <div>loading...</div>
-  if (!eventData) return <div>Error getting event...</div>
 
   const handleAddGroup = () => {
     appendGroup({ id: 0, eventId: event.id, name: '', summary: '', content: '', start: event.start, end: event.end, location: '', EventItem: [] })
@@ -143,7 +142,7 @@ const Event: NextPage<EventProps> = ({ material, event }) => {
           <DateTimeField label="End" name={`EventGroup.${index}.end`} control={control} />
           <div className="grid grid-cols-2 gap-4">
             <Button onClick={handleRemoveGroup(index)}>Delete</Button>
-            { eventData.EventGroup[index] && (
+            { eventData?.EventGroup[index] && (
             <Button href={`${basePath}/event/${eventData.id}/${eventData.EventGroup[index].id}`}>
               <p>Go</p>
               <svg
@@ -171,7 +170,7 @@ const Event: NextPage<EventProps> = ({ material, event }) => {
   )
   return (
     <Layout material={material}>
-      { isAdmin ? (
+      { eventData && isAdmin ? (
         <Tabs.Group style="underline" >
         <Tabs.Item active icon={MdPreview} title="Event">
           {eventView}
@@ -186,7 +185,9 @@ const Event: NextPage<EventProps> = ({ material, event }) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const events = await prisma.event.findMany().catch((e) => []);
+  const events = await prisma.event.findMany({
+    where: { hidden: false },
+  }).catch((e) => []);
   return {
     paths: events.map((e) => ({ params: { eventId: `${e.id}` } })),
     fallback: false,

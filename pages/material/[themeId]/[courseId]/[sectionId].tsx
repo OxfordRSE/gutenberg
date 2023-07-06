@@ -44,7 +44,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const events = await prisma.event.findMany().catch((e) => {
+  const events = await prisma.event.findMany({
+    where: { hidden: false },
+  }).catch((e) => {
     return []
   });
   const themeId = context?.params?.themeId

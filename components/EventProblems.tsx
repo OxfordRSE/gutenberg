@@ -54,8 +54,8 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
       </Table.Head>
       <Table.Body className="divide-y">
         { event.EventGroup.map((eventGroup) => (
-            <>
-            <Table.Row className="">
+            <React.Fragment key={eventGroup.id}>
+            <Table.Row className="" key={eventGroup.id}>
                 <Table.Cell className="">
                     {eventGroup.name}
                 </Table.Cell>
@@ -63,11 +63,11 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
             { eventGroup.EventItem.map((eventItem) => {
                 const { theme, course, section, url } = eventItemSplit(eventItem, material)
                 return (
-                <>
+                <React.Fragment key={eventItem.id}>
                 { section && section.problems.map((problem) => (
-                    <>
-                    <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                    <React.Fragment key={problem}>
+                    <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800" key={`${eventGroup.id}-${eventGroup.id}-${problem}`}>
+                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white" key={`title-${problem}${eventItem.section}`}>
                       {url ? (
                         <a href={`${url}#${problem}`}>{problem}</a>
                       ) : (
@@ -87,11 +87,11 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
                         )
                      })}
                     </Table.Row>
-                    </>
+                    </React.Fragment>
                 ))}
-                </>
+                </React.Fragment>
             )})}
-            </>
+            </React.Fragment>
         ))}
       </Table.Body>
     </Table>

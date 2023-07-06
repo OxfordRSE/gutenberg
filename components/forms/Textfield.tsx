@@ -11,7 +11,7 @@ type Props<T extends FieldValues> = {
 
 function Textfield<T extends FieldValues>({ label, name, control, rules }: Props<T>): React.ReactElement {
   return (
-    <div>
+    <div data-cy={`textfield-${name}`}>
     <Controller
       name={name}
       control={control}

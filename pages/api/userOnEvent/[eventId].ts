@@ -56,19 +56,16 @@ const UserOnEvent= async (req: NextApiRequest, res: NextApiResponse<Data>) => {
         res.status(404).json({ error: "userOnEvent not found for this user" });
       }
       break;
-    case 'PUT':
-      if (!("userOnEvent" in req.body)) {
-        res.status(400).json({ error: "No problem in body" });
-      } 
+    case 'POST':
       userOnEvent = await prisma.userOnEvent.upsert({
         where: {userEmail_eventId: { userEmail: userEmail as string, eventId: eventId}},
-        update: { ...req.body.userOnEvent },
-        create: { ...req.body.userOnEvent, userEmail: userEmail, eventId: eventId},
+        update: { },
+        create: { userEmail: userEmail, eventId: eventId }
       })
       if (userOnEvent) {
         res.status(200).json({ userOnEvent: userOnEvent})
       } else {
-        res.status(404).json({ error: "userOnEvent not found for this user" });
+        res.status(404).json({ error: "failed to create userOnEvent" });
       }
       break;
     default:

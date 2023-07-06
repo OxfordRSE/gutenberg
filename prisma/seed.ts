@@ -3,6 +3,43 @@ import { PrismaClient, Prisma } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function main() {
+  const adminUser = await prisma.user.upsert({
+    where: { email: 'admin@localhost' },
+    update: {},
+    create: {
+      name: 'admin',
+      email: 'admin@localhost',
+      admin: true,
+    }
+  });
+  const userStudentOnCourse = await prisma.user.upsert({
+    where: { email: 'onCourse@localhost' },
+    update: {},
+    create: {
+      name: 'onCourse',
+      email: 'onCourse@localhost',
+      admin: false,
+    }
+  });
+  const userInstructorOnCourse = await prisma.user.upsert({
+    where: { email: 'instructorOnCourse@localhost' },
+    update: {},
+    create: {
+      name: 'instructorOnCourse',
+      email: 'instructorOnCourse@localhost',  
+      admin: false,
+    }
+  });
+  const userNotOnCourse = await prisma.user.upsert({
+    where: { email: 'notOnCourse@localhost' },
+    update: {},
+    create: {
+      name: 'notOnCourse',
+      email: 'notOnCourse@localhost',
+      admin: false,
+    }
+  });
+
   const event = await prisma.event.upsert({
     where: { id: 1 },
     update: {},
@@ -11,6 +48,7 @@ async function main() {
       summary: 'Introduction to the C++ programming language',
       start: new Date(2023, 7, 1, 9, 30),
       end: new Date(2023, 7, 2, 14, 0),
+      hidden: false,
       EventGroup: {
         connectOrCreate: [
           {
@@ -155,6 +193,27 @@ async function main() {
       }
     }
   });
+
+  await prisma.userOnEvent.upsert({
+    where: { userEmail_eventId: { userEmail: userStudentOnCourse.email || "", eventId: event.id } },
+    update: {},
+    create: {
+      userEmail: userStudentOnCourse.email || "",
+      eventId: event.id,
+      status: 'STUDENT',
+    }
+  });
+
+  await prisma.userOnEvent.upsert({
+    where: { userEmail_eventId: { userEmail: userInstructorOnCourse.email || "", eventId: event.id } },
+    update: {},
+    create: {
+      userEmail: userInstructorOnCourse.email || "",
+      eventId: event.id,
+      status: 'INSTRUCTOR',
+    }
+  });
+
 }
 
 main()

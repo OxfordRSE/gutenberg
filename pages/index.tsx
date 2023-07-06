@@ -81,7 +81,9 @@ const Home: NextPage<HomeProps> = ({ material, events }) => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   
-  const events = await prisma.event.findMany().catch((e) => {
+  const events = await prisma.event.findMany({
+    where: { hidden: false },
+  }).catch((e) => {
     console.log('error', e);
     return [];
   });

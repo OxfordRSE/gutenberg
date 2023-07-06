@@ -29,7 +29,7 @@ const EventActions: React.FC<EventActionsProps> = ({ event }) => {
 
   
   const handleDeactivate = (event: Event) => () => {
-    setActiveEvent(null)
+    setActiveEvent(undefined)
   }
   const handleEnrol = (event: Event) => () => {
     setShowEvent(event)
@@ -40,7 +40,7 @@ const EventActions: React.FC<EventActionsProps> = ({ event }) => {
   }
   
   
-  const onEnrol = (userOnEvent: UserOnEvent | null) => {
+  const onEnrol = (userOnEvent: UserOnEvent | undefined) => {
     if (userOnEvent) {
       mutate({ userOnEvent })
     }
@@ -54,6 +54,7 @@ const EventActions: React.FC<EventActionsProps> = ({ event }) => {
 
   const { event: eventData } = useEvent(isMyEvent ? event.id : undefined);
   const handleActivate = (event: Event) => () => {
+    console.log('handleActivate', event, eventData, activeEvent)
     if (eventData) {
       setActiveEvent(eventData)
     }
