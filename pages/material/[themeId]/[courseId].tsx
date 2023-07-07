@@ -4,7 +4,7 @@ import { getMaterial, Course, Theme, Material, remove_markdown } from 'lib/mater
 import Layout from 'components/Layout'
 import { makeSerializable } from 'lib/utils'
 import { remove } from 'cypress/types/lodash'
-import Content from 'components/Content'
+import Content from 'components/content/Content'
 import NavDiagram from 'components/NavDiagram'
 import Title from 'components/ui/Title'
 import { Event } from 'lib/types'

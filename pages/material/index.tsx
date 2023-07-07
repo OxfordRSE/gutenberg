@@ -3,7 +3,7 @@ import prisma from 'lib/prisma'
 import Layout from 'components/Layout'
 import { makeSerializable } from 'lib/utils'
 import { Material, getMaterial, remove_markdown } from 'lib/material'
-import Content from 'components/Content'
+import Content from 'components/content/Content'
 import NavDiagram from 'components/NavDiagram'
 import { EventFull as Event, EventFull } from 'lib/types';
 import useSWR, { Fetcher } from 'swr'

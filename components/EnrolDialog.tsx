@@ -3,7 +3,7 @@ import { Button, Modal, Toast } from 'flowbite-react'
 import { Event } from 'lib/types'
 import { useSession } from 'next-auth/react'
 import React from 'react'
-import Content from './Content'
+import Content from './content/Content'
 import { HiMail, HiX } from 'react-icons/hi'
 import postUserOnEvent from 'lib/actions/postUserOnEvent'
 

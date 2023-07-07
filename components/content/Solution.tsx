@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import Accordion from './ui/Accordian'
+import Accordion from '../ui/Accordian'
 
 interface SolutionProps {
   content: React.ReactNode
