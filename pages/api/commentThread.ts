@@ -48,20 +48,20 @@ const commentThreadHandler = async (
 
   const isAdmin = currentUser?.admin;
 
-  const eventId = req.query.eventId as string;
-
-  let isInstructorStudent = false;
-  if (eventId) {
-    isInstructorStudent = Boolean(await prisma.userOnEvent.findFirst({
-        where: {
-            user: { email: userEmail },
-            status: { in: ['INSTRUCTOR', 'STUDENT'] },
-            event: { id: parseInt(eventId) },
-        },
-    }));
-  }
+  
 
   if (req.method === 'GET') {
+    const eventId = req.query.eventId as string;
+    let isInstructorStudent = false;
+    if (eventId) {
+      isInstructorStudent = Boolean(await prisma.userOnEvent.findFirst({
+          where: {
+              user: { email: userEmail },
+              status: { in: ['INSTRUCTOR', 'STUDENT'] },
+              event: { id: parseInt(eventId) },
+          },
+      }));
+    }
     if (!isAdmin && !(eventId && isInstructorStudent)) {
         res.status(401).json({ error: 'Unauthorized, not admin or instructor/student on event' });
         return;
@@ -82,12 +82,20 @@ const commentThreadHandler = async (
     res.status(200).json({ commentThreads });
 
   } else if (req.method === 'POST') {
-    if (!isAdmin && !(eventId && isInstructorStudent)) {
-        res.status(401).json({ error: 'Unauthorized, not admin or instructor/student on event' });
-        return;
-    }
+    const { eventId } = req.body.commentThread;
     if (!eventId) {
         res.status(400).json({ error: 'Bad request, no eventId' });
+        return;
+    }
+    const isInstructorStudent = Boolean(await prisma.userOnEvent.findFirst({
+        where: {
+            user: { email: userEmail },
+            status: { in: ['INSTRUCTOR', 'STUDENT'] },
+            event: { id: parseInt(eventId) },
+        },
+    }));
+    if (!isAdmin && !isInstructorStudent) {
+        res.status(401).json({ error: 'Unauthorized, not admin or instructor/student on event' });
         return;
     }
 

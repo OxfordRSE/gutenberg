@@ -45,7 +45,7 @@ const commentHandler = async (
   const isAdmin = currentUser?.admin;
 
   if (req.method === 'POST') {
-    const { threadId } = req.body.event;
+    const { threadId } = req.body.comment;
     if (!threadId) {
         res.status(400).json({ error: 'Bad request, no threadId' });
         return;

@@ -66,7 +66,7 @@ const commentHandler = async (
         res.status(401).json({ error: 'Unauthorized, not comment owner or admin' });
         return;
     }
-    const { markdown } = req.body.event;
+    const { markdown } = req.body.comment;
     const updatedComment = await prisma.comment.update({
       where: { id: parseInt(commentId) },
       data: {
