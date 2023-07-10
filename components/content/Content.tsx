@@ -49,10 +49,13 @@ function reactMarkdownRemarkDirective() {
 }
 
 
-function p({node, children, ...props}: ReactMarkdownProps) {
-  return (
-    <Paragraph content={children} />
-  )
+const p = (sectionStr: string) => {
+  function p({node, children, ...props}: ReactMarkdownProps) {
+    return (
+      <Paragraph content={children} section={sectionStr} />
+    )
+  }
+  return p;
 }
 
 function solution({node, children, ...props}: ReactMarkdownProps) {
@@ -154,7 +157,7 @@ const Content: React.FC<Props> = ( { markdown, theme, course, section }) => {
           callout,
           challenge: challenge(sectionStr),
           code,
-          p,
+          p: p(sectionStr),
         }} 
 
       >

@@ -13,6 +13,12 @@ import { Markdown } from './Content'
 import style from 'react-syntax-highlighter/dist/cjs/styles/prism/lucario'
 import Thread from './Thread'
 import Popover from './Popover'
+import useCommentThreads from 'lib/hooks/useCommentThreads'
+import postComment from 'lib/actions/postComment'
+import postCommentThread from 'lib/actions/postCommentThread'
+import useActiveEvent from 'lib/hooks/useActiveEvents'
+import { CommentThread } from 'pages/api/commentThread'
+import { post } from 'cypress/types/jquery'
 const nlp = winkNLP( model );
 const its = nlp.its;
 const as = nlp.as;
@@ -20,14 +26,17 @@ const as = nlp.as;
 
 interface ParagraphProps {  
   content: React.ReactNode
+  section: string
 }
 
 
-const Paragraph: React.FC<ParagraphProps> = ({ content }) => {
+const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
   const ref = useRef(undefined)
   let [ target, setTarget ] = useState(null)
   const { isCollapsed, clientRect } = useTextSelection(ref?.current || undefined)
   const [screenSize, setScreenSize] = useState(getCurrentDimension());
+  const [ activeEvent, setActiveEvent ] = useActiveEvent();
+  const { commentThreads, error, isLoading, mutate } = useCommentThreads(activeEvent?.id);
 
   function getCurrentDimension(){
     if (typeof window !== "undefined") {
@@ -44,6 +53,13 @@ const Paragraph: React.FC<ParagraphProps> = ({ content }) => {
   }
 
   useEffect(() => {
+    setScreenSize(getCurrentDimension())
+  }, [])
+
+
+
+
+  useEffect(() => {
       const updateDimension = () => {
           setScreenSize(getCurrentDimension())
       }
@@ -58,16 +74,31 @@ const Paragraph: React.FC<ParagraphProps> = ({ content }) => {
 
   const showButton = ref && !isCollapsed && clientRect != undefined
 
-  
+  let contentText = ""
+  if (typeof content === 'string') {
+    contentText = content
+  } else if (Array.isArray(content)) {
+    contentText = content.filter((c) => typeof c === 'string').join('')
+  }
+
+  const handleCreateThread = (text: string) => {
+    if (!activeEvent) return;
+    const textRefStart = contentText.indexOf(text);
+    const textRefEnd = textRefStart + text.length;
+    postCommentThread({
+      textRef: contentText,
+      textRefStart,
+      textRefEnd,
+      eventId: activeEvent.id,
+      section,
+    })
+    .then((thread) => {
+      mutate(commentThreads ? [...commentThreads, thread] : [thread]);
+    });
+  }
+
 
   const similarThreads = useMemo(() => {
-    let contentText = ""
-    if (typeof content === 'string') {
-      contentText = content
-    } else if (Array.isArray(content)) {
-      contentText = content.filter((c) => typeof c === 'string').join('')
-    }
-
     const contentTokens = nlp.readDoc( contentText )
     .tokens()
     .filter(
@@ -75,39 +106,8 @@ const Paragraph: React.FC<ParagraphProps> = ({ content }) => {
     );
     const contentBow = contentTokens.out(its.value, as.bow) as Bow;
 
-    const threads = [
-      { 
-        id: 1, 
-        text: 'Importing a library is like getting a piece of lab equipment out of a storage locker and setting it up on the bench. Libraries provide additional functionality to the basic Python package, much like a new piece of equipment adds functionality to a lab space. Just like in the lab, importing too many libraries can sometimes complicate and slow down your programs - so we only import what we need for each program.',
-        start: 0,
-        end: 19,
-        comments: [
-          { 
-            markdown: 'This is a [comment](link) with **markdown**',
-          },
-          {
-            markdown: 'This is another comment',
-          },
-        ]
-      },
-      { 
-        id: 1, 
-        text: 'Importing a library is like getting a piece of lab equipment out of a storage locker and setting it up on the bench. Libraries provide additional functionality to the basic Python package, much like a new piece of equipment adds functionality to a lab space. Just like in the lab, importing too many libraries can sometimes complicate and slow down your programs - so we only import what we need for each program.',
-        start: 0,
-        end: 19,
-        comments: [
-          { 
-            markdown: 'This is a [comment](link) with **markdown**',
-          },
-          {
-            markdown: 'This is another comment',
-          },
-        ]
-      },
-    ]
-  
-    const similarThreads = threads.filter((thread) => {
-      const threadTokens = nlp.readDoc( thread.text )
+    const similarThreads = commentThreads?.filter((thread) => {
+      const threadTokens = nlp.readDoc( thread.textRef )
       .tokens()
       .filter(
         (t) => t.out(its.type) === 'word' && !t.out(its.stopWordFlag)
@@ -116,12 +116,13 @@ const Paragraph: React.FC<ParagraphProps> = ({ content }) => {
       return similarity.bow.cosine( contentBow, threadBow ) > 0.90;
     });
     return similarThreads;
-  }, [content])
+  }, [contentText, commentThreads])
 
   const commentWidth = Math.round((screenSize.width - 700) / 2);
 
-  const lhsThreads = similarThreads.filter((thread, i) => i % 2 == 0);
-  const rhsThreads = similarThreads.filter((thread, i) => i % 2 == 1);
+  const lhsThreads = similarThreads?.filter((thread, i) => i % 2 == 0);
+  const rhsThreads = similarThreads?.filter((thread, i) => i % 2 == 1);
+
 
   return (
     <>
@@ -134,7 +135,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content }) => {
             <div className={`h-full`} style={{
               width: `${commentWidth - 10}px`,
             }}>
-              { lhsThreads.map((thread) => (
+              { lhsThreads?.map((thread) => (
                 <Thread thread={thread} />
               ))}
           </div>
@@ -145,13 +146,13 @@ const Paragraph: React.FC<ParagraphProps> = ({ content }) => {
             <div className={`h-full`} style={{
               width: `${commentWidth - 10}px`,
             }}>
-              { rhsThreads.map((thread) => (
+              { rhsThreads?.map((thread) => (
                 <Thread thread={thread} />
               ))}
           </div>
         </div>
       </div>
-      <Popover target={ref?.current}/>
+      <Popover target={ref?.current} onCreate={handleCreateThread} />
       
     </>
   )

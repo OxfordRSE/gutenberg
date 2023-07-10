@@ -12,6 +12,8 @@ export type CommentThread = Prisma.CommentThreadGetPayload<{
     include: { Comment: true },
 }>
 
+export type CommentThreadPost = Prisma.CommentThreadCreateManyCreatedByInput
+
 export type Comment = Prisma.CommentGetPayload<{
 }>
 
@@ -82,7 +84,8 @@ const commentThreadHandler = async (
     res.status(200).json({ commentThreads });
 
   } else if (req.method === 'POST') {
-    const { eventId } = req.body.commentThread;
+    const { eventId, textRef, textRefStart, textRefEnd } = req.body.commentThread;
+
     if (!eventId) {
         res.status(400).json({ error: 'Bad request, no eventId' });
         return;
@@ -103,6 +106,16 @@ const commentThreadHandler = async (
         data: {
             eventId: parseInt(eventId),
             createdByEmail: userEmail,
+            textRef,
+            textRefStart,
+            textRefEnd,
+            Comment: {
+              create: {
+                createdByEmail: userEmail,
+                markdown: '',
+                index: 0,
+              }
+            },
         },
         include: { Comment: true },
     });
