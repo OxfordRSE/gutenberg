@@ -11,67 +11,17 @@ import winkNLP, { Bow } from 'wink-nlp';
 import model from 'wink-eng-lite-web-model' 
 import { Markdown } from './Content'
 import style from 'react-syntax-highlighter/dist/cjs/styles/prism/lucario'
+import Thread from './Thread'
+import Popover from './Popover'
 const nlp = winkNLP( model );
 const its = nlp.its;
 const as = nlp.as;
 
 
-
-
-interface ThreadProps {
-  thread: any 
-}
-
-const Thread = ({ thread }: ThreadProps) => {
-  return (
-    <div className="flex flex-col gap-2">
-     { thread.comments.map((comment) => (
-      <Card>
-        <Markdown markdown={comment.markdown} />
-      </Card>
-     ))}
-    </div>
-  )
-}
-
-
-interface PortalProps {
-  children: React.ReactNode
-}
-
-const Portal = ({ children }: PortalProps) => {
-  return createPortal(children, document.body)
-}
-
-export const Popover = ({ target }: { target?: HTMLElement }) => {
-  const { isCollapsed, clientRect } = useTextSelection(target)
-
-
-  if (clientRect == undefined || isCollapsed) return null
-
-  const handleComment = () => {
-  }
-
-  return (
-    <Portal>
-      <Button
-        style={{
-          left: clientRect.x + clientRect.width / 2 - 25,
-          top: clientRect.y - 50,
-          position: 'absolute',
-        }}
-        size="xs"
-      >
-          <BiCommentAdd className="h-5 w-5 mr-1" />
-          Comment
-        </Button>
-    </Portal>
-  )
-}
-
-interface ParagraphProps {
+interface ParagraphProps {  
   content: React.ReactNode
 }
+
 
 const Paragraph: React.FC<ParagraphProps> = ({ content }) => {
   const ref = useRef(undefined)
