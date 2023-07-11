@@ -10,7 +10,10 @@ import { Prisma } from "@prisma/client"
 export type UsersWithUserOnEvents = Prisma.UserOnEventGetPayload<{
   include: { user: true }
 }>
-export type Data = { users: (UsersWithUserOnEvents | string)[] | string }
+export type Data = { 
+    users?: UsersWithUserOnEvents[],
+    error?: string ,
+}
 
 const EventUsers = async (
     req: NextApiRequest,
@@ -23,11 +26,11 @@ const EventUsers = async (
   const eventId = parseInt(req.query.eventId as string);
 
   if (!session) {
-    return res.status(401).json({ users: 'Unauthorized' })
+    return res.status(401).json({ error: 'Unauthorized' })
   }
 
   if (!eventId) {
-    return res.status(400).json({ users: 'Bad Request' })
+    return res.status(400).json({ error: 'Bad Request' })
   }
 
   const event = await prisma.event.findUnique({
@@ -36,7 +39,7 @@ const EventUsers = async (
   });
 
   if (!event) {
-    return res.status(404).json({ users: 'Event not Found' })
+    return res.status(404).json({ error: 'Event not Found' })
   }
 
   const isInstructor = event?.UserOnEvent.some((userOnEvent) => userOnEvent?.user?.name === user?.name && userOnEvent.status === 'INSTRUCTOR')
@@ -57,11 +60,11 @@ const EventUsers = async (
       break;
     case 'PUT':
       if (!isInstructor) {
-        return res.status(403).json({ users : 'Forbidden' });
+        return res.status(403).json({ error: 'Forbidden' });
       }
       users = req.body.users;
       if (!users || !Array.isArray(users)) {
-        return res.status(400).json({ users: 'Invalid request body' });
+        return res.status(400).json({ error: 'Invalid request body' });
       }
       const updatePromises = users.map(async (userOnEvent) => {
         const userEmail = userOnEvent.userEmail as string;
@@ -81,9 +84,9 @@ const EventUsers = async (
       });
       const updatedUsersWithUserOnEvents = await (await Promise.all(updatePromises));
       if (updatedUsersWithUserOnEvents.some((user) => user === 'UserOnEvent not found')) {
-        res.status(404).json({ users: 'UserOnEvent not found' });
+        res.status(404).json({ error: 'UserOnEvent not found' });
       } else {
-        res.status(200).json({ users: updatedUsersWithUserOnEvents });
+        res.status(200).json({ users: updatedUsersWithUserOnEvents as UsersWithUserOnEvents[] });
       }
       break;
     default:

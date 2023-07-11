@@ -3,6 +3,7 @@ import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import type { Session } from "next-auth"
 import { basePath } from "lib/basePath"
+import { ContextProvider } from "lib/context/ContextProvider"
 
 
 // Use of the <SessionProvider> is mandatory to allow components that call
@@ -13,7 +14,9 @@ export default function MyApp({
 }: AppProps<{ session: Session }>) {
   return (
     <SessionProvider session={session} basePath={`${basePath}/api/auth`}>
-      <Component {...pageProps} />
+      <ContextProvider>
+        <Component {...pageProps} />
+      </ContextProvider>
     </SessionProvider>
   )
 }

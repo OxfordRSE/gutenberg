@@ -15,9 +15,10 @@ type Props<T extends FieldValues> = {
   control: Control<T>;
   rules?: Object;
   selectProps?: SelectProps;
+  className?: React.ComponentProps<'div'>['className'];
 };
 
-function SelectField<T extends FieldValues>({ label, name, options, control, rules, selectProps }: Props<T>): React.ReactElement {
+function SelectField<T extends FieldValues>({ label, name, options, control, rules, selectProps, className }: Props<T>): React.ReactElement {
   const labelId = `${name}-label`;
   return (
     <Controller
@@ -25,7 +26,7 @@ function SelectField<T extends FieldValues>({ label, name, options, control, rul
       control={control}
       rules={rules}
       render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
-        <div className="max-w-md" id="select">
+        <div className={className} id="select">
           <div className="mb-2 block">
             <Label
               htmlFor={name}

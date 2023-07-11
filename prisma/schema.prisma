@@ -45,6 +45,7 @@ model User {
   email         String?       @unique
   emailVerified DateTime?
   image         String?
+  admin         Boolean       @default(false)
   accounts      Account[]
   sessions      Session[]
   Problem       Problem[]
@@ -92,33 +93,34 @@ model UserOnEvent {
 
 model Event {
   id          Int           @id @default(autoincrement())
-  name        String
-  summary     String
+  name        String        @default("")
+  summary     String        @default("")
   enrol       String        @default("")
   content     String        @default("")
-  start       DateTime
-  end         DateTime
+  start       DateTime      @default(now())
+  end         DateTime      @default(now())
+  hidden      Boolean       @default(true)
   EventGroup  EventGroup[]
   UserOnEvent UserOnEvent[]
 }
 
 model EventGroup {
-  id        Int         @id @default(autoincrement())
-  name      String
-  summary   String
-  content   String        @default("")
-  start     DateTime
-  end       DateTime
-  location  String
-  event     Event       @relation(fields: [eventId], references: [id])
+  id        Int          @id @default(autoincrement())
+  name      String       @default("")
+  summary   String       @default("")
+  content   String       @default("")
+  start     DateTime     @default(now())
+  end       DateTime     @default(now())
+  location  String       @default("")
+  event     Event        @relation(fields: [eventId], references: [id])
   eventId   Int
   EventItem EventItem[]
 }
 
 model EventItem {
   id      Int        @id @default(autoincrement())
-  group   EventGroup @relation(fields: [groupId], references: [id])
+  group   EventGroup @relation(fields: [groupId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   groupId Int
-  order   Int
-  section String
+  order   Int        @default(0)
+  section String     @default("")
 }

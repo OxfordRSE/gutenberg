@@ -6,11 +6,8 @@ import { makeSerializable } from 'lib/utils'
 import { remove } from 'cypress/types/lodash'
 import Content from 'components/Content'
 import NavDiagram from 'components/NavDiagram'
-import Title from 'components/Title'
-import { Event, EventFull } from 'lib/types'
-import useSWR, { Fetcher } from 'swr'
-import { basePath } from 'lib/basePath'
-import { useActiveEvent } from 'lib/hooks'
+import Title from 'components/ui/Title'
+import { Event } from 'lib/types'
 
 type CourseComponentProps = {
   theme: Theme, 
@@ -19,15 +16,9 @@ type CourseComponentProps = {
   events: Event[],
 }
 
-const myEventsFetcher: Fetcher<EventFull[], string> = url => fetch(url).then(r => r.json())
-
 const CourseComponent: NextPage<CourseComponentProps> = ({theme, course, material, events}: CourseComponentProps) => {
-
-  const { data: myEvents, error } = useSWR(`${basePath}/api/eventFull`, myEventsFetcher)
-  const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
-
   return (
-    <Layout theme={theme} course={course} material={material} activeEvent={activeEvent}>
+    <Layout theme={theme} course={course} material={material}>
       <Title text={course.name} />
       <NavDiagram material={material} theme={theme} course={course} />
       <Content markdown={course.markdown} theme={theme} course={course} />
@@ -53,7 +44,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const events = await prisma.event.findMany().catch((e) => {
+  const events = await prisma.event.findMany({
+    where: { hidden: false },
+  }).catch((e) => {
     return []
   });
   const themeId = context?.params?.themeId

@@ -3,16 +3,13 @@ import { HiArrowNarrowRight } from 'react-icons/hi';
 import { Material } from 'lib/material'
 import { EventFull, Event, Problem } from 'lib/types'
 import useSWR, { Fetcher } from 'swr'
-import Title from 'components/Title'
+import Title from 'components/ui/Title'
 import { Avatar, Button, Card, Timeline } from 'flowbite-react'
 import { ListGroup } from 'flowbite-react';
 import { basePath } from 'lib/basePath'
-import { MdClose } from 'react-icons/md'
-import Link from 'next/link';
-import EventItemView from './EventItemView';
-import { UsersWithUserOnEvents } from 'pages/api/event/[eventId]/users';
 import { useFieldArray, useForm } from 'react-hook-form';
 import SelectField from './forms/SelectField';
+import { UsersWithUserOnEvents } from 'pages/api/event/[eventId]/users';
 
 type Props = {
     event: Event,

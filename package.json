@@ -8,8 +8,10 @@
     "start": "next start",
     "lint": "next lint",
     "cypress": "cypress open",
-    "e2e": "start-server-and-test 'yarn start' http://127.0.0.1:3000 \"cypress run --e2e\"",
-    "component": "start-server-and-test 'yarn start' http://127.0.0.1:3000 \"cypress run --component\""
+    "e2e": "start-server-and-test 'yarn dev' http://127.0.0.1:3000 \"dotenv -e .env.local -e .env cypress run --e2e\"",
+    "ci:e2e": "start-server-and-test 'yarn start' http://127.0.0.1:3000 \"cypress run --e2e\"",
+    "component": "start-server-and-test 'yarn dev' http://127.0.0.1:3000 \"dotenv -e .env.local -e .env cypress run --component\"",
+    "ci:component": "start-server-and-test 'yarn start' http://127.0.0.1:3000 \"cypress run --component\""
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
@@ -25,7 +27,7 @@
     "@types/marked": "^4.0.7",
     "@types/react-copy-to-clipboard": "^5.0.4",
     "autoprefixer": "^10.4.13",
-    "cypress": "^10.9.0",
+    "cypress": "^12.16.0",
     "dompurify": "^2.4.0",
     "elkjs": "^0.8.2",
     "flowbite": "^1.6.4",
@@ -34,11 +36,12 @@
     "isomorphic-dompurify": "^0.23.0",
     "isomorphic-git": "^1.21.0",
     "marked": "^4.1.1",
-    "next": "12.3.1",
+    "next": "^13.4.9-canary.1",
     "next-auth": "^4.20.1",
     "postcss": "^8.4.19",
     "react": "18.2.0",
     "react-copy-to-clipboard": "^5.1.0",
+    "react-datetime-picker": "^5.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.5",
     "react-icons": "^4.8.0",
@@ -56,12 +59,16 @@
     "unist-util-visit": "^4.1.1"
   },
   "devDependencies": {
-    "@types/node": "18.8.3",
+    "@panva/hkdf": "^1.1.1",
+    "@testing-library/cypress": "^9.0.0",
+    "@types/node": "^20.4.0",
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
     "@types/react-syntax-highlighter": "^15.5.6",
+    "cypress-terminal-report": "^5.3.0",
     "eslint": "8.25.0",
     "eslint-config-next": "12.3.1",
+    "jose": "^4.14.4",
     "prisma": "^4.11.0",
     "start-server-and-test": "^2.0.0",
     "ts-node": "^10.9.1",

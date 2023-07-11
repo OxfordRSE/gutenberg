@@ -3,42 +3,24 @@ import { Button, Modal, Toast } from 'flowbite-react'
 import { Event } from 'lib/types'
 import { useSession } from 'next-auth/react'
 import React from 'react'
-import useSWR, { Fetcher } from 'swr'
-import useSWRMutation from 'swr/mutation'
 import Content from './Content'
 import { HiMail, HiX } from 'react-icons/hi'
+import postUserOnEvent from 'lib/actions/postUserOnEvent'
 
 
-export const createUserOnEvent = async (arg: UserOnEvent) => {
-  const response = await fetch('/api/userOnEvent', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(arg),
-  })
-
-  if (!response.ok) {
-    throw new Error('could not create user on event')
-  }
-
-  const data = await response.json()
-  return data
-}
- 
 type Props = {
   event: Event, 
   show: boolean,
-  onEnrol: (userOnEvent: UserOnEvent | null) => void
+  onEnrol: (userOnEvent: UserOnEvent | undefined) => void
 }
 
 const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol}) => {
-  const [error, setError] = React.useState<string | null>(null)
+  const [error, setError] = React.useState<string | undefined>(undefined)
   const [success, setSuccess] = React.useState<string | null>(null)
   const session = useSession()
 
   const onClose = () => {
-    onEnrol(null)
+    onEnrol(undefined)
   }
 
   const userEmail = session.data?.user?.email;
@@ -47,14 +29,16 @@ const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol}) => {
   }
 
   const onClick = () => {
-    createUserOnEvent({
-      eventId: event.id,
-      userEmail, 
-      status: EventStatus.REQUEST,
-    }).then((data) => {
-      onEnrol(data)
-      setSuccess(data)
-      setError(null)
+    postUserOnEvent(event)
+    .then((data) => {
+      if ('userOnEvent' in data) {
+        onEnrol(data.userOnEvent)
+        setSuccess("success")
+        setError(undefined)
+      } else if ('error' in data) {
+        setError(data.error)
+        setSuccess(null)
+      }
     }).catch((err) => {
       setError(err.message)
       setSuccess(null)

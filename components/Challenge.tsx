@@ -1,6 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import useSWR, { Fetcher, useSWRConfig } from 'swr'
-import { ResponseData as ApiProblem } from 'pages/api/problems/[sectionTag]/[problemTag]'
 import { useForm, Controller } from "react-hook-form";
 import { useSession, signIn, signOut } from "next-auth/react"
 import { basePath } from 'lib/basePath'
@@ -11,6 +9,9 @@ import Checkbox from 'components/forms/Checkbox'
 import Textarea from 'components/forms/Textarea'
 import Slider from 'components/forms/Slider'
 import Stack from 'components/ui/Stack'
+import useProblem from 'lib/hooks/useProblem'
+import putProblem from 'lib/actions/putProblem'
+import { useSWRConfig } from 'swr'
 
 interface ChallengeProps {
   content: React.ReactNode,
@@ -19,16 +20,12 @@ interface ChallengeProps {
   section: string,
 }
 
-const fetcher: Fetcher<ApiProblem, string> = url => fetch(url).then(r => r.json())
-
 const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) => {
   const { data: session } = useSession()
-  const apiPath = `${basePath}/api/problems/${section}/${id}`
-  const { data, mutate } = useSWR(apiPath, fetcher)
+  const { problem, mutate } = useProblem(section, id)
   const { mutate: mutateGlobal } = useSWRConfig()
 
   const [showModal, setShowModal] = useState(false)
-  const problem = data?.problem
   const noProblem = !problem || typeof problem === 'string'
   const defaultProblem = {
     tag: id,
@@ -43,17 +40,13 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
     if (typeof problem.difficulty === 'string') {
       problem.difficulty = parseInt(problem.difficulty)
     }
-    const requestOptions = {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ problem: problem })
-    };
-    fetch(apiPath, requestOptions)
-        .then(response => response.json())
-        .then(data => {
-            mutate(data.problem)
-            mutateGlobal((key: string) => key.startsWith(`${basePath}/api/event/`) && key.endsWith(`/problems`))
-        });
+    putProblem(section, id, problem)
+    .then(data => {
+      if (data.problem) {
+        mutate(data.problem)
+        mutateGlobal((key: string) => key.startsWith(`${basePath}/api/event/`) && key.endsWith(`/problems`))
+      }
+    });
   };
 
   const onSubmit = (problem: ProblemUpdate) => {

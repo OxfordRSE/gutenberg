@@ -3,10 +3,13 @@ import { Problem } from "lib/types"
 import prisma from 'lib/prisma'
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "../../auth/[...nextauth]"
+import { basePath } from 'lib/basePath'
 
 export type ResponseData = {
-  problem: Problem | string;
+  problem?: Problem;
+  error?: string;
 }
+
 
 const Problem = async (req: NextApiRequest, res: NextApiResponse<ResponseData>) => {
   const { method } = req;
@@ -17,23 +20,23 @@ const Problem = async (req: NextApiRequest, res: NextApiResponse<ResponseData>) 
   const userEmail = session?.user?.email
 
   if (!problemTag) {
-    res.status(400).send({ problem: "No problem tag" });
+    res.status(400).send({ error: "No problem tag" });
   }
 
   if (!sectionTag) {
-    res.status(400).send({ problem: "No section tag" });
+    res.status(400).send({ error: "No section tag" });
   }
 
   if (!userEmail || userEmail === undefined) {
-    res.status(401).send({ problem: "Not logged in" });
+    res.status(401).send({ error: "Not logged in" });
   }
 
   if (typeof problemTag !== "string") {
-    res.status(400).send({ problem: "Problem tag is not a string" });
+    res.status(400).send({ error: "Problem tag is not a string" });
   }
 
   if (typeof sectionTag !== "string") {
-    res.status(400).send({ problem: "Section tag is not a string" });
+    res.status(400).send({ error: "Section tag is not a string" });
   }
 
   let problem = null;
@@ -46,12 +49,12 @@ const Problem = async (req: NextApiRequest, res: NextApiResponse<ResponseData>) 
       if (problem) {
         res.status(200).json({ problem: problem })
       } else {
-        res.status(404).json({ problem: "Problem not found for this user" });
+        res.status(404).json({ error: "Problem not found for this user" });
       }
       break;
     case 'PUT':
       if (!("problem" in req.body)) {
-        res.status(400).json({ problem: "No problem in body" });
+        res.status(400).json({ error: "No problem in body" });
       } 
       problem = await prisma.problem.upsert({
         where: {userEmail_tag_section: { userEmail: userEmail as string, tag: problemTag as string, section: sectionTag as string }},
@@ -61,7 +64,7 @@ const Problem = async (req: NextApiRequest, res: NextApiResponse<ResponseData>) 
       if (problem) {
         res.status(200).json({ problem: problem })
       } else {
-        res.status(404).json({ problem: "Problem not found for this user" });
+        res.status(404).json({ error: "Problem not found for this user" });
       }
       break;
     default:

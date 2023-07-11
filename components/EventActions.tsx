@@ -2,36 +2,34 @@ import React from 'react'
 import { HiArrowNarrowRight } from 'react-icons/hi';
 import { Material } from 'lib/material'
 import { EventFull, Event } from 'lib/types'
-import Title from 'components/Title'
+import Title from 'components/ui/Title'
 import { basePath } from 'lib/basePath'
-import { useActiveEvent } from 'lib/hooks';
 import { useSession } from 'next-auth/react';
 import EnrolDialog from 'components/EnrolDialog';
 import useSWR, { Fetcher } from 'swr'
 import { UserOnEvent } from '@prisma/client';
 import { Button } from 'flowbite-react';
+import { useUserOnEvent } from 'lib/hooks/useUserOnEvent';
+import useActiveEvent from 'lib/hooks/useActiveEvents';
+import useEvent from 'lib/hooks/useEvent';
 
 
 type EventActionsProps = {
-  material: Material,
-  activeEvent: EventFull | undefined,
   event: Event,
-  setActiveEvent: (event: EventFull | Event | null) => void,
-  myEvents: EventFull[] | undefined,
 }
 
 const userOnEventFetcher: Fetcher<UserOnEvent, string> = url => fetch(url).then(r => r.json())
 
-const EventActions: React.FC<EventActionsProps> = ({ material, activeEvent, setActiveEvent, event, myEvents }) => {
+const EventActions: React.FC<EventActionsProps> = ({ event }) => {
+  const [activeEvent, setActiveEvent] = useActiveEvent();
+
   const { data: session } = useSession()
   const [showEvent, setShowEvent] = React.useState<Event | null>(null)
-  const { data: userOnEvent, error, mutate } = useSWR(`${basePath}/api/userOnEvent/${event.id}`, userOnEventFetcher)
+  const { userOnEvent, error, mutate } = useUserOnEvent(event.id)
 
-  const handleActivate = (event: Event) => () => {
-    setActiveEvent(event)
-  }
+  
   const handleDeactivate = (event: Event) => () => {
-    setActiveEvent(null)
+    setActiveEvent(undefined)
   }
   const handleEnrol = (event: Event) => () => {
     setShowEvent(event)
@@ -42,17 +40,25 @@ const EventActions: React.FC<EventActionsProps> = ({ material, activeEvent, setA
   }
   
   
-  const onEnrol = (userOnEvent: UserOnEvent | null) => {
+  const onEnrol = (userOnEvent: UserOnEvent | undefined) => {
     if (userOnEvent) {
-      mutate(userOnEvent)
+      mutate({ userOnEvent })
     }
     setShowEvent(null)
   }
 
-  const myEventIds = myEvents ? myEvents.map((event) => event.id) : []
-  const isMyEvent = myEventIds.includes(event.id);
+
+  const isMyEvent = userOnEvent && (userOnEvent.status == 'STUDENT' || userOnEvent.status == 'INSTRUCTOR');
   const isRequested = userOnEvent ? userOnEvent.eventId == event.id && userOnEvent.status == 'REQUEST' : false
   const isActiveEvent = activeEvent ? activeEvent.id == event.id : false
+
+  const { event: eventData } = useEvent(isMyEvent ? event.id : undefined);
+  const handleActivate = (event: Event) => () => {
+    console.log('handleActivate', event, eventData, activeEvent)
+    if (eventData) {
+      setActiveEvent(eventData)
+    }
+  }
 
   return (
     <div className="flex flex-row gap-2">

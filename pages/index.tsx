@@ -4,14 +4,9 @@ import Layout from 'components/Layout'
 import { makeSerializable } from 'lib/utils'
 import { Material, getMaterial, remove_markdown } from 'lib/material'
 import { basePath } from 'lib/basePath'
-import Content from 'components/Content'
-import NavDiagram from 'components/NavDiagram'
-import { EventFull, Event } from 'lib/types';
+import { Event } from 'lib/types';
 import { Button, Card } from 'flowbite-react'
-import Link from 'next/link'
 import EventsView from 'components/EventsView'
-import useSWR, { Fetcher } from 'swr'
-import { useActiveEvent } from 'lib/hooks'
 import ExternalLink from 'components/ui/ExternalLink'
 
 type HomeProps = {
@@ -19,19 +14,13 @@ type HomeProps = {
   events: Event[],
 }
 
-const myEventsFetcher: Fetcher<EventFull[], string> = url => fetch(url).then(r => r.json())
-const eventsFetcher: Fetcher<Event[], string> = url => fetch(url).then(r => r.json())
+
 
 const Home: NextPage<HomeProps> = ({ material, events }) => {
-  const { data: myEvents, error } = useSWR(`${basePath}/api/eventFull`, myEventsFetcher)
-  const { data: currentEvents , error: currentEventserror } = useSWR(`${basePath}/api/event`, eventsFetcher)
-  const [activeEvent , setActiveEvent] = useActiveEvent(myEvents ? myEvents : [])
-  if (currentEvents) {
-    events = currentEvents;
-  }
+
   const linkClassName = "text-blue-500 hover:underline"
   return (
-    <Layout material={material} activeEvent={activeEvent}>
+    <Layout material={material}>
       <div className="px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32  grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
       <Card>
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -40,9 +29,7 @@ const Home: NextPage<HomeProps> = ({ material, events }) => {
         <p className="font-normal text-gray-700 dark:text-gray-400">
           Login to request a place on an upcoming course, or to select an active course.
         </p>
-        <EventsView 
-          material={material} events={events} myEvents={myEvents} setActiveEvent={setActiveEvent} activeEvent={activeEvent}
-        />
+        <EventsView material={material} events={events} />
       </Card>
       <Card className='z-60'>
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -94,7 +81,9 @@ const Home: NextPage<HomeProps> = ({ material, events }) => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   
-  const events = await prisma.event.findMany().catch((e) => {
+  const events = await prisma.event.findMany({
+    where: { hidden: false },
+  }).catch((e) => {
     console.log('error', e);
     return [];
   });

@@ -9,10 +9,17 @@ module.exports = {
   theme: {
     extend: {},
   },
+  mode: 'jit',
+  // These paths are just examples, customize them to match your project structure
+  purge: [
+    './public/**/*.html',
+    "./node_modules/flowbite-react/**/*.js",
+    './components/**/*.{js,jsx,ts,tsx,vue}',
+    './pages/**/*.{js,jsx,ts,tsx,vue}',
+  ],
   plugins: [
     require('@tailwindcss/typography'),
     require('@tailwindcss/forms'),
-    require('@tailwindcss/line-clamp'),
     require('@tailwindcss/aspect-ratio'),
     require("flowbite/plugin"),
   ]

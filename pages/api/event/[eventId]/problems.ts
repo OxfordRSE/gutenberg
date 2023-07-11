@@ -8,8 +8,10 @@ import prisma from 'lib/prisma'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import _ from "cypress/types/lodash"
 
-export type Data = { problems: Problem[] | string }
-type EventItemWithProblems = { event: EventFull, problems: Problem[] }
+export type Data = { 
+  problems?: Problem[],
+  error?: string ,
+}
 
 const Problems = async (
     req: NextApiRequest,
@@ -21,11 +23,11 @@ const Problems = async (
   const eventId = parseInt(req.query.eventId as string);
 
   if (!session) {
-    return res.status(401).json({ problems: 'Unauthorized' })
+    return res.status(401).json({ error: 'Unauthorized' })
   }
 
   if (!eventId) {
-    return res.status(400).json({ problems: 'Bad Request' })
+    return res.status(400).json({ error: 'Bad Request' })
   }
 
   const event = await prisma.event.findUnique({
@@ -34,7 +36,7 @@ const Problems = async (
   });
 
   if (!event) {
-    return res.status(404).json({ problems: 'Not Found' })
+    return res.status(404).json({ error: 'Event not Found' })
   }
 
   const eventItemTags = event.EventGroup.reduce((acc: string[], eventGroup) => {
