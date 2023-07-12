@@ -17,7 +17,7 @@ import remarkGfm from 'remark-gfm'
 import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for you
 
-
+import { startCase } from 'lodash';
 
 import Challenge from './Challenge';
 import Solution from './Solution';
@@ -74,50 +74,75 @@ const challenge = (sectionStr: string) => {
 }
 
 function code({node, inline, className, children, ...props}: CodeProps): JSX.Element {
-  const match = /language-(\w+)/.exec(className || '')
-  const code = String(children).replace(/\n$/, '')
-  if (!inline) {
-    if (match) {
-      return (
-        <div className="relative m-0">
-          <CopyToClipboard text={code}>
-            <button className="group absolute top-0 right-0 bg-transparent text-xs text-grey-700 hover:bg-grey-900 px-2 py-1 rounded flex items-center space-x-1">
-              <FaClipboard className='group-hover:text-white' /><span className='group-hover:text-white'>Copy</span>
-            </button>
-          </CopyToClipboard>
-          <SyntaxHighlighter
-            style={codeStyle}
-            codeTagProps={{className: "text-sm"}}
-            language={match[1]}
-            customStyle={{margin: 0}}
-            PreTag="div"
-            {...props}
-          >
-            {code}
-          </SyntaxHighlighter>
-        </div>
-      );
-    } else {
-      return (
-        <div className="p-3 relative">
-          <CopyToClipboard text={code}>
-            <button className="group absolute top-0 right-0 bg-transparent text-xs text-grey-700 hover:text-grey-900 px-2 py-1 rounded flex items-center space-x-1">
-              <FaClipboard className='group-hover:text-white' /><span className='group-hover:text-white'>Copy</span>
-            </button>
-          </CopyToClipboard>
-          <code className={className} {...props}>
-            {children}
-          </code>
-        </div>
-        )
-    }
-  } else {
+
+  if (inline) {
     return (
       <code className={className} {...props}>
         {children}
       </code>
-      )
+    )
   }
+
+  const code = String(children).replace(/\n$/, '')
+
+  const languageMatch = /language-(\w+)/.exec(className || '')
+  const explicitTitleMatch = /title="([^"]*)"/.exec(String(node?.data?.meta) || '');
+
+  let languageString = 'text';
+  if (languageMatch && languageMatch[1]) {
+    languageString = languageMatch[1]
+  }
+
+  let titleString = '';
+  if (explicitTitleMatch && explicitTitleMatch[1]) {
+    titleString = explicitTitleMatch[1];
+  } else if (languageMatch && languageMatch[1]) {
+    titleString = startCase(languageMatch[1]);
+  }
+
+  const borderTextColor = 'text-black dark:text-white'
+  const borderHoverColor = 'group-hover:text-neutral-700 dark:group-hover:text-neutral-300'
+  const borderColor = 'border-neutral-300 dark:border-neutral-700'
+
+  let headerColor = 'bg-neutral-300 dark:bg-neutral-700'
+  if (titleString == 'Error') {
+    headerColor = 'bg-red-300 dark:bg-red-700'
+  }
+
+  const copyToClipboardButton = (
+    <CopyToClipboard text={code}>
+      <button
+        className={`group absolute top-0 right-0 bg-transparent text-xs ${borderTextColor} px-2 py-1 rounded flex items-center space-x-1`}>
+        <FaClipboard className={`${borderTextColor} ${borderHoverColor}`}/><span className={`${borderTextColor} ${borderHoverColor}`}>Copy</span>
+      </button>
+    </CopyToClipboard>
+  )
+
+  const headerBox = (
+    <div className={`border  rounded-t-md ${headerColor} ${borderColor} mb-4`}>
+      <div className={`flex items-center justify-between rounded-t-md ${headerColor} pl-1`}>
+        <h4 className={`w-full mx-2 my-0 ${borderTextColor}`}>{titleString}</h4>
+        {copyToClipboardButton}
+      </div>
+    </div>
+  )
+
+  return (
+    <div className="relative m-0">
+      {headerBox}
+      <SyntaxHighlighter
+        style={codeStyle}
+        codeTagProps={{className: "text-sm"}}
+        language={languageString}
+        customStyle={{margin: 0}}
+        showLineNumbers={false}
+        PreTag="div"
+        {...props}
+      >
+        {code}
+      </SyntaxHighlighter>
+    </div>
+  );
 }
 
 //function transformImageUri(src, alt, title)  {
