@@ -93,8 +93,8 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
     <>
       <div ref={ref} className="relative">
         {content}
-          <div className={`absolute top-0 right-0 xl:-right-[400px]`}>
-            <div className={`w-[400px]`}>
+          <div className={`absolute top-0 right-0 md:-right-6 xl:-right-[420px]`}>
+            <div className={`w-[420px]`}>
               { similarThreads?.map((thread) => (
                 <Thread key={thread.id} thread={thread} active={activeThreadId === thread.id} setActive={(active: boolean) => active ? setActiveThreadId(thread.id) : setActiveThreadId(undefined)}/>
               ))}

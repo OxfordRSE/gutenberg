@@ -53,11 +53,13 @@ const Thread = ({ thread, active, setActive}: ThreadProps) => {
 
   return (
     <div className="relative">
-    <TinyButton onClick={handleOpen}>
-      <BiCommentDetail className='text-slate-500 dark:text-slate-500'/>
-    </TinyButton>
+      <div  className="flex justify-end opacity-50 md:opacity-100 xl:justify-start">
+        <TinyButton onClick={handleOpen}>
+          <BiCommentDetail className='dark:text-slate-500 text-slate-500'/>
+        </TinyButton>
+      </div>
     { active && (
-    <div className="absolute ml-8 top-0 w-[360px] border border-gray-200 rounded-lg bg-slate-50 dark:bg-slate-900 dark:border-gray-700 mb-4 z-50">
+    <div className="absolute ml-8 top-0 w-[355px] border border-gray-200 rounded-lg bg-slate-50 dark:bg-slate-900 dark:border-gray-700 mb-4 z-50 ">
       <div className={`flex items-center justify-between rounded-t-lg`}>
         <h3 className="w-full mx-2 my-0 text-base text-slate-100 dark:text-slate-900">{}</h3>
          <div className='flex items-center space-x-2 mr-2'>
