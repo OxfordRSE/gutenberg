@@ -2,7 +2,7 @@ import { basePath } from "lib/basePath"
 import { Data, Comment } from 'pages/api/comment/[commentId]'
 
 // function that returns a promise that does a PUT request for this endpoint
-export const putComment = async (comment: Comment): Promise<Data> => {
+export const putComment = async (comment: Comment): Promise<Comment> => {
   const apiPath = `${basePath}/api/comment/${comment.id}`
   const requestOptions = {
     method: 'PUT',

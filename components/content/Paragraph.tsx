@@ -33,14 +33,9 @@ interface ParagraphProps {
 
 const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
   const ref = useRef(undefined)
-  let [ target, setTarget ] = useState(null)
-  const { isCollapsed, clientRect } = useTextSelection(ref?.current || undefined)
   const [ activeEvent, setActiveEvent ] = useActiveEvent();
   const { commentThreads, error, isLoading, mutate } = useCommentThreads(activeEvent?.id);
   const [ activeThreadId, setActiveThreadId ] = useState<number | undefined>(undefined);
-
-
-  const showButton = ref && !isCollapsed && clientRect != undefined
 
   const { similarThreads, contentText } = useMemo(() => {
     let contentText = ""
@@ -95,22 +90,23 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
     }
   }
 
-
   return (
     <>
       <div ref={ref} className="relative">
         {content}
-          <div className={`absolute top-0 right-0 md:-right-6 xl:-right-[420px]`}>
-            <div className={`w-[420px]`}>
-              { similarThreads?.map((thread) => (
-                <Thread 
-                  key={thread.id} thread={thread} active={activeThreadId === thread.id} 
-                  setActive={(active: boolean) => active ? setActiveThreadId(thread.id) : setActiveThreadId(undefined)}
-                  onDelete={() => handleDeleteThread(thread)}
-                />
-              ))}
-            </div>
+        { activeEvent && (
+        <div className={`absolute top-0 right-0 md:-right-6 xl:-right-[420px]`}>
+          <div className={`w-[420px]`}>
+            { similarThreads?.map((thread) => (
+              <Thread 
+                key={thread.id} thread={thread} active={activeThreadId === thread.id} 
+                setActive={(active: boolean) => active ? setActiveThreadId(thread.id) : setActiveThreadId(undefined)}
+                onDelete={() => handleDeleteThread(thread)}
+              />
+            ))}
           </div>
+        </div>
+        )}
       </div>
       { activeEvent && <Popover target={ref?.current} onCreate={handleCreateThread} />}
     </>

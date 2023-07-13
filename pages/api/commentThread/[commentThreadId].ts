@@ -88,6 +88,18 @@ const commentThreadHandler = async (
         include: { Comment: true },
     });
     res.status(200).json({ commentThread: deletedCommentThread });
+  } else if (req.method === 'PUT') {
+    req.body.commentThread.Comment = undefined;
+    if (!isAdmin && commentThread.createdByEmail !== userEmail) {
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
+    }
+    const updatedCommentThread = await prisma.commentThread.update({
+        where: { id: parseInt(commentThreadId) },
+        data: req.body.commentThread,
+        include: { Comment: true },
+    });
+    res.status(200).json({ commentThread: updatedCommentThread });
   } else {
     res.status(405).json({ error: 'Method not allowed' });
   }

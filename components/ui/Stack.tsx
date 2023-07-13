@@ -34,7 +34,7 @@ function Stack({ spacing = 4, children, direction, className }: StackProps) {
 
   const axis = direction.includes('col') ? 'col' : 'row';
   return (
-    <div className={`flex ${flexVariants[direction]} ${spaceVariants[axis]} ${className}`}>
+    <div className={`flex ${flexVariants[direction]} ${spaceVariants[axis][spacing]} ${className}`}>
       {children}
     </div>
   );

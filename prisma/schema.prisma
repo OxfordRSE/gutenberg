@@ -146,11 +146,12 @@ model CommentThread {
   createdBy      User?       @relation(fields: [createdByEmail], references: [email])
   createdByEmail String
   resolved       Boolean     @default(false)
+  instructorOnly Boolean     @default(false)
 }
 
 model Comment {
   id             Int           @id @default(autoincrement())
-  thread         CommentThread @relation(fields: [threadId], references: [id])
+  thread         CommentThread @relation(fields: [threadId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   threadId       Int
   markdown       String        @default("")
   index          Int

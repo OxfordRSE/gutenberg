@@ -6,6 +6,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { Prisma } from "@prisma/client"
 import { event } from "cypress/types/jquery"
 import { is } from "cypress/types/bluebird"
+import { max } from "cypress/types/lodash"
 
 
 
@@ -67,11 +68,14 @@ const commentHandler = async (
         return;
     }
 
+    const maxIndex = thread?.Comment?.reduce((max, comment) => {
+        return comment.index > max ? comment.index : max;
+    }, 0);
     const comment = await prisma.comment.create({
         data: {
             threadId: parseInt(threadId),
             createdByEmail: userEmail,
-            index: thread?.Comment?.length || 0,
+            index: maxIndex ? maxIndex + 1 : 0,
         },
     });
 

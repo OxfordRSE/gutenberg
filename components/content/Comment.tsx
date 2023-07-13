@@ -12,19 +12,18 @@ import { putComment } from 'lib/actions/putComment'
 import Stack from 'components/ui/Stack'
 import { TinyButton } from './Thread'
 import { CommentThread } from '@prisma/client'
-import deleteComment from 'lib/actions/deleteComment'
+import deleteCommentAction from 'lib/actions/deleteComment'
 import useUser from 'lib/hooks/useUser'
 
 interface Props {
   comment: Comment
-  active: boolean
   mutateComment: (comment: Comment) => void
+  deleteComment: (comment: Comment) => void
 }
 
-const Comment = ({ comment, active, mutateComment}: Props) => {
-  const { control, handleSubmit, reset, setValue, watch } = useForm<Comment>({ defaultValues: comment });
+const Comment = ({ comment, mutateComment, deleteComment}: Props) => {
+  const { control, handleSubmit, reset } = useForm<Comment>();
   const { userProfile, isLoading, error } = useProfile()
-  const markdown = watch('markdown')
   const [ editing, setEditing ] = useState(comment.markdown === '')
   const { user, isLoading: userIsLoading, error: userError  } = useUser(comment.createdByEmail);
   const hasEditPermission = userProfile?.admin || userProfile?.email === comment.createdByEmail
@@ -35,11 +34,9 @@ const Comment = ({ comment, active, mutateComment}: Props) => {
   }, [comment]);
 
   const onSubmit = (data: Comment) => {
-    putComment(data).then((data) => {
-      if (data.comment) {
-        reset(data.comment)
-        mutateComment(data.comment)
-      }
+    putComment(data).then((comment) => {
+      reset(comment)
+      mutateComment(comment)
     });
     setEditing(false)
   }
@@ -49,13 +46,9 @@ const Comment = ({ comment, active, mutateComment}: Props) => {
   }
 
   const onDelete = () => {
-    deleteComment(comment.id)
-  }
-
-  if (!active) {
-    return (
-      <Markdown markdown={markdown} />
-    )
+    deleteCommentAction(comment.id).then((comment) => {
+      deleteComment(comment)
+    });
   }
 
   return (
@@ -63,14 +56,7 @@ const Comment = ({ comment, active, mutateComment}: Props) => {
     <div className="mx-1 p-1 border border-gray-200 rounded-lg bg-slate-100 dark:bg-slate-800 dark:border-gray-700 mb-4">
       { (editing && hasEditPermission) ? (
       <>
-        <Tabs.Group style="underline" className='p-0 m-0' >
-          <Tabs.Item active icon={MdEdit} title="Edit">
-            <Textarea control={control} name="markdown" />
-          </Tabs.Item>
-          <Tabs.Item icon={MdPreview} title="Preview">
-            <Markdown markdown={markdown} />
-          </Tabs.Item>
-        </Tabs.Group>
+        <Textarea control={control} name="markdown" />
         <Stack direction='row-reverse'>
           <TinyButton onClick={handleSubmit(onSubmit)}><MdSave /></TinyButton>
         </Stack>
@@ -96,7 +82,7 @@ const Comment = ({ comment, active, mutateComment}: Props) => {
             </Tooltip>
           </div>
         )}
-        <Markdown markdown={markdown} />
+        <Markdown markdown={comment.markdown} />
         { hasEditPermission && (
           <Stack direction='row-reverse'>
           <Tooltip content="Edit comment">
