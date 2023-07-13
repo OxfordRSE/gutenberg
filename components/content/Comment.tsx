@@ -1,4 +1,4 @@
-import { Button, Card, Tabs } from 'flowbite-react'
+import { Avatar, Button, Card, Dropdown, Tabs, Tooltip } from 'flowbite-react'
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Markdown } from './Content'
 import { Comment } from 'pages/api/comment/[commentId]'
@@ -12,6 +12,8 @@ import { putComment } from 'lib/actions/putComment'
 import Stack from 'components/ui/Stack'
 import { TinyButton } from './Thread'
 import { CommentThread } from '@prisma/client'
+import deleteComment from 'lib/actions/deleteComment'
+import useUser from 'lib/hooks/useUser'
 
 interface Props {
   comment: Comment
@@ -24,8 +26,9 @@ const Comment = ({ comment, active, mutateComment}: Props) => {
   const { userProfile, isLoading, error } = useProfile()
   const markdown = watch('markdown')
   const [ editing, setEditing ] = useState(comment.markdown === '')
-
+  const { user, isLoading: userIsLoading, error: userError  } = useUser(comment.createdByEmail);
   const hasEditPermission = userProfile?.admin || userProfile?.email === comment.createdByEmail
+  const showProfile = comment.index !== 0
 
   useEffect(() => {
     reset(comment);
@@ -73,15 +76,38 @@ const Comment = ({ comment, active, mutateComment}: Props) => {
         </Stack>
       </>
       ) : (
-        <>
+        <div className='relative'>
+        { showProfile && (
+          <div className="absolute -top-4 -right-1 not-prose">
+            <Tooltip content={(
+              <>
+              <span className="block text-sm">
+                {user?.name} 
+              </span>
+              <span className="block truncate text-sm font-medium">
+                {comment?.createdByEmail}
+              </span>
+              <span className="block text-sm">
+                {comment?.created ? new Date(comment?.created).toUTCString() : ""}
+              </span>
+              </>
+            )}>
+              <Avatar size="xs" rounded img={user?.image || undefined} />
+            </Tooltip>
+          </div>
+        )}
         <Markdown markdown={markdown} />
         { hasEditPermission && (
           <Stack direction='row-reverse'>
-          <TinyButton onClick={onEdit}><MdEdit /></TinyButton> 
-          <TinyButton onClick={onDelete}><MdDelete /></TinyButton> 
+          <Tooltip content="Edit comment">
+            <TinyButton onClick={onEdit}><MdEdit /></TinyButton> 
+          </Tooltip>
+          <Tooltip content="Delete comment">
+            <TinyButton onClick={onDelete}><MdDelete /></TinyButton> 
+          </Tooltip>
           </Stack>
         )}
-        </>
+        </div>
       )}
       </div>
     </form>

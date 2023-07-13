@@ -145,6 +145,7 @@ model CommentThread {
   created        DateTime    @default(now())
   createdBy      User?       @relation(fields: [createdByEmail], references: [email])
   createdByEmail String
+  resolved       Boolean     @default(false)
 }
 
 model Comment {

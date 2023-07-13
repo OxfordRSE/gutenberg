@@ -87,6 +87,13 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
   }
 
 
+  const handleDeleteThread = (thread: CommentThread) => {
+    if (!commentThreads) return;
+    mutate(commentThreads.filter((t) => t.id !== thread.id));
+    if (activeThreadId === thread.id) {
+      setActiveThreadId(undefined);
+    }
+  }
 
 
   return (
@@ -96,7 +103,11 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
           <div className={`absolute top-0 right-0 md:-right-6 xl:-right-[420px]`}>
             <div className={`w-[420px]`}>
               { similarThreads?.map((thread) => (
-                <Thread key={thread.id} thread={thread} active={activeThreadId === thread.id} setActive={(active: boolean) => active ? setActiveThreadId(thread.id) : setActiveThreadId(undefined)}/>
+                <Thread 
+                  key={thread.id} thread={thread} active={activeThreadId === thread.id} 
+                  setActive={(active: boolean) => active ? setActiveThreadId(thread.id) : setActiveThreadId(undefined)}
+                  onDelete={() => handleDeleteThread(thread)}
+                />
               ))}
             </div>
           </div>

@@ -5,10 +5,12 @@ import { Data, Comment } from 'pages/api/comment/[commentId]'
 export const putComment = async (comment: Comment): Promise<Data> => {
   const apiPath = `${basePath}/api/comment/${comment.id}`
   const requestOptions = {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ comment })
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ comment })
   };
-  return fetch(apiPath, requestOptions)
-      .then(response => response.json())
+  return fetch(apiPath, requestOptions).then(response => response.json()).then(data => {
+    if ('error' in data) throw data.error
+    if ('comment' in data) return data.comment
+  })
 }
