@@ -29,6 +29,7 @@ const CommentView = ({ comment, mutateComment, deleteComment}: Props) => {
   const hasEditPermission = userProfile?.admin || userProfile?.email === comment.createdByEmail
   const showProfile = comment.index !== 0
 
+
   useEffect(() => {
     reset(comment);
   }, [comment]);
@@ -86,10 +87,10 @@ const CommentView = ({ comment, mutateComment, deleteComment}: Props) => {
         { hasEditPermission && (
           <Stack direction='row-reverse'>
           <Tooltip content="Edit comment">
-            <TinyButton onClick={onEdit}><MdEdit data-cy={`Comment:${comment.id}:Edit`} /></TinyButton> 
+            <TinyButton onClick={onEdit} dataCy={`Comment:${comment.id}:Edit`}><MdEdit /></TinyButton> 
           </Tooltip>
           <Tooltip content="Delete comment">
-            <TinyButton onClick={onDelete}><MdDelete data-cy={`Comment:${comment.id}:Delete`} /></TinyButton> 
+            <TinyButton onClick={onDelete} dataCy={`Comment:${comment.id}:Delete`}><MdDelete /></TinyButton> 
           </Tooltip>
           </Stack>
         )}

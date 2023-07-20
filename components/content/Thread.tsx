@@ -29,13 +29,18 @@ interface TinyButtonProps {
   disabled?: boolean
 }
 
-export const TinyButton = ({ children, ...props }: TinyButtonProps) => (
-  <div data-cy={props.dataCy}>
-  <Button className="m-1 bg-slate-50 dark:bg-slate-800" {...props} size="xxs" pill={true}>
-    {children}
-  </Button>
-  </div>
-)
+export const TinyButton = ({ children, ...props }: TinyButtonProps) => {
+  let buttonProps = { ...props }
+  delete buttonProps.dataCy
+
+  return (
+    <div data-cy={props.dataCy}>
+    <Button className="m-1 bg-slate-50 dark:bg-slate-800" {...buttonProps} size="xxs" pill={true}>
+      {children}
+    </Button>
+    </div>
+  )
+}
 
 
 interface ThreadProps {
@@ -46,7 +51,6 @@ interface ThreadProps {
 }
 
 const Thread = ({ threadId, active, setActive, onDelete}: ThreadProps) => {
-  console.log("Thread", threadId, active)
   const { commentThread, error: commentThreadError, isLoading: commentThreadIsLoading, mutate } = useCommentThread(threadId)
   const { user, isLoading: userIsLoading, error: userError  } = useUser(commentThread?.createdByEmail);
   const { userProfile, isLoading: profileLoading, error: profileError } = useProfile();
@@ -55,6 +59,8 @@ const Thread = ({ threadId, active, setActive, onDelete}: ThreadProps) => {
 
   const sortedComments = useMemo(() => {
     if (!commentThread) return [];
+    if (!commentThread.Comment) return [];
+    console.log('usememo', commentThread)
     return commentThread.Comment.sort((a, b) => a.index - b.index)
   }, [commentThread])
 

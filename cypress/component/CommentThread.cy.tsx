@@ -106,7 +106,7 @@ describe('Thread component with non-owner student', () => {
     cy.get('@setActive').should('be.calledWith', false);
   });
 
-  it('should add a comment to the thread, edit and save', () => {
+  it('should add a comment to the thread, edit and save, then delete', () => {
     cy.get('[data-cy="Comment:1:Main"]').should('be.visible').contains(thread.Comment[0].markdown);
     cy.get('[data-cy="Comment:2:Main"]').should('not.exist');
     const newComment: Comment = {
@@ -144,6 +144,15 @@ describe('Thread component with non-owner student', () => {
     cy.wait('@comment');
     cy.wait('@thread');
     cy.get('[data-cy="Comment:2:Viewing"]').should('be.visible').contains('New comment');
+    const deletedCommentThread: CommentThread = {
+      ...updatedThread,
+      Comment: [ ...updatedThread.Comment.filter((c) => c.id !== newComment.id) ],
+    }
+    cy.intercept(`/api/commentThread/${threadId}`, { commentThread: deletedCommentThread}).as("thread");
+    cy.get('[data-cy="Comment:2:Delete"]').click();
+    cy.wait('@comment');
+    cy.wait('@thread');
+    cy.get('[data-cy="Comment:2:Main"]').should('not.exist');
   });
 
   it('should not be able to mark the thread as resolved', () => {
@@ -152,6 +161,10 @@ describe('Thread component with non-owner student', () => {
 
   it('should not be able to edit comment', () => {
     cy.get('[data-cy="Comment:1:Edit"]').should('not.exist');
+  });
+
+  it('should not be able to delete comment', () => {
+    cy.get('[data-cy="Comment:1:Delete"]').should('not.exist');
   });
 
 });
@@ -242,5 +255,6 @@ describe('Thread component with owner student', () => {
     cy.wait('@thread'); // GET /api/commentThread/1
     cy.get('[data-cy="Thread:1:IsResolved"]').should('be.visible');
   });
+
 
 });

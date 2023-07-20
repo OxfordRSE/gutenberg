@@ -45,7 +45,8 @@ export default defineConfig({
   },
   component: {
     setupNodeEvents(on, config) {
-      require('cypress-terminal-report/src/installLogsPrinter')(on);
+      const termReportConfig = { printLogsToConsole: 'onFail' };
+      require('cypress-terminal-report/src/installLogsPrinter')(on, termReportConfig);
     },
     devServer: {
       framework: "next",
