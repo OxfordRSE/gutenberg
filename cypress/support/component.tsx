@@ -29,6 +29,7 @@ import React from 'react';
 
 //Ensure global styles are loaded
 import '../../styles/globals.css';
+import { SWRConfig } from 'swr';
 
 
 // Augment the Cypress namespace to include type definitions for
@@ -43,9 +44,12 @@ Cypress.Commands.add('mount', (component: React.ReactNode, options?: MountOption
   const sessionProviderProps: SessionProviderProps = {
     session: session,
     basePath: `/api/auth`,
-    children: <ContextProvider>{component}</ContextProvider>
+    children: (
+      <SWRConfig value={{ provider: () => new Map() }}>
+        <ContextProvider>{component}</ContextProvider>
+      </SWRConfig>
+    )
   }
-
   const wrapped = <SessionProvider {...sessionProviderProps} />;
 
   return mount(wrapped, mountOptions)

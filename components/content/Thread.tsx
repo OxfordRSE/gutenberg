@@ -24,14 +24,17 @@ import CommentView from './Comment'
 
 interface TinyButtonProps {
   children: React.ReactNode
-  props?: ButtonProps
   onClick?: () => void
+  dataCy?: string
+  disabled?: boolean
 }
 
 export const TinyButton = ({ children, ...props }: TinyButtonProps) => (
+  <div data-cy={props.dataCy}>
   <Button className="m-1 bg-slate-50 dark:bg-slate-800" {...props} size="xxs" pill={true}>
     {children}
   </Button>
+  </div>
 )
 
 
@@ -50,8 +53,6 @@ const Thread = ({ threadId, active, setActive, onDelete}: ThreadProps) => {
   const [ activeEvent, setActiveEvent ] = useActiveEvent();
   const { event: eventData, error: eventError, isLoading: eventIsLoading, mutate: mutateEvent } = useEvent(activeEvent?.id)
 
-  console.log("Thread", commentThread, activeEvent, userProfile, eventData)
-
   const sortedComments = useMemo(() => {
     if (!commentThread) return [];
     return commentThread.Comment.sort((a, b) => a.index - b.index)
@@ -69,6 +70,8 @@ const Thread = ({ threadId, active, setActive, onDelete}: ThreadProps) => {
 
   const canView = commentThread?.instructorOnly === false || isInstructor || isAdmin;
   if (!canView) return null;
+
+  const canEdit = userProfile?.admin || userProfile?.email === commentThread?.createdByEmail;
 
   
   const mutateComment = (comment: Comment) => {
@@ -131,11 +134,11 @@ const Thread = ({ threadId, active, setActive, onDelete}: ThreadProps) => {
   return (
     <div className="relative">
       <div className="flex justify-end opacity-50 md:opacity-100 xl:justify-start" >
-        <TinyButton onClick={handleOpen}>
+        <TinyButton onClick={handleOpen} dataCy={`Thread:${threadId}:OpenCloseButton`}>
           { commentThread?.resolved ? (
-            <BiCommentCheck className='text-green dark:text-green-600' data-cy={`Thread:${threadId}:OpenCloseButton`}/>
+            <BiCommentCheck className='text-green dark:text-green-600' />
           ) : (
-            <BiCommentDetail className='dark:text-slate-500 text-slate-500' data-cy={`Thread:${threadId}:OpenCloseButton`}/>
+            <BiCommentDetail className='dark:text-slate-500 text-slate-500'/>
           )}
         </TinyButton>
       </div>
@@ -188,15 +191,17 @@ const Thread = ({ threadId, active, setActive, onDelete}: ThreadProps) => {
         <CommentView key={comment.id} comment={comment} mutateComment={mutateComment} deleteComment={deleteComment}/>
       ))}
       <Stack direction='row-reverse'>
+        { canEdit && (
         <Tooltip content="Mark as Resolved" placement="top">
-        <TinyButton onClick={handleResolved}>
+        <TinyButton onClick={handleResolved} dataCy={`Thread:${threadId}:Resolved`}>
           {commentThread?.resolved ? (
-            <GoIssueClosed className="h-4 w-4 text-green dark:text-green-600" data-cy={`Thread:${threadId}:Resolved`}/>
+            <GoIssueClosed className="h-4 w-4 text-green dark:text-green-600" />
           ) : (
-            <GoIssueClosed className="h-4 w-4" data-cy={`Thread:${threadId}:Resolved`}/>
+            <GoIssueClosed className="h-4 w-4" />
           )}
         </TinyButton>
         </Tooltip>
+        )}
 
         <Tooltip content="Reply in Thread" placement="top">
         <TinyButton onClick={handleReply}>

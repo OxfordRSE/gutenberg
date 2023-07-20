@@ -5,8 +5,9 @@ import React from 'react';
 import { Event } from 'pages/api/event/[eventId]'
 import { Comment } from 'pages/api/comment/[commentId]';
 import auth, { SessionProvider, useSession } from 'next-auth/react';
+import { useSWRConfig } from 'swr';
 
-describe('Thread component with student-student', () => {
+describe('Thread component with non-owner student', () => {
   const threadId = 1;
   const currentUserEmail = 'john@gmail.com';
   const currentUser: User = {
@@ -51,14 +52,6 @@ describe('Thread component with student-student', () => {
     ],
   };
 
-  const newComment: Comment = {
-    id: 2,
-    threadId: threadId,
-    createdByEmail: currentUserEmail,
-    created: new Date(),
-    index: 1,
-    markdown: '',
-  };
   const event: Event = {
     content: 'test',
     end: new Date(),
@@ -107,20 +100,139 @@ describe('Thread component with student-student', () => {
     );
   });
 
+
   it('should open and close the thread', () => {
     cy.get('[data-cy="Thread:1:OpenCloseButton"]').click();
     cy.get('@setActive').should('be.calledWith', false);
   });
 
-  it('should add a comment to the thread', () => {
+  it('should add a comment to the thread, edit and save', () => {
     cy.get('[data-cy="Comment:1:Main"]').should('be.visible').contains(thread.Comment[0].markdown);
     cy.get('[data-cy="Comment:2:Main"]').should('not.exist');
-    cy.intercept(`/api/comment`, { comment: newComment }).as("comment");
+    const newComment: Comment = {
+      id: 2,
+      threadId: threadId,
+      createdByEmail: currentUserEmail,
+      created: new Date(),
+      index: 1,
+      markdown: '',
+    }
+    const newCommentThread: CommentThread = {
+      ...thread,
+      Comment: [ ...thread.Comment, newComment ],
+    }
+    cy.intercept(`/api/comment`, { comment: newComment}).as("comment");
+    cy.intercept(`/api/commentThread/${threadId}`, { commentThread: newCommentThread}).as("thread");
     cy.get('[data-cy="Thread:1:Reply"]').click();
     cy.wait('@comment');
+    cy.wait('@thread');
     cy.get('[data-cy="Comment:2:Main"]').should('be.visible');
     cy.get('[data-cy="Comment:2:Editing"]').should('be.visible');
+    cy.get('[data-cy="Comment:2:Viewing"]').should('not.exist');
+    cy.get('[data-cy="Comment:2:Editing"]').find('textarea').type('New comment');
+    const updatedComment: Comment = {
+      ...newComment,
+      markdown: 'New comment',
+    }
+    const updatedThread: CommentThread = {
+      ...newCommentThread,
+      Comment: [ ...thread.Comment, updatedComment ],
+    }
+    cy.intercept(`/api/comment/${newComment.id}`, { comment: updatedComment}).as("comment");
+    cy.intercept(`/api/commentThread/${threadId}`, { commentThread: updatedComment}).as("thread");
+    cy.get('[data-cy="Comment:2:Save"]').click();
+    cy.wait('@comment');
+    cy.wait('@thread');
+    cy.get('[data-cy="Comment:2:Viewing"]').should('be.visible').contains('New comment');
   });
+
+  it('should not be able to mark the thread as resolved', () => {
+    cy.get('[data-cy="Thread:1:Resolved"]').should('not.exist');
+  });
+
+  it('should not be able to edit comment', () => {
+    cy.get('[data-cy="Comment:1:Edit"]').should('not.exist');
+  });
+
+});
+
+describe('Thread component with owner student', () => {
+  const threadId = 1;
+  const currentUserEmail = 'john@gmail.com';
+  const currentUser: User = {
+    id: '2',
+    email: currentUserEmail,
+    name: 'John',
+    image: 'https://www.example.com/image.png',
+    admin: false,
+    emailVerified: new Date(),
+  };
+  const thread: CommentThread = {
+    id: threadId,
+    eventId: 1,
+    groupId: null,
+    section: '',
+    problemTag: '',
+    textRef: '',
+    textRefStart: 0,
+    textRefEnd: 0,
+    createdByEmail: currentUserEmail,
+    created: new Date(),
+    resolved: false,
+    instructorOnly: false,
+    Comment: [
+      {
+        id: 1,
+        threadId: threadId,
+        createdByEmail: currentUserEmail,
+        created: new Date(),
+        index: 0,
+        markdown: 'Old comment',
+      }
+    ],
+  };
+
+  const event: Event = {
+    content: 'test',
+    end: new Date(),
+    start: new Date(),
+    id: 1,
+    enrol: '',
+    name: 'test',
+    EventGroup: [],
+    hidden: false,
+    summary: '',
+    UserOnEvent: [
+      {
+        eventId: 1,
+        status: 'STUDENT',
+        userEmail: currentUserEmail,
+        user: currentUser,
+      },
+    ],
+  };
+
+  beforeEach(() => {
+    cy.intercept(`/api/commentThread/${threadId}`, { commentThread: thread }).as("thread");
+    cy.intercept(`/api/user/${currentUserEmail}`, { user: currentUser }).as("currentUser");
+    cy.stub(sessionStorage, 'getItem').returns('1')
+    cy.intercept(`/api/event/1`, { event }).as("event");
+    const setActiveSpy = cy.spy().as("setActive");
+    const onDeleteSpy = cy.spy().as("onDelete");
+    const now = new Date();
+    const tenMinutesFromNow = new Date();
+    tenMinutesFromNow.setTime(now.getTime() + 10 * 60 * 1000);
+    cy.mount(
+        <Thread
+          threadId={threadId}
+          active={true}
+          setActive={setActiveSpy}
+          onDelete={onDeleteSpy}
+        />
+      , { session: { expires: tenMinutesFromNow, user: currentUser } }
+    );
+  });
+
 
   it('should mark the thread as resolved', () => {
     cy.get('[data-cy="Thread:1:IsResolved"]').should('not.exist');
@@ -129,20 +241,6 @@ describe('Thread component with student-student', () => {
     cy.wait('@thread'); // PUT /api/commentThread/1
     cy.wait('@thread'); // GET /api/commentThread/1
     cy.get('[data-cy="Thread:1:IsResolved"]').should('be.visible');
-  });
-
-  it('should edit and save a comment', () => {
-    cy.get('[data-cy="Comment:1:Main"]').should('be.visible').contains(thread.Comment[0].markdown);
-    cy.get('[data-cy="Comment:1:Editing"]').should('not.exist');
-    cy.get('[data-cy="Comment:1:Edit"]').click();
-    cy.get('[data-cy="Comment:1:Editing"]').should('be.visible');
-    cy.get('[data-cy="Comment:1:Editing"]').find('textarea').type('Edited old comment');
-    const commentId = thread.Comment[0].id;
-    cy.intercept(`/api/comment/${commentId}`, { commentThread: { ...thread.Comment[0], markdown: 'Edited old comment'} }).as("comment");
-    cy.get('[data-cy="Comment:1:Save"]').click();
-    cy.wait('@comment');
-    cy.get('[data-cy="Comment:1:Main"]').should('be.visible').contains('Edited old comment');
-    cy.get('[data-cy="Comment:1:Editing"]').should('not.exist');
   });
 
 });
