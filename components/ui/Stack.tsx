@@ -17,7 +17,7 @@ function Stack({ spacing = 4, children, direction, className }: StackProps) {
     'row-reverse': 'flex-row-reverse',
     'col-reverse': 'flex-col-reverse',
   };
-  const spaceVariants = {
+  const spaceVariants: Record<string, Record<number, string>> = {
     row: {
       1: 'space-x-1',
       2: 'space-x-2',

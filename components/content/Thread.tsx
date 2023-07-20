@@ -1,8 +1,7 @@
 import { Avatar, Button, ButtonProps, Card, Checkbox, Dropdown, Label, Spinner, Tooltip } from 'flowbite-react'
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Markdown } from './Content'
-import { CommentThread } from 'pages/api/commentThread'
-import Comment from './Comment'
+import { CommentThread, Comment } from 'pages/api/commentThread'
 import { BiCommentCheck, BiCommentDetail, BiDotsVerticalRounded, BiReply } from 'react-icons/bi'
 import { IoClose } from 'react-icons/io5'
 import { post } from 'cypress/types/jquery'
@@ -21,6 +20,7 @@ import useActiveEvent from 'lib/hooks/useActiveEvents'
 import useEvent from 'lib/hooks/useEvent'
 import useProfile from 'lib/hooks/useProfile'
 import { useSession } from 'next-auth/react'
+import CommentView from './Comment'
 
 interface TinyButtonProps {
   children: React.ReactNode
@@ -36,18 +36,21 @@ export const TinyButton = ({ children, ...props }: TinyButtonProps) => (
 
 
 interface ThreadProps {
-  thread: CommentThread
+  threadId: number 
   active: boolean
   setActive: (active: boolean) => void
   onDelete: () => void
 }
 
-const Thread = ({ thread, active, setActive, onDelete}: ThreadProps) => {
-  const { commentThread, error: commentThreadError, isLoading: commentThreadIsLoading, mutate } = useCommentThread(thread.id)
+const Thread = ({ threadId, active, setActive, onDelete}: ThreadProps) => {
+  console.log("Thread", threadId, active)
+  const { commentThread, error: commentThreadError, isLoading: commentThreadIsLoading, mutate } = useCommentThread(threadId)
   const { user, isLoading: userIsLoading, error: userError  } = useUser(commentThread?.createdByEmail);
   const { userProfile, isLoading: profileLoading, error: profileError } = useProfile();
   const [ activeEvent, setActiveEvent ] = useActiveEvent();
   const { event: eventData, error: eventError, isLoading: eventIsLoading, mutate: mutateEvent } = useEvent(activeEvent?.id)
+
+  console.log("Thread", commentThread, activeEvent, userProfile, eventData)
 
   const sortedComments = useMemo(() => {
     if (!commentThread) return [];
@@ -70,7 +73,14 @@ const Thread = ({ thread, active, setActive, onDelete}: ThreadProps) => {
   
   const mutateComment = (comment: Comment) => {
     if (!commentThread) return;
-    mutate({ ...commentThread, Comment: commentThread.Comment.map((c) => c.id === comment.id ? comment : c) })
+    const updatedComments: Comment[] = commentThread.Comment.map((c) => {
+      if (c?.id === comment.id) {
+        return comment;
+      } else {
+        return c as Comment;
+      }
+    });
+    mutate({ ...commentThread, Comment: updatedComments })
   }
 
   const deleteComment = (comment: Comment) => {
@@ -88,7 +98,7 @@ const Thread = ({ thread, active, setActive, onDelete}: ThreadProps) => {
 
   const handleReply = () => {
     if (!commentThread) return;
-    postComment(thread.id).then((comment: Comment) => {
+    postComment(threadId).then((comment: Comment) => {
       mutate({ ...commentThread, Comment: [ ...commentThread.Comment, comment ] })
     });
   }
@@ -120,17 +130,17 @@ const Thread = ({ thread, active, setActive, onDelete}: ThreadProps) => {
 
   return (
     <div className="relative">
-      <div  className="flex justify-end opacity-50 md:opacity-100 xl:justify-start">
+      <div className="flex justify-end opacity-50 md:opacity-100 xl:justify-start" >
         <TinyButton onClick={handleOpen}>
           { commentThread?.resolved ? (
-            <BiCommentCheck className='text-green dark:text-green-600'/>
+            <BiCommentCheck className='text-green dark:text-green-600' data-cy={`Thread:${threadId}:OpenCloseButton`}/>
           ) : (
-            <BiCommentDetail className='dark:text-slate-500 text-slate-500'/>
+            <BiCommentDetail className='dark:text-slate-500 text-slate-500' data-cy={`Thread:${threadId}:OpenCloseButton`}/>
           )}
         </TinyButton>
       </div>
     { active && (
-    <div className="absolute ml-8 top-0 w-[355px] border border-gray-200 rounded-lg bg-slate-50 dark:bg-slate-900 dark:border-gray-700 mb-4 z-50 ">
+    <div className="absolute ml-8 top-0 w-[355px] border border-gray-200 rounded-lg bg-slate-50 dark:bg-slate-900 dark:border-gray-700 mb-4 z-50 " data-cy={`Thread:${threadId}:Main`}>
       <div className="absolute -top-1 left-0 not-prose">
         <Tooltip content={(
           <>
@@ -138,16 +148,16 @@ const Thread = ({ thread, active, setActive, onDelete}: ThreadProps) => {
             {user?.name} 
           </span>
           <span className="block truncate text-sm font-medium">
-            {thread?.createdByEmail}
+            {commentThread?.createdByEmail}
           </span>
           <span className="block text-sm">
-            {thread?.created ? new Date(thread?.created).toUTCString() : ""}
+            {commentThread?.created ? new Date(commentThread?.created).toUTCString() : ""}
           </span>
           </>
         )}>
         <Stack direction='row' spacing={2} className="justify-center">
           <Avatar size="xs" rounded img={user?.image || undefined} />
-          { commentThread?.resolved === true && <GoIssueClosed className="h-6 w-6 font-bold text-green dark:text-green-600" /> }
+          { commentThread?.resolved === true && <GoIssueClosed className="h-6 w-6 font-bold text-green dark:text-green-600" data-cy={`Thread:${threadId}:IsResolved`} /> }
         </Stack>
         </Tooltip>
       </div>
@@ -160,37 +170,37 @@ const Thread = ({ thread, active, setActive, onDelete}: ThreadProps) => {
             <Dropdown
               renderTrigger={() => (
                 <TinyButton>
-                  <BiDotsVerticalRounded className="h-4 w-4" />
+                  <BiDotsVerticalRounded className="h-4 w-4" data-cy={`Thread:${threadId}:Dropdown`}/>
                 </TinyButton>
               )} label={undefined} 
               className='not-prose'
             >
-              <Dropdown.Item icon={commentThread?.instructorOnly === true ? ImEyeBlocked : ImEye} onClick={handleInstructorOnly}>
+              <Dropdown.Item icon={commentThread?.instructorOnly === true ? ImEyeBlocked : ImEye} onClick={handleInstructorOnly} data-cy={`Thread:${threadId}:Visibility`}>
                 Visibility
               </Dropdown.Item>
-              <Dropdown.Item icon={MdDelete} onClick={handleDelete}>
+              <Dropdown.Item icon={MdDelete} onClick={handleDelete} data-cy={`Thread:${threadId}:Delete`}>
                 Delete
               </Dropdown.Item>
             </Dropdown>
           </Stack>
       </div>
       { sortedComments.map((comment) => (
-        <Comment key={comment.id} comment={comment} mutateComment={mutateComment} deleteComment={deleteComment}/>
+        <CommentView key={comment.id} comment={comment} mutateComment={mutateComment} deleteComment={deleteComment}/>
       ))}
       <Stack direction='row-reverse'>
         <Tooltip content="Mark as Resolved" placement="top">
         <TinyButton onClick={handleResolved}>
           {commentThread?.resolved ? (
-            <GoIssueClosed className="h-4 w-4 text-green dark:text-green-600" />
+            <GoIssueClosed className="h-4 w-4 text-green dark:text-green-600" data-cy={`Thread:${threadId}:Resolved`}/>
           ) : (
-            <GoIssueClosed className="h-4 w-4" />
+            <GoIssueClosed className="h-4 w-4" data-cy={`Thread:${threadId}:Resolved`}/>
           )}
         </TinyButton>
         </Tooltip>
 
         <Tooltip content="Reply in Thread" placement="top">
         <TinyButton onClick={handleReply}>
-          <BiReply className="h-4 w-4" />
+          <BiReply className="h-4 w-4" data-cy={`Thread:${threadId}:Reply`} />
         </TinyButton>
         </Tooltip>
       </Stack>

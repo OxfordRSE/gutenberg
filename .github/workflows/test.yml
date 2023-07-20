@@ -81,7 +81,7 @@ jobs:
       - name: Run e2e tests
         run: ${{ env.MANAGER }} ci:e2e
       - name: Run component tests
-        run: ${{ env.MANAGER }} ci:component
+        run: ${{ env.MANAGER }} component
 
 
   deploy:

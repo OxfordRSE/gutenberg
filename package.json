@@ -10,8 +10,7 @@
     "cypress": "cypress open",
     "e2e": "start-server-and-test 'yarn dev' http://127.0.0.1:3000 \"dotenv -e .env.local -e .env cypress run --e2e\"",
     "ci:e2e": "start-server-and-test 'yarn start' http://127.0.0.1:3000 \"cypress run --e2e\"",
-    "component": "start-server-and-test 'yarn dev' http://127.0.0.1:3000 \"dotenv -e .env.local -e .env cypress run --component\"",
-    "ci:component": "start-server-and-test 'yarn start' http://127.0.0.1:3000 \"cypress run --component\""
+    "component": "cypress run --component"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"

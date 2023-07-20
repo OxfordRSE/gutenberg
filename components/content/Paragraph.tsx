@@ -32,7 +32,7 @@ interface ParagraphProps {
 
 
 const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
-  const ref = useRef(undefined)
+  const ref = useRef<HTMLDivElement>(null)
   const [ activeEvent, setActiveEvent ] = useActiveEvent();
   const { commentThreads, error, isLoading, mutate } = useCommentThreads(activeEvent?.id);
   const [ activeThreadId, setActiveThreadId ] = useState<number | undefined>(undefined);
@@ -99,7 +99,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
           <div className={`w-[420px]`}>
             { similarThreads?.map((thread) => (
               <Thread 
-                key={thread.id} thread={thread} active={activeThreadId === thread.id} 
+                key={thread.id} threadId={thread.id} active={activeThreadId === thread.id} 
                 setActive={(active: boolean) => active ? setActiveThreadId(thread.id) : setActiveThreadId(undefined)}
                 onDelete={() => handleDeleteThread(thread)}
               />
@@ -108,7 +108,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
         </div>
         )}
       </div>
-      { activeEvent && <Popover target={ref?.current} onCreate={handleCreateThread} />}
+      { activeEvent && <Popover target={ref?.current || undefined} onCreate={handleCreateThread} />}
     </>
   )
 }

@@ -1,13 +1,17 @@
 import { mount } from "cypress/react";
 
-// Augment the Cypress namespace to include type definitions for
-// your custom command.
-// Alternatively, can be defined in cypress/support/component.d.ts
-// with a <reference path="./component" /> at the top of your spec.
 declare global {
   namespace Cypress {
     interface Chainable {
-      mount: typeof mount;
+      /**
+       * Mounts a React node
+       * @param component React Node to mount
+       * @param options Additional options to pass into mount
+       */
+      mount(
+        component: React.ReactNode,
+        options?: MountOptions & { session: SessionProviderProps["session"]}
+      ): Cypress.Chainable<MountReturn>
     }
   }
 }

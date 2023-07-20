@@ -1,4 +1,5 @@
 import { defineConfig } from "cypress";
+import path from "path";
 
 export default defineConfig({
   env: {
@@ -42,11 +43,20 @@ export default defineConfig({
     baseUrl: 'http://localhost:3000',
 
   },
-
   component: {
+    setupNodeEvents(on, config) {
+      require('cypress-terminal-report/src/installLogsPrinter')(on);
+    },
     devServer: {
       framework: "next",
       bundler: "webpack",
+      webpackConfig: {
+        resolve: {
+          alias: {
+            '@components': path.resolve(__dirname, './src/components'),
+          },
+        },
+      }
     },
   },
 });

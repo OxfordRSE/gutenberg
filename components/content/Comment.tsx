@@ -21,7 +21,7 @@ interface Props {
   deleteComment: (comment: Comment) => void
 }
 
-const Comment = ({ comment, mutateComment, deleteComment}: Props) => {
+const CommentView = ({ comment, mutateComment, deleteComment}: Props) => {
   const { control, handleSubmit, reset } = useForm<Comment>();
   const { userProfile, isLoading, error } = useProfile()
   const [ editing, setEditing ] = useState(comment.markdown === '')
@@ -53,16 +53,16 @@ const Comment = ({ comment, mutateComment, deleteComment}: Props) => {
 
   return (
     <form>
-    <div className="mx-1 p-1 border border-gray-200 rounded-lg bg-slate-100 dark:bg-slate-800 dark:border-gray-700 mb-4">
+    <div className="mx-1 p-1 border border-gray-200 rounded-lg bg-slate-100 dark:bg-slate-800 dark:border-gray-700 mb-4" data-cy={`Comment:${comment.id}:Main`}>
       { (editing && hasEditPermission) ? (
-      <>
+      <div data-cy={`Comment:${comment.id}:Editing`}>
         <Textarea control={control} name="markdown" />
         <Stack direction='row-reverse'>
-          <TinyButton onClick={handleSubmit(onSubmit)}><MdSave /></TinyButton>
+          <TinyButton onClick={handleSubmit(onSubmit)}><MdSave data-cy={`Comment:${comment.id}:Save`} /></TinyButton>
         </Stack>
-      </>
+      </div>
       ) : (
-        <div className='relative'>
+        <div className='relative' data-cy={`Comment:${comment.id}:Viewing`}>
         { showProfile && (
           <div className="absolute -top-4 -right-1 not-prose">
             <Tooltip content={(
@@ -86,10 +86,10 @@ const Comment = ({ comment, mutateComment, deleteComment}: Props) => {
         { hasEditPermission && (
           <Stack direction='row-reverse'>
           <Tooltip content="Edit comment">
-            <TinyButton onClick={onEdit}><MdEdit /></TinyButton> 
+            <TinyButton onClick={onEdit}><MdEdit data-cy={`Comment:${comment.id}:Edit`} /></TinyButton> 
           </Tooltip>
           <Tooltip content="Delete comment">
-            <TinyButton onClick={onDelete}><MdDelete /></TinyButton> 
+            <TinyButton onClick={onDelete}><MdDelete data-cy={`Comment:${comment.id}:Delete`} /></TinyButton> 
           </Tooltip>
           </Stack>
         )}
@@ -100,4 +100,4 @@ const Comment = ({ comment, mutateComment, deleteComment}: Props) => {
   )
 }
 
-export default Comment;
+export default CommentView;
