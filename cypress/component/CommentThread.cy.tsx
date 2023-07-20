@@ -79,6 +79,8 @@ describe('Thread component with non-owner student', () => {
   };
 
   beforeEach(() => {
+    // note: if you want to stub the console log, add this line:
+    // cy.stub(console, 'log').as('consoleLog')
     cy.intercept(`/api/commentThread/${threadId}`, { commentThread: thread }).as("thread");
     cy.intercept(`/api/user/${createdByEmail}`, { user: createdByUser }).as("createdByUser");
     cy.intercept(`/api/user/${currentUserEmail}`, { user: currentUser }).as("currentUser");
@@ -139,11 +141,12 @@ describe('Thread component with non-owner student', () => {
       Comment: [ ...thread.Comment, updatedComment ],
     }
     cy.intercept(`/api/comment/${newComment.id}`, { comment: updatedComment}).as("comment");
-    cy.intercept(`/api/commentThread/${threadId}`, { commentThread: updatedComment}).as("thread");
+    cy.intercept(`/api/commentThread/${threadId}`, { commentThread: updatedThread}).as("thread");
     cy.get('[data-cy="Comment:2:Save"]').click();
     cy.wait('@comment');
     cy.wait('@thread');
     cy.get('[data-cy="Comment:2:Viewing"]').should('be.visible').contains('New comment');
+    cy.get('[data-cy="Comment:2:Delete"]').should('be.visible');
     const deletedCommentThread: CommentThread = {
       ...updatedThread,
       Comment: [ ...updatedThread.Comment.filter((c) => c.id !== newComment.id) ],

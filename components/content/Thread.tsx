@@ -59,8 +59,6 @@ const Thread = ({ threadId, active, setActive, onDelete}: ThreadProps) => {
 
   const sortedComments = useMemo(() => {
     if (!commentThread) return [];
-    if (!commentThread.Comment) return [];
-    console.log('usememo', commentThread)
     return commentThread.Comment.sort((a, b) => a.index - b.index)
   }, [commentThread])
 
