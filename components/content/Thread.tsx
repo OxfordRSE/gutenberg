@@ -76,6 +76,7 @@ const Thread = ({ threadId, active, setActive, onDelete}: ThreadProps) => {
   if (!canView) return null;
 
   const canEdit = userProfile?.admin || userProfile?.email === commentThread?.createdByEmail;
+  const canResolve = userProfile?.admin || isInstructor || userProfile?.email === commentThread?.createdByEmail;
 
   
   const mutateComment = (comment: Comment) => {
@@ -133,10 +134,8 @@ const Thread = ({ threadId, active, setActive, onDelete}: ThreadProps) => {
     });
   };
 
-  
-
   return (
-    <div className="relative">
+    <div className="relative" id={`comment-thread-${threadId}`}>
       <div className="flex justify-end opacity-50 md:opacity-100 xl:justify-start" >
         <TinyButton onClick={handleOpen} dataCy={`Thread:${threadId}:OpenCloseButton`}>
           { commentThread?.resolved ? (
@@ -195,7 +194,7 @@ const Thread = ({ threadId, active, setActive, onDelete}: ThreadProps) => {
         <CommentView key={comment.id} comment={comment} mutateComment={mutateComment} deleteComment={deleteComment}/>
       ))}
       <Stack direction='row-reverse'>
-        { canEdit && (
+        { canResolve && (
         <Tooltip content="Mark as Resolved" placement="top">
         <TinyButton onClick={handleResolved} dataCy={`Thread:${threadId}:Resolved`}>
           {commentThread?.resolved ? (

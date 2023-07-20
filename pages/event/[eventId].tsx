@@ -29,6 +29,7 @@ import { Prisma } from '@prisma/client'
 import SelectField from 'components/forms/SelectField'
 import Checkbox from 'components/forms/Checkbox'
 import SubTitle from 'components/ui/SubTitle'
+import EventCommentThreads from 'components/EventCommentThreads'
 
 type EventProps = {
   material: Material,
@@ -94,6 +95,8 @@ const Event: NextPage<EventProps> = ({ material, event }) => {
           <>
           <Title text="Student Progress" />
           <EventProblems event={eventData} material={material} /> 
+          <Title text="Unresolved Threads" />
+          <EventCommentThreads event={eventData} material={material} /> 
           </>
       )}
     </>

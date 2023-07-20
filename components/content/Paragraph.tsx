@@ -51,7 +51,8 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
     );
     const contentBow = contentTokens.out(its.value, as.bow) as Bow;
 
-    const similarThreads = commentThreads?.filter((thread) => {
+    const similarThreads = commentThreads?.filter((thread) => section === thread.section)
+    .filter((thread) => {
       const threadTokens = nlp.readDoc( thread.textRef )
       .tokens()
       .filter(
@@ -67,13 +68,15 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
     if (!activeEvent) return;
     const textRefStart = contentText.indexOf(text);
     const textRefEnd = textRefStart + text.length;
-    postCommentThread({
+    const newThread = {
       textRef: contentText,
       textRefStart,
       textRefEnd,
       eventId: activeEvent.id,
       section,
-    })
+    };
+    console.log('newthread', newThread);
+    postCommentThread(newThread)
     .then((thread) => {
       const newThreads = commentThreads ? [...commentThreads, thread] : [thread];
       mutate(newThreads);
