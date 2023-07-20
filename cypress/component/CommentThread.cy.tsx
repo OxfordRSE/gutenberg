@@ -7,7 +7,9 @@ import { Comment } from 'pages/api/comment/[commentId]';
 import auth, { SessionProvider, useSession } from 'next-auth/react';
 import { useSWRConfig } from 'swr';
 
-describe('Thread component with non-owner student', () => {
+describe('CommentThread component', () => {
+
+context ('with non-owner student', () => {
   const threadId = 1;
   const currentUserEmail = 'john@gmail.com';
   const currentUser: User = {
@@ -172,7 +174,7 @@ describe('Thread component with non-owner student', () => {
 
 });
 
-describe('Thread component with owner student', () => {
+context('with owner student', () => {
   const threadId = 1;
   const currentUserEmail = 'john@gmail.com';
   const currentUser: User = {
@@ -259,5 +261,7 @@ describe('Thread component with owner student', () => {
     cy.get('[data-cy="Thread:1:IsResolved"]').should('be.visible');
   });
 
+
+});
 
 });
