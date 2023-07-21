@@ -26,8 +26,9 @@ import { first } from 'cypress/types/lodash';
 import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
 import { CodeComponent, CodeProps, ReactMarkdownProps } from 'react-markdown/lib/ast-to-react';
-import Callout from './Callout';
+import Callout from '../Callout';
 import { Course, Section, Theme } from 'lib/material';
+import Paragraph from './Paragraph';
 
 
 function reactMarkdownRemarkDirective() {
@@ -45,6 +46,16 @@ function reactMarkdownRemarkDirective() {
       }
     );
   };
+}
+
+
+const p = (sectionStr: string) => {
+  function p({node, children, ...props}: ReactMarkdownProps) {
+    return (
+      <Paragraph content={children} section={sectionStr} />
+    )
+  }
+  return p;
 }
 
 function solution({node, children, ...props}: ReactMarkdownProps) {
@@ -145,6 +156,28 @@ const Content: React.FC<Props> = ( { markdown, theme, course, section }) => {
           solution,
           callout,
           challenge: challenge(sectionStr),
+          code,
+          p: p(sectionStr),
+        }} 
+
+      >
+        {markdown}
+      </ReactMarkdown>
+    </div>
+  )
+}
+
+type MarkdownProps = {
+  markdown: string,
+}
+
+export const Markdown: React.FC<Props> = ( { markdown }) => {
+  return (
+    <div className="mx-auto prose prose-base max-w-2xl prose-slate dark:prose-invert prose-pre:bg-[#263E52] prose-pre:p-0">
+      <ReactMarkdown 
+        remarkPlugins={[directive, reactMarkdownRemarkDirective, remarkMath, remarkGfm]}
+        rehypePlugins={[rehypeKatex]}
+        components={{
           code,
         }} 
 

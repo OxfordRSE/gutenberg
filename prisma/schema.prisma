@@ -2,9 +2,9 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-3.0.x"]
-  enums = true
+  enums         = true
 }
 
 datasource db {
@@ -40,16 +40,18 @@ model Session {
 }
 
 model User {
-  id            String        @id @default(cuid())
+  id            String          @id @default(cuid())
   name          String?
-  email         String?       @unique
+  email         String?         @unique
   emailVerified DateTime?
   image         String?
-  admin         Boolean       @default(false)
+  admin         Boolean         @default(false)
   accounts      Account[]
   sessions      Session[]
   Problem       Problem[]
   UserOnEvent   UserOnEvent[]
+  CommentThread CommentThread[]
+  Comment       Comment[]
 }
 
 model VerificationToken {
@@ -61,16 +63,17 @@ model VerificationToken {
 }
 
 model Problem {
-  id        Int      @id @default(autoincrement())
-  tag       String
-  section   String   @default("")
-  createdAt DateTime @default(now())
-  User      User     @relation(fields: [userEmail], references: [email])
-  userEmail String
-  complete  Boolean  @default(false)
-  solution  String   @default("")
-  difficulty Int     @default(5)
-  notes     String   @default("")
+  id         Int      @id @default(autoincrement())
+  tag        String
+  section    String   @default("")
+  createdAt  DateTime @default(now())
+  User       User     @relation(fields: [userEmail], references: [email])
+  userEmail  String
+  complete   Boolean  @default(false)
+  solution   String   @default("")
+  difficulty Int      @default(5)
+  notes      String   @default("")
+
   @@unique([userEmail, tag, section])
 }
 
@@ -82,39 +85,41 @@ enum EventStatus {
 }
 
 model UserOnEvent {
-  user    User?   @relation(fields: [userEmail], references: [email])
+  user      User?       @relation(fields: [userEmail], references: [email])
   userEmail String // relation scalar field (used in the `@relation` attribute above)
-  event   Event  @relation(fields: [eventId], references: [id])
-  eventId Int // relation scalar field (used in the `@relation` attribute above)
-  status  EventStatus @default(REQUEST)
+  event     Event       @relation(fields: [eventId], references: [id])
+  eventId   Int // relation scalar field (used in the `@relation` attribute above)
+  status    EventStatus @default(REQUEST)
 
   @@id([userEmail, eventId])
 }
 
 model Event {
-  id          Int           @id @default(autoincrement())
-  name        String        @default("")
-  summary     String        @default("")
-  enrol       String        @default("")
-  content     String        @default("")
-  start       DateTime      @default(now())
-  end         DateTime      @default(now())
-  hidden      Boolean       @default(true)
-  EventGroup  EventGroup[]
-  UserOnEvent UserOnEvent[]
+  id            Int             @id @default(autoincrement())
+  name          String          @default("")
+  summary       String          @default("")
+  enrol         String          @default("")
+  content       String          @default("")
+  start         DateTime        @default(now())
+  end           DateTime        @default(now())
+  hidden        Boolean         @default(true)
+  EventGroup    EventGroup[]
+  UserOnEvent   UserOnEvent[]
+  CommentThread CommentThread[]
 }
 
 model EventGroup {
-  id        Int          @id @default(autoincrement())
-  name      String       @default("")
-  summary   String       @default("")
-  content   String       @default("")
-  start     DateTime     @default(now())
-  end       DateTime     @default(now())
-  location  String       @default("")
-  event     Event        @relation(fields: [eventId], references: [id])
-  eventId   Int
-  EventItem EventItem[]
+  id            Int             @id @default(autoincrement())
+  name          String          @default("")
+  summary       String          @default("")
+  content       String          @default("")
+  start         DateTime        @default(now())
+  end           DateTime        @default(now())
+  location      String          @default("")
+  event         Event           @relation(fields: [eventId], references: [id])
+  eventId       Int
+  EventItem     EventItem[]
+  CommentThread CommentThread[]
 }
 
 model EventItem {
@@ -123,4 +128,34 @@ model EventItem {
   groupId Int
   order   Int        @default(0)
   section String     @default("")
+}
+
+model CommentThread {
+  id             Int         @id @default(autoincrement())
+  event          Event       @relation(fields: [eventId], references: [id])
+  eventId        Int
+  group          EventGroup? @relation(fields: [groupId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  groupId        Int?
+  section        String      @default("")
+  problemTag     String      @default("")
+  textRef        String      @default("")
+  textRefStart   Int         @default(0)
+  textRefEnd     Int         @default(0)
+  Comment        Comment[]
+  created        DateTime    @default(now())
+  createdBy      User?       @relation(fields: [createdByEmail], references: [email])
+  createdByEmail String
+  resolved       Boolean     @default(false)
+  instructorOnly Boolean     @default(false)
+}
+
+model Comment {
+  id             Int           @id @default(autoincrement())
+  thread         CommentThread @relation(fields: [threadId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  threadId       Int
+  markdown       String        @default("")
+  index          Int
+  created        DateTime      @default(now())
+  createdBy      User?         @relation(fields: [createdByEmail], references: [email])
+  createdByEmail String
 }

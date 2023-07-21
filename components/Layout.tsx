@@ -2,8 +2,7 @@ import { Course, Section, Theme } from 'lib/material'
 
 import { useRouter } from 'next/router'
 import { useSession, signIn, signOut } from "next-auth/react"
-import Link from 'next/link'
-import { useState, useEffect, useLayoutEffect } from 'react'
+import { useState } from 'react'
 import React,{ ReactNode } from 'react'
 import Footer from './Footer'
 import Header from './Header'

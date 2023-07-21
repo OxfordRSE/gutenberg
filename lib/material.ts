@@ -52,37 +52,41 @@ export type Material = {
   type: string,
 }
 
+export const sectionSplit = (section: String, material: Material): { theme?: Theme, course?: Course, section?: Section, url?: string } => {
+  const split = section.split('.')
+  if (split.length === 3) {
+      const theme = material.themes.find((theme) => theme.id === split[0])
+      const course = theme?.courses.find((course) => course.id === split[1])
+      const section = course?.sections.find((section) => section.id === split[2])
+      const url = `${basePath}/material/${split[0]}/${split[1]}/${split[2]}`
+      return {
+          theme,
+          course,
+          section,
+          url,
+      }
+  } else if (split.length === 2) {
+      const theme = material.themes.find((theme) => theme.id === split[0])
+      const course = theme?.courses.find((course) => course.id === split[1])
+      const url = `${basePath}/material/${split[0]}/${split[1]}`
+      return {   
+          theme,
+          course,
+          url,
+      }
+  } else if (split.length === 1) {
+      const theme = material.themes.find((theme) => theme.id === split[0])
+      const url = `${basePath}/material/${split[0]}`
+      return {
+          theme,
+          url,
+      }
+  }
+  return {}
+}
+
 export const eventItemSplit = (eventItem: EventItem, material: Material): { theme?: Theme, course?: Course, section?: Section, url?: string } => {
-    const split = eventItem.section.split('.')
-    if (split.length === 3) {
-        const theme = material.themes.find((theme) => theme.id === split[0])
-        const course = theme?.courses.find((course) => course.id === split[1])
-        const section = course?.sections.find((section) => section.id === split[2])
-        const url = `${basePath}/material/${split[0]}/${split[1]}/${split[2]}`
-        return {
-            theme,
-            course,
-            section,
-            url,
-        }
-    } else if (split.length === 2) {
-        const theme = material.themes.find((theme) => theme.id === split[0])
-        const course = theme?.courses.find((course) => course.id === split[1])
-        const url = `${basePath}/material/${split[0]}/${split[1]}`
-        return {   
-            theme,
-            course,
-            url,
-        }
-    } else if (split.length === 1) {
-        const theme = material.themes.find((theme) => theme.id === split[0])
-        const url = `${basePath}/material/${split[0]}`
-        return {
-            theme,
-            url,
-        }
-    }
-    return {}
+  return sectionSplit(eventItem.section, material)
 }
 
 export function remove_markdown(material: Material, except: Material | Theme | Course | Section | undefined) {

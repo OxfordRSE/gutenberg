@@ -21,6 +21,7 @@ function useActiveEvent(): [EventFull | undefined, (event: EventFull | undefined
 
   useEffect(() => {
     const store = sessionStorage.getItem('activeEvent')
+    console.log('useActiveEvent useEffect', store)
     if (store) {
       setActiveEventId(parseInt(store))
     }

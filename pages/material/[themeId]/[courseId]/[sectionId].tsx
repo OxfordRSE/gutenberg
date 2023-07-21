@@ -3,7 +3,7 @@ import prisma from 'lib/prisma'
 import { getMaterial, Course, Theme, Material, Section, remove_markdown } from 'lib/material'
 import Layout from 'components/Layout'
 import { makeSerializable } from 'lib/utils'
-import Content from 'components/Content'
+import Content from 'components/content/Content'
 import Title from 'components/ui/Title'
 import { Event } from 'lib/types'
 
