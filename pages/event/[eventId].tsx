@@ -193,7 +193,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }).catch((e) => []);
   return {
     paths: events.map((e) => ({ params: { eventId: `${e.id}` } })),
-    fallback: false,
+    fallback: true,
   };
 }
 
