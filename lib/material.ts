@@ -35,6 +35,7 @@ export type Course = {
   sections: Section[],
   type: string,
   attribution: Attribution[]
+  summary: string,
 }
 
 export type Theme = {
@@ -163,6 +164,8 @@ export async function getCourse(theme: string, course: string, no_markdown=false
   // @ts-expect-error
   const name = courseObject.attributes.name as string
   // @ts-expect-error
+  const summary = courseObject.attributes.summary as string || '';
+  // @ts-expect-error
   const dependsOn = courseObject.attributes.dependsOn as string[] || [];
   // @ts-expect-error
   const filenames = courseObject.attributes.files as string[] || [];
@@ -175,7 +178,7 @@ export async function getCourse(theme: string, course: string, no_markdown=false
   const sections = await Promise.all(files.map((file, i) => getSection(theme, course, i, file)));
   const type = 'Course';
 
-  return { id, theme, name, sections, dependsOn, markdown, type, attribution }
+  return { id, theme, name, sections, dependsOn, markdown, type, attribution, summary }
 }
 
 // https://stackoverflow.com/questions/21792367/replace-underscores-with-spaces-and-capitalize-words
