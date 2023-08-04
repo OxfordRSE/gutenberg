@@ -31,6 +31,7 @@ describe('EventCommentThreads component', () => {
             {
               id: 'course1',
               name: 'Course 1',
+              summary: '',
               type: 'course',
               attribution: [],
               dependsOn: [],
