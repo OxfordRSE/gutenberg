@@ -32,6 +32,9 @@ function useActiveEvent(): [EventFull | undefined, (event: EventFull | undefined
     if (store) {
       sessionStorage.setItem('activeEvent', store)
     }
+    else {
+      sessionStorage.removeItem('activeEvent')
+    }
   }, [activeEventId])
 
   const setActiveEvent = (event: EventFull | undefined) => {
