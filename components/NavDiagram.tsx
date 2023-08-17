@@ -43,6 +43,7 @@ const layoutOptions = {
   'elk.nodeSize.constraints': 'MINIMUM_SIZE',
   'elk.layered.spacing.nodeNodeBetweenLayers': '20',
   'elk.aspectRatio': '1.7',
+  'elk.zoomToFit': 'true',
 };
 
 const layoutOptionsTheme = { 
@@ -55,6 +56,7 @@ const layoutOptionsTheme = {
   'elk.nodeSize.constraints': 'MINIMUM_SIZE',
   'elk.layered.spacing.nodeNodeBetweenLayers': '20',
   'elk.aspectRatio': '1.7',
+  'elk.zoomToFit': 'true',
 };
 
 const padding = "[top=50.0,left=12.0,bottom=12.0,right=12.0]";
@@ -304,13 +306,6 @@ function generate_material_nodes(material: Material, graph: ElkNode) {
       },
     }
   ));
-  nodes = nodes.concat(...material.themes.map((theme, i) => {
-    if (graph.children?.[i]) {
-      return generate_theme_nodes(material, theme, graph.children?.[i]);
-    } else {
-      return [];
-    }
-  }));
   return nodes;
 }
 
@@ -384,7 +379,7 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course }) => {
 
     }, [stringifyMaterial]);
   const fitViewOptions: FitViewOptions = {
-    padding: 0.2,
+    padding: 0.15,
   };
   if (!nodes) {
     return <div>Generating diagram...</div>
@@ -401,6 +396,8 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course }) => {
         nodes={nodes} edges={edges}
         nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
+        minZoom={0.2}
+        maxZoom={2}
         fitView
         fitViewOptions={fitViewOptions}
       >

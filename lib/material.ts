@@ -44,6 +44,7 @@ export type Theme = {
   markdown: string,
   courses: Course[],
   type: string,
+  summary?: string,
 }
 
 export type Material = {
@@ -147,6 +148,8 @@ export async function getTheme(theme: string, no_markdown=false) : Promise<Theme
   const themeObject = fm(themeBuffer);
   // @ts-expect-error
   const name = themeObject.attributes.name as string
+  // @ts-expect-error
+  const summary = themeObject.attributes.summary as string
   const markdown = no_markdown ? '' : themeObject.body as string
   const id = theme;
   // @ts-expect-error
@@ -154,7 +157,7 @@ export async function getTheme(theme: string, no_markdown=false) : Promise<Theme
   const courses = await Promise.all(coursesId.map(course => getCourse(theme, course)));
   const type = 'Theme';
 
-  return { id, name, markdown, courses, type };
+  return { id, name, markdown, courses, type, summary };
 }
 
 export async function getCourse(theme: string, course: string, no_markdown=false) : Promise<Course> {

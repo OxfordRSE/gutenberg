@@ -9,6 +9,8 @@ import { EventFull as Event, EventFull } from 'lib/types';
 import useSWR, { Fetcher } from 'swr'
 import { basePath } from 'lib/basePath'
 import useActiveEvent from 'lib/hooks/useActiveEvents'
+import { Button, Card, theme } from 'flowbite-react'
+import { concat } from 'cypress/types/lodash'
 
 type HomeProps = {
   material: Material,
@@ -16,14 +18,32 @@ type HomeProps = {
 }
 
 const Home: NextPage<HomeProps> = ({ material, events }) => {
+  const themeCards = generateThemeCards(material)
   return (
     <Layout material={material}>
-      <Content markdown={material.markdown} />
-      <NavDiagram material={material}/>
+      <div className="items-stretch px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32 grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+        {themeCards}
+      </div>
     </Layout>
   )
 }
 
+function generateThemeCards(material: Material) {
+  const cards = material.themes.map((theme, index) => (
+    <Card key={index} href={`${basePath}/material/${theme.id}`} className="w-90%">
+      <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+        {theme.name}
+      </h5>
+      <p>
+        {theme.summary}
+      </p>
+    </Card>  
+  ));
+
+  return (
+    cards
+  );
+}
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const events = await prisma.event.findMany({
