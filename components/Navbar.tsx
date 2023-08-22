@@ -5,7 +5,9 @@ import { Event, EventFull } from 'lib/types'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import React from 'react'
+import { BiLogoGithub } from 'react-icons/bi'
 import { HiAtSymbol, HiCalendar } from 'react-icons/hi'
+import { baseGithubUrl } from 'lib/baseGithubUrl'
 
 interface Props {
   material: Material,
@@ -19,9 +21,8 @@ interface Props {
   showAttribution: boolean
 }
 
-const Navbar: React.FC<Props> = ({ theme, course, section, material, activeEvent, setShowAttribution, setSidebarOpen, sidebarOpen, showAttribution }) => {
+const Navbar: React.FC<Props> = ({ theme, course, section, material, activeEvent, setShowAttribution, setSidebarOpen, sidebarOpen, showAttribution}) => {
   const { data: session } = useSession()
-
   const openAttribution = () => {
     setShowAttribution(true)
   }
@@ -92,6 +93,14 @@ const Navbar: React.FC<Props> = ({ theme, course, section, material, activeEvent
           </li>
         }
       </ol>
+      { theme && course && section &&
+        <span className="gap-2 flex items-center w-[15%]">
+          <Link passHref={true} href={`${baseGithubUrl}/${theme.id}/${course.id}/${section.id}.md`} className="inline-flex text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white" style={{alignItems: "center"}}>
+            <BiLogoGithub style={{verticalAlign: "bottom"}}/>
+            Edit Source
+          </Link>
+        </span>
+      }
       <div className="gap-2 relative flex items-center">
         <Dropdown
           label={

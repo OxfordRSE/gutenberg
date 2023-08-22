@@ -1,0 +1,1 @@
+export const baseGithubUrl = process.env.NEXT_PUBLIC_GITHUB_MATERIAL_BASE_URL;
