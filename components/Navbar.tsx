@@ -95,7 +95,7 @@ const Navbar: React.FC<Props> = ({ theme, course, section, material, activeEvent
       </ol>
       { theme && course && section &&
         <span className="gap-2 flex items-center w-[15%]">
-          <Link passHref={true} href={`${baseGithubUrl}/${theme.id}/${course.id}/${section.id}.md`} className="inline-flex text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white" style={{alignItems: "center"}}>
+          <Link passHref={true} href={`${baseGithubUrl}/edit/main/${theme.id}/${course.id}/${section.id}.md`} className="inline-flex text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white" style={{alignItems: "center"}}>
             <BiLogoGithub style={{verticalAlign: "bottom"}}/>
             Edit Source
           </Link>
