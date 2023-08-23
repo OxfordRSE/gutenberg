@@ -47,7 +47,7 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
   });
 
   const eventMapToIndex = eventItems.reduce((acc, item, index) => {
-    acc[item.order] = index;
+    acc[item.id] = index;
     return acc;
   }, {} as {[key: number]: number});
 
@@ -81,9 +81,14 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
         label: `${theme.name} - ${course.name}`,
       }].concat(
         course.sections.map((section) => {
+        const tags = section.tags.join(', ');
+        let label = `${theme.name} - ${course.name} - ${section.name}`;
+        if (tags.length > 0) {
+          label = `${label} [${tags}]`
+        }
         return {
           value: `${theme.id}.${course.id}.${section.id}`,
-          label: `${theme.name} - ${course.name} - ${section.name}`,
+          label,
         }
       }))
     }))
@@ -138,7 +143,7 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
       <DateTimeField label="End" name="end" control={control} />
       <Title text="Items" />
       { eventItems.map((item, order) => {
-        const index = eventMapToIndex[order];
+        const index = eventMapToIndex[item.id];
         return (
           <Stack key={item.id} direction='row' className='items-end'>
             <SelectField label="Section" name={`EventItem.${index}.section`} control={control} options={sectionsOptions} />
