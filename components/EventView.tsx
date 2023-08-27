@@ -53,7 +53,7 @@ const EventView: React.FC<EventsProps> = ({ material, event }) => {
         <Timeline.Point />
         <Timeline.Content>
           <Timeline.Time>
-            {new Date(group.start).toUTCString()}
+            {new Date(group.start).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short'})}
           </Timeline.Time>
           <Timeline.Title>
             <a href={`${basePath}/event/${event.id}/${group.id}`}  className="font-bold text-gray-800 dark:text-gray-300 hover:underline">

@@ -89,7 +89,7 @@ const Event: NextPage<EventProps> = ({ material, event }) => {
   const eventView = (
     <>
       <Title text={event.name} />
-      <SubTitle text={`${new Date(event.start).toUTCString()} - ${new Date(event.end).toUTCString()}`} />
+      <SubTitle text={`${new Date(event.start).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short'})} - ${new Date(event.end).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short'})}`} />
       <Content markdown={eventData ? eventData.content : event.content} />
       { ((isInstructor || isAdmin) && eventData ) && (
           <>

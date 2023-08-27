@@ -110,7 +110,7 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
       <Title text={event.name} />
       </a>
       <SubTitle text={eventGroup.name} />
-      <SubTitle text={`Time: ${new Date(eventGroup.start).toUTCString()} - ${new Date(eventGroup.end).toUTCString()}`} />
+      <SubTitle text={`Time: ${new Date(eventGroup.start).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short'})} - ${new Date(eventGroup.end).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short'})}`} />
       <SubTitle text={`Location: ${eventGroup.location}`} />
       <Content markdown={eventGroup.content} />
       <SubTitle text="Material" />
