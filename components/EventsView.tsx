@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Material } from 'lib/material'
 import { EventFull, Event } from 'lib/types'
 import { Button, Timeline } from 'flowbite-react'
@@ -16,6 +16,12 @@ type EventsProps = {
 }
 
 const EventsView: React.FC<EventsProps> = ({ material, events }) => {
+  // don't show date/time until the page is loaded (due to rehydration issues)
+  const [showDateTime, setShowDateTime] = useState(false);
+  useEffect(() => {
+    setShowDateTime(true);
+  }, []);
+
   const { events: currentEvents, mutate } = useEvents();
   if (currentEvents) {
     events = currentEvents;
@@ -48,7 +54,7 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
             <Timeline.Point />
             <Timeline.Content>
               <Timeline.Time>
-                <Link href={`/event/${event.id}`}>{event.start.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short'})}</Link>
+                <Link href={`/event/${event.id}`}>{showDateTime && event.start.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short'})}</Link>
               </Timeline.Time>
               <Timeline.Title>
                 <Link href={`/event/${event.id}`}>{event.name}</Link>

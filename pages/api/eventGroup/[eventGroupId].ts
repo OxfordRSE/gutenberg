@@ -76,6 +76,13 @@ const eventHandler = async (
         res.status(401).json({ error: 'Unauthorized' });
         return; 
     }
+    
+    // make sure EventItem.order is a number
+    eventItemData.forEach((eventItem) => {
+        if (typeof eventItem.order === 'string') {
+          eventItem.order = parseInt(eventItem.order);
+        }
+    });
 
     const updatedEventGroup = await prisma.eventGroup.update({
         where: { id: parseInt(eventGroupId) },
