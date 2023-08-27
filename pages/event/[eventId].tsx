@@ -93,10 +93,10 @@ const Event: NextPage<EventProps> = ({ material, event }) => {
       <Content markdown={eventData ? eventData.content : event.content} />
       { ((isInstructor || isAdmin) && eventData ) && (
           <>
-          <Title text="Student Progress" />
-          <EventProblems event={eventData} material={material} /> 
           <Title text="Unresolved Threads" />
           <EventCommentThreads event={eventData} material={material} /> 
+          <Title text="Student Progress" />
+          <EventProblems event={eventData} material={material} /> 
           </>
       )}
     </>
