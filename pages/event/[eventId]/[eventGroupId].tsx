@@ -14,7 +14,7 @@ import useProfile from 'lib/hooks/useProfile'
 import { Button, Tabs } from 'flowbite-react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { EventGroup } from 'pages/api/eventGroup/[eventGroupId]'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { putEventGroup } from 'lib/actions/putEventGroup'
 import Stack from 'components/ui/Stack'
 import Textfield from 'components/forms/Textfield'
@@ -32,6 +32,11 @@ type EventGroupProps = {
 }
 
 const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroupId }) => {
+  // don't show date/time until the page is loaded (due to rehydration issues)
+  const [showDateTime, setShowDateTime] = useState(false);
+  useEffect(() => {
+    setShowDateTime(true);
+  }, []);
   const { eventGroup, error: eventGroupError, isLoading: eventGroupIsLoading, mutate: mutateEventGroup } = useEventGroup(eventGroupId)
   const { userProfile, error: profileError, isLoading: profileLoading } = useProfile();
   const isAdmin = userProfile?.admin;
@@ -110,7 +115,7 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
       <Title text={event.name} />
       </a>
       <SubTitle text={eventGroup.name} />
-      <SubTitle text={`Time: ${new Date(eventGroup.start).toUTCString()} - ${new Date(eventGroup.end).toUTCString()}`} />
+      <SubTitle text={showDateTime ? `Time: ${new Date(eventGroup.start).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short'})} - ${new Date(eventGroup.end).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short'})}` : ''} />
       <SubTitle text={`Location: ${eventGroup.location}`} />
       <Content markdown={eventGroup.content} />
       <SubTitle text="Material" />

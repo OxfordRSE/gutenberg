@@ -157,7 +157,7 @@ const Thread = ({ threadId, active, setActive, onDelete}: ThreadProps) => {
             {commentThread?.createdByEmail}
           </span>
           <span className="block text-sm">
-            {commentThread?.created ? new Date(commentThread?.created).toUTCString() : ""}
+            {commentThread?.created ? new Date(commentThread?.created).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short'}) : ""}
           </span>
           </>
         )}>

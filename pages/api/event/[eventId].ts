@@ -47,7 +47,7 @@ const eventHandler = async (
   if (req.method === 'GET') {
     const event = await prisma.event.findUnique({
       where: { id: parseInt(eventId) },
-      include: { EventGroup: { include: { EventItem: true } }, UserOnEvent: { include: { user: true } } },
+      include: { EventGroup: { include: { EventItem: true }, orderBy: { start: "asc" } }, UserOnEvent: { include: { user: true } } },
     });
 
 

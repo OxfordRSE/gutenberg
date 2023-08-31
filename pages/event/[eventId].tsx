@@ -24,7 +24,7 @@ import useProfile from 'lib/hooks/useProfile'
 import { Event as EventWithUsers } from 'pages/api/event/[eventId]'
 import Stack from 'components/ui/Stack'
 import { putEvent } from 'lib/actions/putEvent'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Prisma } from '@prisma/client'
 import SelectField from 'components/forms/SelectField'
 import Checkbox from 'components/forms/Checkbox'
@@ -38,6 +38,12 @@ type EventProps = {
 
 
 const Event: NextPage<EventProps> = ({ material, event }) => {
+  // don't show date/time until the page is loaded (due to rehydration issues)
+  const [showDateTime, setShowDateTime] = useState(false);
+  useEffect(() => {
+    setShowDateTime(true);
+  }, []);
+
   const { event: eventData, error: eventError, isLoading: eventIsLoading, mutate: mutateEvent } = useEvent(event.id)
   if (eventData) {
     event = eventData
@@ -89,14 +95,14 @@ const Event: NextPage<EventProps> = ({ material, event }) => {
   const eventView = (
     <>
       <Title text={event.name} />
-      <SubTitle text={`${new Date(event.start).toUTCString()} - ${new Date(event.end).toUTCString()}`} />
+      <SubTitle text={showDateTime ? `${new Date(event.start).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short'})} - ${new Date(event.end).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short'})}` : ''} />
       <Content markdown={eventData ? eventData.content : event.content} />
       { ((isInstructor || isAdmin) && eventData ) && (
           <>
-          <Title text="Student Progress" />
-          <EventProblems event={eventData} material={material} /> 
           <Title text="Unresolved Threads" />
           <EventCommentThreads event={eventData} material={material} /> 
+          <Title text="Student Progress" />
+          <EventProblems event={eventData} material={material} /> 
           </>
       )}
     </>

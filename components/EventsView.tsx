@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Material } from 'lib/material'
 import { EventFull, Event } from 'lib/types'
 import { Button, Timeline } from 'flowbite-react'
@@ -16,6 +16,12 @@ type EventsProps = {
 }
 
 const EventsView: React.FC<EventsProps> = ({ material, events }) => {
+  // don't show date/time until the page is loaded (due to rehydration issues)
+  const [showDateTime, setShowDateTime] = useState(false);
+  useEffect(() => {
+    setShowDateTime(true);
+  }, []);
+
   const { events: currentEvents, mutate } = useEvents();
   if (currentEvents) {
     events = currentEvents;
@@ -24,6 +30,17 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
   for (let i = 0; i < events.length; i++) {
     events[i].start = new Date(events[i].start)
   }
+  
+  // sort events by start date
+  events.sort((a, b) => {
+    if (a.start < b.start) {
+      return -1
+    }
+    if (a.start > b.start) {
+      return 1
+    }
+    return 0
+  })
 
   const handleCreateEvent = () => {
     postEvent().then((event) => mutate([...(currentEvents || []), event]))
@@ -37,7 +54,7 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
             <Timeline.Point />
             <Timeline.Content>
               <Timeline.Time>
-                <Link href={`/event/${event.id}`}>{event.start.toUTCString()}</Link>
+                <Link href={`/event/${event.id}`}>{showDateTime && event.start.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short'})}</Link>
               </Timeline.Time>
               <Timeline.Title>
                 <Link href={`/event/${event.id}`}>{event.name}</Link>

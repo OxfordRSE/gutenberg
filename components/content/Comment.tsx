@@ -75,7 +75,7 @@ const CommentView = ({ comment, mutateComment, deleteComment}: Props) => {
                 {comment?.createdByEmail}
               </span>
               <span className="block text-sm">
-                {comment?.created ? new Date(comment?.created).toUTCString() : ""}
+                {comment?.created ? new Date(comment?.created).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short'}) : ""}
               </span>
               </>
             )}>
