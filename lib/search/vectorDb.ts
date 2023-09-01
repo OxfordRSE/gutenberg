@@ -51,7 +51,7 @@ export async function jsonToIndex(json: any[]) {
         })
 }
     
-export async function searchVectors(vector: number[], k: number = 5) {
+export async function searchVector(vector: number[], k: number = 5) {
     const response = await client.search(qdrantCollectionName, { vector: vector, limit: k});
     console.log(response);
     return response;

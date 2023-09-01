@@ -2,7 +2,6 @@ import OpenAIApi from 'openai';
 import { SectionObj, parsePages } from 'lib/search/splitMarkdown';
 
 const openaiEmbeddingModel = 'text-embedding-ada-002';
-const openai = new OpenAIApi();
 
 export async function getSectionVectors(sections : SectionObj[] | SectionObj) {
   // if sections is not an array, make it an array
@@ -16,6 +15,7 @@ export async function getSectionVectors(sections : SectionObj[] | SectionObj) {
 
 
 export async function getEmbedding(text : string[] | string) {
+  const openai = new OpenAIApi({apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY});
   const responsePromise = openai.embeddings.create({
     // add all the text params to a list to query openai
     input: text,
