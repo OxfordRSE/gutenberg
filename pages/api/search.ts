@@ -1,25 +1,23 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getEmbedding } from '../../lib/search/createVectors'
-import { searchVector } from '../../lib/search/vectorDb';
- 
-type ResponseData = {
-    url: string
-}
+import { getEmbedding } from 'lib/search/createVectors'
+import { searchVector, SearchResult } from 'lib/search/vectorDb';
+
  
 export default function searchHandler(
         req: NextApiRequest,
-        res: NextApiResponse<ResponseData>
+        res: NextApiResponse<SearchResult[]>
     ) {
-        getEmbedding(req.body).then((vector) => {
-            searchVector(vector.data[0].embedding).then((response) => { 
+        console.log('request received', req.body)
+        getEmbedding(req.body).then(async (vector) => {
+            console.log('vectorised',vector.data[0].embedding)
+            searchVector(vector.data[0].embedding).then((response: SearchResult[]) => { 
                 console.log(response)
-                if (response[0]) {
-                    res.status(200).json({ url: response[0].payload.url})
-                } 
+                if (response) {
+                    res.status(200).json(response)
+                }
                 else {
-                    res.status(200).json({ url: "No URL found" })
+                    res.status(404)
                 }
             })
-
         })
 }

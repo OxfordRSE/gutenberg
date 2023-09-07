@@ -8,7 +8,10 @@ export async function getSectionVectors(sections : SectionObj[] | SectionObj) {
   if (!Array.isArray(sections)) {
     sections = [sections]
   }
-  const text = sections.map(obj => obj.payload.text)
+  const text = sections.map(obj => obj.payload.theme+'\n'
+                            +obj.payload.course+'\n'
+                            +obj.payload.page+'\n'
+                            +obj.payload.text)
   const vectors = await getEmbedding(text);
   return vectors.data;
 }

@@ -1,56 +1,43 @@
 import { Button, Label, TextInput } from 'flowbite-react';
 import { BiSearch } from 'react-icons/bi';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import searchQuery from 'lib/actions/searchMaterial';
-
-interface SearchResult {
-    id: string;
-    content: string;
-    title: string;
-    url: string;
-  }
-  
+import { SearchResult } from 'lib/search/vectorDb';
+import { SearchResultsPopover } from 'components/content/SearchResultsPopover'
 
 function SearchBar() {
+    const ref = useRef<HTMLDivElement>(null)
     const [query, setQuery] = useState<string>('');
     const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
     const [isOpen, setIsOpen] = useState<boolean>(false);
-  
-    useEffect(() => {
-      // Fetch the embedding vector
-    }, []);
-  
+    
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const newQuery = event.target.value;
       setQuery(newQuery);
       console.log(newQuery)
-      // Call the searchVector function when the input changes
+      if (newQuery.length > 4)  {
         searchQuery(newQuery).then((results) => {
-            setSearchResults(results);
-            setIsOpen(true);
-        });
+          setSearchResults(results);
+          setIsOpen(true);
+      })}
+      else {
+        setIsOpen(false);
+      }
     };
   
     return (
-      <div className="search-bar">
+      
+      <div ref={ref} className="search-bar">
         <input
           type="text"
-          placeholder="Search"
+          placeholder="Search Material"
           value={query}
           onChange={handleInputChange}
         />
-        {isOpen && (
-          <div className="search-results">
-            {searchResults.map((result) => (
-              <div key={result.id} className="search-result">
-                {result.name}
-                {/* Add other result properties as needed */}
-              </div>
-            ))}
-          </div>
-        )}
+        {isOpen && <SearchResultsPopover target={ref} results={searchResults} isOpen={isOpen}/>}
       </div>
-    );
-  };
-  
-  export default SearchBar;
+        
+      
+    )}  
+
+export default SearchBar;

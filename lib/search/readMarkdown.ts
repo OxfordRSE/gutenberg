@@ -23,23 +23,10 @@ export function getDocsList(materialDir: string): string[] {
   return markdownFiles;
 }
 
-
-function removeFooter(pageMd: string): string {
-    return pageMd.split("[Next ![]")[0];
-}
-  
 function removeHeader(pageMd: string): string {
     const sections = pageMd.split("---");
     const cleanedMd = sections.splice(2).join('\n');
     return cleanedMd
-}
-
-function removeLineNumbers(pageMd: string): string {
-    const lines = pageMd.split('\n');
-    const cleanedLines = lines.map(line => line.replace(/^\s*\d+\s*/, ''));
-    
-    const cleanedPageMd = cleanedLines.join('\n');
-    return cleanedPageMd;
 }
 
 function removeChallenge(pageMd: string): string {
@@ -61,8 +48,8 @@ function removeDirectives(pageMd: string): string {
 
 function removeTableRows(pageMd: string): string {
     const lines = pageMd.split('\n');
-    const cleanedLines = lines.map(line => (line.length === 0 || !/^\|\s.*\s\|$/.test(line)) ? line : '');
-    
+    let cleanedLines = lines.map(line => (line.length === 0 || !/^\|\s.*\s\|$/.test(line)) ? line : '');
+    cleanedLines = lines.map(line => (line.length === 0 || !/^\|\s.*\s\|$/.test(line)) ? line : '');
     const cleanedPageMd = cleanedLines.join('\n');
     return cleanedPageMd;
 }
@@ -72,33 +59,11 @@ function removeEscapedChars(pageMd: string): string {
     return cleanedPageMd;
 }
 
-function removeLinks(pageMd: string): string {
-    const linkPattern = /\[.*?\]\(.*?\)/;
-    const match = pageMd.match(linkPattern);
-  
-    if (match) {
-      const [link] = match;
-      const [start, end] = match.index !== undefined ? [match.index, match.index + link.length] : [0, 0];
-      const linkText = link.slice(1).split(']')[0];
-  
-      if (linkText !== "¶") {
-        return pageMd.slice(0, start) + linkText + removeLinks(pageMd.slice(end));
-      } else {
-        return pageMd.slice(0, end) + link + removeLinks(pageMd.slice(end));
-      }
-    }
-  
-    return pageMd;
-}
-
 function parseMarkdown(pageMd: string): string {
-        let cleanedMd = removeFooter(pageMd);
-        cleanedMd = removeHeader(cleanedMd);
-        cleanedMd = removeLineNumbers(cleanedMd);
+        let cleanedMd = removeHeader(pageMd);
         cleanedMd = removeTableRows(cleanedMd);
-        cleanedMd = removeLinks(cleanedMd);
         cleanedMd = removeChallenge(cleanedMd);
-        // want to deal with challenges properly but for now this is redundant.
+        // TODO: want to deal with challenges properly
         cleanedMd = removeDirectives(cleanedMd);
         cleanedMd = removeEscapedChars(cleanedMd);
       

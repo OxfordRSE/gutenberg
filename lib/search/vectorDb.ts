@@ -1,10 +1,22 @@
 
-import {QdrantClient} from '@qdrant/js-client-rest';
-import { type } from 'os';
-import { MdPointOfSale } from 'react-icons/md';
+import { QdrantClient } from '@qdrant/js-client-rest';
+import { SectionObj } from 'lib/search/splitMarkdown';
+
+
+export type SearchResult = {
+    id?: string | number | null | undefined;
+    content?: string | null | undefined;
+    title?: string | null | undefined;
+    url?: string | null | undefined;
+    theme?: string | null | undefined;
+    course?: string | null | undefined;
+    page?: string | null | undefined;
+    score?: number | null | undefined;
+  }
+  
 
 const qdrantCollectionName = process.env.QDRANT_COLLECTION_NAME as string;
-const qdrantDbUrl = "http://localhost:6333";
+const qdrantDbUrl = process.env.QDRANT_DB_URL as string;
 
 const client = new QdrantClient({url: qdrantDbUrl});
 
@@ -37,7 +49,6 @@ export async function jsonToIndex(json: any[]) {
     const ids = json.map(obj => obj.id);
     const vectors = json.map(obj => obj.vector);
     const payloads = json.map(obj => obj.payload);
-    const testId = ids[45]
 
     await deleteIndex()
         .then(async () => {
@@ -47,12 +58,35 @@ export async function jsonToIndex(json: any[]) {
             await client.upsert(qdrantCollectionName, {
                 wait: true,
                 batch: {ids:ids, vectors:vectors, payloads:payloads},
-            });
+            })
         })
 }
     
 export async function searchVector(vector: number[], k: number = 5) {
-    const response = await client.search(qdrantCollectionName, { vector: vector, limit: k});
-    console.log(response);
-    return response;
+    
+    const response = await client.search(qdrantCollectionName, { vector: vector, limit: k})
+    let searchResults: SearchResult[] = [];
+    for (let i = 0; i < response.length; i++) {
+        let payload = response[i].payload;
+        if (payload !== null && payload !== undefined) {
+            if (typeof payload.url === 'string' && typeof payload.text === 'string' && 
+                typeof payload.title === 'string' && typeof payload.theme === 'string' && 
+                typeof payload.course === 'string' && typeof payload.page === 'string') {
+                let sR: SearchResult = {
+                    id: response[i].id,
+                    url: payload.url,
+                    content: payload.text,
+                    title: payload.title,
+                    theme: payload.theme,
+                    course: payload.course,
+                    page: payload.page,
+                    score: response[i].score,
+                }
+                searchResults.push(sR);
+            }   
+
+        }
+    }
+        return searchResults;
 }
+  

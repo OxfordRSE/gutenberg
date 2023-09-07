@@ -46,3 +46,6 @@ dev.db*
 gut
 gut-cert.pub
 table.md
+
+# vector index
+material.json

@@ -3498,10 +3498,10 @@ flatted@^3.1.0:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.7.tgz#609f39207cb614b89d0765b477cb2d437fbf9787"
   integrity sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==
 
-flowbite-react@^0.4.2:
-  version "0.4.10"
-  resolved "https://registry.yarnpkg.com/flowbite-react/-/flowbite-react-0.4.10.tgz#935a0352fc7f1c861fe6acbd5dc3c3e325422dca"
-  integrity sha512-VGtOJDOSk3VF6MODerKQ9AbP9Um0MdkI8YMJOUkL/Gou4/mnAOYMNuheUqF/tqg6WkxWsqcDybPgl87bYRI4LQ==
+flowbite-react@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/flowbite-react/-/flowbite-react-0.5.0.tgz#ff9f4930be93c119038a5b6331462096fe88205f"
+  integrity sha512-OoJ0Dbv0ZuunTkPwa802wL3kalUWQ7YBh1t4It5uVfAYs5KUvOqhXIygdlVMawnmq3+xkMPbUZkWh1sDxVb3nw==
   dependencies:
     "@floating-ui/react" "^0.24.3"
     flowbite "^1.6.6"

@@ -2,7 +2,7 @@ import { basePath } from "lib/basePath"
 
 // GET /api/search
 const searchQuery = async (query: string) => {
-  const apiPath = `${basePath}/api/searchQuery/`
+  const apiPath = `${basePath}/api/search/`
   const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'text/html' },

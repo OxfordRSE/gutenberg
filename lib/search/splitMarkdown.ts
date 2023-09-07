@@ -1,24 +1,29 @@
 import { v4 as uuid } from 'uuid';
-import * as fs from 'fs';
-
+import fs from 'fs'
+import fsPromises from 'fs/promises'
+import fm from 'front-matter'
 import { getDocsList, readPageMarkdown } from "./readMarkdown";
 import { createSectionVector } from "./createVectors";
+import { title } from 'process';
+import { theme } from 'flowbite-react';
 
 export type SectionObj = {
   id: string;
   vector: number[];
   payload: {text: string,
-            title?: string,
+            title: string,
             url: string,
-            section_anchor: string,
-            block_type: string}
-  
+            sectionAnchor: string,
+            blockType: string
+            theme: string,
+            course: string,
+            page: string,} 
 };
 
 const materialDir = `${process.env.MATERIAL_DIR}`;
 
 export async function materialToJson() {
-  let sections = parsePages();
+  let sections = await parsePages();
   sections = await createSectionVector(sections); 
   const json = await sectionsToJson(sections);
   // TODO: check if the JSON is newer than the older JSON
@@ -26,31 +31,29 @@ export async function materialToJson() {
   fs.writeFileSync('material.json', json);
 }
 
-export function parsePages() {
+export async function parsePages() {
   const fileList = getDocsList(materialDir);
   let sectionsList: SectionObj[][] = [];
   for (const file of fileList) {
     const pageMd = readPageMarkdown(file)
-    const sections = splitPageIntoSections(pageMd);
-    sectionsList.push(createSections(sections, file))
+    const [titles, sectionContents, sectionAnchors] = splitPageIntoSections(pageMd);
+    sectionsList.push(await createSections(titles, sectionContents, sectionAnchors, file));
   }
-  console.log(sectionsList.flat().length)
-  console.log(sectionsList.flat()[300])
   return sectionsList.flat();
 }
 
-function getPageUrl(filepath: string, anchor: string = ''): string {
+function getPageUrl(filepath: string, anchor: string): string {
   const urlBase = `/material${filepath.split(materialDir)[1]}`.split('.md')[0];  
-  if (anchor) {
-      return `${urlBase}#${anchor}`;
+  if (anchor !== '') {
+    return `${urlBase}#${anchor}`;
   } else {
-      return urlBase;
+    return `${urlBase}`
   }
 }
 
 function extractTitleAndAnchor(header: string): [string, string] {
     const title = header.replace(/#/g, '').trim();
-    const anchor = title.replace(/ /g, '-').replace(/:/g, '').replace(/`/g,'').toLowerCase();
+    const anchor = title.replace(/ /g, '-').replace(/:/g, '').replace(/`/g,'');
     return [title, anchor];
 }
 
@@ -61,27 +64,34 @@ function splitTextCodeBlocks(pageMd: string): [string[], string[]] {
   return [text, code];
 }
 
-export function splitPageIntoSections(pageMd: string): Record<string, string> {
+export function splitPageIntoSections(pageMd: string): [string[], string[], string[]]{
     const [text, code] = splitTextCodeBlocks(pageMd);
 
-    const sections: Record<string, string> = {};
-    let currSectionContent = '';
-    let sectionKey: string | null = null;
+    let titles: string[] = [];
+    let sectionContents: string[] = [];
+    let sectionAnchors: string[] = [];
+    let currSectionContent: string = '';
+    let sectionKey: string = '';
+    let title: string = '';
+    let anchor: string = '';
   
     for (let i = 0; i < text.length; i++) {
       const textBlockLines = text[i].split('\n');
       for (const line of textBlockLines) {
         if (line.trim().startsWith("#")) {
+          // line is a title so we use it as a new section and save the old
           if (currSectionContent !== '') {
-            sections[sectionKey!] = currSectionContent;
+            sectionAnchors.push(sectionKey!);
+            sectionContents.push(currSectionContent);
+            titles.push(title!);
             currSectionContent = '';
           }
-  
-          const [title, anchor] = extractTitleAndAnchor(line);
+          
+          [title, anchor] = extractTitleAndAnchor(line);
           currSectionContent += `${title}:`;
           sectionKey = anchor;
         } else {
-          // line is a title so we use it as a new section
+
           if (line.trim().startsWith("#") && line.includes(" ")) {
             currSectionContent += `\n${line.split(" ")[1]}:`;
           } else {
@@ -90,45 +100,94 @@ export function splitPageIntoSections(pageMd: string): Record<string, string> {
         }
       }
   
-      if (i < code.length) {
+
         // TODO: make each code block a section with the same anchor tag as the preceding content
-        currSectionContent += `\n\`\`\`${code[i]}\`\`\``;
-      }
+      
     }
   
     if (sectionKey !== null) {
-      sections[sectionKey] = currSectionContent;
+      sectionAnchors.push(sectionKey!);
+      sectionContents.push(currSectionContent);
+      titles.push(title);
     }
-  
-    return sections;
+    
+    return [titles, sectionContents, sectionAnchors];
 }
 
-function createSections(sections: Record<string, string>, file: string): SectionObj[] {
+async function createSections(titles: string[], sectionContents: string[], sectionAnchors: string[], file: string): Promise<SectionObj[]> {
   const sectionsList: SectionObj[] = [];
-  for (const [sectionAnchor, sectionContent] of Object.entries(sections)) {
+  for (let i = 0; i < sectionContents.length; i++) {
+    const sectionContent = sectionContents[i];
+    const sectionTitle = titles[i];
+    const sectionAnchor = sectionAnchors[i];
     const pageUrl = getPageUrl(file, sectionAnchor);
     const blockType = 'text';
-    const section = createSection(sectionContent, sectionAnchor, pageUrl, blockType);
+    const themeTitle = await getThemeTitle(file);
+    const courseTitle = await getCourseTitle(file);
+    const pageTitle = await getPageTitle(file);
+    const section = createSection(sectionContent, sectionAnchor, pageUrl, blockType, sectionTitle, themeTitle, courseTitle, pageTitle);
     sectionsList.push(section);
   }
   return sectionsList;
 }
 
+async function getThemeTitle(file: string): Promise<string> {
+  const dir = file.split('/').slice(0,2).join('/')
+  if (dir.includes('.md')) {
+    return ''
+  }
+  const buffer = await fsPromises.readFile(`${dir}/index.md`, {encoding: "utf8"});
+  const material = fm(buffer);
+
+  // @ts-expect-error
+  const themeTitle = await material.attributes.name as string
+  return themeTitle
+}
+
+async function getCourseTitle(file: string): Promise<string> {
+  const dir = file.split('/').slice(0,3).join('/')
+  if (dir.includes('.md')) {
+    return ''
+  }
+  const buffer = await fsPromises.readFile(`${dir}/index.md`, {encoding: "utf8"});
+  const material = fm(buffer);
+
+  // @ts-expect-error
+  const course = material.attributes.name as string
+  return course
+}
+
+async function getPageTitle(file: string): Promise<string> {
+  const buffer = await fsPromises.readFile(file, {encoding: "utf8"});
+  const material = fm(buffer);
+  // @ts-expect-error
+  const section = material.attributes.name as string
+  return section
+}
+
 function createSection(
-  sectionContent: string,
-  sectionAnchor: string,
-  pageUrl: string,
-  blockType: string
+    sectionContent: string,
+    sectionAnchor: string,
+    pageUrl: string,
+    blockType: string,
+    title: string,
+    themeTitle: string,
+    courseTitle: string,
+    pageTitle: string,
   ) {
   const id = uuid();
   const section: SectionObj = {
     id: id,
     vector: [],
     payload: {text: sectionContent,
+              title: title,
               url: pageUrl,
-              section_anchor: sectionAnchor,
-              block_type: blockType,}  
-  };
+              sectionAnchor: sectionAnchor,
+              blockType: blockType,
+              theme: themeTitle,
+              course: courseTitle,
+              page: pageTitle  
+  }};
   return section
 }
 
