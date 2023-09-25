@@ -1,5 +1,5 @@
 import OpenAIApi from 'openai';
-import { SectionObj, parsePages } from 'lib/search/splitMarkdown';
+import { SectionObj, parsePages } from './splitMarkdown';
 
 const openaiEmbeddingModel = 'text-embedding-ada-002';
 
@@ -8,17 +8,18 @@ export async function getSectionVectors(sections : SectionObj[] | SectionObj) {
   if (!Array.isArray(sections)) {
     sections = [sections]
   }
-  const text = sections.map(obj => obj.payload.theme+'\n'
-                            +obj.payload.course+'\n'
-                            +obj.payload.page+'\n'
-                            +obj.payload.text)
+  // remove /n from the text, before we send it to openai
+  let text = sections.map(obj => obj.payload.theme+' '
+                            +obj.payload.course+' '
+                            +obj.payload.page+' '
+                            +obj.payload.text.replace(/\n/g, ' '))
   const vectors = await getEmbedding(text);
   return vectors.data;
 }
 
 
 export async function getEmbedding(text : string[] | string) {
-  const openai = new OpenAIApi({apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY});
+  const openai = new OpenAIApi();
   const responsePromise = openai.embeddings.create({
     // add all the text params to a list to query openai
     input: text,

@@ -1,14 +1,14 @@
-import { Avatar, Dropdown } from 'flowbite-react'
-import { basePath } from 'lib/basePath'
+import { Avatar, Dropdown, Tooltip } from 'flowbite-react'
 import { Course, Material, Section, Theme } from 'lib/material'
 import { Event, EventFull } from 'lib/types'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import React from 'react'
-import { BiLogoGithub } from 'react-icons/bi'
-import { HiAtSymbol, HiCalendar } from 'react-icons/hi'
+import { BiLogoGithub, BiSearchAlt2 } from 'react-icons/bi'
+import { HiAtSymbol, HiCalendar, HiSearchCircle } from 'react-icons/hi'
 import { baseMaterialUrl } from 'lib/baseMaterialUrl'
-import MaterialSearch from './forms/SearchBar'
+import { searchQueryState } from 'components/SearchDialog'
+import { useRecoilState } from 'recoil'
 
 interface Props {
   material: Material,
@@ -23,9 +23,15 @@ interface Props {
 }
 
 const Navbar: React.FC<Props> = ({ theme, course, section, material, activeEvent, setShowAttribution, setSidebarOpen, sidebarOpen, showAttribution}) => {
+  const [showSearch, setShowSearch] = useRecoilState(searchQueryState)
   const { data: session } = useSession()
   const openAttribution = () => {
     setShowAttribution(true)
+  }
+
+  const openSearch = () => {
+    console.log('open search', showSearch)
+    setShowSearch(true)
   }
 
   const handleToggle= () => {
@@ -94,16 +100,17 @@ const Navbar: React.FC<Props> = ({ theme, course, section, material, activeEvent
           </li>
         }
       </ol>
-      <MaterialSearch/>
+      <div className="gap-1 relative flex items-center">
+      <Tooltip content="Search Material">
+        <HiSearchCircle onClick={openSearch} style={{verticalAlign: "bottom'"}} className="pointer-events-auto cursor-pointer w-10 h-10 text-gray-500 hover:text-gray-400"/>
+      </Tooltip>
       { theme && course && section &&
-        <span className="gap-2 flex items-center w-[15%]">
-          <Link passHref={true} href={`${baseMaterialUrl}/${theme.id}/${course.id}/${section.id}.md`} className="inline-flex text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white" style={{alignItems: "center"}}>
-            <BiLogoGithub style={{verticalAlign: "bottom"}}/>
-            Edit Source
+          <Link passHref={true} href={`${baseMaterialUrl}/edit/main/${theme.id}/${course.id}/${section.id}.md`} className="inline-flex text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+            <Tooltip content="Edit Source">
+              <BiLogoGithub className="m-0 pointer-events-auto cursor-pointer w-10 h-10 text-gray-500 hover:text-gray-400"/>
+            </Tooltip>
           </Link>
-        </span>
       }
-      <div className="gap-2 relative flex items-center">
         <Dropdown
           label={
           <div className="inline-flex items-center text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
@@ -161,8 +168,9 @@ const Navbar: React.FC<Props> = ({ theme, course, section, material, activeEvent
             )}
         </Dropdown>
         <div className="h-full border-r border-gray-500"></div>
-        <HiAtSymbol onClick={openAttribution} className="pointer-events-auto cursor-pointer w-10 h-10 text-gray-500 hover:text-gray-400"/>
-        
+        <Tooltip content="Licensing and Attribution">
+          <HiAtSymbol onClick={openAttribution} className="pointer-events-auto cursor-pointer w-10 h-10 text-gray-500 hover:text-gray-400"/>
+        </Tooltip>
       </div>
       </nav>
   )

@@ -1,7 +1,4 @@
-
 import { QdrantClient } from '@qdrant/js-client-rest';
-import { SectionObj } from 'lib/search/splitMarkdown';
-
 
 export type SearchResult = {
     id?: string | number | null | undefined;
@@ -30,7 +27,6 @@ async function deleteIndex(qdrantCollection: string = qdrantCollectionName) {
 }
 
 async function createIndex(qdrantCollection: string = qdrantCollectionName) {
-
     const collect = await client.createCollection(qdrantCollection, {
             vectors: {
             size: 1536,
@@ -43,6 +39,12 @@ async function createIndex(qdrantCollection: string = qdrantCollectionName) {
     });
 return collect
 }
+
+export async function countIndex(qdrantCollection: string = qdrantCollectionName) {
+    const collectionInfo = await client.getCollection(qdrantCollection);
+    return collectionInfo.vectors_count;
+}
+    
 
 export async function jsonToIndex(json: any[]) {
     

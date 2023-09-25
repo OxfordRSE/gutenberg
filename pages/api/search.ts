@@ -9,7 +9,6 @@ export default function searchHandler(
     ) {
         console.log('request received', req.body)
         getEmbedding(req.body).then(async (vector) => {
-            console.log('vectorised',vector.data[0].embedding)
             searchVector(vector.data[0].embedding).then((response: SearchResult[]) => { 
                 console.log(response)
                 if (response) {

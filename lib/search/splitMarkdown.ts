@@ -6,6 +6,7 @@ import { getDocsList, readPageMarkdown } from "./readMarkdown";
 import { createSectionVector } from "./createVectors";
 import { title } from 'process';
 import { theme } from 'flowbite-react';
+import { hasMaterialChanged } from './manageMaterial';
 
 export type SectionObj = {
   id: string;
@@ -14,21 +15,24 @@ export type SectionObj = {
             title: string,
             url: string,
             sectionAnchor: string,
-            blockType: string
+            blockType: string,
             theme: string,
             course: string,
             page: string,} 
 };
 
-const materialDir = `${process.env.MATERIAL_DIR}`;
+const materialDir = process.env.MATERIAL_DIR as string;
 
 export async function materialToJson() {
   let sections = await parsePages();
-  sections = await createSectionVector(sections); 
-  const json = await sectionsToJson(sections);
-  // TODO: check if the JSON is newer than the older JSON
-  console.log('making json')
-  fs.writeFileSync('material.json', json);
+  const replace = await hasMaterialChanged(sections);
+  if (replace) {
+    sections = await createSectionVector(sections); 
+    const json = await sectionsToJson(sections);
+    fs.writeFileSync('material.json', json);}
+  else {
+  }
+  return sections
 }
 
 export async function parsePages() {
@@ -43,7 +47,11 @@ export async function parsePages() {
 }
 
 function getPageUrl(filepath: string, anchor: string): string {
-  const urlBase = `/material${filepath.split(materialDir)[1]}`.split('.md')[0];  
+  let urlBase = `/material${filepath.split(materialDir)[1]}`.split('.md')[0];
+  // if the file is "index.md" then we point to the directory instead
+  if (urlBase.endsWith('/index')) {
+    urlBase = urlBase.split('/index')[0];
+  }  
   if (anchor !== '') {
     return `${urlBase}#${anchor}`;
   } else {
@@ -59,12 +67,14 @@ function extractTitleAndAnchor(header: string): [string, string] {
 
 function splitTextCodeBlocks(pageMd: string): [string[], string[]] {
   const textAndCode = pageMd.split(/```|~~~/);
+  // every even block will be a code block and every odd block will be a text block so we check if mod 2 is 0 or 1
+  // to decide if the content is code or text
   const text = textAndCode.filter((_, index) => index % 2 === 0);
   const code = textAndCode.filter((_, index) => index % 2 !== 0);
   return [text, code];
 }
 
-export function splitPageIntoSections(pageMd: string): [string[], string[], string[]]{
+function splitPageIntoSections(pageMd: string): [string[], string[], string[]]{
     const [text, code] = splitTextCodeBlocks(pageMd);
 
     let titles: string[] = [];
