@@ -101,9 +101,6 @@ const Navbar: React.FC<Props> = ({ theme, course, section, material, activeEvent
         }
       </ol>
       <div className="gap-1 relative flex items-center">
-      <Tooltip content="Search Material">
-        <HiSearchCircle onClick={openSearch} style={{verticalAlign: "bottom'"}} className="pointer-events-auto cursor-pointer w-10 h-10 text-gray-500 hover:text-gray-400"/>
-      </Tooltip>
       { theme && course && section &&
           <Link passHref={true} href={`${baseMaterialUrl}/edit/main/${theme.id}/${course.id}/${section.id}.md`} className="inline-flex text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
             <Tooltip content="Edit Source">
@@ -111,6 +108,10 @@ const Navbar: React.FC<Props> = ({ theme, course, section, material, activeEvent
             </Tooltip>
           </Link>
       }
+      <Tooltip content="Search Material">
+        <HiSearchCircle onClick={openSearch} style={{verticalAlign: "bottom'"}} className="pointer-events-auto cursor-pointer w-10 h-10 text-gray-500 hover:text-gray-400"/>
+      </Tooltip>
+
         <Dropdown
           label={
           <div className="inline-flex items-center text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
