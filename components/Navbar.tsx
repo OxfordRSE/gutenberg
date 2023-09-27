@@ -30,7 +30,6 @@ const Navbar: React.FC<Props> = ({ theme, course, section, material, activeEvent
   }
 
   const openSearch = () => {
-    console.log('open search', showSearch)
     setShowSearch(true)
   }
 

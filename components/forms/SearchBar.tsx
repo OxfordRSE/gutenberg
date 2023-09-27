@@ -15,7 +15,6 @@ function SearchBar() {
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const newQuery = event.target.value;
       setQuery(newQuery);
-      console.log(newQuery)
       if (newQuery.length > 3)  {
         searchQuery(newQuery).then((results) => {
           setSearchResults(results);

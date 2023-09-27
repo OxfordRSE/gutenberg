@@ -47,5 +47,8 @@ gut
 gut-cert.pub
 table.md
 
+# vscode
+.vscode
+
 #  vector db json
 material.json
