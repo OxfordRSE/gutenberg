@@ -23,7 +23,9 @@ ENV NEXT_TELEMETRY_DISABLED 1
 # for some reason, this is not working with the .env.local file
 # so we'll use dotenv to load the .env.local file
 RUN npm install -g dotenv-cli
-RUN dotenv -e .env.local -- npx prisma migrate deploy
+ARG DATABASE_URL
+ENV DATABASE_URL ${DATABASE_URL}
+RUN npx prisma migrate deploy
 
 RUN yarn build
 

@@ -83,11 +83,20 @@ jobs:
       - name: Run component tests
         run: ${{ env.MANAGER }} component
 
-
   deploy:
+    name: Deploy to staging
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master' # Only deploy master
     needs: build-and-test
     steps:
-      - run: echo "Deploying!!"
+      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          repository: ${{ secrets.MATERIAL_REPOSITORY }}
+          path: .material
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy -a gutenberg-staging --remote-only --build-arg DATABASE_URL=${{secrets.DATABASE_URL_TEST}}
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        
 
