@@ -6,6 +6,8 @@ import React, { useEffect, useState } from 'react'
 import { HiAtSymbol, HiArrowCircleLeft, HiArrowCircleRight, HiCalendar } from 'react-icons/hi'
 import AttributionDialog from './AttributionDialog'
 import Sidebar from './Sidebar'
+import { SearchDialog, searchQueryState } from 'components/SearchDialog'
+import { useRecoilState } from 'recoil'
 
 interface Props {
   material: Material,
@@ -23,7 +25,7 @@ interface Props {
 
 
 const Overlay: NextPage<Props> = ({material, theme, course, section, activeEvent, showAttribution, setShowAttribution, sidebarOpen, setSidebarOpen, prevUrl, nextUrl }: Props) => {
-
+  const [showSearch, setShowSearch] = useRecoilState(searchQueryState);
   const [showTopButtons, setShowTopButtons] = useState(false);
 
   useEffect(() => {
@@ -39,6 +41,10 @@ const Overlay: NextPage<Props> = ({material, theme, course, section, activeEvent
 
   const openAttribution = () => setShowAttribution(true)
   const closeAttribution = () => setShowAttribution(false)
+  
+  const closeSearch = () => {
+    setShowSearch(false)
+  }
 
   const handleClose = () => {
     setSidebarOpen(false)
@@ -71,6 +77,7 @@ const Overlay: NextPage<Props> = ({material, theme, course, section, activeEvent
         </a>
       )}
       <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />
+      <SearchDialog onClose={closeSearch}/>
       <Sidebar material={material} activeEvent={activeEvent} sidebarOpen={sidebarOpen} handleClose={handleClose} />
       </div>
     </div>

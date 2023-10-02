@@ -18,6 +18,7 @@ import Overlay from './Overlay'
 import Navbar from './Navbar'
 import { useSidebarOpen } from 'lib/hooks/useSidebarOpen'
 import useActiveEvent from 'lib/hooks/useActiveEvents'
+import { RecoilRoot } from 'recoil'
 
 
 type Props = {
@@ -66,15 +67,17 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children })
   }
 
   return (
-  <div className="container mx-auto">
-    <Header theme={theme} course={course}/>
-    <main>
-      <Navbar material={material} theme={theme} course={course} section={section} activeEvent={activeEvent} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} showAttribution={showAttribution} setShowAttribution={setShowAttribution} />  
-      <Overlay material={material} course={course} theme={theme} activeEvent={activeEvent} section={section} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}  showAttribution={showAttribution} setShowAttribution={setShowAttribution} prevUrl={prevUrl} nextUrl={nextUrl} />
-      {children}
-    </main>
-    <Footer />
-  </div>
+    <RecoilRoot>
+      <div className="container mx-auto">
+        <Header theme={theme} course={course}/>
+        <main>
+          <Navbar material={material} theme={theme} course={course} section={section} activeEvent={activeEvent} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} showAttribution={showAttribution} setShowAttribution={setShowAttribution}/>  
+          <Overlay material={material} course={course} theme={theme} activeEvent={activeEvent} section={section} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}  showAttribution={showAttribution} setShowAttribution={setShowAttribution} prevUrl={prevUrl} nextUrl={nextUrl} />
+          {children}
+        </main>
+        <Footer />
+      </div>
+    </RecoilRoot>
   )
 }
 
