@@ -11,7 +11,7 @@ export function useSidebarOpen(defaultValue: boolean): [boolean, (value: boolean
     } else {
       setOpen(defaultValue ? 1 : 0)
     }
-  }, [])
+  }, [defaultValue])
 
   useEffect(() => {
     const store = open?.toString();

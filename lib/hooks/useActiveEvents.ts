@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import { basePath } from 'lib/basePath'
 import { useSession } from 'next-auth/react';
 import { data } from 'cypress/types/jquery';
@@ -15,17 +15,16 @@ function useActiveEvent(): [EventFull | undefined, (event: EventFull | undefined
 
   const { event: activeEvent } = useEvent(activeEventId || undefined)
 
-  const setActiveEventId = (id: number | undefined) => {
-    dispatch({ type: 'SET_ACTIVE_EVENT_ID', activeEventId: id })
-  }
+  const setActiveEventId = useCallback((id: number | undefined) => {
+    dispatch({ type: 'SET_ACTIVE_EVENT_ID', activeEventId: id });
+  }, [dispatch]);
 
   useEffect(() => {
     const store = sessionStorage.getItem('activeEvent')
-    console.log('useActiveEvent useEffect', store)
     if (store) {
       setActiveEventId(parseInt(store))
     }
-  }, [])
+  }, [setActiveEventId])
 
   useEffect(() => {
     const store = activeEventId?.toString();

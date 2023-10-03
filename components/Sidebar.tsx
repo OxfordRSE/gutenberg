@@ -51,7 +51,7 @@ const MySidebar: React.FC<SidebarProps> = ({ material, activeEvent, sidebarOpen,
       // Clean up the event listener when the component is unmounted
       window.removeEventListener('beforeunload', saveScrollPosition);
     };
-  }, [sidebarRef.current]);
+  }, []);
 
 
   return (

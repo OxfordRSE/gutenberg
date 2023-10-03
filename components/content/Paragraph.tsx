@@ -62,7 +62,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
       return similarity.bow.cosine( contentBow, threadBow ) > 0.90;
     });
     return { similarThreads, contentText };
-  }, [content, commentThreads])
+  }, [content, commentThreads, section])
 
   const handleCreateThread = (text: string) => {
     if (!activeEvent) return;

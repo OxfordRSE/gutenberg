@@ -53,11 +53,11 @@ const EventUsers: React.FC<Props> = ({ event }) => {
     }, 1000);
 
     return () => clearInterval(intervalId);
-  }, [handleSubmit, isDirty]);
+  }, [handleSubmit, isDirty, apiPath, mutate]);
 
   useEffect(() => {
     reset({ users: users?.users || [] })
-  }, [users])
+  }, [users, reset])
 
   if (usersError || !users) {
     return (null) 
