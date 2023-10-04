@@ -63,22 +63,22 @@ const EventActions: React.FC<EventActionsProps> = ({ event }) => {
   return (
     <div className="flex flex-row gap-2">
     { isActiveEvent ? (
-        <Button color="gray" onClick={handleDeactivate(event)}>
+        <Button color="gray" onClick={handleDeactivate(event)} style={{zIndex: 1}}>
         Unselect 
         <HiArrowNarrowRight className="ml-2 h-3 w-3" />
         </Button>
     ): isMyEvent ? (
-        <Button color="gray" onClick={handleActivate(event)}>
+        <Button color="gray" onClick={handleActivate(event)} style={{zIndex: 1}}>
         Select 
         <HiArrowNarrowRight className="ml-2 h-3 w-3" />
         </Button>
     ): isRequested ? (
-        <Button color="gray" disabled>
+        <Button color="gray" style={{zIndex: 1}} disabled >
         Requested
         </Button>
     ): session && (
     <>
-        <Button color="gray" onClick={handleEnrol(event)}>
+        <Button color="gray" onClick={handleEnrol(event)} style={{zIndex: 1}}>
         Enroll 
         <HiArrowNarrowRight className="ml-2 h-3 w-3" />
         </Button>
