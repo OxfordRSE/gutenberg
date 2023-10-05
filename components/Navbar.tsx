@@ -4,7 +4,7 @@ import { Event, EventFull } from 'lib/types'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import React from 'react'
-import { BiLogoGithub, BiSearchAlt2 } from 'react-icons/bi'
+import { RxGithubLogo } from 'react-icons/rx'
 import { HiAtSymbol, HiCalendar, HiSearchCircle } from 'react-icons/hi'
 import { baseMaterialUrl } from 'lib/baseMaterialUrl'
 import { searchQueryState } from 'components/SearchDialog'
@@ -103,21 +103,21 @@ const Navbar: React.FC<Props> = ({ theme, course, section, material, activeEvent
       { theme && course && section &&
           <Link passHref={true} href={`${baseMaterialUrl}/edit/main/${theme.id}/${course.id}/${section.id}.md`} className="inline-flex text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
             <Tooltip content="Edit Source">
-              <BiLogoGithub className="m-0 pointer-events-auto cursor-pointer w-10 h-10 text-gray-500 hover:text-gray-400"/>
+              <RxGithubLogo className="m-0 pointer-events-auto cursor-pointer w-8 h-8 text-gray-500 hover:text-gray-400"/>
             </Tooltip>
           </Link>
       }
-      {/* <Tooltip content="Search Material">
+      <Tooltip content="Search Material">
         <HiSearchCircle onClick={openSearch} style={{verticalAlign: "bottom'"}} className="pointer-events-auto cursor-pointer w-10 h-10 text-gray-500 hover:text-gray-400"/>
-      </Tooltip> */}
+      </Tooltip>
 
         <Dropdown
           label={
-          <div className="inline-flex items-center text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+          <div className="inline-flex items-center text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white w-10 h-10">
             {session ? (
               <Avatar
                   img={session.user?.image ? session.user?.image : undefined}
-                  style={{width: 32, height: 32}}
+                  className='w-8 h-8'
                   size="sm"
                   rounded={true}
                   data-cy={`avatar-${session.user?.email}`}
@@ -125,7 +125,7 @@ const Navbar: React.FC<Props> = ({ theme, course, section, material, activeEvent
               
             ) : (
               <Avatar
-                  style={{width: 32, height: 32}}
+                  className='w-8 h-8'
                   size="sm"
                   rounded={true}
                   data-cy={`avatar-not-signed-in`}
