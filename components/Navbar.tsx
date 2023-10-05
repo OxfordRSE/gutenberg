@@ -107,9 +107,9 @@ const Navbar: React.FC<Props> = ({ theme, course, section, material, activeEvent
             </Tooltip>
           </Link>
       }
-      <Tooltip content="Search Material">
+      {/* <Tooltip content="Search Material">
         <HiSearchCircle onClick={openSearch} style={{verticalAlign: "bottom'"}} className="pointer-events-auto cursor-pointer w-10 h-10 text-gray-500 hover:text-gray-400"/>
-      </Tooltip>
+      </Tooltip> */}
 
         <Dropdown
           label={
@@ -117,16 +117,18 @@ const Navbar: React.FC<Props> = ({ theme, course, section, material, activeEvent
             {session ? (
               <Avatar
                   img={session.user?.image ? session.user?.image : undefined}
+                  style={{width: 32, height: 32}}
+                  size="sm"
                   rounded={true}
                   data-cy={`avatar-${session.user?.email}`}
-                  size="sm"
                 />
               
             ) : (
               <Avatar
+                  style={{width: 32, height: 32}}
+                  size="sm"
                   rounded={true}
                   data-cy={`avatar-not-signed-in`}
-                  size="sm"
                 />
 
             )
