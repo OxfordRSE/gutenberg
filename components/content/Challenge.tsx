@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useMemo} from 'react'
 import { useForm, Controller } from "react-hook-form";
 import { useSession, signIn, signOut } from "next-auth/react"
 import { basePath } from 'lib/basePath'
@@ -23,18 +23,19 @@ interface ChallengeProps {
 const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) => {
   const { data: session } = useSession()
   const { problem, mutate } = useProblem(section, id)
+  const stringifyProblem = JSON.stringify(problem)
   const { mutate: mutateGlobal } = useSWRConfig()
 
   const [showModal, setShowModal] = useState(false)
   const noProblem = !problem || typeof problem === 'string'
-  const defaultProblem = {
+  const defaultProblem = useMemo(() => ({
     tag: id,
     complete: false,
     difficulty: 5,
     notes: '',
     solution: '',
     section,
-  };
+  }), [id, section]);
   const { control, handleSubmit, reset, setValue } = useForm<ProblemUpdate>({ defaultValues: defaultProblem });
   const problemApi = ( problem: ProblemUpdate ) => {
     if (typeof problem.difficulty === 'string') {
@@ -74,7 +75,7 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
         reset(problem);
       }
     }
-  }, [JSON.stringify(problem)]);
+  }, [stringifyProblem, defaultProblem, problem, noProblem, reset]);
 
   let headerColor = 'bg-slate-700 dark:bg-slate-300'
   if (problem && typeof problem !== 'string' && problem.complete) {

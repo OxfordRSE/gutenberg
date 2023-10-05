@@ -32,7 +32,7 @@ const CommentView = ({ comment, mutateComment, deleteComment}: Props) => {
 
   useEffect(() => {
     reset(comment);
-  }, [comment]);
+  }, [comment, reset]);
 
   const onSubmit = (data: Comment) => {
     putComment(data).then((comment) => {

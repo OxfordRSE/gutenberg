@@ -346,7 +346,7 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course }) => {
     } else {
       return generate_material_edges(material)
     }
-  }, [stringifyMaterial]);
+  }, [course, material, theme]);
   useEffect(() => {
       let children = null;
       let edges = undefined;
@@ -377,7 +377,7 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course }) => {
         setNodes(nodes);
       })
 
-    }, [stringifyMaterial]);
+    }, [stringifyMaterial, course, material, theme]);
   const fitViewOptions: FitViewOptions = {
     padding: 0.15,
   };

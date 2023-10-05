@@ -44,7 +44,7 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
 
   useEffect(() => {
     reset(eventGroup);
-  }, [eventGroup]);
+  }, [eventGroup, reset]);
 
   const { fields: eventItems, append: appendItem, remove: removeItem } = useFieldArray({
     control,

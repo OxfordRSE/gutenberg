@@ -72,7 +72,7 @@ const Event: NextPage<EventProps> = ({ material, event }) => {
 
   useEffect(() => {
     reset(eventData);
-  }, [eventData]);
+  }, [eventData, reset]);
 
   if (eventIsLoading) return <div>loading...</div>
 
