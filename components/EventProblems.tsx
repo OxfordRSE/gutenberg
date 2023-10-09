@@ -79,7 +79,7 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
                         const problemStr = `difficulty: ${problemStruct?.difficulty} notes: ${problemStruct?.notes}`
                         return (
                           <Table.Cell key={`${user.userEmail}${problem}${eventItem.section}`} align='center' className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                            {(!problems && problemStruct && problemStruct.complete) ? 
+                            {(problemStruct && problemStruct.complete) ? 
                               <Tooltip content={problemStr} placement="top">✅</Tooltip> :
                               '❌'
                             }
