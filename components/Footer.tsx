@@ -2,6 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import { HiArrowCircleLeft, HiArrowCircleRight } from 'react-icons/hi'
 import ExternalLink from './ui/ExternalLink'
+import { ThemeButton } from './ui/ThemeSwitcher'
 
 interface Props {
   prevUrl?: string,
@@ -29,6 +30,7 @@ const Footer: React.FC<Props> = ({ prevUrl, nextUrl }) => {
           <HiArrowCircleRight className="w-14 h-14"/>
         </a>
       )}
+      <ThemeButton />
     </footer>
   )
 }

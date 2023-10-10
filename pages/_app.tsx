@@ -4,6 +4,7 @@ import type { AppProps } from 'next/app'
 import type { Session } from "next-auth"
 import { basePath } from "lib/basePath"
 import { ContextProvider } from "lib/context/ContextProvider"
+import { ThemeProvider } from "next-themes"
 
 
 // Use of the <SessionProvider> is mandatory to allow components that call
@@ -15,7 +16,9 @@ export default function MyApp({
   return (
     <SessionProvider session={session} basePath={`${basePath}/api/auth`}>
       <ContextProvider>
-        <Component {...pageProps} />
+        <ThemeProvider attribute="class">
+          <Component {...pageProps} />
+        </ThemeProvider>
       </ContextProvider>
     </SessionProvider>
   )

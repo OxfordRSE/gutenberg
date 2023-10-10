@@ -97,13 +97,13 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
          <div className='flex items-center space-x-2 mr-2'>
           <Tooltip content={isComplete ? 'Mark as incomplete' : 'Mark as complete'} placement="bottom">
             <Button className="bg-slate-50 dark:bg-slate-800" size="xxs" pill={true} onClick={() => handleClickComplete(isComplete)}>
-              {isComplete ?  <MdOutlineCheckBox className="h-4 w-4" /> : <MdOutlineCheckBoxOutlineBlank className="h-4 w-4" />}
+              {isComplete ?  <MdOutlineCheckBox className="h-4 w-4 text-black dark:text-white" /> : <MdOutlineCheckBoxOutlineBlank className="h-4 w-4 text-black dark:text-white" />}
             </Button>
           </Tooltip>
           { !noProblem && 
             <Tooltip content={"Edit feedback"} placement="bottom">
             <Button className="mr-2 bg-slate-50 dark:bg-slate-800" size="xxs" pill={true} onClick={() => setShowModal(true)}>
-              <MdEdit className="h-4 w-4" />
+              <MdEdit className="h-4 w-4 text-black dark:text-white" />
             </Button>
             </Tooltip>
           }
@@ -121,7 +121,7 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
             <div className="space-y-6 px-6 pb-4 sm:pb-6 lg:px-8 xl:pb-8">
             <form onSubmit={handleSubmit(onSubmit)}>
               <Stack spacing={4}>
-                <p className="text-sm text-slate-100 dark:text-slate-400">
+                <p className="text-sm text-gray-900 dark:text-slate-400">
                   Submitted data is <span className='font-bold'>entirely optional</span> but allows us to improve this course. All data is saved securely, is only available to course instructors, and can be deleted on request.
                 </p>
                 <Checkbox name={'complete'} control={control} label="Mark as complete" />

@@ -35,7 +35,7 @@ export const TinyButton = ({ children, ...props }: TinyButtonProps) => {
 
   return (
     <div data-cy={props.dataCy}>
-    <Button className="m-1 bg-slate-50 dark:bg-slate-800" {...buttonProps} size="xxs" pill={true}>
+    <Button className="m-1 bg-gray-300 dark:bg-slate-800 text-black dark:text-white focus:ring" {...buttonProps} size="xxs" pill={true}>
       {children}
     </Button>
     </div>
@@ -141,7 +141,7 @@ const Thread = ({ threadId, active, setActive, onDelete}: ThreadProps) => {
           { commentThread?.resolved ? (
             <BiCommentCheck className='text-green dark:text-green-600' />
           ) : (
-            <BiCommentDetail className='dark:text-slate-500 text-slate-500'/>
+            <BiCommentDetail className='dark:text-slate-500 text-slate-500' />
           )}
         </TinyButton>
       </div>
@@ -171,7 +171,7 @@ const Thread = ({ threadId, active, setActive, onDelete}: ThreadProps) => {
         <h3 className="w-full mx-2 my-0 text-base text-slate-100 dark:text-slate-900">{}</h3>
           <Stack direction='row-reverse'>
             <TinyButton onClick={handleClose}>
-              <IoClose className="" />
+              <IoClose/>
             </TinyButton>
             <Dropdown
               renderTrigger={() => (
@@ -181,10 +181,10 @@ const Thread = ({ threadId, active, setActive, onDelete}: ThreadProps) => {
               )} label={undefined} 
               className='not-prose'
             >
-              <Dropdown.Item icon={commentThread?.instructorOnly === true ? ImEyeBlocked : ImEye} onClick={handleInstructorOnly} data-cy={`Thread:${threadId}:Visibility`}>
+              <Dropdown.Item className="hover:bg-gray-400" icon={commentThread?.instructorOnly === true ? ImEyeBlocked : ImEye} onClick={handleInstructorOnly} data-cy={`Thread:${threadId}:Visibility`}>
                 Visibility
               </Dropdown.Item>
-              <Dropdown.Item icon={MdDelete} onClick={handleDelete} data-cy={`Thread:${threadId}:Delete`}>
+              <Dropdown.Item className="hover:bg-gray-400" icon={MdDelete} onClick={handleDelete} data-cy={`Thread:${threadId}:Delete`}>
                 Delete
               </Dropdown.Item>
             </Dropdown>
