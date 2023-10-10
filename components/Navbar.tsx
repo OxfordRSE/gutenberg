@@ -9,7 +9,6 @@ import { HiAtSymbol, HiCalendar, HiSearchCircle } from 'react-icons/hi'
 import { baseMaterialUrl } from 'lib/baseMaterialUrl'
 import { searchQueryState } from 'components/SearchDialog'
 import { useRecoilState } from 'recoil'
-import { ThemeButton } from 'components/ui/ThemeSwitcher'
 
 interface Props {
   material: Material,
