@@ -40,7 +40,7 @@ const EventCommentThreads: React.FC<Props> = ({ material, event }) => {
           return (
             <li key={thread.id}>
               <Link href={urlWithAnchor}>
-                <span className="font-bold">{thread.section}:</span> {thread.createdByEmail}: {thread.Comment[0].markdown}
+                <span className="font-bold">{thread.section}:</span> {thread.createdByEmail}: {thread.Comment.length > 0 ? thread.Comment[0].markdown : ''}
               </Link>
             </li>
           )
