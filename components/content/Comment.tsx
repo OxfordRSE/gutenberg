@@ -52,14 +52,23 @@ const CommentView = ({ comment, mutateComment, deleteComment}: Props) => {
     });
   }
 
+  const [textareaValue, setTextareaValue] = useState('');
+  
+  const handleTextareaValueChange = (newValue: string) => {
+    // This function will be called whenever the Textarea component's value changes
+    setTextareaValue(newValue);
+  };
   return (
     <form>
     <div className="mx-1 p-1 border border-gray-200 rounded-lg bg-slate-100 dark:bg-slate-800 dark:border-gray-700 mb-4" data-cy={`Comment:${comment.id}:Main`}>
       { (editing && hasEditPermission) ? (
       <div data-cy={`Comment:${comment.id}:Editing`}>
-        <Textarea control={control} name="markdown" />
+        <Textarea control={control} 
+                  name="markdown" 
+                  value={textareaValue}
+                  onValueChange={handleTextareaValueChange}/>
         <Stack direction='row-reverse'>
-          <TinyButton onClick={handleSubmit(onSubmit)}><MdSave data-cy={`Comment:${comment.id}:Save`} /></TinyButton>
+          <TinyButton onClick={handleSubmit(onSubmit)} disabled={!textareaValue}><MdSave data-cy={`Comment:${comment.id}:Save`} /></TinyButton>
         </Stack>
       </div>
       ) : (

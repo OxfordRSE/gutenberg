@@ -7,9 +7,11 @@ type Props<T extends FieldValues> = {
   name: FieldPath<T>;
   control: Control<T>;
   rules?: Object;
+  value: string; 
+  onValueChange: (newValue: string) => void;
 };
 
-function Textarea<T extends FieldValues>({ label, name, control, rules }: Props<T>): React.ReactElement {
+function Textarea<T extends FieldValues>({ label, name, control, rules, value, onValueChange}: Props<T>): React.ReactElement {  
   return (
     <div>
     <Controller
@@ -17,6 +19,10 @@ function Textarea<T extends FieldValues>({ label, name, control, rules }: Props<
       control={control}
       rules={rules}
       render={({ field: { onChange, onBlur, value }, fieldState: { error, isDirty, isTouched } }) => {
+        // Call the onValueChange callback whenever the value changes
+        if (onValueChange && typeof onValueChange === 'function') {
+          onValueChange(value);
+        }
         return (
           <>
           <div className="mb-1 block">
