@@ -7,8 +7,8 @@ type Props<T extends FieldValues> = {
   name: FieldPath<T>;
   control: Control<T>;
   rules?: Object;
-  value: string; 
-  onValueChange: (newValue: string) => void;
+  value?: string; 
+  onValueChange?: (newValue: string) => void;
 };
 
 function Textarea<T extends FieldValues>({ label, name, control, rules, value, onValueChange}: Props<T>): React.ReactElement {  
