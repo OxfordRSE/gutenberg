@@ -17,9 +17,9 @@ async function generateTable() {
         let { url: themeUrl } = sectionSplit(themeString, material)
         console.log(`  ${course.name}`)
         if (course.id === theme.courses[0].id) {
-            content += `| [${theme.name}](${hostname}${themeUrl}) | [${course.name}](${courseUrl}) | ${course.summary.replaceAll('\n', ' ')} |\n`
+            content += `| [${theme.name}](${hostname}${themeUrl}) | [${course.name}](${hostname}${courseUrl}) | ${course.summary.replaceAll('\n', ' ')} |\n`
         } else {
-            content += `| | [${course.name}](${courseUrl}) | ${course.summary.replaceAll('\n', ' ')} |\n`
+            content += `| | [${course.name}](${hostname}${courseUrl}) | ${course.summary.replaceAll('\n', ' ')} |\n`
         }
     }
     }
