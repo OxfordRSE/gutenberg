@@ -11,17 +11,19 @@ import { useSession } from 'next-auth/react'
 import { putComment } from 'lib/actions/putComment'
 import Stack from 'components/ui/Stack'
 import { TinyButton } from './Thread'
-import { CommentThread } from '@prisma/client'
 import deleteCommentAction from 'lib/actions/deleteComment'
 import useUser from 'lib/hooks/useUser'
+
 
 interface Props {
   comment: Comment
   mutateComment: (comment: Comment) => void
   deleteComment: (comment: Comment) => void
+  saveComment?: (placeholder: Comment) => void
+  isPlaceholder?: boolean
 }
 
-const CommentView = ({ comment, mutateComment, deleteComment}: Props) => {
+const CommentView = ({ comment, mutateComment, deleteComment, isPlaceholder, saveComment}: Props) => {
   const { control, handleSubmit, reset } = useForm<Comment>();
   const { userProfile, isLoading, error } = useProfile()
   const [ editing, setEditing ] = useState(comment.markdown === '')
@@ -39,6 +41,12 @@ const CommentView = ({ comment, mutateComment, deleteComment}: Props) => {
       reset(comment)
       mutateComment(comment)
     });
+    setEditing(false)
+  }
+
+  const onSubmitPlaceholder = (data: Comment) => {
+    if (!saveComment) return
+    saveComment(data)
     setEditing(false)
   }
 
@@ -68,7 +76,12 @@ const CommentView = ({ comment, mutateComment, deleteComment}: Props) => {
                   value={textareaValue}
                   onValueChange={handleTextareaValueChange}/>
         <Stack direction='row-reverse'>
-          <TinyButton onClick={handleSubmit(onSubmit)} disabled={!textareaValue}><MdSave data-cy={`Comment:${comment.id}:Save`} /></TinyButton>
+          {!isPlaceholder && (
+            <TinyButton onClick={handleSubmit(onSubmit)} disabled={!textareaValue}><MdSave data-cy={`Comment:${comment.id}:Save`} /></TinyButton>
+          )}
+          {isPlaceholder && saveComment && (
+            <TinyButton onClick={handleSubmit(onSubmitPlaceholder)} disabled={!textareaValue}><MdSave data-cy={`Comment:${comment.id}:Save`} /></TinyButton>
+          )}
         </Stack>
       </div>
       ) : (
@@ -92,15 +105,24 @@ const CommentView = ({ comment, mutateComment, deleteComment}: Props) => {
             </Tooltip>
           </div>
         )}
-        <Markdown markdown={comment.markdown} />
+        {!isPlaceholder && (
+          <Markdown markdown={comment.markdown} />
+        )}
+        {isPlaceholder && (
+          <Markdown markdown='' />
+          )}
         { hasEditPermission && (
           <Stack direction='row-reverse'>
-          <Tooltip content="Edit comment">
-            <TinyButton onClick={onEdit} dataCy={`Comment:${comment.id}:Edit`}><MdEdit /></TinyButton> 
-          </Tooltip>
-          <Tooltip content="Delete comment">
-            <TinyButton onClick={onDelete} dataCy={`Comment:${comment.id}:Delete`}><MdDelete /></TinyButton> 
-          </Tooltip>
+          {!isPlaceholder &&  (
+            <>
+              <Tooltip content="Edit comment">
+                <TinyButton onClick={onEdit} dataCy={`Comment:${comment.id}:Edit`}><MdEdit /></TinyButton> 
+              </Tooltip>
+              <Tooltip content="Delete comment">
+                <TinyButton onClick={onDelete} dataCy={`Comment:${comment.id}:Delete`}><MdDelete /></TinyButton> 
+              </Tooltip>
+            </>
+          )}
           </Stack>
         )}
         </div>

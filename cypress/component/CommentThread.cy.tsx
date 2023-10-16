@@ -95,10 +95,11 @@ context ('with non-owner student', () => {
     tenMinutesFromNow.setTime(now.getTime() + 10 * 60 * 1000);
     cy.mount(
         <Thread
-          threadId={threadId}
+          thread={threadId}
           active={true}
           setActive={setActiveSpy}
           onDelete={onDeleteSpy}
+          finaliseThread={() => {}}
         />
       , { session: { expires: tenMinutesFromNow, user: currentUser } }
     );
@@ -242,10 +243,11 @@ context('with owner student', () => {
     tenMinutesFromNow.setTime(now.getTime() + 10 * 60 * 1000);
     cy.mount(
         <Thread
-          threadId={threadId}
+          thread={threadId}
           active={true}
           setActive={setActiveSpy}
           onDelete={onDeleteSpy}
+          finaliseThread={() => {}}
         />
       , { session: { expires: tenMinutesFromNow, user: currentUser } }
     );
@@ -347,10 +349,11 @@ context('with non-owner instructor', () => {
     tenMinutesFromNow.setTime(now.getTime() + 10 * 60 * 1000);
     cy.mount(
         <Thread
-          threadId={threadId}
+          thread={threadId}
           active={true}
           setActive={setActiveSpy}
           onDelete={onDeleteSpy}
+          finaliseThread={() => {}}
         />
       , { session: { expires: tenMinutesFromNow, user: currentUser } }
     );

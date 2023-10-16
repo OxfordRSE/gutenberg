@@ -84,8 +84,7 @@ const commentThreadHandler = async (
     res.status(200).json({ commentThreads });
 
   } else if (req.method === 'POST') {
-    const { eventId, textRef, textRefStart, textRefEnd, section } = req.body.commentThread;
-
+    const { eventId, textRef, textRefStart, textRefEnd, section, initialCommentText } = req.body.commentThread;
     if (!eventId) {
         res.status(400).json({ error: 'Bad request, no eventId' });
         return;
@@ -113,7 +112,7 @@ const commentThreadHandler = async (
             Comment: {
               create: {
                 createdByEmail: userEmail,
-                markdown: '',
+                markdown: initialCommentText,
                 index: 0,
               }
             },
