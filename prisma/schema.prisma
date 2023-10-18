@@ -100,6 +100,8 @@ model Event {
   summary       String          @default("")
   enrol         String          @default("")
   content       String          @default("")
+  enrolKey      String          @default("")
+  instructorKey String          @default("@mHJdxza218sxzd014s8ASDsa0axv0sdfmBJNLM=3asfdnmYHL1234adczcz") // just in case this is unset then we don't want to let blank keys let users in
   start         DateTime        @default(now())
   end           DateTime        @default(now())
   hidden        Boolean         @default(true)

@@ -67,7 +67,11 @@ const Event: NextPage<EventProps> = ({ material, event }) => {
   const isAdmin = userProfile?.admin;
 
   const onSubmit = (data: EventWithUsers) => {
-    putEvent(data).then((data) => data.event && mutateEvent(data.event));
+    console.log('onSubmit', data)
+    putEvent(data).then((data) => {
+      console.log('putEvent', data)
+      data.event && mutateEvent(data.event)
+  });
   }
 
   useEffect(() => {
@@ -112,6 +116,8 @@ const Event: NextPage<EventProps> = ({ material, event }) => {
     <Stack>
       <Textfield label="Title" name="name" control={control} />
       <Textarea label="Enrol" name="enrol" control={control} />
+      <Textarea label="Enrolment Key" name="enrolKey" control={control} />
+      <Textarea label="Instructor Key" name="instructorKey" control={control} />
       <Textarea label="Summary" name="summary" control={control} />
       <Textarea label="Content" name="content" control={control} />
       <DateTimeField label="Start" name="start" control={control} />

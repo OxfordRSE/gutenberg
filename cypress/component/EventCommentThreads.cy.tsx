@@ -11,6 +11,8 @@ describe('EventCommentThreads component', () => {
       end: new Date(),
       start: new Date(),
       enrol: '',
+      enrolKey: 'test',
+      instructorKey: 'instructortest',
       name: 'test',
       EventGroup: [],
       hidden: false,
