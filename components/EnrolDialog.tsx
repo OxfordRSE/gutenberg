@@ -6,8 +6,8 @@ import React from 'react'
 import Content from './content/Content'
 import { HiMail, HiX } from 'react-icons/hi'
 import postUserOnEvent from 'lib/actions/postUserOnEvent'
+import putUserOnEvent from 'lib/actions/putUserOnEvent'
 import useEvent from 'lib/hooks/useEvent'
-import { putUserOnEvent } from 'pages/api/userOnEvent/[eventId]'
 
 
 type Props = {
@@ -22,7 +22,6 @@ const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol}) => {
   const [success, setSuccess] = React.useState<string | null>(null)
   const session = useSession()
   const { event: eventData, error: eventError, isLoading: eventIsLoading, mutate: mutateEvent } = useEvent(event.id)
-  console.log('eD',eventData)
 
   const onClose = () => {
     onEnrol(undefined)
@@ -62,9 +61,7 @@ const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol}) => {
 
   const enrolWithKey = () => {
     const enrolKey = (document.getElementById('enrol-key') as HTMLInputElement).value;
-    console.log(enrolKey)
     const status = checkKey(enrolKey)
-    console.log(status)
     if (status === null) {
       setEnrolError("error")
     } else {
@@ -79,12 +76,13 @@ const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol}) => {
               newUser.status = EventStatus.INSTRUCTOR
             }
             if (eventData) {
-              putUserOnEvent(eventData?.id, newUser).then((data) => {
-                console.log(data)
+
+              putUserOnEvent(event.id, newUser).then(() => {
                 onEnrol(newUser)
                 setSuccess("success")
-                setEnrolError(undefined)             
-            })}
+                setEnrolError(undefined)              
+            })
+          }
             }
           } else if ('error' in data) {
             setError(data.error)
