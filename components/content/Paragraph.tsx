@@ -17,9 +17,12 @@ import useCommentThreads from 'lib/hooks/useCommentThreads'
 import postComment from 'lib/actions/postComment'
 import postCommentThread from 'lib/actions/postCommentThread'
 import useActiveEvent from 'lib/hooks/useActiveEvents'
+import { Comment } from 'pages/api/comment/[commentId]'
 import { CommentThread } from 'pages/api/commentThread'
 import { post } from 'cypress/types/jquery'
 import { set } from 'cypress/types/lodash'
+import { useSession } from 'next-auth/react'
+
 const nlp = winkNLP( model );
 const its = nlp.its;
 const as = nlp.as;
@@ -36,6 +39,9 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
   const [ activeEvent, setActiveEvent ] = useActiveEvent();
   const { commentThreads, error, isLoading, mutate } = useCommentThreads(activeEvent?.id);
   const [ activeThreadId, setActiveThreadId ] = useState<number | undefined>(undefined);
+  const [ tempThread, setTempThread ] = useState<CommentThread | undefined>(undefined);
+  const [ tempActive, setTempActive ] = useState<boolean>(false);
+  const email = useSession().data?.user?.email;
 
   const { similarThreads, contentText } = useMemo(() => {
     let contentText = ""
@@ -68,20 +74,55 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
     if (!activeEvent) return;
     const textRefStart = contentText.indexOf(text);
     const textRefEnd = textRefStart + text.length;
-    const newThread = {
+    const newThread: CommentThread = createEmptyThread(activeEvent.id, section, textRefStart, textRefEnd, text, email as string);
+    setTempThread(newThread);
+    setTempActive(true);
+  }
+
+  const createEmptyThread = (eventId: number, section: string, textRefStart: number, textRefEnd: number, text: string, email: string): CommentThread => {
+    const comment: Comment = {
+      id: -1,
+      threadId: -1,
+      markdown: '',
+      index: -1,
+      created: new Date(),
+      createdByEmail: email,
+    }
+    const thread: CommentThread = {
+      id: -1,
+      eventId: eventId,
+      section: section,
       textRef: contentText,
-      textRefStart,
-      textRefEnd,
-      eventId: activeEvent.id,
-      section,
-    };
-    console.log('newthread', newThread);
-    postCommentThread(newThread)
-    .then((thread) => {
-      const newThreads = commentThreads ? [...commentThreads, thread] : [thread];
-      mutate(newThreads);
-      setActiveThreadId(thread.id);
-    });
+      textRefStart: textRefStart,
+      textRefEnd: textRefEnd,
+      Comment: [comment],
+      createdByEmail: email,
+      groupId: null,
+      problemTag: '',
+      created: new Date(),
+      resolved: false,
+      instructorOnly: false,
+    }
+    return thread;
+  }
+
+  const finaliseThread = (thread: CommentThread, comment: Comment) => {
+    if (!activeEvent) return;
+      const newThread = {
+        textRef: thread.textRef,
+        textRefStart: thread.textRefStart,
+        textRefEnd: thread.textRefEnd,
+        eventId: activeEvent.id,
+        section: thread.section,
+        initialCommentText: comment.markdown,
+      };
+      postCommentThread(newThread)
+      .then((thread) => {
+        const newThreads = commentThreads ? [...commentThreads, thread] : [thread];
+        mutate(newThreads)
+        setTempThread(undefined);
+        setActiveThreadId(thread.id);
+      })
   }
 
 
@@ -102,11 +143,20 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
           <div className={`w-[420px]`}>
             { similarThreads?.map((thread) => (
               <Thread 
-                key={thread.id} threadId={thread.id} active={activeThreadId === thread.id} 
+                key={thread.id} thread={thread.id} active={activeThreadId === thread.id} 
                 setActive={(active: boolean) => active ? setActiveThreadId(thread.id) : setActiveThreadId(undefined)}
+                finaliseThread={finaliseThread}
                 onDelete={() => handleDeleteThread(thread)}
               />
             ))}
+            { tempThread && (
+              <Thread 
+                key={tempThread.id} thread={tempThread} active={tempActive}
+                setActive={setTempActive}
+                finaliseThread={finaliseThread}
+                onDelete={() => handleDeleteThread(tempThread)}
+              />
+            )}
           </div>
         </div>
         )}

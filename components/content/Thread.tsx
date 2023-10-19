@@ -3,24 +3,28 @@ import React, { FunctionComponent, useCallback, useEffect, useMemo, useRef, useS
 import { Markdown } from './Content'
 import { CommentThread, Comment } from 'pages/api/commentThread'
 import { BiCommentCheck, BiCommentDetail, BiDotsVerticalRounded, BiReply } from 'react-icons/bi'
+import { MdDelete } from 'react-icons/md'
 import { IoClose } from 'react-icons/io5'
-import { post } from 'cypress/types/jquery'
+
 import postComment from 'lib/actions/postComment'
 import useCommentThread from 'lib/hooks/useCommentThread'
-import { MdDelete } from 'react-icons/md'
 import deleteComment from 'lib/actions/deleteComment'
-import Stack from 'components/ui/Stack'
 import deleteCommentThread from 'lib/actions/deleteThread'
-import { GoIssueClosed } from 'react-icons/go'
-import { ImEye, ImEyeBlocked } from 'react-icons/im'
-import useUser from 'lib/hooks/useUser'
 import { putComment } from 'lib/actions/putComment'
 import putCommentThread from 'lib/actions/putCommentThread'
 import useActiveEvent from 'lib/hooks/useActiveEvents'
 import useEvent from 'lib/hooks/useEvent'
 import useProfile from 'lib/hooks/useProfile'
+
+import Stack from 'components/ui/Stack'
+
+import { GoIssueClosed } from 'react-icons/go'
+import { ImEye, ImEyeBlocked } from 'react-icons/im'
+import useUser from 'lib/hooks/useUser'
 import { useSession } from 'next-auth/react'
 import CommentView from './Comment'
+import { set } from 'cypress/types/lodash'
+import { use } from 'chai'
 
 interface TinyButtonProps {
   children: React.ReactNode
@@ -44,14 +48,43 @@ export const TinyButton = ({ children, ...props }: TinyButtonProps) => {
 
 
 interface ThreadProps {
-  threadId: number 
+  thread: number | CommentThread
   active: boolean
   setActive: (active: boolean) => void
   onDelete: () => void
+  finaliseThread: (thread: CommentThread, comment: Comment) => void
 }
 
-const Thread = ({ threadId, active, setActive, onDelete}: ThreadProps) => {
-  const { commentThread, error: commentThreadError, isLoading: commentThreadIsLoading, mutate } = useCommentThread(threadId)
+function useResolveThread(thread: number | CommentThread) {
+
+  let commentThread: CommentThread;
+  let commentThreadIsLoading: boolean;
+  let isLoading: boolean;
+  let isPlaceholder: boolean;
+  let threadId : number;
+  let mutate: (commentThread: CommentThread) => void;
+  const result = useCommentThread(typeof thread === 'number' ? thread : undefined);
+  if (typeof thread === 'number') {
+    isPlaceholder = false
+    threadId = thread
+    commentThread = result.commentThread as CommentThread
+    isLoading = result.isLoading
+    commentThreadIsLoading = result.isLoading
+    mutate = result.mutate
+  }
+  else {
+    isPlaceholder = true;
+    commentThread = thread;
+    threadId = -1;
+    commentThreadIsLoading = false;
+    isLoading = false;
+    mutate = () => {}
+  }
+  return { commentThread, threadId, commentThreadIsLoading, isLoading, isPlaceholder, mutate }
+}
+
+const Thread = ({ thread, active, setActive, onDelete, finaliseThread}: ThreadProps) => {
+  const { commentThread, threadId, commentThreadIsLoading, isLoading, isPlaceholder, mutate } = useResolveThread(thread);
   const { user, isLoading: userIsLoading, error: userError  } = useUser(commentThread?.createdByEmail);
   const { userProfile, isLoading: profileLoading, error: profileError } = useProfile();
   const [ activeEvent, setActiveEvent ] = useActiveEvent();
@@ -78,6 +111,9 @@ const Thread = ({ threadId, active, setActive, onDelete}: ThreadProps) => {
   const canEdit = userProfile?.admin || userProfile?.email === commentThread?.createdByEmail;
   const canResolve = userProfile?.admin || isInstructor || userProfile?.email === commentThread?.createdByEmail;
 
+  const savePlaceholder = (placeholder: Comment) => {
+    finaliseThread(commentThread, placeholder);
+  }
   
   const mutateComment = (comment: Comment) => {
     if (!commentThread) return;
@@ -105,7 +141,7 @@ const Thread = ({ threadId, active, setActive, onDelete}: ThreadProps) => {
   };
 
   const handleReply = () => {
-    if (!commentThread) return;
+    if (!commentThread || isPlaceholder) return;
     postComment(threadId).then((comment: Comment) => {
       mutate({ ...commentThread, Comment: [ ...commentThread.Comment, comment ] })
     });
@@ -113,7 +149,7 @@ const Thread = ({ threadId, active, setActive, onDelete}: ThreadProps) => {
 
 
   const handleDelete = () => {
-    if (!commentThread) return;
+    if (!commentThread  || isPlaceholder) return;
     deleteCommentThread(commentThread.id).then((commentThread: CommentThread) => {
       onDelete();
     });
@@ -173,27 +209,36 @@ const Thread = ({ threadId, active, setActive, onDelete}: ThreadProps) => {
             <TinyButton onClick={handleClose}>
               <IoClose/>
             </TinyButton>
-            <Dropdown
-              renderTrigger={() => (
-                <TinyButton>
-                  <BiDotsVerticalRounded className="h-4 w-4" data-cy={`Thread:${threadId}:Dropdown`}/>
-                </TinyButton>
-              )} label={undefined} 
-              className='not-prose'
-            >
-              <Dropdown.Item className="hover:bg-gray-400" icon={commentThread?.instructorOnly === true ? ImEyeBlocked : ImEye} onClick={handleInstructorOnly} data-cy={`Thread:${threadId}:Visibility`}>
-                Visibility
-              </Dropdown.Item>
-              <Dropdown.Item className="hover:bg-gray-400" icon={MdDelete} onClick={handleDelete} data-cy={`Thread:${threadId}:Delete`}>
-                Delete
-              </Dropdown.Item>
-            </Dropdown>
+            { !isPlaceholder && 
+              <Dropdown
+                renderTrigger={() => (
+                  <TinyButton>
+                    <BiDotsVerticalRounded className="h-4 w-4" data-cy={`Thread:${threadId}:Dropdown`}/>
+                  </TinyButton>
+                )} label={undefined} 
+                className='not-prose'
+              >
+                <Dropdown.Item className="hover:bg-gray-400" icon={commentThread?.instructorOnly === true ? ImEyeBlocked : ImEye} onClick={handleInstructorOnly} data-cy={`Thread:${threadId}:Visibility`}>
+                  Visibility
+                </Dropdown.Item>
+                <Dropdown.Item className="hover:bg-gray-400" icon={MdDelete} onClick={handleDelete} data-cy={`Thread:${threadId}:Delete`}>
+                  Delete
+                </Dropdown.Item>
+              </Dropdown>
+            }
           </Stack>
       </div>
-      { sortedComments.map((comment) => (
-        <CommentView key={comment.id} comment={comment} mutateComment={mutateComment} deleteComment={deleteComment}/>
-      ))}
-      <Stack direction='row-reverse'>
+      {isPlaceholder && (
+         sortedComments.map((comment) => (
+          <CommentView key={comment.id} comment={comment} mutateComment={savePlaceholder} saveComment={savePlaceholder} deleteComment={deleteComment} isPlaceholder={true}/>
+        )))    
+      }
+      {!isPlaceholder && (
+         sortedComments.map((comment) => (
+          <CommentView key={comment.id} comment={comment} mutateComment={mutateComment} deleteComment={deleteComment} isPlaceholder={false}/>
+        )))    
+      }
+      { !isPlaceholder && (<Stack direction='row-reverse'>
         { canResolve && (
         <Tooltip content="Mark as Resolved" placement="top">
         <TinyButton onClick={handleResolved} dataCy={`Thread:${threadId}:Resolved`}>
@@ -211,7 +256,7 @@ const Thread = ({ threadId, active, setActive, onDelete}: ThreadProps) => {
           <BiReply className="h-4 w-4" data-cy={`Thread:${threadId}:Reply`} />
         </TinyButton>
         </Tooltip>
-      </Stack>
+      </Stack>)}
     </div>
     )}
     </div>
