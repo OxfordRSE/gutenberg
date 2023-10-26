@@ -23,7 +23,7 @@ const Header: React.FC<Props> = ({ theme, course, pageInfo } ) =>  {
         <meta name="description" content={description} />
       )}
       {pageInfo &&(
-        <link rel="icon" href={logoSrc} aria-label={logoAlt}/>
+        <link rel="icon" href={logoSrc}/>
       )}
       
 
