@@ -30,14 +30,16 @@ import SelectField from 'components/forms/SelectField'
 import Checkbox from 'components/forms/Checkbox'
 import SubTitle from 'components/ui/SubTitle'
 import EventCommentThreads from 'components/EventCommentThreads'
+import { PageTemplate, pageTemplate } from 'lib/pageTemplate'
 
 type EventProps = {
   material: Material,
   event: Event,
+  pageInfo?: PageTemplate,
 }
 
 
-const Event: NextPage<EventProps> = ({ material, event }) => {
+const Event: NextPage<EventProps> = ({ material, event, pageInfo}) => {
   // don't show date/time until the page is loaded (due to rehydration issues)
   const [showDateTime, setShowDateTime] = useState(false);
   useEffect(() => {
@@ -178,7 +180,7 @@ const Event: NextPage<EventProps> = ({ material, event }) => {
     </form>
   )
   return (
-    <Layout material={material}>
+    <Layout material={material} pageInfo={pageInfo}>
       { eventData && isAdmin ? (
         <Tabs.Group style="underline" >
         <Tabs.Item active icon={MdPreview} title="Event">
@@ -205,6 +207,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
+  const pageInfo = pageTemplate
   const eventId = parseInt(context?.params?.eventId as string);
   const event = await prisma.event.findUnique({ where: { id: eventId } });
   if (!event) {
@@ -216,7 +219,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   remove_markdown(material, undefined)
 
   return { 
-    props: makeSerializable({ event, material }),
+    props: makeSerializable({ event, material, pageInfo }),
   }
 }
 

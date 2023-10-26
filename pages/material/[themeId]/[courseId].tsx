@@ -8,17 +8,19 @@ import Content from 'components/content/Content'
 import NavDiagram from 'components/NavDiagram'
 import Title from 'components/ui/Title'
 import { Event } from 'lib/types'
+import { PageTemplate, pageTemplate } from 'lib/pageTemplate'
 
 type CourseComponentProps = {
   theme: Theme, 
   course: Course,
   material: Material,
   events: Event[],
+  pageInfo?: PageTemplate,
 }
 
-const CourseComponent: NextPage<CourseComponentProps> = ({theme, course, material, events}: CourseComponentProps) => {
+const CourseComponent: NextPage<CourseComponentProps> = ({theme, course, material, events, pageInfo}: CourseComponentProps) => {
   return (
-    <Layout theme={theme} course={course} material={material}>
+    <Layout theme={theme} course={course} material={material} pageInfo={pageInfo}>
       <Title text={course.name} />
       <NavDiagram material={material} theme={theme} course={course} />
       <Content markdown={course.markdown} theme={theme} course={course} />
@@ -44,6 +46,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
+  const pageInfo = pageTemplate
   const events = await prisma.event.findMany({
     where: { hidden: false },
   }).catch((e) => {
@@ -67,7 +70,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     return { notFound: true }
   }
   remove_markdown(material, course);
-  return { props: makeSerializable({ theme, course, material, events }) }
+  return { props: makeSerializable({ theme, course, material, events, pageInfo }) }
 }
 
 export default CourseComponent 

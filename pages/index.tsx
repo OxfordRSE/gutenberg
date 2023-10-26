@@ -1,4 +1,5 @@
 import type { NextPage, GetStaticProps } from 'next'
+import React from 'react'
 import prisma from 'lib/prisma'
 import Layout from 'components/Layout'
 import { makeSerializable } from 'lib/utils'
@@ -7,20 +8,23 @@ import { basePath } from 'lib/basePath'
 import { Event } from 'lib/types';
 import { Button, Card } from 'flowbite-react'
 import EventsView from 'components/EventsView'
-import ExternalLink from 'components/ui/ExternalLink'
+import { pageTemplate, PageTemplate} from 'lib/pageTemplate'
+import { Markdown } from 'components/content/Content'
+
 
 type HomeProps = {
   material: Material,
   events: Event[],
+  pageInfo: PageTemplate,
 }
 
 
-
-const Home: NextPage<HomeProps> = ({ material, events }) => {
+const Home: NextPage<HomeProps> = ({ material, events, pageInfo }) => {
+  const intro = pageInfo.frontpage.intro;
 
   const linkClassName = "text-blue-500 hover:underline"
   return (
-    <Layout material={material}>
+    <Layout material={material} pageInfo={pageInfo}>
       <div className="px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32  grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
       <Card>
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -36,25 +40,7 @@ const Home: NextPage<HomeProps> = ({ material, events }) => {
           Course Material
         </h5>
         <div className="font-normal text-gray-700 dark:text-gray-400">
-
-          <p className="pb-2">
-          This is the teaching website for the <ExternalLink href="https://www.rse.ox.ac.uk/"> Oxford Research Software
-          Engineering Group</ExternalLink>. Please see our list of past and upcoming courses
-          on the left.</p>
-
-          <p className="pb-2">The material for these courses is generated from a 
-          set of <ExternalLink href="https://github.com/UNIVERSE-HPC/course-material">markdown materials</ExternalLink> collated by 
-          the <ExternalLink href="https://universe-hpc.github.io/">UNIVERSE-HPC project</ExternalLink>,
-          a joint collaboration between RSE teams at Oxford, Southhampton,
-          Imperial and Edinburgh, the Software Sustainability Institute and the
-          Edinburgh Parallel Computing Centre.</p>
-          
-          <p className="pb-2">These materials have been
-          collated from a variety of sources published under different <ExternalLink href="https://creativecommons.org/about/cclicenses/">CC-BY</ExternalLink> licenses. The
-          attributions for each course and section are given on the relevant
-          pages, alongside the exact license of the original work.</p>
-
-          {/* <p>To see a graph of all the materials provided here and the dependencies between them, click on the button below</p> */}
+          {intro && (<Markdown markdown={intro}/>)}
         </div>
         <Button href={`${basePath}/material`}>
           <p>View the teaching materials</p>
@@ -80,6 +66,7 @@ const Home: NextPage<HomeProps> = ({ material, events }) => {
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
+  const pageInfo = pageTemplate
   
   const events = await prisma.event.findMany({
     where: { hidden: false },
@@ -94,6 +81,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     props: {
       material: makeSerializable(material),
       events: makeSerializable(events),
+      pageInfo: makeSerializable(pageInfo),
     },
   }
 }

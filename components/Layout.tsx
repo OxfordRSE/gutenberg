@@ -19,6 +19,7 @@ import Navbar from './Navbar'
 import { useSidebarOpen } from 'lib/hooks/useSidebarOpen'
 import useActiveEvent from 'lib/hooks/useActiveEvents'
 import { RecoilRoot } from 'recoil'
+import { PageTemplate, pageTemplate } from 'lib/pageTemplate'
 
 
 type Props = {
@@ -27,9 +28,10 @@ type Props = {
   course?: Course,
   section?: Section,
   children: ReactNode,
+  pageInfo?: PageTemplate,
 }
 
-const Layout: React.FC<Props> = ({ material, theme, course, section, children }) => {
+const Layout: React.FC<Props> = ({ material, theme, course, section, children, pageInfo }) => {
   const [ activeEvent, setActiveEvent ] = useActiveEvent();
   const router = useRouter()
   const { data: session } = useSession()
@@ -69,13 +71,13 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children })
   return (
     <RecoilRoot>
       <div className="container mx-auto">
-        <Header theme={theme} course={course}/>
+        <Header theme={theme} course={course} pageInfo={pageInfo}/>
         <main>
           <Navbar material={material} theme={theme} course={course} section={section} activeEvent={activeEvent} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} showAttribution={showAttribution} setShowAttribution={setShowAttribution}/>  
           <Overlay material={material} course={course} theme={theme} activeEvent={activeEvent} section={section} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}  showAttribution={showAttribution} setShowAttribution={setShowAttribution} prevUrl={prevUrl} nextUrl={nextUrl} />
           {children}
         </main>
-        <Footer />
+        <Footer pageInfo={pageInfo}/>
       </div>
     </RecoilRoot>
   )

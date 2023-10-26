@@ -24,14 +24,16 @@ import DateTimeField from 'components/forms/DateTimeField'
 import SelectField from 'components/forms/SelectField'
 import IntegerField from 'components/forms/IntegerField'
 import SubTitle from 'components/ui/SubTitle'
+import { PageTemplate, pageTemplate } from 'lib/pageTemplate'
 
 type EventGroupProps = {
   material: Material,
   event: Event,
   eventGroupId: number,
+  pageInfo?: PageTemplate,
 }
 
-const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroupId }) => {
+const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroupId, pageInfo }) => {
   // don't show date/time until the page is loaded (due to rehydration issues)
   const [showDateTime, setShowDateTime] = useState(false);
   useEffect(() => {
@@ -165,7 +167,7 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
 
 
   return (
-    <Layout material={material}>
+    <Layout material={material} pageInfo={pageInfo}>
       { isAdmin ? (
         <Tabs.Group style="underline" >
         <Tabs.Item active icon={MdPreview} title="Event">
@@ -197,6 +199,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
+  const pageInfo = pageTemplate
   const eventId = parseInt(context?.params?.eventId as string);
   const eventGroupId = parseInt(context?.params?.eventGroupId as string);
   const event = await prisma.event.findUnique({ where: { id: eventId } });
@@ -209,7 +212,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   remove_markdown(material, undefined)
 
   return { 
-    props: makeSerializable({ event, material, eventGroupId }),
+    props: makeSerializable({ event, material, eventGroupId, pageInfo }),
   }
 }
 
