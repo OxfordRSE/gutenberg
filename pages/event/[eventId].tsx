@@ -67,9 +67,7 @@ const Event: NextPage<EventProps> = ({ material, event }) => {
   const isAdmin = userProfile?.admin;
 
   const onSubmit = (data: EventWithUsers) => {
-    console.log('onSubmit', data)
     putEvent(data).then((data) => {
-      console.log('putEvent', data)
       data.event && mutateEvent(data.event)
   });
   }

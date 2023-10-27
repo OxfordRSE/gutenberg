@@ -8,6 +8,9 @@ import { HiMail, HiX } from 'react-icons/hi'
 import postUserOnEvent from 'lib/actions/postUserOnEvent'
 import putUserOnEvent from 'lib/actions/putUserOnEvent'
 import useEvent from 'lib/hooks/useEvent'
+import { useForm } from 'react-hook-form'
+import Stack from './ui/Stack'
+import TextField from './forms/Textfield'
 
 
 type Props = {
@@ -16,7 +19,12 @@ type Props = {
   onEnrol: (userOnEvent: UserOnEvent | undefined) => void
 }
 
+interface Enrol {
+  enrolKey: string
+}
+
 const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol}) => {
+  const { control, handleSubmit, reset } = useForm<Enrol>();
   const [error, setError] = React.useState<string | undefined>(undefined)
   const [enrolError, setEnrolError] = React.useState<string | undefined>(undefined)
   const [success, setSuccess] = React.useState<string | null>(null)
@@ -59,9 +67,8 @@ const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol}) => {
     })
   };
 
-  const enrolWithKey = () => {
-    const enrolKey = (document.getElementById('enrol-key') as HTMLInputElement).value;
-    const status = checkKey(enrolKey)
+  const enrolWithKey = (data: Enrol) => {
+    const status = checkKey(data.enrolKey)
     if (status === null) {
       setEnrolError("error")
     } else {
@@ -103,33 +110,41 @@ const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol}) => {
         {event.name}
       </Modal.Header>
       <Modal.Body>
-        <Content markdown={event.enrol} />
-        You should have received an enrolment key from the course organiser:
-        <div className="flex">
-        <TextInput
-          className="w-[80%]"
-          id="enrol-key"
-          sizing="sm"
-          type="text"
-          placeholder='Enrolment Key'
-        />
-        <Button className="w-[15%] h-8" onClick={enrolWithKey}>
-          Enrol
-        </Button>
-      </div>
-      { enrolError && (
-      <Toast className=''>
-        <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200">
-          <HiX className="h-5 w-5" />
-        </div>
-        <div className="ml-3 text-sm font-normal">
-          Invalid Enrolment Key
-        </div>
-      </Toast>
-    )}
+        <Stack>
+          <Content markdown={event.enrol} />
+          <p>
+            You should have received an enrolment key from the course organiser.
+          </p>
+          <form onSubmit={handleSubmit(enrolWithKey)}>   
+            <TextField
+              textfieldProps={{className: "w-[75%]",
+                                autoComplete: "off", 
+                                placeholder: "Enrolment Key",
+                                autoFocus: true,
+                              }}
+              name={"enrolKey"}
+              control={control}
+            />
+            <Button type="submit" className="m-0 h-10" style={{verticalAlign: "middle"}}>
+              Enrol
+            </Button>
+          </form>
+        { enrolError && (
+        <Toast className=''>
+          <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200">
+            <HiX className="h-5 w-5" />
+          </div>
+          <div className="ml-3 text-sm font-normal">
+            Invalid Enrolment Key
+          </div>
+        </Toast>
+      )}
+      </Stack>
       </Modal.Body>
       <Modal.Footer>
-        If you have not received an enrolment key, you can request enrolment:
+        <p>
+          If you have not received an enrolment key, you can request enrolment:
+        </p>
         <Button onClick={onClick}>
           Request Enrollment
         </Button>

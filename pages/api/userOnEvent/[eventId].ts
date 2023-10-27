@@ -36,19 +36,6 @@ const UserOnEvent = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
   const isAdmin = currentUser?.admin === true;
 
-  switch (method) {
-    case 'GET':
-      break;
-    case 'POST':
-      break;
-    case 'PUT':
-      break;
-    default:
-      res.setHeader('Allow', ['GET', 'POST', 'PUT']);
-      res.status(404).end(`Method ${method} Not Allowed`);
-      break;
-    }
-
   let updatedUserOnEvent = null;
   let userOnEvent = null;
   switch (method) {

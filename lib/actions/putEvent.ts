@@ -4,7 +4,6 @@ import { Data } from 'pages/api/event/[eventId]'
 
 // function that returns a promise that does a PUT request for this endpoint
 export const putEvent = async (event: Event): Promise<Data> => {
-    console.log('insideputeventt', event)
     const apiPath = `${basePath}/api/event/${event.id}`
     const requestOptions = {
         method: 'PUT',

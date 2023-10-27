@@ -83,7 +83,6 @@ const eventHandler = async (
           eventItem.order = parseInt(eventItem.order);
         }
     });
-    console.log('req.body', req.body)
     const updatedEventGroup = await prisma.eventGroup.update({
         where: { id: parseInt(eventGroupId) },
         data: {
