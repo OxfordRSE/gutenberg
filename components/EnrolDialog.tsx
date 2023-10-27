@@ -4,13 +4,14 @@ import { Event } from 'lib/types'
 import { useSession } from 'next-auth/react'
 import React from 'react'
 import Content from './content/Content'
-import { HiMail, HiX } from 'react-icons/hi'
+import { HiCheckCircle, HiMail, HiX } from 'react-icons/hi'
 import postUserOnEvent from 'lib/actions/postUserOnEvent'
 import putUserOnEvent from 'lib/actions/putUserOnEvent'
 import useEvent from 'lib/hooks/useEvent'
 import { useForm } from 'react-hook-form'
 import Stack from './ui/Stack'
 import TextField from './forms/Textfield'
+import { delay } from 'cypress/types/bluebird'
 
 
 type Props = {
@@ -27,6 +28,7 @@ const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol}) => {
   const { control, handleSubmit, reset } = useForm<Enrol>();
   const [error, setError] = React.useState<string | undefined>(undefined)
   const [enrolError, setEnrolError] = React.useState<string | undefined>(undefined)
+  const [keySuccess, setKeySuccess] = React.useState<string | undefined>(undefined)
   const [success, setSuccess] = React.useState<string | null>(null)
   const session = useSession()
   const { event: eventData, error: eventError, isLoading: eventIsLoading, mutate: mutateEvent } = useEvent(event.id)
@@ -67,7 +69,7 @@ const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol}) => {
     })
   };
 
-  const enrolWithKey = (data: Enrol) => {
+  const enrolWithKey = async(data: Enrol) => {
     const status = checkKey(data.enrolKey)
     if (status === null) {
       setEnrolError("error")
@@ -85,9 +87,13 @@ const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol}) => {
             if (eventData) {
 
               putUserOnEvent(event.id, newUser).then(() => {
-                onEnrol(newUser)
-                setSuccess("success")
-                setEnrolError(undefined)              
+                setKeySuccess("success")
+                setTimeout(() => {
+                  onEnrol(newUser)
+                  setSuccess("success")
+                  setEnrolError(undefined)    
+              }, 2000);
+         
             })
           }
             }
@@ -136,6 +142,16 @@ const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol}) => {
           </div>
           <div className="ml-3 text-sm font-normal">
             Invalid Enrolment Key
+          </div>
+        </Toast>
+      )}
+      { keySuccess && (
+        <Toast className=''>
+          <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
+            <HiCheckCircle className="h-5 w-5" />
+          </div>
+          <div className="ml-3 text-sm font-normal">
+            Enrolment Successful!
           </div>
         </Toast>
       )}
