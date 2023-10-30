@@ -72,7 +72,7 @@ const eventHandler = async (
 
     res.status(200).json({ event });
   } else if (req.method === 'PUT') {
-    const { name, enrol, content, start, end, summary, hidden } = req.body.event;
+    const { name, enrol, content, enrolKey, instructorKey, start, end, summary, hidden } = req.body.event;
     const eventGroupData: EventGroup[] = req.body.event.EventGroup;
     const userOnEventData: UserOnEvent[] = req.body.event.UserOnEvent;
 
@@ -91,6 +91,8 @@ const eventHandler = async (
         name,
         summary,
         enrol,
+        enrolKey,
+        instructorKey,
         content,
         start,
         end,

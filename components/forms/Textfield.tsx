@@ -7,9 +7,10 @@ type Props<T extends FieldValues> = {
   name: FieldPath<T>;
   control: Control<T>;
   rules?: Object;
+  textfieldProps?: Object;
 };
 
-function Textfield<T extends FieldValues>({ label, name, control, rules }: Props<T>): React.ReactElement {
+function Textfield<T extends FieldValues>({ label, name, control, rules, textfieldProps }: Props<T>): React.ReactElement {
   return (
     <div data-cy={`textfield-${name}`}>
     <Controller
@@ -31,6 +32,7 @@ function Textfield<T extends FieldValues>({ label, name, control, rules }: Props
             value={value === undefined || value === null ? '' : value}
             onChange={onChange}
             onBlur={onBlur}
+            {...textfieldProps}
           />
           </>
         );
