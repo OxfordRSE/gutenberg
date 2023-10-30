@@ -121,19 +121,20 @@ const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol}) => {
           <p>
             You should have received an enrolment key from the course organiser.
           </p>
-          <form onSubmit={handleSubmit(enrolWithKey)}>   
-            <TextField
-              textfieldProps={{className: "w-[75%]",
-                                autoComplete: "off", 
-                                placeholder: "Enrolment Key",
-                                autoFocus: true,
-                              }}
-              name={"enrolKey"}
-              control={control}
-            />
-            <Button type="submit" className="m-0 h-10" style={{verticalAlign: "middle"}}>
-              Enrol
-            </Button>
+          <form onSubmit={handleSubmit(enrolWithKey)}>
+            <Stack direction='row' spacing={2} className="justify-center flex-row"> 
+              <TextField
+                textfieldProps={{autoComplete: "off", 
+                                 placeholder: "Enrolment Key",
+                                 autoFocus: true,
+                                }}
+                name={"enrolKey"}
+                control={control}
+              />
+              <Button type="submit" className="m-0 h-10 mt-1">
+                Enrol
+              </Button>
+            </Stack>
           </form>
         { enrolError && (
         <Toast className=''>
