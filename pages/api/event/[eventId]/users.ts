@@ -51,9 +51,9 @@ const EventUsers = async (
         const onEvent = event?.UserOnEvent
         const emails = onEvent.map((userOnEvent) => userOnEvent?.userEmail || "")
         users = await prisma.userOnEvent.findMany({
-          where: { userEmail: { in: emails } },
+          where: { userEmail: { in: emails }, eventId },
           include: { user: true },
-          orderBy: [{ status: 'asc'}, {userEmail: 'asc'}] 
+          orderBy: [{ status: 'asc'}, {userEmail: 'asc'}]
         })
       }
       res.status(200).json({ users })
