@@ -93,7 +93,6 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo}) => {
     { label: 'reject', value: 'REJECTED' },
   ]
 
-
   const eventView = (
     <>
       <Title text={event.name} />

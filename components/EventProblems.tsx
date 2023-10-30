@@ -16,6 +16,7 @@ import { EventItem } from '@prisma/client';
 import useUsers from 'lib/hooks/useUsers';
 import { useProblems } from 'lib/hooks/useProblems';
 import useUsersOnEvent from 'lib/hooks/useUsersOnEvent';
+import { TableVirtuoso } from 'react-virtuoso'
 
 type Props = {
     event: EventFull,
@@ -35,6 +36,21 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
   const students = users.filter((user) => user.status === 'STUDENT')
 
   return (
+    <>
+    {/* <TableVirtuoso
+    style={{ height: 400 }}
+    data = {students}
+    itemContent={
+      (index, user) => (
+        <th>
+            <Avatar
+              img={user?.user?.image || undefined}
+              rounded={true}
+              size="sm"
+            />
+        </th>
+      )
+    }/> */}
     <Table className='border dark:border-gray-700'>
       <Table.Head>
         <Table.HeadCell>
@@ -95,6 +111,7 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
         ))}
       </Table.Body>
     </Table>
+    </>
   )
 }
 

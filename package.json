@@ -58,6 +58,7 @@
     "react-markdown": "^8.0.4",
     "react-string-replace": "^1.1.0",
     "react-syntax-highlighter": "^15.5.0",
+    "react-virtuoso": "^4.6.2",
     "reactflow": "^11.3.2",
     "recoil": "^0.7.0",
     "rehype-katex": "^6.0.2",
