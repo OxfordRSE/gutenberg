@@ -6,6 +6,7 @@ import { makeSerializable } from 'lib/utils'
 import Content from 'components/content/Content'
 import Title from 'components/ui/Title'
 import { Event } from 'lib/types'
+import { PageTemplate, pageTemplate } from 'lib/pageTemplate'
 
 type SectionComponentProps = {
   theme: Theme, 
@@ -13,11 +14,12 @@ type SectionComponentProps = {
   section: Section,
   material: Material,
   events: Event[],
+  pageInfo?: PageTemplate,
 }
 
-const SectionComponent: NextPage<SectionComponentProps> = ({theme, course, section, events, material}: SectionComponentProps) => {
+const SectionComponent: NextPage<SectionComponentProps> = ({theme, course, section, events, material, pageInfo}: SectionComponentProps) => {
   return (
-    <Layout theme={theme} course={course} section={section} material={material}>
+    <Layout theme={theme} course={course} section={section} material={material} pageInfo={pageInfo}>
       <Title text={section.name} />
       <Content markdown={section.markdown} theme={theme} course={course} section={section} />
     </Layout>
@@ -44,6 +46,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
+  const pageInfo = pageTemplate
   const events = await prisma.event.findMany({
     where: { hidden: false },
   }).catch((e) => {
@@ -75,7 +78,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     return { notFound: true }
   }
   remove_markdown(material, section);
-  return { props: makeSerializable({ theme, course, section, events, material }) }
+  return { props: makeSerializable({ theme, course, section, events, material, pageInfo }) }
 }
 
 export default SectionComponent 
