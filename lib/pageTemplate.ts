@@ -19,6 +19,6 @@ export const pageTemplate: PageTemplate | undefined = (() => {
         console.log(data);
         return data
     } catch (e) {
-        console.log(e);
+        console.error(e);
       }
 })();
