@@ -16,7 +16,6 @@ import { EventItem } from '@prisma/client';
 import useUsers from 'lib/hooks/useUsers';
 import { useProblems } from 'lib/hooks/useProblems';
 import useUsersOnEvent from 'lib/hooks/useUsersOnEvent';
-import { TableVirtuoso } from 'react-virtuoso'
 import { filter } from 'cypress/types/bluebird';
 import Tooltip from '@mui/material/Tooltip';
 
@@ -24,8 +23,6 @@ type Props = {
     event: EventFull,
     material: Material,
 }
-
-
 
 
 // a table of eventItems vs users showing which users have completed which problems
@@ -36,13 +33,14 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
   if (usersError || problemsError) return <div>failed to load</div> 
   if (!users || !problems) return <div>loading...</div>
   const students = users.filter((user) => user.status === 'STUDENT' && user.eventId === event.id)
+
   const userProblems: { [key: string]: Problem[] } = {};
   users.forEach((user) => {
     const filteredProblems = problems.filter((problem) => problem.userEmail === user.userEmail);
     if (filteredProblems) {userProblems[user.userEmail] = filteredProblems;}
   });
+  
   return (
-    <>
     <Table className='border dark:border-gray-700'>
       <Table.Head>
         <Table.HeadCell>
@@ -77,7 +75,7 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
                 { section && section.problems.map((problem) => (
                     <React.Fragment key={problem}>
                     <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800" key={`${eventGroup.id}-${eventGroup.id}-${problem}`}>
-                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white p-1 m-0" key={`title-${problem}${eventItem.section}`}>
+                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white p-1 m-0" key={`title-${problem}-${eventItem.section}`}>
                       {url ? (
                         <a href={`${url}#${problem}`}>{problem}</a>
                       ) : (
@@ -91,7 +89,7 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
                           <Table.Cell key={`${user.userEmail}-${problem}-${eventItem.section}-${problem}`} align='center' className="whitespace-nowrap font-medium text-gray-900 dark:text-white p-0">
                             {(problemStruct && problemStruct.complete) ? 
                               <Tooltip title={problemStr} placement="top"><span>✅</span></Tooltip> :
-                              '❌'
+                              <span>❌</span>
                             }
                           </Table.Cell>
                         )
@@ -105,7 +103,6 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
         ))}
       </Table.Body>
     </Table>
-    </>
   )
 }
 
