@@ -16,9 +16,8 @@ export const pageTemplate: PageTemplate | undefined = (() => {
     try {
         const fileContents = fs.readFileSync(yamlTemplate, 'utf8');
         const data = yaml.load(fileContents) as PageTemplate;
-        console.log(data);
         return data
     } catch (e) {
-        console.log(e);
+        console.error(e);
       }
 })();
