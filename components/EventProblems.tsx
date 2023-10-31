@@ -4,7 +4,7 @@ import { Course, Material, Section, Theme, eventItemSplit } from 'lib/material'
 import { EventFull, Event, Problem } from 'lib/types'
 import useSWR, { Fetcher } from 'swr'
 import Title from 'components/ui/Title'
-import { Avatar, Button, Card, Table, Timeline, Tooltip } from 'flowbite-react'
+import { Avatar, Button, Card, Table, Timeline } from 'flowbite-react'
 import { ListGroup } from 'flowbite-react';
 import { basePath } from 'lib/basePath'
 import { MdClose } from 'react-icons/md'
@@ -17,6 +17,8 @@ import useUsers from 'lib/hooks/useUsers';
 import { useProblems } from 'lib/hooks/useProblems';
 import useUsersOnEvent from 'lib/hooks/useUsersOnEvent';
 import { TableVirtuoso } from 'react-virtuoso'
+import { filter } from 'cypress/types/bluebird';
+import Tooltip from '@mui/material/Tooltip';
 
 type Props = {
     event: EventFull,
@@ -33,43 +35,35 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
 
   if (usersError || problemsError) return <div>failed to load</div> 
   if (!users || !problems) return <div>loading...</div>
-  const students = users.filter((user) => user.status === 'STUDENT')
-
+  const students = users.filter((user) => user.status === 'STUDENT' && user.eventId === event.id)
+  const userProblems: { [key: string]: Problem[] } = {};
+  users.forEach((user) => {
+    const filteredProblems = problems.filter((problem) => problem.userEmail === user.userEmail);
+    if (filteredProblems) {userProblems[user.userEmail] = filteredProblems;}
+  });
   return (
     <>
-    {/* <TableVirtuoso
-    style={{ height: 400 }}
-    data = {students}
-    itemContent={
-      (index, user) => (
-        <th>
-            <Avatar
-              img={user?.user?.image || undefined}
-              rounded={true}
-              size="sm"
-            />
-        </th>
-      )
-    }/> */}
     <Table className='border dark:border-gray-700'>
       <Table.Head>
         <Table.HeadCell>
             Problem
         </Table.HeadCell>
         { students?.map((user) => (
-          <Table.HeadCell key={user.userEmail} align="center">
-            <Tooltip className={'normal-case'} content={`${user?.user?.name} <${user?.userEmail}>`} placement="top">
+          <Table.HeadCell key={user.userEmail} align="center" className="p-0">
+            <Tooltip className={'normal-case'} title={`${user?.user?.name} <${user?.userEmail}>`} placement="top">
             <Avatar
               img={user?.user?.image || undefined}
               rounded={true}
-              size="sm"
+              size="xs"
             />
             </Tooltip>
           </Table.HeadCell>
         ))}
       </Table.Head>
       <Table.Body className="divide-y">
-        { event.EventGroup.map((eventGroup) => (
+        { event.EventGroup.filter(
+          (eventGroup) => eventGroup.EventItem.length > 0)
+            .map((eventGroup) => (
             <React.Fragment key={eventGroup.id}>
             <Table.Row className="" key={eventGroup.id}>
                 <Table.Cell className="">
@@ -83,7 +77,7 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
                 { section && section.problems.map((problem) => (
                     <React.Fragment key={problem}>
                     <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800" key={`${eventGroup.id}-${eventGroup.id}-${problem}`}>
-                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white" key={`title-${problem}${eventItem.section}`}>
+                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white p-1 m-0" key={`title-${problem}${eventItem.section}`}>
                       {url ? (
                         <a href={`${url}#${problem}`}>{problem}</a>
                       ) : (
@@ -91,12 +85,12 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
                       )}
                     </Table.Cell>
                     { students?.map((user, i) => {
-                        const problemStruct = problems.find((p: Problem) => p.userEmail === user.userEmail && p.tag === problem)
+                        const problemStruct = userProblems[user.userEmail].find((p) => p.tag === problem)
                         const problemStr = `difficulty: ${problemStruct?.difficulty} notes: ${problemStruct?.notes}`
                         return (
-                          <Table.Cell key={`${user.userEmail}${problem}${eventItem.section}`} align='center' className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                          <Table.Cell key={`${user.userEmail}-${problem}-${eventItem.section}-${problem}`} align='center' className="whitespace-nowrap font-medium text-gray-900 dark:text-white p-0">
                             {(problemStruct && problemStruct.complete) ? 
-                              <Tooltip content={problemStr} placement="top">✅</Tooltip> :
+                              <Tooltip title={problemStr} placement="top"><span>✅</span></Tooltip> :
                               '❌'
                             }
                           </Table.Cell>
