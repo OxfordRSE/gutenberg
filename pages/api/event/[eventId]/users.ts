@@ -6,6 +6,7 @@ import prisma from 'lib/prisma'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import _, { sortBy } from "cypress/types/lodash"
 import { Prisma } from "@prisma/client"
+import useProfile from "lib/hooks/useProfile"
 
 export type UsersWithUserOnEvents = Prisma.UserOnEventGetPayload<{
   include: { user: true }
@@ -23,6 +24,7 @@ const EventUsers = async (
   const { method } = req;
   const session = await getServerSession(req, res, authOptions)
   const user = session?.user;
+  const userEmail = session?.user?.email
   const eventId = parseInt(req.query.eventId as string);
 
   if (!session) {
@@ -42,12 +44,21 @@ const EventUsers = async (
     return res.status(404).json({ error: 'Event not Found' })
   }
 
+  if (!userEmail || userEmail === undefined) {
+    return res.status(401).send({ error: "Not logged in" });
+  }
+
+  const currentUser = await prisma.user.findUnique({
+    where: { email: userEmail },
+  });
+
   const isInstructor = event?.UserOnEvent.some((userOnEvent) => userOnEvent?.user?.name === user?.name && userOnEvent.status === 'INSTRUCTOR')
+  const isAdmin = currentUser?.admin === true;
 
   let users: UsersWithUserOnEvents[] = []
   switch (method) {
     case 'GET':
-      if (isInstructor) {
+      if (isInstructor || isAdmin) {
         const onEvent = event?.UserOnEvent
         const emails = onEvent.map((userOnEvent) => userOnEvent?.userEmail || "")
         users = await prisma.userOnEvent.findMany({
@@ -59,7 +70,7 @@ const EventUsers = async (
       res.status(200).json({ users })
       break;
     case 'PUT':
-      if (!isInstructor) {
+      if (!isInstructor && !isAdmin) {
         return res.status(403).json({ error: 'Forbidden' });
       }
       users = req.body.users;
