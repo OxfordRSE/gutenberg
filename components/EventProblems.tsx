@@ -48,12 +48,14 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
         </Table.HeadCell>
         { students?.map((user) => (
           <Table.HeadCell key={user.userEmail} align="center" className="p-0">
-            <Tooltip className={'normal-case'} title={`${user?.user?.name} <${user?.userEmail}>`} placement="top">
-            <Avatar
-              img={user?.user?.image || undefined}
-              rounded={true}
-              size="xs"
-            />
+            <Tooltip title={`${user?.user?.name} <${user?.userEmail}>`}>
+              <div>
+                <Avatar
+                  img={user?.user?.image || undefined}
+                  rounded={true}
+                  size="xs"
+                />
+              </div>
             </Tooltip>
           </Table.HeadCell>
         ))}
