@@ -4,8 +4,7 @@ import { EventFull, Event, Problem } from 'lib/types'
 import { basePath } from 'lib/basePath'
 import { EventItem } from '@prisma/client';
 import { useSession } from 'next-auth/react'
-import { useSession } from 'next-auth/react'
-import { uniq } from 'cypress/types/lodash';
+
 
 type EventItemProps = {
   material: Material,
