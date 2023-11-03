@@ -3,6 +3,7 @@ import { Material } from 'lib/material'
 import { EventFull, Event, Problem } from 'lib/types'
 import { basePath } from 'lib/basePath'
 import { EventItem } from '@prisma/client';
+import { useSession } from 'next-auth/react'
 
 type EventItemProps = {
   material: Material,
@@ -10,8 +11,10 @@ type EventItemProps = {
   problems?: Problem[],
 }
 
+const EventItemView: React.FC<EventItemProps> = ({ material, item, problems }) => {
+  
+  const { data: session } = useSession()
 
-const EventView: React.FC<EventItemProps> = ({ material, item, problems }) => {
   const split = item.section.split('.')
   let url = ''
   let name = `Error: ${item.section}`
@@ -44,8 +47,9 @@ const EventView: React.FC<EventItemProps> = ({ material, item, problems }) => {
   }
   let isCompleted = false;
   let completedLabel = '';
+
   if (problems !== undefined && itemProblems.length > 0) {
-    const completedProblems = problems.filter((p) => p.section === item.section && itemProblems.includes(p.tag) && p.complete);
+    const completedProblems = problems.filter((p) => p.section === item.section && itemProblems.includes(p.tag) && p.complete  && p.userEmail === session?.user?.email);
     completedLabel = `[${completedProblems.length}/${itemProblems.length}]`;
     isCompleted = completedProblems.length === itemProblems.length;
   }
@@ -58,4 +62,4 @@ const EventView: React.FC<EventItemProps> = ({ material, item, problems }) => {
   )
 }
 
-export default EventView
+export default EventItemView
