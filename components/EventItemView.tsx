@@ -3,6 +3,8 @@ import { Material } from 'lib/material'
 import { EventFull, Event, Problem } from 'lib/types'
 import { basePath } from 'lib/basePath'
 import { EventItem } from '@prisma/client';
+import { useSession } from 'next-auth/react'
+
 
 type EventItemProps = {
   material: Material,
@@ -10,13 +12,14 @@ type EventItemProps = {
   problems?: Problem[],
 }
 
+const EventItemView: React.FC<EventItemProps> = ({ material, item, problems }) => {
 
-const EventView: React.FC<EventItemProps> = ({ material, item, problems }) => {
   const split = item.section.split('.')
   let url = ''
   let name = `Error: ${item.section}`
   let key = item.id
   let indent = 0
+
 
   let itemProblems: string[] = []
   if (split.length === 3) {
@@ -44,10 +47,18 @@ const EventView: React.FC<EventItemProps> = ({ material, item, problems }) => {
   }
   let isCompleted = false;
   let completedLabel = '';
+
+  const uniqueUsers = new Set();
+  let uniqueUsersCount = 0;
   if (problems !== undefined && itemProblems.length > 0) {
+    problems.forEach((problem) => {
+      uniqueUsers.add(problem.userEmail);
+    });
     const completedProblems = problems.filter((p) => p.section === item.section && itemProblems.includes(p.tag) && p.complete);
-    completedLabel = `[${completedProblems.length}/${itemProblems.length}]`;
-    isCompleted = completedProblems.length === itemProblems.length;
+    uniqueUsersCount = Math.max(1, uniqueUsers.size); // to deal with =0
+    // instructors see total completed by all students / total problems available to all students
+    completedLabel = `[${completedProblems.length}/${itemProblems.length * uniqueUsersCount}]` 
+    isCompleted = completedProblems.length === (itemProblems.length * uniqueUsersCount);
   }
 
 
@@ -58,4 +69,4 @@ const EventView: React.FC<EventItemProps> = ({ material, item, problems }) => {
   )
 }
 
-export default EventView
+export default EventItemView
