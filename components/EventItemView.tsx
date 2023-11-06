@@ -13,8 +13,6 @@ type EventItemProps = {
 }
 
 const EventItemView: React.FC<EventItemProps> = ({ material, item, problems }) => {
-  
-  const { data: session } = useSession()
 
   const split = item.section.split('.')
   let url = ''
@@ -56,18 +54,11 @@ const EventItemView: React.FC<EventItemProps> = ({ material, item, problems }) =
     problems.forEach((problem) => {
       uniqueUsers.add(problem.userEmail);
     });
-    uniqueUsersCount = uniqueUsers.size;
     const completedProblems = problems.filter((p) => p.section === item.section && itemProblems.includes(p.tag) && p.complete);
-    if (uniqueUsersCount > 1) {
-      // if you are an instructor then you get a total count of problems completed / total problems available to all students
-      completedLabel = `[${completedProblems.length}/${itemProblems.length * uniqueUsersCount}]`
-      isCompleted = completedProblems.length === (itemProblems.length * uniqueUsersCount);
-    }
-    else {
-      // if you are a student then you get a count of problems completed / total problems available to just you
-      completedLabel = `[${completedProblems.length}/${itemProblems.length}]`
-      isCompleted = completedProblems.length === itemProblems.length;
-    }
+    uniqueUsersCount = Math.max(1, uniqueUsers.size); // to deal with =0
+    // instructors see total completed by all students / total problems available to all students
+    completedLabel = `[${completedProblems.length}/${itemProblems.length * uniqueUsersCount}]` 
+    isCompleted = completedProblems.length === (itemProblems.length * uniqueUsersCount);
   }
 
 
