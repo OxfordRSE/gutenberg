@@ -88,7 +88,7 @@ context ('with non-owner student', () => {
     cy.intercept(`/api/commentThread/${threadId}`, { commentThread: thread }).as("thread");
     cy.intercept(`/api/user/${createdByEmail}`, { user: createdByUser }).as("createdByUser");
     cy.intercept(`/api/user/${currentUserEmail}`, { user: currentUser }).as("currentUser");
-    cy.stub(sessionStorage, 'getItem').returns('1')
+    cy.stub(localStorage, 'getItem').returns('1')
     cy.intercept(`/api/event/1`, { event }).as("event");
     const setActiveSpy = cy.spy().as("setActive");
     const onDeleteSpy = cy.spy().as("onDelete");
@@ -238,7 +238,7 @@ context('with owner student', () => {
   beforeEach(() => {
     cy.intercept(`/api/commentThread/${threadId}`, { commentThread: thread }).as("thread");
     cy.intercept(`/api/user/${currentUserEmail}`, { user: currentUser }).as("currentUser");
-    cy.stub(sessionStorage, 'getItem').returns('1')
+    cy.stub(localStorage, 'getItem').returns('1')
     cy.intercept(`/api/event/1`, { event }).as("event");
     const setActiveSpy = cy.spy().as("setActive");
     const onDeleteSpy = cy.spy().as("onDelete");
@@ -346,7 +346,7 @@ context('with non-owner instructor', () => {
   beforeEach(() => {
     cy.intercept(`/api/commentThread/${threadId}`, { commentThread: thread }).as("thread");
     cy.intercept(`/api/user/${currentUserEmail}`, { user: currentUser }).as("currentUser");
-    cy.stub(sessionStorage, 'getItem').returns('1')
+    cy.stub(localStorage, 'getItem').returns('1')
     cy.intercept(`/api/event/1`, { event }).as("event");
     const setActiveSpy = cy.spy().as("setActive");
     const onDeleteSpy = cy.spy().as("onDelete");
