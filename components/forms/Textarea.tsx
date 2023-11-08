@@ -32,6 +32,7 @@ function Textarea<T extends FieldValues>({ label, name, control, rules, value, o
           />
           </div>
           <FlowbiteTextarea
+            autoFocus={true}
             name={name}
             id={name}
             value={value === undefined || value === null ? '' : value}
