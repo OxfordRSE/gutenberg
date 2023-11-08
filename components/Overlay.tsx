@@ -8,6 +8,7 @@ import AttributionDialog from './AttributionDialog'
 import Sidebar from './Sidebar'
 import { SearchDialog, searchQueryState } from 'components/SearchDialog'
 import { useRecoilState } from 'recoil'
+import { DeleteEventModal, deleteEventModalState } from 'components/deleteEventModal'
 
 interface Props {
   material: Material,
@@ -27,6 +28,7 @@ interface Props {
 const Overlay: NextPage<Props> = ({material, theme, course, section, activeEvent, showAttribution, setShowAttribution, sidebarOpen, setSidebarOpen, prevUrl, nextUrl }: Props) => {
   const [showSearch, setShowSearch] = useRecoilState(searchQueryState);
   const [showTopButtons, setShowTopButtons] = useState(false);
+  const [showDeleteEventModal, setShowDeleteEventModal] = useRecoilState(deleteEventModalState);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,6 +46,10 @@ const Overlay: NextPage<Props> = ({material, theme, course, section, activeEvent
   
   const closeSearch = () => {
     setShowSearch(false)
+  }
+
+  const closeDeleteEvent = () => {
+    setShowDeleteEventModal(false)
   }
 
   const handleClose = () => {
@@ -78,6 +84,7 @@ const Overlay: NextPage<Props> = ({material, theme, course, section, activeEvent
       )}
       <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />
       <SearchDialog onClose={closeSearch}/>
+      <DeleteEventModal onClose={closeDeleteEvent}/>
       <Sidebar material={material} activeEvent={activeEvent} sidebarOpen={sidebarOpen} handleClose={handleClose} />
       </div>
     </div>

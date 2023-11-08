@@ -35,7 +35,7 @@ export const SearchDialog: React.FC<SearchProps> = ({onClose}) => {
   return (
 
       <Modal
-        dismissible={false}
+        dismissible={true}
         show={isOpen}
         onClose={onClose}
         initialFocus={1}

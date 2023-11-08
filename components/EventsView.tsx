@@ -8,6 +8,9 @@ import useEvents from 'lib/hooks/useEvents'
 import useProfile from 'lib/hooks/useProfile'
 import useActiveEvent from 'lib/hooks/useActiveEvents';
 import { postEvent } from 'lib/actions/postEvent';
+import { MdDelete } from 'react-icons/md';
+import { useRecoilState } from 'recoil';
+import { deleteEventModalState, deleteEventIdState, DeleteEventModal } from 'components/deleteEventModal';
 
 
 type EventsProps = {
@@ -18,6 +21,9 @@ type EventsProps = {
 const EventsView: React.FC<EventsProps> = ({ material, events }) => {
   // don't show date/time until the page is loaded (due to rehydration issues)
   const [showDateTime, setShowDateTime] = useState(false);
+  const [showDeleteEventModal, setShowDeleteEventModal] = useRecoilState(deleteEventModalState);
+  const [deleteEventId, setDeleteEventId] = useRecoilState(deleteEventIdState);
+
   useEffect(() => {
     setShowDateTime(true);
   }, []);
@@ -27,6 +33,8 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
     events = currentEvents;
   }
   const { userProfile } = useProfile();
+  const isAdmin= userProfile?.admin;
+
   for (let i = 0; i < events.length; i++) {
     events[i].start = new Date(events[i].start)
   }
@@ -46,6 +54,11 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
     postEvent().then((event) => mutate([...(currentEvents || []), event]))
   }
 
+  const openDeleteEventModal = (eventId : number) => {
+    setShowDeleteEventModal(true);
+    setDeleteEventId(eventId);
+  }
+
   return (
     <Timeline>
       {events.map((event) => {
@@ -53,8 +66,10 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
           <Timeline.Item key={event.id}>
             <Timeline.Point />
             <Timeline.Content>
-              <Timeline.Time>
+              <Timeline.Time className='flex' style={{ justifyContent: 'space-between' }}>
                 <Link href={`/event/${event.id}`}>{showDateTime && event.start.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short'})}</Link>
+                { isAdmin && (<MdDelete className="ml-2 inline text-red-500 flex"  style={{cursor:'pointer'}}
+                              size={18} onClick={() => openDeleteEventModal(event.id)} />)}
               </Timeline.Time>
               <Timeline.Title>
                 <Link href={`/event/${event.id}`}>{event.name}</Link>
