@@ -40,6 +40,7 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
     if (filteredProblems) {userProblems[user.userEmail] = filteredProblems;}
   });
   
+
   return (
     <Table className='border dark:border-gray-700'>
       <Table.Head>
@@ -85,7 +86,7 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
                       )}
                     </Table.Cell>
                     { students?.map((user, i) => {
-                        const problemStruct = userProblems[user.userEmail].find((p) => p.tag === problem)
+                        const problemStruct = userProblems[user.userEmail].find((p) => p.tag === problem && p.section === eventItem.section)
                         const problemStr = `difficulty: ${problemStruct?.difficulty} notes: ${problemStruct?.notes}`
                         return (
                           <Table.Cell key={`${user.userEmail}-${problem}-${eventItem.section}-${problem}`} align='center' className="whitespace-nowrap font-medium text-gray-900 dark:text-white p-0">
