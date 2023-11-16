@@ -20,7 +20,7 @@ function useActiveEvent(): [EventFull | undefined, (event: EventFull | undefined
   }, [dispatch]);
 
   useEffect(() => {
-    const store = sessionStorage.getItem('activeEvent')
+    const store = localStorage.getItem('activeEvent')
     if (store) {
       setActiveEventId(parseInt(store))
     }
@@ -29,10 +29,10 @@ function useActiveEvent(): [EventFull | undefined, (event: EventFull | undefined
   useEffect(() => {
     const store = activeEventId?.toString();
     if (store) {
-      sessionStorage.setItem('activeEvent', store)
+      localStorage.setItem('activeEvent', store)
     }
     else {
-      sessionStorage.removeItem('activeEvent')
+      localStorage.removeItem('activeEvent')
     }
   }, [activeEventId])
 
