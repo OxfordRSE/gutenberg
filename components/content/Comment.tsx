@@ -67,7 +67,7 @@ const CommentView = ({ comment, mutateComment, deleteComment, isPlaceholder, sav
   }
   
   return (
-    <form>
+    <form data-cy="new-comment-form">
     <div className="mx-1 p-1 border border-gray-200 rounded-lg bg-slate-100 dark:bg-slate-800 dark:border-gray-700 mb-4" data-cy={`Comment:${comment.id}:Main`}>
       { (editing && hasEditPermission) ? (
       <div data-cy={`Comment:${comment.id}:Editing`}>
