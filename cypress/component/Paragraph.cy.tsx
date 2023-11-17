@@ -165,7 +165,7 @@ describe("Paragraph", () => {
 
   context('with active event', () => {
     beforeEach(() => {
-      cy.stub(sessionStorage, 'getItem').returns('1');
+      cy.stub(localStorage, 'getItem').returns('1');
     })
     it("comment exists and matches", () => {
       cy.mount(<div className="mt-4 pt-4">
