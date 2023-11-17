@@ -134,8 +134,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
       setActiveThreadId(undefined);
     }
   }
-  console.log('activeEvent', activeEvent)
-  console.log('commentThreads', commentThreads)
+
   return (
     <>
       <div data-cy="paragraph"  ref={ref} className="relative">
