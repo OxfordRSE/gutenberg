@@ -139,13 +139,21 @@ const eventHandler = async (
         res.status(401).json({ error: 'Unauthorized' });
         return;
     }
-    const deletedEvent = await prisma.event.delete({
-      where: { id: parseInt(eventId) },
-      include: { EventGroup: { include: { EventItem: true } }, UserOnEvent: { include: { user: true } } },
-    });
-    res.status(200).json({ event: deletedEvent });
+    // delete the event
+    const deletedEvent = prisma.event.delete({
+    where: { id: parseInt(eventId) },
+    include: { EventGroup: { include: { EventItem: true } }, UserOnEvent: { include: { user: true } } },
+    }).then((deletedEvent) => {
+      res.status(200).json({ event: deletedEvent });
+      return;
+    }).catch((error) => {
+      res.status(500).json({ error: 'Problem deleting event' });
+      return;
+    }) 
+  // user not authorized
   } else {
     res.status(405).json({ error: 'Method not allowed' });
+    return;
   }
 }
 

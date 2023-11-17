@@ -87,7 +87,7 @@ enum EventStatus {
 model UserOnEvent {
   user      User?       @relation(fields: [userEmail], references: [email])
   userEmail String // relation scalar field (used in the `@relation` attribute above)
-  event     Event       @relation(fields: [eventId], references: [id])
+  event     Event       @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   eventId   Int // relation scalar field (used in the `@relation` attribute above)
   status    EventStatus @default(REQUEST)
 
@@ -118,9 +118,9 @@ model EventGroup {
   start         DateTime        @default(now())
   end           DateTime        @default(now())
   location      String          @default("")
-  event         Event           @relation(fields: [eventId], references: [id])
+  event         Event           @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   eventId       Int
-  EventItem     EventItem[]
+  EventItem     EventItem[]     
   CommentThread CommentThread[]
 }
 
