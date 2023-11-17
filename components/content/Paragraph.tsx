@@ -59,6 +59,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
 
     const similarThreads = commentThreads?.filter((thread) => section === thread.section)
     .filter((thread) => {
+      
       const threadTokens = nlp.readDoc( thread.textRef )
       .tokens()
       .filter(
