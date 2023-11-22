@@ -18,23 +18,23 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Your awesome title
+title: Gutenberg
 email: your-email@example.com
 description: >- # this means to ignore newlines until "baseurl:"
   Gutenberg is a research and teaching platform developed by the Oxford Research Engineering Group
   at the University of Oxford. 
-  The goal is to have a tool which allows instructors to design bespoke courses, 
-  monitor students progress and, respond to feedback. All using a shared set of software engineering
-  teaching material in the form of mnarkdown files.
 baseurl: "/docs" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: jekyllrb
-github_username:  jekyll
+
 
 # Build settings
-theme: minima
+markdown: kramdown
+remote_theme: pages-themes/slate
 plugins:
+  - jekyll-remote-theme
   - jekyll-feed
+  - jekyll-toc
+  - jekyll-sitemap
 
 # Exclude from processing.
 # The following items will not be processed, by default.
