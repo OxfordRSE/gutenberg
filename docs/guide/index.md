@@ -12,7 +12,7 @@ This is the `Gutenberg` tutorial.
 
 When logged in as an admin, create an event by pressing the "Create New Event" button on the home page. The event will start off with no metadata and will be invisible to non-admin users, edit the event to start adding these details.
 
-To delete an Event, click the red Garbage bin icon on the event card on the homepage, then select Delete Event from the confirmation modal. Warning: This action cannot be undone.
+To delete an `Event`, click the red Garbage bin icon on the event card on the homepage, then select Delete Event from the confirmation modal. Warning: This action cannot be undone.
 
 ## Events
 
