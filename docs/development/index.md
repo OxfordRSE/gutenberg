@@ -3,9 +3,9 @@ title: Development
 permalink: /development/
 ---
 
-Gutenberg is a node.js application built using Next.js and Prisma.
+`Gutenberg` is a node.js application built using Next.js and Prisma.
 
-This will guide you through the process of setting up a development environment for Gutenberg.
+This will guide you through the process of setting up a development environment.
 
 - TOC
 {:toc}

@@ -3,6 +3,11 @@ title: Configuration
 permalink: /config/
 ---
 
+There are two steps required for getting the deployed application fully configured:
+
+1. [Configure Env Variables](/config/vars)
+1. [Create a template](/config/template)
+
 `Gutenberg` can be configured using environment variables, these can be set in a `.env` file in the root of the repository.
 A list of these and their purposes can be found [here](/config/vars).
 If you are hosting this on fly.io, you can set these as secrets in the fly.io dashboard.

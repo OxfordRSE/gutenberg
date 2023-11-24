@@ -41,7 +41,7 @@ This must also match your settings on the github OAuth pages.
 
 ## Search
 
-The following variables are used for the search functionality:
+The following variables are used for the search functionality, you need both an OpenAI API key and QDRANT fully configured:
 
 `OPENAI_API_KEY`
 : This is your API key for OpenAI.
