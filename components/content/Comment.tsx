@@ -5,7 +5,6 @@ import { Comment } from 'pages/api/comment/[commentId]'
 import { useForm } from 'react-hook-form'
 import Textarea from 'components/forms/Textarea'
 import { MdDelete, MdEdit, MdPreview, MdSave } from 'react-icons/md'
-import { use } from 'chai'
 import useProfile from 'lib/hooks/useProfile'
 import { useSession } from 'next-auth/react'
 import { putComment } from 'lib/actions/putComment'
@@ -13,7 +12,13 @@ import Stack from 'components/ui/Stack'
 import { TinyButton } from './Thread'
 import deleteCommentAction from 'lib/actions/deleteComment'
 import useUser from 'lib/hooks/useUser'
+import { useRecoilState, atom } from 'recoil'
 
+
+export const textAreaValue = atom({
+  key: 'textAreaValue',
+  default: '',
+});
 
 interface Props {
   comment: Comment
@@ -60,7 +65,7 @@ const CommentView = ({ comment, mutateComment, deleteComment, isPlaceholder, sav
     });
   }
 
-  const [textareaValue, setTextareaValue] = useState('');
+  const [textareaValue, setTextareaValue] = useRecoilState(textAreaValue);
   
   const handleTextareaValueChange = (newValue: string) => {
     // This function will be called whenever the Textarea component's value changes
@@ -72,9 +77,7 @@ const CommentView = ({ comment, mutateComment, deleteComment, isPlaceholder, sav
       { (editing && hasEditPermission) ? (
       <div data-cy={`Comment:${comment.id}:Editing`}>
         <Textarea control={control} 
-                  name="markdown" 
-                  value={textareaValue}
-                  onValueChange={handleTextareaValueChange}/>
+                  name="markdown" />
         <Stack direction='row-reverse'>
           {!isPlaceholder && (
             <TinyButton onClick={handleSubmit(onSubmit)} disabled={!textareaValue}><MdSave data-cy={`Comment:${comment.id}:Save`} /></TinyButton>

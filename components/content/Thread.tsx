@@ -23,8 +23,7 @@ import { ImEye, ImEyeBlocked } from 'react-icons/im'
 import useUser from 'lib/hooks/useUser'
 import { useSession } from 'next-auth/react'
 import CommentView from './Comment'
-import { set } from 'cypress/types/lodash'
-import { use } from 'chai'
+import { RecoilRoot } from 'recoil'
 
 interface TinyButtonProps {
   children: React.ReactNode
@@ -230,12 +229,16 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread}: ThreadPr
       </div>
       {isPlaceholder && (
          sortedComments.map((comment) => (
-          <CommentView key={comment.id} comment={comment} mutateComment={savePlaceholder} saveComment={savePlaceholder} deleteComment={deleteComment} isPlaceholder={true}/>
+          <RecoilRoot key={comment.id}>
+            <CommentView key={comment.id} comment={comment} mutateComment={savePlaceholder} saveComment={savePlaceholder} deleteComment={deleteComment} isPlaceholder={true}/>
+          </RecoilRoot>
         )))    
       }
       {!isPlaceholder && (
          sortedComments.map((comment) => (
-          <CommentView key={comment.id} comment={comment} mutateComment={mutateComment} deleteComment={deleteComment} isPlaceholder={false}/>
+          <RecoilRoot key={comment.id}>
+            <CommentView key={comment.id} comment={comment} mutateComment={mutateComment} deleteComment={deleteComment} isPlaceholder={false}/>
+          </RecoilRoot>
         )))    
       }
       { !isPlaceholder && (<Stack direction='row-reverse'>
