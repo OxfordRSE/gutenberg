@@ -4,6 +4,8 @@
 /node_modules
 /.pnp
 .pnp.js
+.yarn
+_site
 
 # Yarn 3 files
 .pnp.*
