@@ -51,6 +51,9 @@ jobs:
         with:
           repository: ${{ env.MATERIAL_REPO }}
           path: .material
+      - name: Enable corepack
+        shell: bash
+        run: corepack enable
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
