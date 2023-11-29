@@ -17,11 +17,8 @@ import remarkGfm from 'remark-gfm'
 import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for you
 
-
-
 import Challenge from './Challenge';
 import Solution from './Solution';
-import { render } from 'react-dom';
 import { first } from 'cypress/types/lodash';
 import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
