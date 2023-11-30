@@ -16,6 +16,7 @@
 
 # testing
 /coverage
+.yarn
 
 # next.js
 /.next/
