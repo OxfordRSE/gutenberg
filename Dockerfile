@@ -6,8 +6,9 @@ WORKDIR /app
 RUN echo node --version
 COPY package.json .
 COPY yarn.lock .
+COPY .yarnrc.yml .
 COPY prisma ./prisma
-RUN yarn install
+RUN corepack enable && yarn install --immutable
 COPY . .
 
 # If using npm with a `package-lock.json` comment out above and use below instead
@@ -26,7 +27,7 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN npm install -g dotenv-cli
 ARG DATABASE_URL
 ENV DATABASE_URL ${DATABASE_URL}
-# RUN npx prisma migrate deploy
+RUN npx prisma migrate deploy
 
 RUN yarn build
 
