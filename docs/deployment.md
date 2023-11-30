@@ -6,7 +6,7 @@ permalink: /deployment/
 
 On this page we will cover how to deploy the application to a production environment.
 
-If you wish to see how to deploy the application to a development environment, please refer to the [development guide](/development/).
+If you wish to see how to deploy the application to a development environment, please refer to the [development guide]({{ "/development/" | relative_url }}).
 
 - TOC
 {:toc}
@@ -18,13 +18,14 @@ The deployment uses Docker and the Dockerfile is included in the repository, you
 - A server with a public IP address to which you can deploy.
 - A space to host the application, such as Fly.io or [Heroku](https://www.heroku.com/).
 
-In addition, you will need to supply a database for the application to use, this can be any database that supports the prisma ORM, e.g. MySQL, Postgres, SQLite, etc.
+In addition, you will need to supply a postgres database, which we intercat with via the prisma ORM. 
+This can be hosted on the same server as the application, or on a different server, as long as the application can connect to it.
 
 ## Deploying via Fly.io
 
 You will need to set up an account with Fly.io and to install manually you will need the Flyctl [CLI tool](https://fly.io/docs/getting-started/installing-flyctl/).
 With an account created, go to your dashboard and create an "API key", this will be used to deploy the application.
-After you have deployed your application for the first time, you can set the necessary [configuration variables](/config/vars) as secrets via the dashboard.
+After you have deployed your application for the first time, you can set the necessary [configuration variables]({{ "/config/vars/" | relative_url }}) as secrets via the dashboard.
 
 ### Automatic Deployment
 
@@ -64,7 +65,7 @@ docker build -t gutenberg .
 ```
 
 You can then deploy this docker image and set up appropriate forwarding to your machine.
-You must set the environment variables as described in the [configuration documentation](/configuration/) for the application to work properly.
+You must set the environment variables as described in the [configuration documentation]({{ "/config/" | relative_url }}) for the application to work properly.
 
 It is reccomended that you use reverse proxy, such as [nginx](https://www.nginx.com/), to expose the application to the internet.
 
@@ -74,8 +75,6 @@ Regardless of how you wish to deploy, the application will need to connect to a 
 This can be done by setting the `DATABASE_URL` environment variable to the connection string for your database.
 
 The Oxford deployment uses a PostgreSQL database hosted on Fly.io, but you can use any database that supports the prisma ORM. If you are deploying to docker it is recommended to use a dockerised database on the same virtual network. As such, your docker network will consist of the application container, the database container and the reverse proxy container.
-
-TODO: write a compose file for application, database, reverse proxy and qdrant.
 
 ## Enabling Search
 
@@ -88,4 +87,4 @@ The existence of the `COLLECTION_NAME` environment variable allows one vector da
 
 ## Configuration
 
-The application can be configured via environment variables, while we have touched on some key ones here, namely the database connection string and the search related variables, a full list of the environment variables can be found in the [configuration documentation](/configuration/).
+The application can be configured via environment variables, while we have touched on some key ones here, namely the database connection string and the search related variables, a full list of the environment variables can be found in the [env vars config section]({{ "/config/vars" | relative_url }}).

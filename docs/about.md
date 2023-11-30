@@ -14,7 +14,8 @@ The application is made of two key components:
 
 ## Course Material
 
-Course material is provided currently from the [HPC Universe Project](https://universe-hpc.github.io/) though this can reasonably be exchanged for any similarly styled sets of course material in the form of markdown files.
+[Course material](https://github.com/UNIVERSE-HPC/course-material) is provided currently from the [HPC Universe Project](https://universe-hpc.github.io/) though this can reasonably be exchanged for any similarly styled sets of course material in the form of markdown files.
+The structrure of the markdown content is described in the HPC universe [contribution guide](https://github.com/UNIVERSE-HPC/course-material/blob/main/CONTRIBUTING.md).
 
 ## Teaching Tools
 
