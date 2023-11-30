@@ -24,6 +24,7 @@ const Popover = ({ target, onCreate }: { target?: HTMLElement, onCreate: (text: 
   return (
     <Portal>
       <Button
+        data-cy="new-comment-button" 
         style={{
           left: clientRect.x + clientRect.width / 2 - 25,
           top: clientRect.y - 50 + window.scrollY,

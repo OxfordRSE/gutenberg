@@ -45,9 +45,9 @@ jobs:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/gutenberg
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Checkout material repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ env.MATERIAL_REPO }}
           path: .material

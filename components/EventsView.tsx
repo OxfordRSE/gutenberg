@@ -69,6 +69,7 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
               <Timeline.Time className='flex justify-between'>
                 <Link href={`/event/${event.id}`}>{showDateTime && event.start.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short'})}</Link>
                 { isAdmin && (<MdDelete className="ml-2 inline text-red-500 flex cursor-pointer"
+                              data-cy={`delete-event-${event.id}`}
                               size={18} onClick={() => openDeleteEventModal(event.id)} />)}
               </Timeline.Time>
               <Timeline.Title>

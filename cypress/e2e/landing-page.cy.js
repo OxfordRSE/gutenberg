@@ -7,6 +7,13 @@ describe('landing page', () => {
     cy.contains('Course Events').should('be.visible')
   })
 
+  it('Create event button does not exist', () => {
+    cy.contains('Create new Event').should('not.exist')
+    })
+  it('Delete event button does not exist', () => {
+    cy.get('[data-cy*="delete-event"]').should('not.exist')
+  })
+  
   it('can login', () => {
     cy.get('[data-cy="avatar-not-signed-in"]').should('be.visible')
     const user = {

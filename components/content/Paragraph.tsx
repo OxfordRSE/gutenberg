@@ -59,6 +59,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
 
     const similarThreads = commentThreads?.filter((thread) => section === thread.section)
     .filter((thread) => {
+      
       const threadTokens = nlp.readDoc( thread.textRef )
       .tokens()
       .filter(
@@ -136,7 +137,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
 
   return (
     <>
-      <div ref={ref} className="relative">
+      <div data-cy="paragraph"  ref={ref} className="relative">
         {content}
         { activeEvent && (
         <div className={`absolute top-0 right-0 md:-right-6 xl:-right-[420px]`}>
