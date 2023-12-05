@@ -27,7 +27,7 @@ const nodeTypes = {
 import ELK, {ElkNode } from 'elkjs/lib/elk.bundled.js'
 const elk = new ELK()
 import { Course, Theme, Material, Section } from 'lib/material'
-import CourseComponent from 'pages/material/[themeId]/[courseId]';
+import CourseComponent from 'pages/material/[repoId]/[themeId]/[courseId]';
 import { ElkExtendedEdge } from 'elkjs';
 
 
@@ -125,7 +125,7 @@ function generate_course_nodes_elk(course: Course) {
   return nodes;
 }
 
-function generate_course_nodes(course: Course, graph: ElkNode) {
+function generate_course_nodes(course: Course, theme: Theme, graph: ElkNode) {
   let nodes: Node[] = course.sections.map((section, i) => (
     { 
       id: `${section.theme}.${course.id}.${section.file}`, 
@@ -137,7 +137,7 @@ function generate_course_nodes(course: Course, graph: ElkNode) {
         label: section.name,  
         width: graph.children?.[i].width,
         height: graph.children?.[i].height,
-        theme: section.theme,
+        theme: theme,
         course: course,
         section: section,
       }, 
@@ -236,7 +236,7 @@ function generate_theme_nodes(material: Material, theme: Theme, graph: ElkNode, 
   ))
   nodes = nodes.concat(...theme.courses.map((course, i) => {
     if (graph.children?.[i]) {
-      return generate_course_nodes(course, graph.children?.[i])
+      return generate_course_nodes(course, theme, graph.children?.[i])
     } else {
       return []
     }
@@ -253,6 +253,7 @@ function generate_theme_nodes(material: Material, theme: Theme, graph: ElkNode, 
         if (!depCourseData) {
           depCourseData = course;
         }
+        const depTheme = material.themes.find(t => t.id == depCourseData?.theme && t.repo == theme.repo);
         const depCourse = { 
           id: dep, 
           type: 'course',
@@ -262,7 +263,7 @@ function generate_theme_nodes(material: Material, theme: Theme, graph: ElkNode, 
             label: depCourseData.name,
             width: graph.children?.[index].width,
             height: graph.children?.[index].height,
-            theme: theme,
+            theme: depTheme,
             course: depCourseData,
             external: true,
           }, 
@@ -367,8 +368,8 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course }) => {
       }
       elk.layout(graph).then(graph => {
         let nodes: Node[] = [];
-        if (course) {
-          nodes = generate_course_nodes(course, graph);
+        if (course && theme) {
+          nodes = generate_course_nodes(course, theme, graph);
         } else if (theme) {
           nodes = generate_theme_nodes(material, theme, graph, true);
         } else {

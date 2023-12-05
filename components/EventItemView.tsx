@@ -20,28 +20,27 @@ const EventItemView: React.FC<EventItemProps> = ({ material, item, problems }) =
   let key = item.id
   let indent = 0
 
-
   let itemProblems: string[] = []
-  if (split.length === 3) {
-    const [theme, course, section] = split;
+  if (split.length === 4) {
+    const [repo, theme, course, section] = split;
     const themeData = material.themes.find((t) => t.id === theme)
     const courseData = themeData?.courses.find((c) => c.id === course)
     const sectionData = courseData?.sections.find((s) => s.id === section)
-    url = `${basePath}/material/${theme}/${course}/${section}`
+    url = `${basePath}/material/${repo}/${theme}/${course}/${section}`
     name = sectionData?.name || `Error: ${item.section}`
     indent = 6 
     itemProblems = sectionData?.problems || []
-  } else if (split.length === 2) {
-    const [theme, course] = split;
+  } else if (split.length === 3) {
+    const [repo, theme, course] = split;
     const themeData = material.themes.find((t) => t.id === theme)
     const courseData = themeData?.courses.find((c) => c.id === course)
-    url = `${basePath}/material/${theme}/${course}`
+    url = `${basePath}/material/${repo}/${theme}/${course}`
     name = courseData?.name || `Error: ${item.section}`
     indent = 4
-  } else if (split.length === 1) {
-    const [theme] = split;
+  } else if (split.length === 2) {
+    const [repo, theme] = split;
     const themeData = material.themes.find((t) => t.id === theme)
-    url = `${basePath}/material/${theme}`
+    url = `${basePath}/material/${repo}/${theme}`
     name = themeData?.name || `Error: ${item.section}`
     indent = 2
   }

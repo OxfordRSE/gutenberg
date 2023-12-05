@@ -3,6 +3,8 @@ import fsPromises from 'fs/promises'
 import fm from 'front-matter'
 import { basePath } from './basePath'
 import { EventItem } from '@prisma/client';
+import * as yaml from 'js-yaml';
+import { dir } from 'console';
 
 export type Attribution = {
   citation: string,
@@ -39,6 +41,7 @@ export type Course = {
 }
 
 export type Theme = {
+  repo: string,
   id: string,
   name: string,
   markdown: string,
@@ -56,29 +59,29 @@ export type Material = {
 
 export const sectionSplit = (section: String, material: Material): { theme?: Theme, course?: Course, section?: Section, url?: string } => {
   const split = section.split('.')
-  if (split.length === 3) {
-      const theme = material.themes.find((theme) => theme.id === split[0])
-      const course = theme?.courses.find((course) => course.id === split[1])
-      const section = course?.sections.find((section) => section.id === split[2])
-      const url = `${basePath}/material/${split[0]}/${split[1]}/${split[2]}`
+  if (split.length === 4) {
+      const theme = material.themes.find((theme) => theme.id === split[1])
+      const course = theme?.courses.find((course) => course.id === split[2])
+      const section = course?.sections.find((section) => section.id === split[3])
+      const url = `${basePath}/material/${split[0]}/${split[1]}/${split[2]}/${split[3]}`
       return {
           theme,
           course,
           section,
           url,
       }
-  } else if (split.length === 2) {
-      const theme = material.themes.find((theme) => theme.id === split[0])
-      const course = theme?.courses.find((course) => course.id === split[1])
-      const url = `${basePath}/material/${split[0]}/${split[1]}`
+  } else if (split.length === 3) {
+      const theme = material.themes.find((theme) => theme.id === split[1])
+      const course = theme?.courses.find((course) => course.id === split[2])
+      const url = `${basePath}/material/${split[0]}/${split[1]}/${split[2]}`
       return {   
           theme,
           course,
           url,
       }
-  } else if (split.length === 1) {
-      const theme = material.themes.find((theme) => theme.id === split[0])
-      const url = `${basePath}/material/${split[0]}`
+  } else if (split.length === 2) {
+      const theme = material.themes.find((theme) => theme.id === split[1])
+      const url = `${basePath}/material/${split[0]}/${split[1]}`
       return {
           theme,
           url,
@@ -95,6 +98,7 @@ export function remove_markdown(material: Material, except: Material | Theme | C
   if (except === undefined || except.type !== 'Material') {
     material.markdown = ''
   }
+
   for (let theme of material.themes) {
     // @ts-expect-error
     if (except === undefined || !(except.type === 'Theme' && except.id == theme.id)) {
@@ -117,33 +121,51 @@ export function remove_markdown(material: Material, except: Material | Theme | C
 
 const materialDir = `${process.env.MATERIAL_DIR}`;
 
-export async function getMaterial(no_markdown=false) : Promise<Material> {
-  const dir = `${materialDir}`;
-  const rel_dir = `../${materialDir}`;
-  const public_dir = `public/material`;
-  fs.symlink(rel_dir, public_dir, 'dir', (err) => {
-    if (!err) {
-      console.log("\nSymlink created\n");
-    }
-  });
-  const buffer = await fsPromises.readFile(`${dir}/index.md`, {encoding: "utf8"});
-  const material = fm(buffer);
-
+function getrepos() {
+  const fileContents = fs.readFileSync('config/oxford.yaml', 'utf8');
   // @ts-expect-error
-  const name = material.attributes.name as string
-  const markdown = no_markdown ? '' : material.body as string
-  // @ts-expect-error
-  const themesId = material.attributes.themes as [string];
-
-  const themes = await Promise.all(themesId.map(theme => getTheme(theme, no_markdown)));
-  const type = 'Material';
-
-  return { name, markdown, themes, type };
+  const repos = yaml.load(fileContents).repos;
+  return repos
 }
 
-export async function getTheme(theme: string, no_markdown=false) : Promise<Theme> {
-  const dir = `${materialDir}/${theme}`;
-  
+export async function getMaterial(no_markdown=false) : Promise<Material> {
+  const repos = getrepos()
+  let allThemes: Theme[] = [];
+  let allSections: Section[] = [];
+  let allCourses: Course[] = [];
+
+  for (const repo of Object.keys(repos)) {
+    const dir = `${materialDir}/${repo}`;
+    const rel_dir = `../${materialDir}`;
+    const public_dir = `public/material`;
+    fs.symlink(rel_dir, public_dir, 'dir', (err) => {
+      if (!err) {
+        console.log("\nSymlink created\n");
+      }
+    });
+    const buffer = await fsPromises.readFile(`${dir}/index.md`, {encoding: "utf8"});
+    const material = fm(buffer);
+
+    // @ts-expect-error
+    const name = material.attributes.name as string
+    const markdown = no_markdown ? '' : material.body as string
+    // @ts-expect-error
+    const themesId = material.attributes.themes as [string];
+
+    const themes = await Promise.all(themesId.map(theme => getTheme(repo, theme, no_markdown)));
+    
+    for (const theme of themes) {
+      allThemes.push(theme)
+    }
+  }
+  const markdown = '';
+  const name = 'test'
+  const type = 'Material';
+  return { name, markdown, themes: allThemes, type };
+}
+
+export async function getTheme( repo: string, theme: string, no_markdown=false) : Promise<Theme> {
+  const dir = `${materialDir}/${repo}/${theme}`;
   const themeBuffer = await fsPromises.readFile(`${dir}/index.md`, {encoding: "utf8"});
   const themeObject = fm(themeBuffer);
   // @ts-expect-error
@@ -154,14 +176,13 @@ export async function getTheme(theme: string, no_markdown=false) : Promise<Theme
   const id = theme;
   // @ts-expect-error
   const coursesId = themeObject.attributes.courses as [string];
-  const courses = await Promise.all(coursesId.map(course => getCourse(theme, course)));
+  const courses = await Promise.all(coursesId.map(course => getCourse(repo, theme, course)));
   const type = 'Theme';
-
-  return { id, name, markdown, courses, type, summary };
+  return {repo , id, name, markdown, courses, type, summary };
 }
 
-export async function getCourse(theme: string, course: string, no_markdown=false) : Promise<Course> {
-  const dir = `${materialDir}/${theme}/${course}`;
+export async function getCourse(repo: string, theme: string, course: string, no_markdown=false) : Promise<Course> {
+  const dir = `${materialDir}/${repo}/${theme}/${course}`;
   const courseBuffer = await fsPromises.readFile(`${dir}/index.md`, {encoding: "utf8"});
   const courseObject = fm(courseBuffer);
   // @ts-expect-error
@@ -178,7 +199,7 @@ export async function getCourse(theme: string, course: string, no_markdown=false
   // @ts-expect-error
   const attribution = courseObject.attributes.attribution as Attribution[] || [];
   const id = course;
-  const sections = await Promise.all(files.map((file, i) => getSection(theme, course, i, file)));
+  const sections = await Promise.all(files.map((file, i) => getSection(repo, theme, course, i, file)));
   const type = 'Course';
 
   return { id, theme, name, sections, dependsOn, markdown, type, attribution, summary }
@@ -193,9 +214,9 @@ function humanize(str: string) {
   return frags.join(' ');
 }
 
-export async function getSection(theme: string, course: string, index: number, file: string, no_markdown=false) : Promise<Section> {
+export async function getSection(repo: string, theme: string, course: string, index: number, file: string, no_markdown=false) : Promise<Section> {
   const id = file.replace(/\.[^/.]+$/, "");
-  const dir = `${materialDir}/${theme}/${course}`;
+  const dir = `${materialDir}/${repo}/${theme}/${course}`;
   const sectionBuffer = await fsPromises.readFile(`${dir}/${file}`, {encoding: "utf8"});
   const sectionObject = fm(sectionBuffer);
   // @ts-expect-error

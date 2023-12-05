@@ -29,7 +29,7 @@ const ThemeComponent: NextPage<ThemeComponentProps> = ({ theme, material, events
 export const getStaticPaths: GetStaticPaths = async () => {
   const material = await getMaterial();
   return {
-    paths: material.themes.map((t) => ({ params: { themeId: `${t.id}` } })),
+    paths: material.themes.map((t) => ({ params: { themeId: `${t.id}`, repoId:`${t.repo}` } })),
     fallback: false,
   };
 }
@@ -44,10 +44,11 @@ export const getStaticProps: GetStaticProps = async (context) => {
   });
   let material = await getMaterial();
   const themeId= context?.params?.themeId;
+  const repoId = context?.params?.repoId;
   if (!themeId || Array.isArray(themeId)) {
     return { notFound: true };
   }
-  const theme = material.themes.find(t => t.id === themeId);
+  const theme = material.themes.find(t => t.id === themeId && t.repo === repoId);
   if (!theme) {
     return { notFound: true };
   }
