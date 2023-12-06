@@ -1,6 +1,8 @@
 import { simpleGit, CleanOptions } from "simple-git";
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
+import { urlToUrlWithoutFlightMarker } from "next/dist/client/components/app-router";
+
 
 const yamlTemplate = process.env.YAML_TEMPLATE || 'config/oxford.yaml';
 const baseMaterialDir = process.env.MATERIAL_DIR as string;
@@ -9,17 +11,18 @@ const baseMaterialDir = process.env.MATERIAL_DIR as string;
 function readRepos() {
     const fileContents = fs.readFileSync(yamlTemplate, 'utf8');
     // @ts-expect-error
-    const repos = yaml.load(fileContents).repos;
+    const repos = yaml.load(fileContents).material
     return repos
 }
 
 async function initRepos() {
     const repos = readRepos()
-    for (const [dir, url] of Object.entries(repos)) {
-        console.log(dir, url)
-        // @ts-expect-error
-        await initRepo(dir, url)
-    }
+    Object.keys(repos).forEach((key: string) =>{
+         {
+            console.log(repos[key].url, repos[key].path)
+            // @ts-ignore-error
+            initRepo(repos[key].path, repos[key].url)
+    }})
 }
 
 async function initRepo(dir: string, url: string) {

@@ -124,7 +124,7 @@ const materialDir = `${process.env.MATERIAL_DIR}`;
 function getrepos() {
   const fileContents = fs.readFileSync('config/oxford.yaml', 'utf8');
   // @ts-expect-error
-  const repos = yaml.load(fileContents).repos;
+  const repos = yaml.load(fileContents).material;
   return repos
 }
 
@@ -134,7 +134,8 @@ export async function getMaterial(no_markdown=false) : Promise<Material> {
   let allSections: Section[] = [];
   let allCourses: Course[] = [];
 
-  for (const repo of Object.keys(repos)) {
+  for (const key of Object.keys(repos)) {
+    const repo = repos[key].path;
     const dir = `${materialDir}/${repo}`;
     const rel_dir = `../${materialDir}`;
     const public_dir = `public/material`;
