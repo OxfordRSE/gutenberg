@@ -4,13 +4,18 @@ import fm from 'front-matter'
 import { basePath } from './basePath'
 import { EventItem } from '@prisma/client';
 import * as yaml from 'js-yaml';
-import { dir } from 'console';
 
 export type Attribution = {
   citation: string,
   url: string,
   image: string,
   license: string,
+}
+
+export type Excludes = {
+  themes: string[],
+  courses: string[],
+  sections: string[],
 }
 
 export type Section = {
@@ -122,11 +127,22 @@ export function remove_markdown(material: Material, except: Material | Theme | C
 const materialDir = `${process.env.MATERIAL_DIR}`;
 
 function getrepos() {
-  const fileContents = fs.readFileSync('config/oxford.yaml', 'utf8');
+  const fileContents = fs.readFileSync('config/oxford.yaml');
   // @ts-expect-error
   const repos = yaml.load(fileContents).material;
   return repos
 }
+
+export function getExcludes(repo: string): Excludes {
+  const repos = getrepos()
+  const key = Object.keys(repos).find(key => repos[key].path === repo)
+  const repoConfig = repos[key]
+  const excludeSections = repoConfig.exclude?.sections?? []
+  const excludeThemes = repoConfig.exclude?.themes?? []
+  const excludeCourses = repoConfig.exclude?.courses?? []
+  return {sections: excludeSections, themes: excludeThemes, courses: excludeCourses,}
+}
+
 
 export async function getMaterial(no_markdown=false) : Promise<Material> {
   const repos = getrepos()
@@ -153,8 +169,9 @@ export async function getMaterial(no_markdown=false) : Promise<Material> {
     // @ts-expect-error
     const themesId = material.attributes.themes as [string];
 
-    const themes = await Promise.all(themesId.map(theme => getTheme(repo, theme, no_markdown)));
-    
+    let themes = await Promise.all(themesId.map(theme => getTheme(repo, theme, no_markdown)));
+    const excludeThemes = getExcludes(repo).themes
+    themes = themes.filter(theme => !excludeThemes.includes(theme.id))
     for (const theme of themes) {
       allThemes.push(theme)
     }
@@ -177,7 +194,11 @@ export async function getTheme( repo: string, theme: string, no_markdown=false) 
   const id = theme;
   // @ts-expect-error
   const coursesId = themeObject.attributes.courses as [string];
-  const courses = await Promise.all(coursesId.map(course => getCourse(repo, theme, course)));
+  let courses = await Promise.all(coursesId.map(course => getCourse(repo, theme, course)));
+  const excludeCourses = getExcludes(repo).courses
+  const excludeThemes = getExcludes(repo).themes
+  courses = courses.filter(course => !excludeCourses.includes(course.id))
+  courses = courses.filter(course => !excludeThemes.includes(id))
   const type = 'Theme';
   return {repo , id, name, markdown, courses, type, summary };
 }
@@ -200,7 +221,9 @@ export async function getCourse(repo: string, theme: string, course: string, no_
   // @ts-expect-error
   const attribution = courseObject.attributes.attribution as Attribution[] || [];
   const id = course;
-  const sections = await Promise.all(files.map((file, i) => getSection(repo, theme, course, i, file)));
+  let sections = await Promise.all(files.map((file, i) => getSection(repo, theme, course, i, file)));
+  const excludeSections = getExcludes(repo).sections
+  sections = sections.filter(section => !excludeSections.includes(section.id))
   const type = 'Course';
 
   return { id, theme, name, sections, dependsOn, markdown, type, attribution, summary }

@@ -10,6 +10,7 @@ type NodeProps = {
 }
 
 function NavDiagramCourseNode({ data }: NodeProps) {
+  console.log(data);
   const containerBgStyle = data.external ? 
     '' :
     'hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600';
