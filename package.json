@@ -13,7 +13,7 @@
     "component": "cypress run --component",
     "table": "NEXT_PUBLIC_BASEPATH='' MATERIAL_DIR=.material ts-node --skip-project --compiler-options '{\"module\":\"CommonJS\"}' scripts/table.ts",
     "cron": "dotenv -e .env.local -e .env -- ts-node --skip-project --compiler-options '{\"module\":\"CommonJS\"}' scripts/cronScripts.ts",
-    "pullmat": "dotenv -e .env -- ts-node --skip-project  --transpile-only --compiler-options '{\"module\":\"CommonJS\"}' scripts/pullMaterial.ts"
+    "pullmat": "dotenv -e .env -e .env.local -- ts-node --skip-project  --transpile-only --compiler-options '{\"module\":\"CommonJS\"}' scripts/pullMaterial.ts"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
