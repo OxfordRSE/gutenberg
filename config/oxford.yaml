@@ -27,19 +27,7 @@ template:
   footer:
     University of Oxford, [Oxford Research Software Engineering](https://www.rse.ox.ac.uk/)
 material:
-  A:
-    path: A
+  HPCu:
+    path: HPCu
     url: https://github.com/UNIVERSE-HPC/course-material
     exclude:
-      themes:
-        - scientific_computing
-        - high_performance_computing
-        - technology_and_tooling
-      courses:
-        - python
-  B:
-    path: B
-    url: https://github.com/UNIVERSE-HPC/course-material
-    exclude:
-      themes:
-        - scientific_computing

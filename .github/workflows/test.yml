@@ -46,11 +46,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Checkout material repo
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ env.MATERIAL_REPO }}
-          path: .material
       - name: Enable corepack
         shell: bash
         run: corepack enable
@@ -75,6 +70,12 @@ jobs:
         run: ${{ env.MANAGER }} prisma migrate deploy
       - name: Seed database with test data
         run: ${{ env.MANAGER }} prisma db seed
+      - name: Checkout course material
+        shell: bash
+        run: yarn pullmat
+      - name: Check course material
+        shell: bash
+        run: echo ls -la ${{ env.MATERIAL_DIR }}
       - name: Build with Next.js
         run: ${{ env.MANAGER }} build
       # Enable tmate debugging of manually-triggered workflows if the input option was provided
