@@ -16,6 +16,9 @@ function readRepos() {
 }
 
 async function initRepos() {
+    if (!fs.existsSync(baseMaterialDir)) {
+        fs.mkdirSync(baseMaterialDir)
+        }
     const repos = readRepos()
     Object.keys(repos).forEach((key: string) =>{
          {
