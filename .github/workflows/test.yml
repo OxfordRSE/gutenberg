@@ -75,7 +75,7 @@ jobs:
         run: yarn pullmat
       - name: Check course material
         shell: bash
-        run: ls -la ${{ env.MATERIAL_DIR }}
+        run: ls ${{ env.MATERIAL_DIR }}
       - name: Build with Next.js
         run: ${{ env.MANAGER }} build
       # Enable tmate debugging of manually-triggered workflows if the input option was provided
@@ -103,7 +103,7 @@ jobs:
         run: yarn pullmat
       - name: Check course material
         shell: bash
-        run: ls -la ${{ env.MATERIAL_DIR }}
+        run: ls ${{ env.MATERIAL_DIR }}
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy -a gutenberg-staging --remote-only --build-arg DATABASE_URL=${{secrets.DATABASE_URL_TEST}} --wait-timeout 240
         env:
