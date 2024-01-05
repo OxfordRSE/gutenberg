@@ -1,0 +1,24 @@
+name: Quality
+on:
+  pull_request:
+    branches: [main]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  prettier:
+    name: Format with Prettier
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Check formatting
+        run: yarn format:check

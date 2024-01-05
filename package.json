@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "format": "prettier --write \"**/*.{ts,tsx,js,md,mdx,css,yaml}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,md,mdx,css,yaml}\"",
     "dev": "next dev",
     "build": "next build && next export",
     "start": "next start",
