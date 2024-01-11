@@ -9,7 +9,6 @@ const searchQuery = async (query: string) => {
       body: query,
   };
   return fetch(apiPath, requestOptions).then(response => response.json()).then(data => {
-    console.log(data)
     return data
   })
 }

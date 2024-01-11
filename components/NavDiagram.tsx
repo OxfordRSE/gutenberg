@@ -67,7 +67,6 @@ const labels = [{width: 200, height: 70}];
 const labelsTheme = [{width: 200, height: 90}];
 
 function generate_section_edges(section: Section, excludes: Excludes) {
-  console.log('sec', section)
   const course = `${section.theme}.${section.course}`;
   // only create edges for this course
   const edges: Edge[] = section.dependsOn
@@ -85,7 +84,6 @@ function generate_section_edges(section: Section, excludes: Excludes) {
 function generate_course_edges_elk(course: Course, excludes: Excludes) {
   let edges: ElkExtendedEdge[] = [];
   const sections = course.sections.filter(section => !(excludes.sections.includes(section.file)));
-  console.log('sections', sections)
   for (const section of sections) {
     // only create edges for this course
     edges = edges.concat(section.dependsOn
@@ -350,7 +348,6 @@ function generate_material_nodes_elk(material: Material, excludes: Excludes = {t
       edges: generate_theme_edges_elk(theme, excludes? excludes: blankExcludes),
     }
   ));
-  console.log('nodes', nodes)
   return nodes;
 }
 
@@ -398,18 +395,13 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course, exclud
         children,
         edges,
       }
-      console.log('4')
       elk.layout(graph).then(graph => {
-        console.log('4b')
         let nodes: Node[] = [];
         if (course && theme) {
-          console.log('5')
           nodes = generate_course_nodes(course, theme, graph, excludes? excludes: blankExcludes);
         } else if (theme) {
-          console.log('6')
           nodes = generate_theme_nodes(material, theme, graph, true, excludes? excludes: blankExcludes);
         } else {
-          console.log('7')
           nodes = generate_material_nodes(material, graph, excludes? excludes: blankExcludes);
         }
         setNodes(nodes);

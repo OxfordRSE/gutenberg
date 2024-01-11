@@ -1,21 +1,11 @@
 import { simpleGit, CleanOptions } from "simple-git";
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
-import { urlToUrlWithoutFlightMarker } from "next/dist/client/components/app-router";
-
 
 const yamlTemplate = process.env.YAML_TEMPLATE || 'config/oxford.yaml';
 const baseMaterialDir = process.env.MATERIAL_DIR as string;
 
-// for each repo defined in the yaml, make a git repo and pull the material into basematerial
-function readRepos() {
-    const fileContents = fs.readFileSync(yamlTemplate, 'utf8');
-    // @ts-expect-error
-    const repos = yaml.load(fileContents).material
-    return repos
-}
-
-async function initRepos() {
+export async function initRepos() {
     if (!fs.existsSync(baseMaterialDir)) {
         fs.mkdirSync(baseMaterialDir)
         }
@@ -26,6 +16,14 @@ async function initRepos() {
             // @ts-ignore-error
             initRepo(repos[key].path, repos[key].url)
     }})
+}
+
+// for each repo defined in the yaml, make a git repo and pull the material into basematerial
+function readRepos() {
+    const fileContents = fs.readFileSync(yamlTemplate, 'utf8');
+    // @ts-expect-error
+    const repos = yaml.load(fileContents).material
+    return repos
 }
 
 async function initRepo(dir: string, url: string) {
