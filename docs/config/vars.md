@@ -1,5 +1,4 @@
 ---
-
 title: Environment Variables
 permalink: /config/vars
 ---

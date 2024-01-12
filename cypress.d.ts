@@ -1,5 +1,4 @@
-import { mount } from "cypress/react";
-
+import { mount } from "cypress/react"
 
 declare global {
   namespace Cypress {
@@ -11,7 +10,7 @@ declare global {
        */
       mount(
         component: React.ReactNode,
-        options?: MountOptions & { session: SessionProviderProps["session"]}
+        options?: MountOptions & { session: SessionProviderProps["session"] }
       ): Cypress.Chainable<MountReturn>
     }
   }

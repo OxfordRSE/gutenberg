@@ -4,13 +4,13 @@
 // Dates to an object that doesn't
 
 function replacer(key: string, value: any) {
-  if(value instanceof Map) {
-    return Object.fromEntries(value);
+  if (value instanceof Map) {
+    return Object.fromEntries(value)
   } else {
-    return value;
+    return value
   }
 }
 
-export function makeSerializable<T extends any> (o: T): T {
-    return JSON.parse(JSON.stringify(o, replacer))
+export function makeSerializable<T extends any>(o: T): T {
+  return JSON.parse(JSON.stringify(o, replacer))
 }

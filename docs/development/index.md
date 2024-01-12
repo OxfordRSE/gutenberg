@@ -10,7 +10,7 @@ This will guide you through the process of setting up a development environment.
 To see how to to build the docs, please see the [documentation guide]({{"/development/docs" | relative_url }}).
 
 - TOC
-{:toc}
+  {:toc}
 
 ## Getting Started
 
@@ -36,7 +36,7 @@ You will Node.js and npm or yarn (yarn is preferred) installed on your system, f
 
 ```bash
 yarn install
-# or 
+# or
 npm install
 ```
 
@@ -44,7 +44,7 @@ npm install
 
 You will also need a postgres database that you can use, this can be hosted locally or remotely. If remote, you can either access directly or proxy the connection, either way you will need to set the `DATABASE_URL` environment variable in `.env.local` to the connection string for the database. We leave it up to you how you wish to do this.
 
-Use a different database than your live site, ***do not*** connect your development environment to your production DB.
+Use a different database than your live site, **_do not_** connect your development environment to your production DB.
 
 If it is your first time running the application, you will need to run the migrations to set up the database schema. This can be done with:
 

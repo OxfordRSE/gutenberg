@@ -1,23 +1,30 @@
-import type { NextPage, GetStaticProps, GetStaticPaths } from 'next'
-import prisma from 'lib/prisma'
-import { getMaterial, Course, Theme, Material, Section, remove_markdown } from 'lib/material'
-import Layout from 'components/Layout'
-import { makeSerializable } from 'lib/utils'
-import Content from 'components/content/Content'
-import Title from 'components/ui/Title'
-import { Event } from 'lib/types'
-import { PageTemplate, pageTemplate } from 'lib/pageTemplate'
+import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
+import prisma from "lib/prisma"
+import { getMaterial, Course, Theme, Material, Section, remove_markdown } from "lib/material"
+import Layout from "components/Layout"
+import { makeSerializable } from "lib/utils"
+import Content from "components/content/Content"
+import Title from "components/ui/Title"
+import { Event } from "lib/types"
+import { PageTemplate, pageTemplate } from "lib/pageTemplate"
 
 type SectionComponentProps = {
-  theme: Theme, 
-  course: Course,
-  section: Section,
-  material: Material,
-  events: Event[],
-  pageInfo?: PageTemplate,
+  theme: Theme
+  course: Course
+  section: Section
+  material: Material
+  events: Event[]
+  pageInfo?: PageTemplate
 }
 
-const SectionComponent: NextPage<SectionComponentProps> = ({theme, course, section, events, material, pageInfo}: SectionComponentProps) => {
+const SectionComponent: NextPage<SectionComponentProps> = ({
+  theme,
+  course,
+  section,
+  events,
+  material,
+  pageInfo,
+}: SectionComponentProps) => {
   return (
     <Layout theme={theme} course={course} section={section} material={material} pageInfo={pageInfo}>
       <Title text={section.name} />
@@ -33,7 +40,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
     for (const course of theme.courses) {
       for (const section of course.sections) {
         paths.push({
-          params: { repoId:`${theme.repo}`, themeId: `${theme.id}`, courseId: `${course.id}`, sectionId: `${section.id}`}
+          params: {
+            repoId: `${theme.repo}`,
+            themeId: `${theme.id}`,
+            courseId: `${course.id}`,
+            sectionId: `${section.id}`,
+          },
         })
       }
     }
@@ -41,17 +53,18 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths,
     fallback: false,
-  };
+  }
 }
-
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const pageInfo = pageTemplate
-  const events = await prisma.event.findMany({
-    where: { hidden: false },
-  }).catch((e) => {
-    return []
-  });
+  const events = await prisma.event
+    .findMany({
+      where: { hidden: false },
+    })
+    .catch((e) => {
+      return []
+    })
   const themeId = context?.params?.themeId
   if (!themeId || Array.isArray(themeId)) {
     return { notFound: true }
@@ -60,25 +73,25 @@ export const getStaticProps: GetStaticProps = async (context) => {
   if (!courseId || Array.isArray(courseId)) {
     return { notFound: true }
   }
-  const sectionId = context?.params?.sectionId;
+  const sectionId = context?.params?.sectionId
   if (!sectionId || Array.isArray(sectionId)) {
     return { notFound: true }
   }
   const material = await getMaterial()
-  const theme = material.themes.find(t => t.id === themeId);
+  const theme = material.themes.find((t) => t.id === themeId)
   if (!theme) {
     return { notFound: true }
   }
-  const course = theme.courses.find(c => c.id === courseId);
+  const course = theme.courses.find((c) => c.id === courseId)
   if (!course) {
     return { notFound: true }
   }
-  const section = course.sections.find(s => s.id === sectionId);
+  const section = course.sections.find((s) => s.id === sectionId)
   if (!section) {
     return { notFound: true }
   }
-  remove_markdown(material, section);
+  remove_markdown(material, section)
   return { props: makeSerializable({ theme, course, section, events, material, pageInfo }) }
 }
 
-export default SectionComponent 
+export default SectionComponent

@@ -12,7 +12,7 @@ Install Node.js and npm or yarn. Then run:
 
 ```bash
 yarn install
-# or 
+# or
 npm install
 ```
 
@@ -41,7 +41,6 @@ yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
 
 ## Prisma Studio
 

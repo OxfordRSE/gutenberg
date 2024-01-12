@@ -1,7 +1,7 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState } from "react"
 
 interface ChallengeProps {
-  content: React.ReactNode,
+  content: React.ReactNode
 }
 
 const Callout: React.FC<ChallengeProps> = ({ content }) => {

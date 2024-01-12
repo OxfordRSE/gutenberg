@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
-
+import { useState, useEffect } from "react"
 
 export function useSidebarOpen(defaultValue: boolean): [boolean, (value: boolean) => void] {
   const [open, setOpen] = useState<number | null>(null)
 
   useEffect(() => {
-    const store = sessionStorage.getItem('sidebarOpen')
+    const store = sessionStorage.getItem("sidebarOpen")
     if (store) {
       setOpen(parseInt(store))
     } else {
@@ -14,15 +13,14 @@ export function useSidebarOpen(defaultValue: boolean): [boolean, (value: boolean
   }, [defaultValue])
 
   useEffect(() => {
-    const store = open?.toString();
+    const store = open?.toString()
     if (store) {
-      sessionStorage.setItem('sidebarOpen', store)
+      sessionStorage.setItem("sidebarOpen", store)
     }
   }, [open])
-
 
   const sidebarOpen = open === 1
   const setSidebarOpen = (value: boolean) => setOpen(value ? 1 : 0)
 
-  return [sidebarOpen, setSidebarOpen];
+  return [sidebarOpen, setSidebarOpen]
 }
