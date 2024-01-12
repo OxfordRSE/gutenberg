@@ -3,13 +3,12 @@ title: Deployment
 permalink: /deployment/
 ---
 
-
 On this page we will cover how to deploy the application to a production environment.
 
 If you wish to see how to deploy the application to a development environment, please refer to the [development guide]({{ "/development/" | relative_url }}).
 
 - TOC
-{:toc}
+  {:toc}
 
 ## Prerequisites
 
@@ -18,7 +17,7 @@ The deployment uses Docker and the Dockerfile is included in the repository, you
 - A server with a public IP address to which you can deploy.
 - A space to host the application, such as Fly.io or [Heroku](https://www.heroku.com/).
 
-In addition, you will need to supply a postgres database, which we intercat with via the prisma ORM. 
+In addition, you will need to supply a postgres database, which we intercat with via the prisma ORM.
 This can be hosted on the same server as the application, or on a different server, as long as the application can connect to it.
 
 ## Deploying via Fly.io
@@ -39,7 +38,7 @@ You can now run the action manually on the default branch.
 If you instead wish to manually deploy, retrieve your API key as above and run the following:
 
 ```bash
-export FLY_API_TOKEN=<your-api-token> 
+export FLY_API_TOKEN=<your-api-token>
 fly deploy
 ```
 
@@ -71,7 +70,7 @@ It is reccomended that you use reverse proxy, such as [nginx](https://www.nginx.
 
 ## Connecting to a Database
 
-Regardless of how you wish to deploy, the application will need to connect to a database. 
+Regardless of how you wish to deploy, the application will need to connect to a database.
 This can be done by setting the `DATABASE_URL` environment variable to the connection string for your database.
 
 The Oxford deployment uses a PostgreSQL database hosted on Fly.io, but you can use any database that supports the prisma ORM. If you are deploying to docker it is recommended to use a dockerised database on the same virtual network. As such, your docker network will consist of the application container, the database container and the reverse proxy container.

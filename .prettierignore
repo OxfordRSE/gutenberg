@@ -1,0 +1,6 @@
+next-env.d.ts
+.next
+.vscode
+.material
+yarn.lock
+node_modules

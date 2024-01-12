@@ -4,7 +4,7 @@ permalink: /
 
 # Gutenberg
 
-This is the documentation for `Gutenberg`. 
+This is the documentation for `Gutenberg`.
 
 [About](/about.md)
 

@@ -14,47 +14,63 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands'
+import "./commands"
 
-const logCollectorConfig = { collectTypes: ['cons:log', 'cons:info', 'cons:warn', 'cons:error', 'cy:log', 'cy:xhr', 'cy:request', 'cy:intercept', 'cy:command']};
-require('cypress-terminal-report/src/installLogsCollector')(logCollectorConfig);
+const logCollectorConfig = {
+  collectTypes: [
+    "cons:log",
+    "cons:info",
+    "cons:warn",
+    "cons:error",
+    "cy:log",
+    "cy:xhr",
+    "cy:request",
+    "cy:intercept",
+    "cy:command",
+  ],
+}
+require("cypress-terminal-report/src/installLogsCollector")(logCollectorConfig)
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-import { mount } from 'cypress/react18'
-import { MountOptions, MountReturn } from 'cypress/react'
-import { SessionProvider, SessionProviderProps } from 'next-auth/react'
-import { ContextProvider } from '../../lib/context/ContextProvider'
-import React from 'react';
+import { mount } from "cypress/react18"
+import { MountOptions, MountReturn } from "cypress/react"
+import { SessionProvider, SessionProviderProps } from "next-auth/react"
+import { ContextProvider } from "../../lib/context/ContextProvider"
+import React from "react"
 
 //Ensure global styles are loaded
-import '../../styles/globals.css';
-import { SWRConfig } from 'swr';
-
+import "../../styles/globals.css"
+import { SWRConfig } from "swr"
 
 // Augment the Cypress namespace to include type definitions for
 // your custom command.
 // Alternatively, can be defined in cypress/support/component.d.ts
 // with a <reference path="./component" /> at the top of your spec.
-Cypress.Commands.add('mount', (component: React.ReactNode, options?: MountOptions & { session: SessionProviderProps["session"]}) => {
-  const session: SessionProviderProps["session"] = options?.session || { expires: "1", user: { name: "test", email: "test@test.com"} }
-  const mountOptions: MountOptions | undefined = options || undefined
+Cypress.Commands.add(
+  "mount",
+  (component: React.ReactNode, options?: MountOptions & { session: SessionProviderProps["session"] }) => {
+    const session: SessionProviderProps["session"] = options?.session || {
+      expires: "1",
+      user: { name: "test", email: "test@test.com" },
+    }
+    const mountOptions: MountOptions | undefined = options || undefined
 
-  
-  const sessionProviderProps: SessionProviderProps = {
-    session: session,
-    basePath: `/api/auth`,
-    children: (
-      <SWRConfig value={{ provider: () => new Map() }}>
-        <ContextProvider>{component}</ContextProvider>
-      </SWRConfig>
-    )
+    const sessionProviderProps: SessionProviderProps = {
+      session: session,
+      basePath: `/api/auth`,
+      children: (
+        <SWRConfig value={{ provider: () => new Map() }}>
+          <ContextProvider>{component}</ContextProvider>
+        </SWRConfig>
+      ),
+    }
+    const wrapped = <SessionProvider {...sessionProviderProps} />
+
+    return mount(wrapped, mountOptions)
   }
-  const wrapped = <SessionProvider {...sessionProviderProps} />;
-
-  return mount(wrapped, mountOptions)
-})
+)
 
 // Example use:
 // cy.mount(<MyComponent />)

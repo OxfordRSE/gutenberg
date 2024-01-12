@@ -6,7 +6,7 @@ permalink: /guide/
 This is the `Gutenberg` tutorial.
 
 - TOC
-{:toc}
+  {:toc}
 
 ## Creating/Deleting Events
 
@@ -65,6 +65,6 @@ If you do not wish to give out a key, or if a Student is having an issue enrolli
 
 Student progress is monitored through the completion of problems embedded in the markdown material, if a course section is assigned to an EventGroup as an EventItem then students progress will be tracked.
 
-With the sidebar open, any student will see their own progress in each EventItem as {completed}/{total problems}. Instructors will instead see the sum of all students progress {total completed}/{total problems * number of users that have completed at least 1 problem}.
+With the sidebar open, any student will see their own progress in each EventItem as {completed}/{total problems}. Instructors will instead see the sum of all students progress {total completed}/{total problems \* number of users that have completed at least 1 problem}.
 
 On the Event page, there is a Progress Table where all the problems, sorted by EventItem, and the status of each students problem completion is displayed. Mouseover each complete problem to see that students difficulty rating and their comments.

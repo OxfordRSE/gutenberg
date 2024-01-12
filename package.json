@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "format": "prettier --write \"**/*.{ts,tsx,js,md,mdx,css,yaml}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,md,mdx,css,yaml}\"",
     "dev": "next dev",
     "build": "next build && next export",
     "start": "next start",
@@ -52,6 +54,7 @@
     "next-themes": "0.2.1",
     "openai": "^4.0.0",
     "postcss": "^8.4.19",
+    "prettier": "^3.1.1",
     "react": "18.2.0",
     "react-copy-to-clipboard": "^5.1.0",
     "react-datetime-picker": "^5.2.0",
@@ -99,5 +102,10 @@
   "packageManager": "yarn@3.3.0",
   "resolutions": {
     "react": "18.2.0"
+  },
+  "prettier": {
+    "semi": false,
+    "trailingComma": "es5",
+    "printWidth": 120
   }
 }

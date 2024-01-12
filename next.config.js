@@ -14,9 +14,9 @@ const nextConfig = {
     minimumCacheTTL: 1500000,
   },
   webpack: (config) => {
-    config.resolve.fallback = { fs: false };
+    config.resolve.fallback = { fs: false }
 
-    return config;
+    return config
   },
   basePath: process.env.NEXT_PUBLIC_BASEPATH,
 }
