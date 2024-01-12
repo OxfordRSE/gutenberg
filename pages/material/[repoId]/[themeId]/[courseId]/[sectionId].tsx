@@ -33,7 +33,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     for (const course of theme.courses) {
       for (const section of course.sections) {
         paths.push({
-          params: { themeId: `${theme.id}`, courseId: `${course.id}`, sectionId: `${section.id}`}
+          params: { repoId:`${theme.repo}`, themeId: `${theme.id}`, courseId: `${course.id}`, sectionId: `${section.id}`}
         })
       }
     }

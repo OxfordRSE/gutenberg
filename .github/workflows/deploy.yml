@@ -9,11 +9,14 @@ jobs:
     name: Deploy app
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
-          repository: ${{ secrets.MATERIAL_REPOSITORY }}
-          path: .material
+          node-version: "20"
+      - name: Checkout course material
+        shell: bash
+        run: yarn pullmat
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy --remote-only --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }} --wait-timeout 240
         env:

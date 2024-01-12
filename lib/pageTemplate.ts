@@ -15,7 +15,8 @@ export type PageTemplate = {
 export const pageTemplate: PageTemplate | undefined = (() => {
     try {
         const fileContents = fs.readFileSync(yamlTemplate, 'utf8');
-        const data = yaml.load(fileContents) as PageTemplate;
+        // @ts-expect-error
+        const data = yaml.load(fileContents).template as PageTemplate;
         return data
     } catch (e) {
         console.error(e);

@@ -6,6 +6,8 @@ import NavDiagramSectionNode from './NavDiagramSectionNode';
 import NavDiagramCourseNode from './NavDiagramCourseNode';
 import NavDiagramThemeNode from './NavDiagramThemeNode';
 
+import { Excludes } from 'lib/material';
+
 export type NodeData = {
   label: string,
   width: number,
@@ -27,7 +29,7 @@ const nodeTypes = {
 import ELK, {ElkNode } from 'elkjs/lib/elk.bundled.js'
 const elk = new ELK()
 import { Course, Theme, Material, Section } from 'lib/material'
-import CourseComponent from 'pages/material/[themeId]/[courseId]';
+import CourseComponent from 'pages/material/[repoId]/[themeId]/[courseId]';
 import { ElkExtendedEdge } from 'elkjs';
 
 
@@ -64,7 +66,7 @@ const padding = "[top=50.0,left=12.0,bottom=12.0,right=12.0]";
 const labels = [{width: 200, height: 70}];
 const labelsTheme = [{width: 200, height: 90}];
 
-function generate_section_edges(section: Section) {
+function generate_section_edges(section: Section, excludes: Excludes) {
   const course = `${section.theme}.${section.course}`;
   // only create edges for this course
   const edges: Edge[] = section.dependsOn
@@ -79,9 +81,10 @@ function generate_section_edges(section: Section) {
   return edges;
 }
 
-function generate_course_edges_elk(course: Course) {
+function generate_course_edges_elk(course: Course, excludes: Excludes) {
   let edges: ElkExtendedEdge[] = [];
-  for (const section of course.sections) {
+  const sections = course.sections.filter(section => !(excludes.sections.includes(section.file)));
+  for (const section of sections) {
     // only create edges for this course
     edges = edges.concat(section.dependsOn
       .filter(dep => dep.startsWith(`${section.theme}.${course.id}`))
@@ -99,20 +102,25 @@ function generate_course_edges_elk(course: Course) {
   return edges;
 }
 
-function generate_course_edges(course: Course) {
-  let edges: Edge[] = course.dependsOn.map(dep => {
-    const source = dep; 
-    const target = `${course.theme}.${course.id}`;
-    return (
-      { id: `e${source}-${target}`, source, target, zIndex: 3 }
-    )
-   });
-  edges = edges.concat(...course.sections.map(generate_section_edges));
+function generate_course_edges(course: Course, excludes: Excludes) {
+  if (excludes.courses.includes(course.id)) {
+    return []
+  }
+  let edges: Edge[] = course.dependsOn.filter(dep => !(excludes.courses.includes(dep)))
+    .map(dep => {
+      const source = dep; 
+      const target = `${course.theme}.${course.id}`;
+      return (
+        { id: `e${source}-${target}`, source, target, zIndex: 3 }
+      )
+    });
+  edges = edges.concat(...course.sections.map((section) => generate_section_edges(section, excludes)));
   return edges;
 }
 
-function generate_course_nodes_elk(course: Course) {
-  const nodes: ElkNode[] = course.sections.map(section => (
+function generate_course_nodes_elk(course: Course, excludes: Excludes) {
+  const sections = course.sections.filter(section => !(excludes.sections.includes(section.file.split('.')[0])));
+  const nodes: ElkNode[] = sections.map(section => (
     { 
       id: `${section.theme}.${course.id}.${section.file}`, 
       width: 150, 
@@ -125,8 +133,9 @@ function generate_course_nodes_elk(course: Course) {
   return nodes;
 }
 
-function generate_course_nodes(course: Course, graph: ElkNode) {
-  let nodes: Node[] = course.sections.map((section, i) => (
+function generate_course_nodes(course: Course, theme: Theme, graph: ElkNode, excludes: Excludes) {
+  const sections = course.sections.filter(section => !(excludes.sections.includes(section.file.split('.')[0])));
+  let nodes: Node[] = sections.map((section, i) => (
     { 
       id: `${section.theme}.${course.id}.${section.file}`, 
       type: 'section',
@@ -137,7 +146,7 @@ function generate_course_nodes(course: Course, graph: ElkNode) {
         label: section.name,  
         width: graph.children?.[i].width,
         height: graph.children?.[i].height,
-        theme: section.theme,
+        theme: theme,
         course: course,
         section: section,
       }, 
@@ -148,19 +157,26 @@ function generate_course_nodes(course: Course, graph: ElkNode) {
       },
     }
   ))
+  nodes.filter(node => !(excludes.sections.includes(node.id.split('.')[2])))
+       .filter(node => !(excludes.courses.includes(node.id.split('.')[1])))
+       .filter(node => !(excludes.themes.includes(node.id.split('.')[0])));
   return nodes;
 }
 
-function generate_theme_edges(theme: Theme) {
+function generate_theme_edges(theme: Theme, excludes: Excludes) {
+  const courses = theme.courses.filter(course => !(excludes.courses.includes(course.id)));
   let edges: Edge[] = [];
-  edges = edges.concat(...theme.courses.map(generate_course_edges));
+  edges = edges.concat(...courses.map((course) => generate_course_edges(course, excludes)));
   return edges;
 }
 
-function generate_theme_edges_elk(theme: Theme) {
+function generate_theme_edges_elk(theme: Theme, excludes: Excludes) {
   let edges: ElkExtendedEdge[] = [];
-  for (const course of theme.courses) {
-    edges = edges.concat(course.dependsOn.map(dep => {
+  const courses = theme.courses.filter(course => !(excludes.courses.includes(course.id)));
+  for (const course of courses) {
+    const depends = course.dependsOn.filter(dep => !(excludes.courses.includes(dep.split('.')[1])))
+                                    .filter(dep => !(excludes.themes.includes(dep.split('.')[0])))
+    edges = edges.concat(depends.map(dep => {
       const source = dep; 
       const target = `${course.theme}.${course.id}`;
       return (
@@ -174,22 +190,27 @@ function generate_theme_edges_elk(theme: Theme) {
   return edges;
 }
 
-function generate_theme_nodes_elk(theme: Theme, includeExternalDeps: boolean = false) {
-  let nodes: ElkNode[] = theme.courses.map(course => (
+function generate_theme_nodes_elk(theme: Theme, includeExternalDeps: boolean = false, excludes: Excludes) {
+  if (excludes.themes.includes(theme.id)) {
+    return undefined
+  }
+  const courses = theme.courses.filter(course => !(excludes.courses.includes(course.id)));
+  let nodes: ElkNode[] = courses.map(course => (
     { 
       id: `${theme.id}.${course.id}`, 
       width: 150, 
       height: 1,
       labels,
       layoutOptions,
-      children: generate_course_nodes_elk(course),
-      edges: generate_course_edges_elk(course),
+      children: generate_course_nodes_elk(course, excludes),
+      edges: generate_course_edges_elk(course, excludes),
     }
   ));
   if (includeExternalDeps) {
-    const nodeDeps: ElkNode[] = theme.courses.map(course => (
+    const nodeDeps: ElkNode[] = courses.map(course => (
       course.dependsOn
-      .filter(dep => !dep.startsWith(theme.id))
+      .filter(dep => !(dep.startsWith(theme.id)))
+      .filter(dep => !(excludes.themes.includes(dep.split('.')[0])))
       .map(dep => (
         { 
           id: dep, 
@@ -211,9 +232,10 @@ function generate_theme_nodes_elk(theme: Theme, includeExternalDeps: boolean = f
   return nodes;
 }
 
-function generate_theme_nodes(material: Material, theme: Theme, graph: ElkNode, includeExternalDeps: boolean = false) {
+function generate_theme_nodes(material: Material, theme: Theme, graph: ElkNode, includeExternalDeps: boolean = false, excludes: Excludes) {
   const nCourses = theme.courses.length;
-  let nodes: Node[] = theme.courses.map((course, i) => (
+  const courses = theme.courses.filter(course => !(excludes.courses.includes(course.id)));
+  let nodes: Node[] = courses.map((course, i) => (
     { 
       id: `${theme.id}.${course.id}`, 
       type: 'course',
@@ -236,7 +258,7 @@ function generate_theme_nodes(material: Material, theme: Theme, graph: ElkNode, 
   ))
   nodes = nodes.concat(...theme.courses.map((course, i) => {
     if (graph.children?.[i]) {
-      return generate_course_nodes(course, graph.children?.[i])
+      return generate_course_nodes(course, theme, graph.children?.[i], excludes)
     } else {
       return []
     }
@@ -246,6 +268,7 @@ function generate_theme_nodes(material: Material, theme: Theme, graph: ElkNode, 
     const nodeDeps: Node[] = theme.courses.map(course => (
       course.dependsOn
       .filter(dep => !dep.startsWith(theme.id))
+      .filter(dep => !(excludes.themes.includes(dep.split('.')[0])))
       .map(dep => {
         const materialId = dep.split('.')[0];
         const courseId = dep.split('.')[1];
@@ -253,6 +276,7 @@ function generate_theme_nodes(material: Material, theme: Theme, graph: ElkNode, 
         if (!depCourseData) {
           depCourseData = course;
         }
+        const depTheme = material.themes.find(t => t.id == depCourseData?.theme && t.repo == theme.repo);
         const depCourse = { 
           id: dep, 
           type: 'course',
@@ -262,7 +286,7 @@ function generate_theme_nodes(material: Material, theme: Theme, graph: ElkNode, 
             label: depCourseData.name,
             width: graph.children?.[index].width,
             height: graph.children?.[index].height,
-            theme: theme,
+            theme: depTheme,
             course: depCourseData,
             external: true,
           }, 
@@ -281,14 +305,16 @@ function generate_theme_nodes(material: Material, theme: Theme, graph: ElkNode, 
   return nodes;
 }
 
-function generate_material_edges(material: Material) {
+function generate_material_edges(material: Material, excludes: Excludes) {
+  const themes = material.themes.filter(theme => !(excludes.themes.includes(theme.id)));
   let edges: Edge[] = [];
-  edges = edges.concat(...material.themes.map(generate_theme_edges));
+  edges = edges.concat(...themes.map((theme) => generate_theme_edges(theme, excludes)));
   return edges;
 }
 
-function generate_material_nodes(material: Material, graph: ElkNode) {
-  let nodes: Node[] = material.themes.map((theme, i) => (
+function generate_material_nodes(material: Material, graph: ElkNode, excludes: Excludes) {
+  const themes = material.themes.filter(theme => !(excludes.themes.includes(theme.id)));
+  let nodes: Node[] = themes.map((theme, i) => (
     { 
       id: theme.id, 
       type: 'theme',
@@ -309,16 +335,17 @@ function generate_material_nodes(material: Material, graph: ElkNode) {
   return nodes;
 }
 
-function generate_material_nodes_elk(material: Material) {
-  const nodes: ElkNode[] = material.themes.map(theme => (
+function generate_material_nodes_elk(material: Material, excludes: Excludes = {themes: [], courses: [], sections: []}) {
+  const themes = material.themes.filter(theme => !(excludes.themes.includes(theme.id)));
+  const nodes: ElkNode[] = themes.map(theme => (
     { 
       id: theme.id, 
       width: 1, 
       height: 1,
       layoutOptions: layoutOptionsTheme,
       labels: labelsTheme,
-      children: generate_theme_nodes_elk(theme),
-      edges: generate_theme_edges_elk(theme),
+      children: generate_theme_nodes_elk(theme, false, excludes? excludes: blankExcludes),
+      edges: generate_theme_edges_elk(theme, excludes? excludes: blankExcludes),
     }
   ));
   return nodes;
@@ -328,9 +355,12 @@ interface NavDiagramProps {
   material: Material,
   theme?: Theme,
   course?: Course,
+  excludes?: Excludes,
 }
 
-const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course }) => {
+const blankExcludes: Excludes = {themes: [], courses: [], sections: []};
+
+const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course, excludes }) => {
   const defaultNodes: Node[] = [];
   const [nodes, setNodes] = useState(defaultNodes);
   const onNodesChange = useCallback( (changes: NodeChange[]) => {
@@ -340,24 +370,24 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course }) => {
   const stringifyMaterial = JSON.stringify(material);
   const edges = useMemo(() => {
     if (course) {
-      return generate_course_edges(course)
+      return generate_course_edges(course, excludes? excludes: blankExcludes)
     } else if (theme) {
-      return generate_theme_edges(theme)
+      return generate_theme_edges(theme, excludes? excludes: blankExcludes)
     } else {
-      return generate_material_edges(material)
+      return generate_material_edges(material, excludes? excludes: blankExcludes)
     }
   }, [course, material, theme]);
   useEffect(() => {
       let children = null;
       let edges = undefined;
       if (course) {
-        children = generate_course_nodes_elk(course)
-        edges = generate_course_edges_elk(course)
+        children = generate_course_nodes_elk(course, excludes?? blankExcludes)
+        edges = generate_course_edges_elk(course, excludes?? blankExcludes)
       } else if (theme) {
-        children = generate_theme_nodes_elk(theme, true)
-        edges = generate_theme_edges_elk(theme)
+        children = generate_theme_nodes_elk(theme, true, excludes? excludes: blankExcludes)
+        edges = generate_theme_edges_elk(theme, excludes? excludes: blankExcludes)
       } else {
-        children = generate_material_nodes_elk(material)
+        children = generate_material_nodes_elk(material, excludes? excludes: blankExcludes)
       }
       const graph: ElkNode = {
         id: "root",
@@ -367,12 +397,12 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course }) => {
       }
       elk.layout(graph).then(graph => {
         let nodes: Node[] = [];
-        if (course) {
-          nodes = generate_course_nodes(course, graph);
+        if (course && theme) {
+          nodes = generate_course_nodes(course, theme, graph, excludes? excludes: blankExcludes);
         } else if (theme) {
-          nodes = generate_theme_nodes(material, theme, graph, true);
+          nodes = generate_theme_nodes(material, theme, graph, true, excludes? excludes: blankExcludes);
         } else {
-          nodes = generate_material_nodes(material, graph);
+          nodes = generate_material_nodes(material, graph, excludes? excludes: blankExcludes);
         }
         setNodes(nodes);
       })

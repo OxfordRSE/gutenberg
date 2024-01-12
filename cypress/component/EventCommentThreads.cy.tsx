@@ -26,6 +26,7 @@ describe('EventCommentThreads component', () => {
       themes: [
         {
           id: 'theme1',
+          repo: 'test',
           name: 'Theme 1',
           markdown: '',
           type: 'theme',

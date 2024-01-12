@@ -1,6 +1,6 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from 'next'
 import prisma from 'lib/prisma'
-import { getMaterial, Theme, Material, remove_markdown } from 'lib/material'
+import { getMaterial, Theme, Material, remove_markdown, getExcludes, Excludes } from 'lib/material'
 import Layout from 'components/Layout'
 import {makeSerializable} from 'lib/utils'
 import Content from 'components/content/Content'
@@ -14,13 +14,14 @@ type ThemeComponentProps = {
   material: Material
   events: Event[],
   pageInfo?: PageTemplate,
+  excludes?: Excludes,
 }
 
-const ThemeComponent: NextPage<ThemeComponentProps> = ({ theme, material, events, pageInfo }) => {
+const ThemeComponent: NextPage<ThemeComponentProps> = ({ theme, material, events, pageInfo, excludes }) => {
   return (
     <Layout material={material} theme={theme} pageInfo={pageInfo}>
       <Title text={theme.name} />
-      <NavDiagram material={material} theme={theme} />
+      <NavDiagram material={material} theme={theme} excludes={excludes} />
       <Content markdown={theme.markdown} theme={theme} />
     </Layout>
   )
@@ -29,7 +30,7 @@ const ThemeComponent: NextPage<ThemeComponentProps> = ({ theme, material, events
 export const getStaticPaths: GetStaticPaths = async () => {
   const material = await getMaterial();
   return {
-    paths: material.themes.map((t) => ({ params: { themeId: `${t.id}` } })),
+    paths: material.themes.map((t) => ({ params: { themeId: `${t.id}`, repoId:`${t.repo}` } })),
     fallback: false,
   };
 }
@@ -44,10 +45,13 @@ export const getStaticProps: GetStaticProps = async (context) => {
   });
   let material = await getMaterial();
   const themeId= context?.params?.themeId;
+  const repoId = context?.params?.repoId;
   if (!themeId || Array.isArray(themeId)) {
     return { notFound: true };
   }
-  const theme = material.themes.find(t => t.id === themeId);
+  console.log(process.env.NEXT_PUBLIC_EXCLUDE_THEMES)
+  const excludes = getExcludes(repoId as string)
+  const theme = material.themes.find(t => t.id === themeId && t.repo === repoId);
   if (!theme) {
     return { notFound: true };
   }
@@ -55,7 +59,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   remove_markdown(material, theme)
 
   return { 
-    props: makeSerializable({ material, theme, events, pageInfo }),
+    props: makeSerializable({ material, theme, events, pageInfo, excludes }),
   }
 }
 

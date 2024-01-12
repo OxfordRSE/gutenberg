@@ -3,7 +3,6 @@ import { Section } from "lib/material";
 import { Event } from 'pages/api/event/[eventId]'
 import { User } from 'pages/api/user/[email]';
 import { CommentThread } from "pages/api/commentThread";
-import { threadId } from "worker_threads";
 
 
 describe("Paragraph", () => {
