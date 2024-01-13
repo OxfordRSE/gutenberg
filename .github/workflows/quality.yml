@@ -18,6 +18,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
+      - name: Enable corepack
+        shell: bash
+        run: corepack enable
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Check formatting
