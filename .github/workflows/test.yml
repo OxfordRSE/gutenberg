@@ -98,6 +98,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "20"
+      - name: Enable corepack
+        shell: bash
+        run: corepack enable
       - name: Checkout course material
         shell: bash
         run: yarn pullmat
