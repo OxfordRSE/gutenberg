@@ -89,20 +89,26 @@ const Overlay: NextPage<Props> = ({
             className="pointer-events-auto absolute top-0 right-0 cursor-pointer w-12 h-12 text-gray-600 hover:text-gray-500 opacity-50"
           />
         )}
-      {prevUrl && (
-        <a href={`/material/${prevUrl}`} className="pointer-events-auto absolute bottom-20 left-0 text-gray-600 hover:text-gray-500 opacity-50">
-          <HiArrowCircleLeft className="w-14 h-14"/>
-        </a>
-      )}
-      {nextUrl && (
-        <a href={`/material/${nextUrl}`} className="pointer-events-auto absolute bottom-20 right-0 text-gray-600 hover:text-gray-500 opacity-50">
-          <HiArrowCircleRight className="w-14 h-14"/>
-        </a>
-      )}
-      <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />
-      <SearchDialog onClose={closeSearch}/>
-      <DeleteEventModal onClose={closeDeleteEvent}/>
-      <Sidebar material={material} activeEvent={activeEvent} sidebarOpen={sidebarOpen} handleClose={handleClose} />
+        {prevUrl && (
+          <a
+            href={`/material/${prevUrl}`}
+            className="pointer-events-auto absolute bottom-20 left-0 text-gray-600 hover:text-gray-500 opacity-50"
+          >
+            <HiArrowCircleLeft className="w-14 h-14" />
+          </a>
+        )}
+        {nextUrl && (
+          <a
+            href={`/material/${nextUrl}`}
+            className="pointer-events-auto absolute bottom-20 right-0 text-gray-600 hover:text-gray-500 opacity-50"
+          >
+            <HiArrowCircleRight className="w-14 h-14" />
+          </a>
+        )}
+        <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />
+        <SearchDialog onClose={closeSearch} />
+        <DeleteEventModal onClose={closeDeleteEvent} />
+        <Sidebar material={material} activeEvent={activeEvent} sidebarOpen={sidebarOpen} handleClose={handleClose} />
       </div>
     </div>
   )

@@ -187,14 +187,14 @@ const Navbar: React.FC<Props> = ({
           </Link>
         )}
         {enableSearch && (
-        <Tooltip content="Search Material">
+          <Tooltip content="Search Material">
             <HiSearchCircle
-            onClick={openSearch}
-            style={{ verticalAlign: "bottom'" }}
-            className="pointer-events-auto cursor-pointer w-10 h-10 text-gray-500 hover:text-gray-400"
-          />
+              onClick={openSearch}
+              style={{ verticalAlign: "bottom'" }}
+              className="pointer-events-auto cursor-pointer w-10 h-10 text-gray-500 hover:text-gray-400"
+            />
           </Tooltip>
-      )}
+        )}
 
         <Dropdown
           label={
