@@ -97,7 +97,7 @@ You should customise your deployment by creating a configuration yaml file, see 
 
 ## Configuration
 
-The application can be further configured via environment variables. 
+The application can be further configured via environment variables.
 While we have touched on some key ones here, namely the database connection string and the search related variables, a full list of the environment variables and their purpose can be found in the [env vars config section]({{ "/config/vars" | relative_url }}).
 
 ## Using the site
