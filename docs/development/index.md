@@ -52,6 +52,20 @@ If it is your first time running the application, you will need to run the migra
 yarn prisma migrate dev
 ```
 
+## Providing course material
+
+Course material is provided by git repositories defined by the "repos" in the [configuration yaml]({{ "/config/template" | relative_url }}).
+
+Once you have installed the dependencies, you can populate the material directory with:
+
+```bash
+yarn pullmat
+```
+
+This will pull the course material into the "MATERIAL_DIR" directory, which defaults to `.material`.
+
+Any course material in this directory will be automatically rendered by gutenberg at `/material`.
+
 ## Running the development server
 
 The development server can now be started with:
@@ -63,6 +77,15 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result!
+
+Alternatively, to test a production build:
+
+```bash
+yarn build
+yarn start
+```
+
+Will build and run a production optimised version of the application.
 
 ## Prisma Studio
 

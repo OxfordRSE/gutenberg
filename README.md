@@ -2,7 +2,7 @@
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-To see our full documentation, please visit [our documentation site](oxfordrse.github.io/gutenberg).
+To see our full documentation, please visit [our documentation site](https://blog.oxrse.uk/gutenberg/).
 
 To get a development environment running, follow the instructions below:
 
@@ -61,4 +61,4 @@ dotenv -e .env.local npx prisma studio
 
 Gutenberg is automatically deployed to fly.io by a [GitHub action](https://github.com/OxfordRSE/gutenberg/actions/workflows/deploy.yml) whenever a new commit is pushed to the `main` branch.
 
-To see how to deploy the application, see our [deployment guide](https://oxfordrse.github.io/docs/deployment/).
+To see how to deploy the application, see our [deployment guide](https://blog.oxrse.uk/gutenberg/deployment).
