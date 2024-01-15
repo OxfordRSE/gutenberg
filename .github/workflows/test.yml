@@ -7,17 +7,17 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch: 
+  workflow_dispatch:
     inputs:
       debug_enabled:
-          type: boolean
-          description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
-          required: false
-          default: false
+        type: boolean
+        description: "Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)"
+        required: false
+        default: false
 
 env:
-    MATERIAL_REPO: 'UNIVERSE-HPC/course-material'
-    MANAGER: 'yarn'
+  MATERIAL_REPO: "UNIVERSE-HPC/course-material"
+  MANAGER: "yarn"
 
 jobs:
   build-and-test:
@@ -65,7 +65,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
       - name: Install dependencies
-        run: ${{ env.MANAGER }} install 
+        run: ${{ env.MANAGER }} install
       - name: Migrate database
         run: ${{ env.MANAGER }} prisma migrate deploy
       - name: Seed database with test data
@@ -101,6 +101,9 @@ jobs:
       - name: Enable corepack
         shell: bash
         run: corepack enable
+      - name: install packages
+        shell: bash
+        run: yarn install
       - name: Checkout course material
         shell: bash
         run: yarn pullmat
@@ -111,5 +114,3 @@ jobs:
       - run: flyctl deploy -a gutenberg-staging --remote-only --build-arg DATABASE_URL=${{secrets.DATABASE_URL_TEST}} --wait-timeout 240
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-        
-
