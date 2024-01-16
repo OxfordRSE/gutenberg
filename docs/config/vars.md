@@ -40,7 +40,10 @@ This must also match your settings on the github OAuth pages.
 
 ## Search
 
-The following variables are used for the search functionality, you need both an OpenAI API key and QDRANT fully configured:
+The following variables are used for the search functionality, you need both an OpenAI API key and QDRANT fully configured to use the semantic search functionality.
+
+`NEXT_PUBLIC_ENABLE_SEARCH`
+: When set to `true`, this enables in the frontend the search functionality, this is not required for the application to run. If you do not wish to use the search functionality, you can unset this env var.
 
 `OPENAI_API_KEY`
 : This is your API key for OpenAI.

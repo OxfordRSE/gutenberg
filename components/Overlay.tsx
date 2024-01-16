@@ -9,6 +9,7 @@ import Sidebar from "./Sidebar"
 import { SearchDialog, searchQueryState } from "components/SearchDialog"
 import { useRecoilState } from "recoil"
 import { DeleteEventModal, deleteEventModalState } from "components/deleteEventModal"
+import { enableSearch } from "lib/search/enableSearch"
 
 interface Props {
   material: Material

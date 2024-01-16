@@ -9,6 +9,7 @@ import { HiAtSymbol, HiCalendar, HiSearchCircle } from "react-icons/hi"
 import { baseMaterialUrl } from "lib/baseMaterialUrl"
 import { searchQueryState } from "components/SearchDialog"
 import { useRecoilState } from "recoil"
+import { enableSearch } from "lib/search/enableSearch"
 
 interface Props {
   material: Material
@@ -185,13 +186,15 @@ const Navbar: React.FC<Props> = ({
             </Tooltip>
           </Link>
         )}
-        <Tooltip content="Search Material">
-          <HiSearchCircle
-            onClick={openSearch}
-            style={{ verticalAlign: "bottom'" }}
-            className="pointer-events-auto cursor-pointer w-10 h-10 text-gray-500 hover:text-gray-400"
-          />
-        </Tooltip>
+        {enableSearch && (
+          <Tooltip content="Search Material">
+            <HiSearchCircle
+              onClick={openSearch}
+              style={{ verticalAlign: "bottom'" }}
+              className="pointer-events-auto cursor-pointer w-10 h-10 text-gray-500 hover:text-gray-400"
+            />
+          </Tooltip>
+        )}
 
         <Dropdown
           label={
