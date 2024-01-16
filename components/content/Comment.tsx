@@ -13,6 +13,7 @@ import { TinyButton } from "./Thread"
 import deleteCommentAction from "lib/actions/deleteComment"
 import useUser from "lib/hooks/useUser"
 import { useRecoilState, atom } from "recoil"
+import { set } from "cypress/types/lodash"
 
 export const textAreaValue = atom({
   key: "textAreaValue",
@@ -25,9 +26,19 @@ interface Props {
   deleteComment: (comment: Comment) => void
   saveComment?: (placeholder: Comment) => void
   isPlaceholder?: boolean
+  threadEditing?: boolean
+  setThreadEditing?: (editing: boolean) => void
 }
 
-const CommentView = ({ comment, mutateComment, deleteComment, isPlaceholder, saveComment }: Props) => {
+const CommentView = ({
+  comment,
+  mutateComment,
+  deleteComment,
+  isPlaceholder,
+  saveComment,
+  threadEditing,
+  setThreadEditing,
+}: Props) => {
   const { control, handleSubmit, reset, watch } = useForm<Comment>()
   const { userProfile, isLoading, error } = useProfile()
   const [editing, setEditing] = useState(comment.markdown === "")
@@ -47,16 +58,19 @@ const CommentView = ({ comment, mutateComment, deleteComment, isPlaceholder, sav
       mutateComment(comment)
     })
     setEditing(false)
+    setThreadEditing && setThreadEditing(false)
   }
 
   const onSubmitPlaceholder = (data: Comment) => {
     if (!saveComment) return
     saveComment(data)
     setEditing(false)
+    setThreadEditing && setThreadEditing(false)
   }
 
   const onEdit = () => {
     setEditing(true)
+    setThreadEditing && setThreadEditing(true)
   }
 
   const onDelete = () => {
