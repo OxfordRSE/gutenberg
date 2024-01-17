@@ -128,7 +128,9 @@ type Props = {
 }
 
 const Content: React.FC<Props> = ({ markdown, theme, course, section }) => {
-  const sectionStr = `${theme ? theme.id + "." : ""}${course ? course.id + "." : ""}${section ? section.id : ""}`
+  const sectionStr = `${theme ? theme.repo + "." : ""}${theme ? theme.id + "." : ""}${course ? course.id + "." : ""}${
+    section ? section.id : ""
+  }`
   return (
     <div className="mx-auto prose prose-base max-w-2xl prose-slate dark:prose-invert prose-pre:bg-[#263E52] prose-pre:p-0">
       <ReactMarkdown
