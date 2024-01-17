@@ -6,7 +6,6 @@ import Link from "next/link"
 import React from "react"
 import { RxGithubLogo } from "react-icons/rx"
 import { HiAtSymbol, HiCalendar, HiSearchCircle } from "react-icons/hi"
-import { baseMaterialUrl } from "lib/baseMaterialUrl"
 import { searchQueryState } from "components/SearchDialog"
 import { useRecoilState } from "recoil"
 
@@ -20,6 +19,7 @@ interface Props {
   setSidebarOpen: (open: boolean) => void
   sidebarOpen: boolean
   showAttribution: boolean
+  repoUrl?: string
 }
 
 const Navbar: React.FC<Props> = ({
@@ -32,6 +32,7 @@ const Navbar: React.FC<Props> = ({
   setSidebarOpen,
   sidebarOpen,
   showAttribution,
+  repoUrl,
 }) => {
   const [showSearch, setShowSearch] = useRecoilState(searchQueryState)
   const { data: session } = useSession()
@@ -121,7 +122,7 @@ const Navbar: React.FC<Props> = ({
                 ></path>
               </svg>
               <Link
-                href={`/material/${theme.id}`}
+                href={`/material/${theme.repo}/${theme.id}`}
                 className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white"
               >
                 {theme.name}
@@ -129,7 +130,7 @@ const Navbar: React.FC<Props> = ({
             </div>
           </li>
         )}{" "}
-        {course && (
+        {theme && course && (
           <li aria-current="page">
             <div className="flex items-center">
               <svg
@@ -145,7 +146,7 @@ const Navbar: React.FC<Props> = ({
                 ></path>
               </svg>
               <Link
-                href={`/material/${theme?.id}/${course.id}`}
+                href={`/material/${theme.repo}/${theme.id}/${course.id}`}
                 className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white"
               >
                 {course.name}
@@ -177,7 +178,7 @@ const Navbar: React.FC<Props> = ({
         {theme && course && section && (
           <Link
             passHref={true}
-            href={`${baseMaterialUrl}/edit/main/${theme.id}/${course.id}/${section.id}.md`}
+            href={`${repoUrl}/edit/main/${theme.id}/${course.id}/${section.id}.md`}
             className="inline-flex text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
           >
             <Tooltip content="Edit Source">

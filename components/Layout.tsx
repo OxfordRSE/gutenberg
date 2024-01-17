@@ -6,14 +6,7 @@ import { useState } from "react"
 import React, { ReactNode } from "react"
 import Footer from "./Footer"
 import Header from "./Header"
-import { Dropdown } from "flowbite-react"
-import { EventFull, Event } from "lib/types"
-import { AiOutlineUser } from "react-icons/ai"
-import { FaUser } from "react-icons/fa"
-import { Avatar } from "flowbite-react"
-import { basePath } from "lib/basePath"
 import { Material } from "lib/material"
-import EventView from "./EventView"
 import Overlay from "./Overlay"
 import Navbar from "./Navbar"
 import { useSidebarOpen } from "lib/hooks/useSidebarOpen"
@@ -28,9 +21,10 @@ type Props = {
   section?: Section
   children: ReactNode
   pageInfo?: PageTemplate
+  repoUrl?: string
 }
 
-const Layout: React.FC<Props> = ({ material, theme, course, section, children, pageInfo }) => {
+const Layout: React.FC<Props> = ({ material, theme, course, section, children, pageInfo, repoUrl }) => {
   const [activeEvent, setActiveEvent] = useActiveEvent()
   const router = useRouter()
   const { data: session } = useSession()
@@ -81,6 +75,7 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
             setSidebarOpen={setSidebarOpen}
             showAttribution={showAttribution}
             setShowAttribution={setShowAttribution}
+            repoUrl={repoUrl}
           />
           <Overlay
             material={material}

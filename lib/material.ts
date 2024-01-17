@@ -149,6 +149,13 @@ export function getExcludes(repo: string): Excludes {
   return { sections: excludeSections, themes: excludeThemes, courses: excludeCourses }
 }
 
+export function getRepoUrl(repo: string): string {
+  const repos = getrepos()
+  const key = Object.keys(repos).find((key) => repos[key].path === repo)
+  const repoConfig = repos[key]
+  return repoConfig.url
+}
+
 export async function getMaterial(no_markdown = false): Promise<Material> {
   const repos = getrepos()
   let allThemes: Theme[] = []

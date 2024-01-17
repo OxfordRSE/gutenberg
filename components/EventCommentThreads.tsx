@@ -1,23 +1,8 @@
-import React, { useEffect } from "react"
-import { HiArrowNarrowRight } from "react-icons/hi"
-import { Course, Material, Section, Theme, eventItemSplit, sectionSplit } from "lib/material"
-import { EventFull, Event, Problem } from "lib/types"
-import useSWR, { Fetcher } from "swr"
-import Title from "components/ui/Title"
-import { Avatar, Button, Card, Table, Timeline, Tooltip } from "flowbite-react"
-import { ListGroup } from "flowbite-react"
-import { basePath } from "lib/basePath"
-import { MdClose } from "react-icons/md"
+import React from "react"
+import { Material, sectionSplit } from "lib/material"
+import { EventFull } from "lib/types"
 import Link from "next/link"
-import EventItemView from "./EventItemView"
-import { useFieldArray, useForm } from "react-hook-form"
-import SelectField from "./forms/SelectField"
-import { EventItem } from "@prisma/client"
-import useUsers from "lib/hooks/useUsers"
-import { useProblems } from "lib/hooks/useProblems"
-import useUsersOnEvent from "lib/hooks/useUsersOnEvent"
 import useCommentThreads from "lib/hooks/useCommentThreads"
-import SubTitle from "./ui/SubTitle"
 
 type Props = {
   event: EventFull
@@ -30,7 +15,6 @@ const EventCommentThreads: React.FC<Props> = ({ material, event }) => {
   if (!commentThreads) return <div>failed to load</div>
 
   const unresolvedThreads = commentThreads.filter((thread) => !thread.resolved)
-
   return (
     <div>
       <ul className="list-disc text-gray-800 dark:text-gray-300">
