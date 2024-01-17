@@ -145,7 +145,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
 
   return (
     <>
-      <div data-cy="paragraph" ref={ref} className="relative">
+      <div data-cy="paragraph" ref={ref} className="relative pb-2">
         {content}
         {activeEvent && (
           <div className={`absolute top-0 right-0 md:-right-6 xl:-right-[420px]`}>

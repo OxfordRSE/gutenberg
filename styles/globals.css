@@ -22,3 +22,9 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-gray-700;
 }
+
+/* CSS to target the first h1 or h2 inside a Callout */
+.callout > h1:first-child,
+.callout > h2:first-child {
+  margin-top: 16px;
+}
