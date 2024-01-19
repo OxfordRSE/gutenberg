@@ -24,6 +24,7 @@ import { CodeComponent, CodeProps, ReactMarkdownProps } from "react-markdown/lib
 import Callout from "../Callout"
 import { Course, Section, Theme } from "lib/material"
 import Paragraph from "./Paragraph"
+import { List, ListItem } from "@mui/material"
 
 function reactMarkdownRemarkDirective() {
   return (tree: any) => {
@@ -43,6 +44,17 @@ const p = (sectionStr: string) => {
     return <Paragraph content={children} section={sectionStr} />
   }
   return p
+}
+
+const list = (sectionStr: string) => {
+  function list({ node, children, ...props }: ReactMarkdownProps) {
+    return (
+      <li className="mdli">
+        <Paragraph content={children} section={sectionStr} />
+      </li>
+    )
+  }
+  return list
 }
 
 function solution({ node, children, ...props }: ReactMarkdownProps) {
@@ -143,6 +155,7 @@ const Content: React.FC<Props> = ({ markdown, theme, course, section }) => {
           challenge: challenge(sectionStr),
           code,
           p: p(sectionStr),
+          li: list(sectionStr),
         }}
       >
         {markdown}
