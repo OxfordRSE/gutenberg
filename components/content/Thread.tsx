@@ -89,6 +89,7 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadP
   const { user, isLoading: userIsLoading, error: userError } = useUser(commentThread?.createdByEmail)
   const { userProfile, isLoading: profileLoading, error: profileError } = useProfile()
   const [activeEvent, setActiveEvent] = useActiveEvent()
+  const [threadEditing, setThreadEditing] = useState(false)
   const {
     event: eventData,
     error: eventError,
@@ -261,6 +262,8 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadP
                   saveComment={savePlaceholder}
                   deleteComment={deleteComment}
                   isPlaceholder={true}
+                  threadEditing={threadEditing}
+                  setThreadEditing={setThreadEditing}
                 />
               </RecoilRoot>
             ))}
@@ -273,6 +276,8 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadP
                   mutateComment={mutateComment}
                   deleteComment={deleteComment}
                   isPlaceholder={false}
+                  threadEditing={threadEditing}
+                  setThreadEditing={setThreadEditing}
                 />
               </RecoilRoot>
             ))}
@@ -289,12 +294,13 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadP
                   </TinyButton>
                 </Tooltip>
               )}
-
-              <Tooltip content="Reply in Thread" placement="top">
-                <TinyButton onClick={handleReply}>
-                  <BiReply className="h-4 w-4" data-cy={`Thread:${threadId}:Reply`} />
-                </TinyButton>
-              </Tooltip>
+              {!threadEditing && (
+                <Tooltip content="Reply in Thread" placement="top">
+                  <TinyButton onClick={handleReply}>
+                    <BiReply className="h-4 w-4" data-cy={`Thread:${threadId}:Reply`} />
+                  </TinyButton>
+                </Tooltip>
+              )}
             </Stack>
           )}
         </div>
