@@ -9,7 +9,7 @@ import Sidebar from "./Sidebar"
 import { SearchDialog, searchQueryState } from "components/SearchDialog"
 import { useRecoilState } from "recoil"
 import { DeleteEventModal, deleteEventModalState } from "components/deleteEventModal"
-import { enableSearch } from "lib/search/enableSearch"
+import { DuplicateEventModal, duplicateEventModalState } from "components/DuplicateEventModal"
 
 interface Props {
   material: Material
@@ -41,6 +41,7 @@ const Overlay: NextPage<Props> = ({
   const [showSearch, setShowSearch] = useRecoilState(searchQueryState)
   const [showTopButtons, setShowTopButtons] = useState(false)
   const [showDeleteEventModal, setShowDeleteEventModal] = useRecoilState(deleteEventModalState)
+  const [showDuplicateEventModal, setShowDuplicateEventModal] = useRecoilState(duplicateEventModalState)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -62,6 +63,10 @@ const Overlay: NextPage<Props> = ({
 
   const closeDeleteEvent = () => {
     setShowDeleteEventModal(false)
+  }
+
+  const closeDuplicateEvent = () => {
+    setShowDuplicateEventModal(false)
   }
 
   const handleClose = () => {
@@ -108,6 +113,7 @@ const Overlay: NextPage<Props> = ({
         <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />
         <SearchDialog onClose={closeSearch} />
         <DeleteEventModal onClose={closeDeleteEvent} />
+        <DuplicateEventModal onClose={closeDuplicateEvent} />
         <Sidebar material={material} activeEvent={activeEvent} sidebarOpen={sidebarOpen} handleClose={handleClose} />
       </div>
     </div>
