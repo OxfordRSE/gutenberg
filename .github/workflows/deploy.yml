@@ -14,6 +14,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "20"
+      - name: Enable corepack
+        shell: bash
+        run: corepack enable
+      - name: install packages
+        shell: bash
+        run: yarn install
       - name: Checkout course material
         shell: bash
         run: yarn pullmat
