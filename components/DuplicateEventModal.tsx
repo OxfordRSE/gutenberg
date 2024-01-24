@@ -116,8 +116,7 @@ export const DuplicateEventModal: React.FC<DuplicateEventProps> = ({ onClose }) 
           <DateTimeField name={"date"} control={control} />
           <Button
             size="sm"
-            className="mt-4"
-            color="failure"
+            className="m-0 h-10 mt-1"
             onClick={handleSubmit(duplicateEvent)}
             data-cy="confirm-event-duplicate"
           >

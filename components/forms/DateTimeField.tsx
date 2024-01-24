@@ -39,9 +39,9 @@ function DateTimeField<T extends FieldValues>({
                 format="YYYY-MM-DD HH:mm"
                 name={name}
                 ampm={false}
-                className="font-normal bg-grey-100 dark:bg-gray-700 dark:text-gray-200"
+                className="font-normal bg-grey-100 dark:bg-gray-600 dark:text-gray-200"
                 value={dayjs(value)}
-                slotProps={{ openPickerIcon: { className: "bg-grey-100 dark:bg-gray-700 dark:text-gray-200" } }}
+                slotProps={{ openPickerIcon: { className: "bg-grey-100 dark:bg-gray-600 dark:text-gray-200" } }}
                 onChange={onChange}
               />
             </LocalizationProvider>
