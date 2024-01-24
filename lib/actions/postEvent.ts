@@ -1,5 +1,5 @@
 import { basePath } from "lib/basePath"
-import { Event } from "lib/types"
+import { Event } from "pages/api/event/[eventId]"
 
 // POST /api/events
 export const postEvent = async (data?: Event): Promise<Event> => {
@@ -7,7 +7,7 @@ export const postEvent = async (data?: Event): Promise<Event> => {
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    data: JSON.stringify(data),
+    body: JSON.stringify(data),
   }
   return fetch(apiPath, requestOptions)
     .then((response) => response.json())

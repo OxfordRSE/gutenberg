@@ -12,9 +12,16 @@ type Props<T extends FieldValues> = {
   name: FieldPath<T>
   control: Control<T>
   rules?: Object
+  defaultValue?: Date
 }
 
-function DateTimeField<T extends FieldValues>({ label, name, control, rules }: Props<T>): React.ReactElement {
+function DateTimeField<T extends FieldValues>({
+  label,
+  name,
+  control,
+  rules,
+  defaultValue,
+}: Props<T>): React.ReactElement {
   const labelId = `${name}-label`
   return (
     <Controller

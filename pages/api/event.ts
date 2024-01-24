@@ -31,8 +31,16 @@ const Events = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
       res.status(403).json({ error: "Forbidden" })
       return
     }
-    const event = await prisma.event.create({ data: {} })
-    res.status(201).json({ event: event })
+    if (!req.body) {
+      const event = await prisma.event.create({ data: {} })
+      res.status(201).json({ event: event })
+    } else {
+      req.body.UserOnEvent = undefined
+      req.body.EventGroup = undefined
+      req.body.id = undefined
+      const event = await prisma.event.create({ data: req.body })
+      res.status(201).json({ event: event })
+    }
   } else if (req.method === "GET") {
     if (isAdmin) {
       const events: Event[] = await prisma.event.findMany()
