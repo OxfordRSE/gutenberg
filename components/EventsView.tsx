@@ -8,9 +8,12 @@ import useEvents from "lib/hooks/useEvents"
 import useProfile from "lib/hooks/useProfile"
 import useActiveEvent from "lib/hooks/useActiveEvents"
 import { postEvent } from "lib/actions/postEvent"
-import { MdDelete } from "react-icons/md"
+import { MdContentCopy, MdDelete } from "react-icons/md"
 import { useRecoilState } from "recoil"
-import { deleteEventModalState, deleteEventIdState, DeleteEventModal } from "components/deleteEventModal"
+import { deleteEventModalState, deleteEventIdState } from "components/deleteEventModal"
+import { duplicateEventModalState, duplicateEventIdState } from "components/DuplicateEventModal"
+import { Tooltip } from "@mui/material"
+import Stack from "./ui/Stack"
 
 type EventsProps = {
   material: Material
@@ -22,6 +25,8 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
   const [showDateTime, setShowDateTime] = useState(false)
   const [showDeleteEventModal, setShowDeleteEventModal] = useRecoilState(deleteEventModalState)
   const [deleteEventId, setDeleteEventId] = useRecoilState(deleteEventIdState)
+  const [showDuplicateEventModal, setShowDuplicateEventModal] = useRecoilState(duplicateEventModalState)
+  const [duplicateEventId, setDuplicateEventId] = useRecoilState(duplicateEventIdState)
 
   useEffect(() => {
     setShowDateTime(true)
@@ -58,6 +63,11 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
     setDeleteEventId(eventId)
   }
 
+  const openDuplicateEventModal = (eventId: number) => {
+    setShowDuplicateEventModal(true)
+    setDuplicateEventId(eventId)
+  }
+
   return (
     <Timeline>
       {events.map((event) => {
@@ -70,12 +80,24 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
                   {showDateTime && event.start.toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}
                 </Link>
                 {isAdmin && (
-                  <MdDelete
-                    className="ml-2 inline text-red-500 flex cursor-pointer"
-                    data-cy={`delete-event-${event.id}`}
-                    size={18}
-                    onClick={() => openDeleteEventModal(event.id)}
-                  />
+                  <Stack direction="row">
+                    <Tooltip title="Duplicate Event">
+                      <MdContentCopy
+                        className="ml-2 inline flex cursor-pointer"
+                        data-cy={`duplicate-event-${event.id}`}
+                        size={18}
+                        onClick={() => openDuplicateEventModal(event.id)}
+                      />
+                    </Tooltip>
+                    <Tooltip title="Delete Event">
+                      <MdDelete
+                        className="ml-2 inline text-red-500 flex cursor-pointer"
+                        data-cy={`delete-event-${event.id}`}
+                        size={18}
+                        onClick={() => openDeleteEventModal(event.id)}
+                      />
+                    </Tooltip>
+                  </Stack>
                 )}
               </Timeline.Time>
               <Timeline.Title>

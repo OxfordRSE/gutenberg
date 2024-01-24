@@ -78,10 +78,6 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     const eventGroupData: EventGroup[] = req.body.event.EventGroup
     const userOnEventData: UserOnEvent[] = req.body.event.UserOnEvent
 
-    console.log("eventGroupData", eventGroupData)
-    console.log("userOnEventData", userOnEventData)
-    console.log("req.body", req.body)
-
     if (!isAdmin) {
       res.status(401).json({ error: "Unauthorized" })
       return

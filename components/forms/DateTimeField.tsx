@@ -12,9 +12,16 @@ type Props<T extends FieldValues> = {
   name: FieldPath<T>
   control: Control<T>
   rules?: Object
+  defaultValue?: Date
 }
 
-function DateTimeField<T extends FieldValues>({ label, name, control, rules }: Props<T>): React.ReactElement {
+function DateTimeField<T extends FieldValues>({
+  label,
+  name,
+  control,
+  rules,
+  defaultValue,
+}: Props<T>): React.ReactElement {
   const labelId = `${name}-label`
   return (
     <Controller
@@ -32,9 +39,9 @@ function DateTimeField<T extends FieldValues>({ label, name, control, rules }: P
                 format="YYYY-MM-DD HH:mm"
                 name={name}
                 ampm={false}
-                className="font-normal bg-grey-100 dark:bg-gray-700 dark:text-gray-200"
+                className="font-normal bg-grey-100 dark:bg-gray-600 dark:text-gray-200"
                 value={dayjs(value)}
-                slotProps={{ openPickerIcon: { className: "bg-grey-100 dark:bg-gray-700 dark:text-gray-200" } }}
+                slotProps={{ openPickerIcon: { className: "bg-grey-100 dark:bg-gray-600 dark:text-gray-200" } }}
                 onChange={onChange}
               />
             </LocalizationProvider>
