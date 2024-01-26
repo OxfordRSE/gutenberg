@@ -28,3 +28,20 @@ body {
 .callout > h2:first-child {
   margin-top: 16px;
 }
+
+/* lists in markdown Content */
+li.mdli {
+  display: list-item;
+  margin-top: 1rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+ol:has(li.mdli) {
+  list-style-type: decimal !important;
+  list-style-position: outside;
+}
+
+ul:has(li.mdli) {
+  list-style-type: disc !important;
+  list-style-position: outside;
+}
