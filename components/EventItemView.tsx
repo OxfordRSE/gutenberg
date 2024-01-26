@@ -17,7 +17,6 @@ const EventItemView: React.FC<EventItemProps> = ({ material, item, problems }) =
   let name = `Error: ${item.section}`
   let key = item.id
   let indent = 0
-
   let itemProblems: string[] = []
   if (split.length === 4) {
     const [repo, theme, course, section] = split
@@ -44,7 +43,6 @@ const EventItemView: React.FC<EventItemProps> = ({ material, item, problems }) =
   }
   let isCompleted = false
   let completedLabel = ""
-
   const uniqueUsers = new Set()
   let uniqueUsersCount = 0
   if (problems !== undefined && itemProblems.length > 0) {
