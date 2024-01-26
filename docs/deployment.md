@@ -7,8 +7,9 @@ On this page we will cover how to deploy the application to a production environ
 
 If you wish to see how to deploy the application to a development environment, please refer to the [development guide]({{ "/development/" | relative_url }}).
 
+<!-- prettier-ignore -->
 - TOC
-  {:toc}
+{:toc}
 
 ## Prerequisites
 

@@ -9,8 +9,9 @@ This will guide you through the process of setting up a development environment.
 
 To see how to to build the docs, please see the [documentation guide]({{"/development/docs" | relative_url }}).
 
+<!-- prettier-ignore -->
 - TOC
-  {:toc}
+{:toc}
 
 ## Getting Started
 

@@ -5,8 +5,9 @@ permalink: /guide/
 
 This is the `Gutenberg` tutorial.
 
+<!-- prettier-ignore -->
 - TOC
-  {:toc}
+{:toc}
 
 ## Creating/Deleting Events
 
