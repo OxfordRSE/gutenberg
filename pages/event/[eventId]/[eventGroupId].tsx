@@ -92,25 +92,25 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
   const sectionsOptions = material.themes.flatMap((theme) => {
     return [
       {
-        value: `${theme.id}`,
-        label: `${theme.name}`,
+        value: `${theme.repo}.${theme.id}`,
+        label: `${theme.repo} - ${theme.name}`,
       },
     ].concat(
       theme.courses.flatMap((course) => {
         return [
           {
-            value: `${theme.id}.${course.id}`,
-            label: `${theme.name} - ${course.name}`,
+            value: `${theme.repo}.${theme.id}.${course.id}`,
+            label: `${theme.repo} - ${theme.name} - ${course.name}`,
           },
         ].concat(
           course.sections.map((section) => {
             const tags = section.tags.join(", ")
-            let label = `${theme.name} - ${course.name} - ${section.name}`
+            let label = `${theme.repo} - ${theme.name} - ${course.name} - ${section.name}`
             if (tags.length > 0) {
               label = `${label} [${tags}]`
             }
             return {
-              value: `${theme.id}.${course.id}.${section.id}`,
+              value: `${theme.repo}.${theme.id}.${course.id}.${section.id}`,
               label,
             }
           })
