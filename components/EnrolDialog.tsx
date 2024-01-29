@@ -82,7 +82,7 @@ const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol }) => {
             } else if (status === "INSTRUCTOR") {
               newUser.status = EventStatus.INSTRUCTOR
             }
-            if (eventData) {
+            if (event) {
               putUserOnEvent(event.id, newUser).then(() => {
                 setKeySuccess("success")
                 setTimeout(() => {
