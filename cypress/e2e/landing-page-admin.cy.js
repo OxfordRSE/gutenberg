@@ -53,6 +53,15 @@ describe("admin landing page", () => {
     cy.request("DELETE", "/api/userOnEvent/1", userOnEvent)
   })
 
+  it("Admin Can Not Enrol WithOut Key", () => {
+    cy.get('[data-cy="event-enrol-1"]').should("be.visible")
+    cy.get('[data-cy="event-enrol-1"]').click()
+    cy.get('[data-cy="key-enrol-1"]').should("be.visible")
+    cy.get("#enrolKey").type("not the enrol key")
+    cy.get('[data-cy="key-enrol-1"]').click()
+    cy.get('[data-cy="enrol-failure-1"]').should("be.visible")
+  })
+
   it("admin create/delete event", () => {
     cy.intercept("GET", "/api/auth/session").as("getSession")
 
