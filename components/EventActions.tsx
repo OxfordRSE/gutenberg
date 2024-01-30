@@ -75,8 +75,8 @@ const EventActions: React.FC<EventActionsProps> = ({ event }) => {
       ) : (
         session && (
           <>
-            <Button color="gray" onClick={handleEnrol(event)} style={{ zIndex: 1 }}>
-              Enroll
+            <Button color="gray" data-cy={`event-enrol-${event.id}`} onClick={handleEnrol(event)} style={{ zIndex: 1 }}>
+              Enrol
               <HiArrowNarrowRight className="ml-2 h-3 w-3" />
             </Button>
             <EnrolDialog event={event} show={showEvent == event} onEnrol={onEnrol} />

@@ -48,6 +48,8 @@ async function main() {
       summary: "Introduction to the C++ programming language",
       start: new Date(2023, 7, 1, 9, 30),
       end: new Date(2023, 7, 2, 14, 0),
+      enrolKey: "testEnrol",
+      instructorKey: "testInstructor",
       hidden: false,
       EventGroup: {
         connectOrCreate: [

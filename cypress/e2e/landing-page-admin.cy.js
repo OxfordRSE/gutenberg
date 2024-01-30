@@ -4,6 +4,13 @@ describe("admin landing page", () => {
     email: "admin@localhost",
   }
 
+  const userOnEvent = {
+    userOnEvent: {
+      userEmail: "admin@localhost",
+      eventId: 1,
+    },
+  }
+
   beforeEach(() => {
     cy.visit("/")
     cy.login(user)
@@ -16,6 +23,34 @@ describe("admin landing page", () => {
 
   it("Delete event button exists", () => {
     cy.get('[data-cy*="delete-event"]').should("be.visible")
+  })
+
+  it("Admin Can Enrol With Key", () => {
+    cy.get('[data-cy="event-enrol-1"]').should("be.visible")
+    cy.get('[data-cy="event-enrol-1"]').click()
+    cy.get('[data-cy="key-enrol-1"]').should("be.visible")
+    cy.get("#enrolKey").type("testEnrol")
+    cy.get('[data-cy="key-enrol-1"]').click()
+    cy.get('[data-cy="enrol-success-1"]').should("be.visible")
+    // Then we remove the user just in case we want to run this test again locally
+    cy.request("DELETE", "/api/userOnEvent/1", userOnEvent)
+  })
+
+  it("Admin Can Enrol With Instructor Key", () => {
+    cy.get('[data-cy="event-enrol-1"]').should("be.visible")
+    cy.get('[data-cy="event-enrol-1"]').click()
+    cy.get('[data-cy="key-enrol-1"]').should("be.visible")
+    cy.get("#enrolKey").type("testInstructor")
+    cy.get('[data-cy="key-enrol-1"]').click()
+    cy.get('[data-cy="enrol-success-1"]').should("be.visible")
+    // check we are an instructor
+    cy.request("GET", "/api/userOnEvent/1").then((response) => {
+      const uOnE = response.body.userOnEvent
+      console.log(uOnE)
+      expect(uOnE.status).to.equal("INSTRUCTOR")
+    })
+    // Then we remove the user just in case we want to run this test again locally
+    cy.request("DELETE", "/api/userOnEvent/1", userOnEvent)
   })
 
   it("admin create/delete event", () => {
