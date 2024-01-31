@@ -85,8 +85,28 @@ const UserOnEvent = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
         return
       }
       break
+    case "DELETE":
+      if (!isAdmin && userEmail !== req.body.userOnEvent.userEmail) {
+        res.status(401).json({ error: "Unauthorized" })
+        return
+      }
+      // remove user from event
+      userOnEvent = req.body.userOnEvent
+      const deletedUserOnEvent = prisma.userOnEvent
+        .delete({
+          where: { userEmail_eventId: { userEmail: userOnEvent.userEmail, eventId: userOnEvent.eventId } },
+        })
+        .then((deletedUserOnEvent) => {
+          res.status(200).json({ userOnEvent: deletedUserOnEvent })
+          return
+        })
+        .catch((error) => {
+          res.status(500).json({ error: "Problem deleting userOnEvent" })
+          return
+        })
+      break
     default:
-      res.setHeader("Allow", ["GET", "POST", "PUT"])
+      res.setHeader("Allow", ["GET", "POST", "PUT", "DELETE"])
       res.status(404).end(`Method ${method} Not Allowed`)
       break
   }

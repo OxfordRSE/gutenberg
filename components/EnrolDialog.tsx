@@ -112,17 +112,18 @@ const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol }) => {
             <form onSubmit={handleSubmit(enrolWithKey)}>
               <Stack direction="row" spacing={2} className="justify-center flex-row">
                 <TextField
+                  data-cy={`key-enrol-input-${event.id}`}
                   textfieldProps={{ autoComplete: "off", placeholder: "Enrolment Key", autoFocus: true }}
                   name={"enrolKey"}
                   control={control}
                 />
-                <Button type="submit" className="m-0 h-10 mt-1">
+                <Button data-cy={`key-enrol-${event.id}`} type="submit" className="m-0 h-10 mt-1">
                   Enrol
                 </Button>
               </Stack>
             </form>
             {enrolError && (
-              <Toast className="">
+              <Toast data-cy={`enrol-failure-${event.id}`} className="">
                 <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200">
                   <HiX className="h-5 w-5" />
                 </div>
@@ -130,7 +131,7 @@ const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol }) => {
               </Toast>
             )}
             {keySuccess && (
-              <Toast className="">
+              <Toast data-cy={`enrol-success-${event.id}`} className="">
                 <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
                   <HiCheckCircle className="h-5 w-5" />
                 </div>
@@ -141,7 +142,9 @@ const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol }) => {
         </Modal.Body>
         <Modal.Footer>
           <p>If you have not received an enrolment key, you can request enrolment:</p>
-          <Button onClick={onClick}>Request Enrollment</Button>
+          <Button data-cy={`request-enrol-${event.id}`} onClick={onClick}>
+            Request Enrollment
+          </Button>
         </Modal.Footer>
       </Modal>
       {error && (
