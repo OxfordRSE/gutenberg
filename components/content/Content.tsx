@@ -24,7 +24,6 @@ import { CodeComponent, CodeProps, ReactMarkdownProps } from "react-markdown/lib
 import Callout from "../Callout"
 import { Course, Section, Theme } from "lib/material"
 import Paragraph from "./Paragraph"
-import { List, ListItem } from "@mui/material"
 
 function reactMarkdownRemarkDirective() {
   return (tree: any) => {
@@ -61,8 +60,12 @@ function solution({ node, children, ...props }: ReactMarkdownProps) {
   return <Solution content={children} />
 }
 
-function callout({ node, children, ...props }: ReactMarkdownProps) {
-  return <Callout content={children} />
+type CalloutProps = ReactMarkdownProps & {
+  calloutClass: string
+}
+
+function callout({ node, children, calloutClass, ...props }: CalloutProps) {
+  return <Callout content={children} calloutClass={calloutClass} />
 }
 
 type ChallengeProps = ReactMarkdownProps & {
