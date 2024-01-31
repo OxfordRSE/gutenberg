@@ -24,7 +24,7 @@ const Footer: React.FC<Props> = ({ prevUrl, nextUrl, pageInfo }) => {
         </a>
       )}
       <span className="flex flex-wrap text-sm text-gray-500 sm:text-center dark:text-gray-400">
-        {footerAttrib && <Markdown markdown={"© 2023 " + footerAttrib} />}
+        {footerAttrib && <Markdown markdown={"© " + new Date().getFullYear() + " " + footerAttrib} />}
       </span>
       <p className="flex flex-wrap items-center mt-3 text-sm text-gray-500 dark:text-gray-400 sm:mt-0">
         For attribution and license information click the @ symbol on the top right
