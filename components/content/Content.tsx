@@ -61,7 +61,7 @@ function solution({ node, children, ...props }: ReactMarkdownProps) {
 }
 
 type CalloutProps = ReactMarkdownProps & {
-  calloutClass: string
+  variant: string
 }
 
 function callout({ node, children, calloutClass, ...props }: CalloutProps) {
