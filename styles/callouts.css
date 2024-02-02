@@ -1,0 +1,150 @@
+/* Callouts in markdown Content */
+/* Warning */
+div.callout.warning > h1.first-child,
+div.callout.warning > h2.first-child,
+div.callout.warning > h3.first-child {
+  @apply mt-0;
+}
+
+div.callout.warning {
+  @apply border-r-0 border-t-0 border-b-0 rounded-none;
+  border-left: 6px #ff5500 solid;
+}
+
+div.callout.warning {
+  background-image: url("https://icongr.am/octicons/alert.svg?size=128&color=ff5500");
+  background-position: 0.5rem 0.4rem;
+  background-size: 1.5rem 1.5rem;
+  background-repeat: no-repeat;
+  padding-top: 0.36rem;
+}
+
+div.callout.warning::before {
+  color: #ff5500;
+  content: "\00a0\00a0\00a0\00a0\00a0\00a0\00a0 WARNING";
+}
+
+/* danger */
+div.callout.danger > h1.first-child,
+div.callout.danger > h2.first-child,
+div.callout.danger > h3.first-child {
+  @apply mt-0;
+}
+
+div.callout.danger {
+  @apply border-r-0 border-t-0 border-b-0 rounded-none;
+  border-left: 6px #dc0000 solid;
+}
+
+div.callout.danger {
+  background-image: url("https://icongr.am/octicons/flame.svg?size=128&color=dc0000");
+  background-position: 0.5rem 0.4rem;
+  background-size: 1.5rem 1.5rem;
+  background-repeat: no-repeat;
+  padding-top: 0.36rem;
+}
+
+div.callout.danger::before {
+  color: #dc0000;
+  content: "\00a0\00a0\00a0\00a0\00a0\00a0\00a0 DANGER";
+}
+
+/* Note */
+div.callout.note > h1.first-child,
+div.callout.note > h2.first-child,
+div.callout.note > h3.first-child {
+  @apply mt-0;
+}
+
+div.callout.note {
+  @apply border-r-0 border-t-0 border-b-0 rounded-none;
+  border-left: 6px #005cc5 solid;
+}
+
+div.callout.note {
+  background-image: url("https://icongr.am/octicons/report.svg?size=128&color=005cc5");
+  background-position: 0.5rem 0.4rem;
+  background-size: 1.5rem 1.5rem;
+  background-repeat: no-repeat;
+  padding-top: 0.36rem;
+}
+
+div.callout.note::before {
+  color: #005cc5;
+  content: "\00a0\00a0\00a0\00a0\00a0\00a0\00a0 NOTE";
+}
+
+/* Tip */
+div.callout.tip > h1.first-child,
+div.callout.tip > h2.first-child,
+div.callout.tip > h3.first-child {
+  @apply mt-0;
+}
+
+div.callout.tip {
+  @apply border-r-0 border-t-0 border-b-0 rounded-none;
+  border-left: 6px #00b265 solid;
+}
+
+div.callout.tip {
+  background-image: url("https://icongr.am/octicons/light-bulb.svg?size=128&color=00b265");
+  background-position: 0.5rem 0.4rem;
+  background-size: 1.5rem 1.5rem;
+  background-repeat: no-repeat;
+  padding-top: 0.36rem;
+}
+
+div.callout.tip::before {
+  color: #00b265;
+  content: "\00a0\00a0\00a0\00a0\00a0\00a0\00a0 TIP";
+}
+
+/* Key Points */
+div.callout.keypoints > h1.first-child,
+div.callout.keypoints > h2.first-child,
+div.callout.keypoints > h3.first-child {
+  @apply mt-0;
+}
+
+div.callout.keypoints {
+  @apply border-r-0 border-t-0 border-b-0 rounded-none;
+  border-left: 6px #a400c5 solid;
+}
+
+div.callout.keypoints {
+  background-image: url("https://icongr.am/octicons/bookmark.svg?size=128&color=a400c5");
+  background-position: 0.5rem 0.4rem;
+  background-size: 1.5rem 1.5rem;
+  background-repeat: no-repeat;
+  padding-top: 0.36rem;
+}
+
+div.callout.keypoints::before {
+  color: #a400c5;
+  content: "\00a0\00a0\00a0\00a0\00a0\00a0\00a0 KEY POINTS";
+}
+
+/* Discussion */
+div.callout.discussion > h1.first-child,
+div.callout.discussion > h2.first-child,
+div.callout.discussion > h3.first-child {
+  @apply mt-0;
+}
+
+div.callout.discussion {
+  @apply border-r-0 border-t-0 border-b-0 rounded-none;
+  border-left: 6px #00ffee solid;
+}
+
+div.callout.discussion {
+  background-image: url("https://icongr.am/octicons/comment-discussion.svg?size=128&color=00ffee");
+  background-position: 0.5rem 0.4rem;
+  background-size: 1.5rem 1.5rem;
+  background-repeat: no-repeat;
+  padding-top: 0.36rem;
+}
+
+div.callout.discussion::before {
+  color: #00ffee;
+  content: "\00a0\00a0\00a0\00a0\00a0\00a0\00a0 DISCUSSION";
+}
