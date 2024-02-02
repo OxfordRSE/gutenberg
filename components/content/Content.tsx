@@ -64,8 +64,8 @@ type CalloutProps = ReactMarkdownProps & {
   variant: string
 }
 
-function callout({ node, children, calloutClass, ...props }: CalloutProps) {
-  return <Callout content={children} calloutClass={calloutClass} />
+function callout({ node, children, variant, ...props }: CalloutProps) {
+  return <Callout content={children} variant={variant} />
 }
 
 type ChallengeProps = ReactMarkdownProps & {
