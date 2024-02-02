@@ -24,19 +24,19 @@ div.callout.warning::before {
   content: "\00a0\00a0\00a0\00a0\00a0\00a0\00a0 WARNING";
 }
 
-/* Caution */
-div.callout.caution > h1.first-child,
-div.callout.caution > h2.first-child,
-div.callout.caution > h3.first-child {
+/* danger */
+div.callout.danger > h1.first-child,
+div.callout.danger > h2.first-child,
+div.callout.danger > h3.first-child {
   @apply mt-0;
 }
 
-div.callout.caution {
+div.callout.danger {
   @apply border-r-0 border-t-0 border-b-0 rounded-none;
   border-left: 6px #dc0000 solid;
 }
 
-div.callout.caution {
+div.callout.danger {
   background-image: url("https://icongr.am/octicons/flame.svg?size=128&color=dc0000");
   background-position: 0.5rem 0.4rem;
   background-size: 1.5rem 1.5rem;
@@ -44,9 +44,9 @@ div.callout.caution {
   padding-top: 0.36rem;
 }
 
-div.callout.caution::before {
+div.callout.danger::before {
   color: #dc0000;
-  content: "\00a0\00a0\00a0\00a0\00a0\00a0\00a0 CAUTION";
+  content: "\00a0\00a0\00a0\00a0\00a0\00a0\00a0 DANGER";
 }
 
 /* Note */
