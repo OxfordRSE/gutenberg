@@ -25,6 +25,7 @@ describe("non admin landing page", () => {
   })
 
   it("Can Not Enrol WithOut Key", () => {
+    cy.get('[data-cy="load-more-events"]').click()
     cy.get('[data-cy="event-enrol-1"]').should("be.visible")
     cy.get('[data-cy="event-enrol-1"]').click()
     cy.get('[data-cy="key-enrol-1"]').should("be.visible")
@@ -34,6 +35,7 @@ describe("non admin landing page", () => {
   })
 
   it("Can Enrol With Key", () => {
+    cy.get('[data-cy="load-more-events"]').click()
     cy.get('[data-cy="event-enrol-1"]').should("be.visible")
     cy.get('[data-cy="event-enrol-1"]').click()
     cy.get('[data-cy="key-enrol-1"]').should("be.visible")
@@ -45,6 +47,7 @@ describe("non admin landing page", () => {
   })
 
   it("Can Enrol With Instructor Key", () => {
+    cy.get('[data-cy="load-more-events"]').click()
     cy.get('[data-cy="event-enrol-1"]').should("be.visible")
     cy.get('[data-cy="event-enrol-1"]').click()
     cy.get('[data-cy="key-enrol-1"]').should("be.visible")

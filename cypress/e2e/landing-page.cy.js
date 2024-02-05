@@ -11,6 +11,7 @@ describe("landing page", () => {
     cy.contains("Create new Event").should("not.exist")
   })
   it("Delete event button does not exist", () => {
+    cy.get('[data-cy="load-more-events"]').click()
     cy.get('[data-cy*="delete-event"]').should("not.exist")
   })
 

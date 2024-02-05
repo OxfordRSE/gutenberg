@@ -95,7 +95,7 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
             <Timeline.Content>
               <Timeline.Title>
                 <Tooltip title="Show older events">
-                  <Button color="gray" size="xs" onClick={loadMoreEvents}>
+                  <Button color="gray" size="xs" onClick={loadMoreEvents} data-cy="load-more-events">
                     <BiArrowToTop />
                   </Button>
                 </Tooltip>

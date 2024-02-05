@@ -17,15 +17,28 @@ describe("admin landing page", () => {
     cy.visit("/")
   })
 
+  it("Load more events works", () => {
+    cy.get('[data-cy="load-more-events"]').should("be.visible")
+    cy.get('[data-cy="event-enrol-1"]').should('not.exist')
+    cy.get('[data-cy="load-more-events"]')
+      .click()
+      .then(() => {
+        cy.get('[data-cy="event-enrol-1"]').should("be.visible")
+      })
+  })
+
   it("Create event button exists", () => {
+    cy.get('[data-cy="load-more-events"]').click()
     cy.contains("Create new Event").should("be.visible")
   })
 
   it("Delete event button exists", () => {
+    cy.get('[data-cy="load-more-events"]').click()
     cy.get('[data-cy*="delete-event"]').should("be.visible")
   })
 
   it("Admin Can Enrol With Key", () => {
+    cy.get('[data-cy="load-more-events"]').click()
     cy.get('[data-cy="event-enrol-1"]').should("be.visible")
     cy.get('[data-cy="event-enrol-1"]').click()
     cy.get('[data-cy="key-enrol-1"]').should("be.visible")
@@ -37,6 +50,7 @@ describe("admin landing page", () => {
   })
 
   it("Admin Can Enrol With Instructor Key", () => {
+    cy.get('[data-cy="load-more-events"]').click()
     cy.get('[data-cy="event-enrol-1"]').should("be.visible")
     cy.get('[data-cy="event-enrol-1"]').click()
     cy.get('[data-cy="key-enrol-1"]').should("be.visible")
@@ -54,6 +68,7 @@ describe("admin landing page", () => {
   })
 
   it("Admin Can Not Enrol WithOut Key", () => {
+    cy.get('[data-cy="load-more-events"]').click()
     cy.get('[data-cy="event-enrol-1"]').should("be.visible")
     cy.get('[data-cy="event-enrol-1"]').click()
     cy.get('[data-cy="key-enrol-1"]').should("be.visible")
@@ -63,6 +78,7 @@ describe("admin landing page", () => {
   })
 
   it("admin create/delete event", () => {
+    cy.get('[data-cy="load-more-events"]').click()
     cy.intercept("GET", "/api/auth/session").as("getSession")
 
     cy.request("GET", "/api/event").its("body").its("events").as("oldres")
