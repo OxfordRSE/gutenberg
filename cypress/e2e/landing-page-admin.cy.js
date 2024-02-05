@@ -19,7 +19,7 @@ describe("admin landing page", () => {
 
   it("Load more events works", () => {
     cy.get('[data-cy="load-more-events"]').should("be.visible")
-    cy.get('[data-cy="event-enrol-1"]').should('not.exist')
+    cy.get('[data-cy="event-enrol-1"]').should("not.exist")
     cy.get('[data-cy="load-more-events"]')
       .click()
       .then(() => {
