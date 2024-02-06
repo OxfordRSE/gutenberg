@@ -32,7 +32,22 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
   const [showAttribution, setShowAttribution] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useSidebarOpen(true)
 
-  const pageLabel = `${theme?.id}.${course?.id}${section ? `.${section.id}` : ""}`
+  const findParents = (): String[] | undefined => {
+    const parents = []
+    const pageLabelShort = pageLabel.split(".").slice(1, pageLabel.split(".").length).join(".")
+    console.log(pageLabelShort)
+    console.log(course?.sections)
+    if (course?.sections != undefined) {
+      for (const sec of course?.sections) {
+        if (sec.dependsOn.includes(pageLabelShort)) {
+          parents.push(sec.id)
+        }
+      }
+      return parents
+    }
+  }
+
+  const pageLabel = `${theme?.repo}.${theme?.id}.${course?.id}${section ? `.${section.id}` : ""}`
 
   // check if this section is part of the active event
   let isInEvent = false
@@ -56,6 +71,18 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
             nextUrl = nextItem.section.replaceAll(".", "/")
           }
         }
+      }
+    }
+  } else {
+    // if there is no active event we can still show the prev/next buttons if there is a linear path
+    if (section?.dependsOn.length == 1) {
+      prevUrl = `${theme?.repo}/${section?.dependsOn[0].replaceAll(".", "/")}`
+    }
+    if (section) {
+      const parents = findParents()
+      console.log(parents)
+      if (parents?.length == 1) {
+        nextUrl = `${theme?.repo}/${theme?.id}/${course?.id}/${parents[0]}`
       }
     }
   }
