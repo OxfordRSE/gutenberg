@@ -24,7 +24,7 @@ const Home: NextPage<HomeProps> = ({ material, events, pageInfo }) => {
   return (
     <Layout material={material} pageInfo={pageInfo}>
       <div className="px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32  grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
-        <Card>
+        <Card className="scroll" style={{ maxHeight: "82vh", overflowY: "auto" }}>
           <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Course Events</h5>
           <p className="font-normal text-gray-700 dark:text-gray-400">
             Login to request a place on an upcoming course, or to select an active course.
