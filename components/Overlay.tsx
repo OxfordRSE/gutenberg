@@ -10,7 +10,7 @@ import { SearchDialog, searchQueryState } from "components/SearchDialog"
 import { useRecoilState } from "recoil"
 import { DeleteEventModal, deleteEventModalState } from "components/deleteEventModal"
 import { DuplicateEventModal, duplicateEventModalState } from "components/DuplicateEventModal"
-
+import { LinkedSection, SectionLink } from "./ui/LinkedSection"
 interface Props {
   material: Material
   theme?: Theme
@@ -21,8 +21,7 @@ interface Props {
   setShowAttribution: (show: boolean) => void
   sidebarOpen: boolean
   setSidebarOpen: (open: boolean) => void
-  prevUrl?: string
-  nextUrl?: string
+  sectionLinks?: SectionLink[]
 }
 
 const Overlay: NextPage<Props> = ({
@@ -35,8 +34,7 @@ const Overlay: NextPage<Props> = ({
   setShowAttribution,
   sidebarOpen,
   setSidebarOpen,
-  prevUrl,
-  nextUrl,
+  sectionLinks,
 }: Props) => {
   const [showSearch, setShowSearch] = useRecoilState(searchQueryState)
   const [showTopButtons, setShowTopButtons] = useState(false)
@@ -94,22 +92,7 @@ const Overlay: NextPage<Props> = ({
             className="pointer-events-auto absolute top-0 right-0 cursor-pointer w-12 h-12 text-gray-600 hover:text-gray-500 opacity-50"
           />
         )}
-        {prevUrl && (
-          <a
-            href={`/material/${prevUrl}`}
-            className="pointer-events-auto absolute bottom-20 left-0 text-gray-600 hover:text-gray-500 opacity-50"
-          >
-            <HiArrowCircleLeft className="w-14 h-14" />
-          </a>
-        )}
-        {nextUrl && (
-          <a
-            href={`/material/${nextUrl}`}
-            className="pointer-events-auto absolute bottom-20 right-0 text-gray-600 hover:text-gray-500 opacity-50"
-          >
-            <HiArrowCircleRight className="w-14 h-14" />
-          </a>
-        )}
+        <>{sectionLinks && sectionLinks.map((link) => LinkedSection(link))}</>
         <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />
         <SearchDialog onClose={closeSearch} />
         <DeleteEventModal onClose={closeDeleteEvent} />

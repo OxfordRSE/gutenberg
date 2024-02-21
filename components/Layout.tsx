@@ -1,7 +1,7 @@
 import { Course, Section, Theme } from "lib/material"
 
 import { useRouter } from "next/router"
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useSession } from "next-auth/react"
 import { useState } from "react"
 import React, { ReactNode } from "react"
 import Footer from "./Footer"
@@ -12,7 +12,9 @@ import Navbar from "./Navbar"
 import { useSidebarOpen } from "lib/hooks/useSidebarOpen"
 import useActiveEvent from "lib/hooks/useActiveEvents"
 import { RecoilRoot } from "recoil"
-import { PageTemplate, pageTemplate } from "lib/pageTemplate"
+import { PageTemplate } from "lib/pageTemplate"
+import { SectionLink } from "./ui/LinkedSection"
+import { findLinks } from "lib/findSectionLinks"
 
 type Props = {
   material: Material
@@ -32,60 +34,7 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
   const [showAttribution, setShowAttribution] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useSidebarOpen(true)
 
-  const findParents = (): String[] | undefined => {
-    const parents = []
-    const pageLabelShort = pageLabel.split(".").slice(1, pageLabel.split(".").length).join(".")
-    console.log(pageLabelShort)
-    console.log(course?.sections)
-    if (course?.sections != undefined) {
-      for (const sec of course?.sections) {
-        if (sec.dependsOn.includes(pageLabelShort)) {
-          parents.push(sec.id)
-        }
-      }
-      return parents
-    }
-  }
-
-  const pageLabel = `${theme?.repo}.${theme?.id}.${course?.id}${section ? `.${section.id}` : ""}`
-
-  // check if this section is part of the active event
-  let isInEvent = false
-  let prevUrl = undefined
-  let nextUrl = undefined
-
-  if (activeEvent) {
-    for (const group of activeEvent.EventGroup) {
-      let orderedEvents = [...group.EventItem]
-      orderedEvents.sort((a, b) => a.order - b.order)
-      for (let i = 0; i < group.EventItem.length; i++) {
-        const item = orderedEvents[i]
-        if (item.section == pageLabel) {
-          isInEvent = true
-          if (i > 0) {
-            const prevItem = orderedEvents[i - 1]
-            prevUrl = prevItem.section.replaceAll(".", "/")
-          }
-          if (i < group.EventItem.length - 1) {
-            const nextItem = orderedEvents[i + 1]
-            nextUrl = nextItem.section.replaceAll(".", "/")
-          }
-        }
-      }
-    }
-  } else {
-    // if there is no active event we can still show the prev/next buttons if there is a linear path
-    if (section?.dependsOn.length == 1) {
-      prevUrl = `${theme?.repo}/${section?.dependsOn[0].replaceAll(".", "/")}`
-    }
-    if (section) {
-      const parents = findParents()
-      console.log(parents)
-      if (parents?.length == 1) {
-        nextUrl = `${theme?.repo}/${theme?.id}/${course?.id}/${parents[0]}`
-      }
-    }
-  }
+  const sectionLinks: SectionLink[] = findLinks(material, theme, course, section, activeEvent)
 
   return (
     <RecoilRoot>
@@ -114,8 +63,7 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
             setSidebarOpen={setSidebarOpen}
             showAttribution={showAttribution}
             setShowAttribution={setShowAttribution}
-            prevUrl={prevUrl}
-            nextUrl={nextUrl}
+            sectionLinks={sectionLinks}
           />
           {children}
         </main>

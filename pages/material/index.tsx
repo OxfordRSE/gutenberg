@@ -2,7 +2,7 @@ import type { NextPage, GetStaticProps } from "next"
 import prisma from "lib/prisma"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
-import { Material, getMaterial, remove_markdown } from "lib/material"
+import { Material, getMaterial, removeMarkdown } from "lib/material"
 import Content from "components/content/Content"
 import NavDiagram from "components/NavDiagram"
 import { EventFull as Event, EventFull } from "lib/types"
@@ -51,7 +51,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       return []
     })
   let material = await getMaterial()
-  remove_markdown(material, material)
+  removeMarkdown(material, material)
 
   return {
     props: {

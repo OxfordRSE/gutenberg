@@ -1,6 +1,6 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
 import prisma from "lib/prisma"
-import { getMaterial, Course, Theme, Material, Section, remove_markdown, getRepoUrl } from "lib/material"
+import { getMaterial, Course, Theme, Material, Section, removeMarkdown, getRepoUrl } from "lib/material"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
 import Content from "components/content/Content"
@@ -94,7 +94,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   if (!section) {
     return { notFound: true }
   }
-  remove_markdown(material, section)
+  removeMarkdown(material, section)
   return { props: makeSerializable({ theme, course, section, events, material, pageInfo, repoUrl }) }
 }
 

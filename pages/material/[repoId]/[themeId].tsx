@@ -1,6 +1,6 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
 import prisma from "lib/prisma"
-import { getMaterial, Theme, Material, remove_markdown, getExcludes, Excludes } from "lib/material"
+import { getMaterial, Theme, Material, removeMarkdown, getExcludes, Excludes } from "lib/material"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
 import Content from "components/content/Content"
@@ -57,7 +57,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     return { notFound: true }
   }
 
-  remove_markdown(material, theme)
+  removeMarkdown(material, theme)
 
   return {
     props: makeSerializable({ material, theme, events, pageInfo, excludes }),

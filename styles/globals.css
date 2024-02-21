@@ -46,3 +46,15 @@ ul:has(li.mdli) {
   list-style-type: disc !important;
   list-style-position: outside;
 }
+
+:root {
+  --icon-stroke-width: 1px;
+}
+
+.parent-hovered {
+  --icon-stroke-width: 2px;
+}
+
+.nav-chevron {
+  stroke-width: var(--icon-stroke-width);
+}
