@@ -1,4 +1,3 @@
-
 import { Section } from "lib/material"
 import { HiArrowCircleLeft, HiArrowCircleRight, HiChevronLeft, HiChevronRight } from "react-icons/hi"
 import Stack from "./Stack"
