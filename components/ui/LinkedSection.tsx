@@ -19,7 +19,6 @@ export const LinkedSection = (sectionLink: SectionLink) => {
   let borderColor = "border-grey-700 dark:border-grey-500"
 
   const handleMouseEnter = (e: SyntheticEvent) => {
-    console.log(e)
     e.currentTarget.classList.add("parent-hovered")
   }
 
