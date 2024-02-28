@@ -12,6 +12,7 @@ import { DeleteEventModal, deleteEventModalState } from "components/deleteEventM
 import { DuplicateEventModal, duplicateEventModalState } from "components/DuplicateEventModal"
 import { LinkedSection, SectionLink } from "./ui/LinkedSection"
 import { Stack } from "@mui/material"
+import useWindowSize from "lib/hooks/useWindowSize"
 
 interface Props {
   material: Material
@@ -42,7 +43,7 @@ const Overlay: NextPage<Props> = ({
   const [showTopButtons, setShowTopButtons] = useState(false)
   const [showDeleteEventModal, setShowDeleteEventModal] = useRecoilState(deleteEventModalState)
   const [showDuplicateEventModal, setShowDuplicateEventModal] = useRecoilState(duplicateEventModalState)
-
+  const windowSize = useWindowSize()
   // remove duplicate links in case activeevent includes the same section as dependsOn, reverse so AE comes first
   sectionLinks = sectionLinks
     ?.filter((item, index, array) => array.findIndex((other) => other.url === item.url) === index)
@@ -99,12 +100,18 @@ const Overlay: NextPage<Props> = ({
             className="pointer-events-auto absolute top-0 right-0 cursor-pointer w-12 h-12 text-gray-600 hover:text-gray-500 opacity-50"
           />
         )}
-        <Stack direction="column" className="absolute bottom-20 left-0 ">
-          {sectionLinks && sectionLinks.filter((link) => link.direction === "prev").map((link) => LinkedSection(link))}
-        </Stack>
-        <Stack direction="column" className="absolute bottom-20 right-0 ">
-          {sectionLinks && sectionLinks.filter((link) => link.direction === "next").map((link) => LinkedSection(link))}
-        </Stack>
+        {(windowSize?.width ?? 1024) >= 1024 && (
+          <>
+            <Stack direction="column" className="absolute bottom-20 left-0 ">
+              {sectionLinks &&
+                sectionLinks.filter((link) => link.direction === "prev").map((link) => LinkedSection(link))}
+            </Stack>
+            <Stack direction="column" className="absolute bottom-20 right-0 ">
+              {sectionLinks &&
+                sectionLinks.filter((link) => link.direction === "next").map((link) => LinkedSection(link))}
+            </Stack>
+          </>
+        )}
         <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />
         <SearchDialog onClose={closeSearch} />
         <DeleteEventModal onClose={closeDeleteEvent} />
