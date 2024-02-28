@@ -35,7 +35,7 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
   const [sidebarOpen, setSidebarOpen] = useSidebarOpen(true)
 
   const sectionLinks: SectionLink[] = findLinks(material, theme, course, section, activeEvent)
-
+  console.log(sectionLinks)
   return (
     <RecoilRoot>
       <div className="container mx-auto">

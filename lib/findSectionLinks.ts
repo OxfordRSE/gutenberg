@@ -44,9 +44,6 @@ export const findLinks = (
   // check if this section is part of the active event
   let isInEvent = false
   let sectionLinks: SectionLink[] = []
-  // we stack the linked section components on top of each other
-  let leftOffset = 90
-  let rightOffset = 90
 
   if (activeEvent) {
     for (const group of activeEvent.EventGroup) {
@@ -68,7 +65,6 @@ export const findLinks = (
               linkedType: "event",
               direction: "prev",
               url: url,
-              offset: 0,
               section: sectionLink?.name,
               course: courseLink?.name,
               theme: themeLink?.name,
@@ -87,7 +83,6 @@ export const findLinks = (
               linkedType: "event",
               direction: "next",
               url: url,
-              offset: 0,
               section: sectionLink?.name,
               course: courseLink?.name,
               theme: themeLink?.name,
@@ -110,13 +105,11 @@ export const findLinks = (
       linkedType: courseLink?.id == course?.id ? "internal" : "external",
       direction: "prev",
       url: url,
-      offset: leftOffset,
       section: sectionLink?.name,
       course: courseLink?.name,
       theme: themeLink?.name,
       tags: sectionLink?.tags,
     } as SectionLink)
-    leftOffset += 90
   })
   if (section) {
     const parents = findChildren()
@@ -129,13 +122,11 @@ export const findLinks = (
           linkedType: courseLink?.id == course?.id ? "internal" : "external",
           direction: "next",
           url: url,
-          offset: rightOffset,
           section: sectionLink?.name,
           course: courseLink?.name,
           theme: themeLink?.name,
           tags: sectionLink?.tags,
         } as SectionLink)
-        rightOffset += 90
       }
     }
   }
