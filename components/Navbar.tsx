@@ -3,12 +3,14 @@ import { Course, Material, Section, Theme } from "lib/material"
 import { Event, EventFull } from "lib/types"
 import { signIn, signOut, useSession } from "next-auth/react"
 import Link from "next/link"
-import React from "react"
+import React, { useState, useRef, useEffect } from "react"
 import { RxGithubLogo } from "react-icons/rx"
 import { HiAtSymbol, HiCalendar, HiSearchCircle } from "react-icons/hi"
 import { searchQueryState } from "components/SearchDialog"
 import { useRecoilState } from "recoil"
 import { enableSearch } from "lib/search/enableSearch"
+import NavDiagramPopover from "./dialogs/navDiagramPop"
+import { use } from "chai"
 
 interface Props {
   material: Material
@@ -36,7 +38,14 @@ const Navbar: React.FC<Props> = ({
   repoUrl,
 }) => {
   const [showSearch, setShowSearch] = useRecoilState(searchQueryState)
+  const [showNavDiagram, setShowNavDiagram] = useState(false)
+  const [isPopoverHovered, setIsPopoverHovered] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
   const { data: session } = useSession()
+  const ref = useRef<HTMLLIElement>(null)
+  let enterTimer: NodeJS.Timeout
+  let leaveTimer: NodeJS.Timeout
+
   const openAttribution = () => {
     setShowAttribution(true)
   }
@@ -55,6 +64,42 @@ const Navbar: React.FC<Props> = ({
 
   const handleSignin = () => {
     signIn()
+  }
+
+  useEffect(() => {
+    if (isHovered || isPopoverHovered) {
+      enterTimer = setTimeout(() => {
+        setShowNavDiagram(true)
+      }, 500)
+    }
+
+    return () => {
+      clearTimeout(enterTimer)
+      clearTimeout(leaveTimer)
+      setShowNavDiagram(false)
+    }
+  }, [isHovered, isPopoverHovered])
+
+  const handleIsHovered = () => {
+    clearTimeout(leaveTimer)
+    setIsHovered(true)
+  }
+
+  const handleIsNotHovered = () => {
+    leaveTimer = setTimeout(() => {
+      setIsHovered(false)
+    }, 500)
+  }
+
+  const handlePopoverHovered = () => {
+    clearTimeout(leaveTimer)
+    setIsPopoverHovered(true)
+  }
+
+  const handlePopoverNotHovered = () => {
+    leaveTimer = setTimeout(() => {
+      setIsPopoverHovered(false)
+    }, 500)
   }
 
   return (
@@ -132,7 +177,7 @@ const Navbar: React.FC<Props> = ({
           </li>
         )}{" "}
         {theme && course && (
-          <li aria-current="page">
+          <li ref={ref} aria-current="page" onMouseEnter={handleIsHovered} onMouseLeave={handleIsNotHovered}>
             <div className="flex items-center">
               <svg
                 className="w-6 h-6 text-gray-400"
@@ -152,6 +197,13 @@ const Navbar: React.FC<Props> = ({
               >
                 {course.name}
               </Link>
+              {showNavDiagram && (
+                <NavDiagramPopover
+                  target={ref?.current || undefined}
+                  onMouseEnter={handlePopoverHovered}
+                  onMouseLeave={handlePopoverNotHovered}
+                />
+              )}
             </div>
           </li>
         )}{" "}
