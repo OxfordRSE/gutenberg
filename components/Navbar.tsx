@@ -1,5 +1,5 @@
 import { Avatar, Dropdown, Tooltip } from "flowbite-react"
-import { Course, Material, Section, Theme } from "lib/material"
+import { Course, Material, Section, Theme, getExcludes, Excludes } from "lib/material"
 import { Event, EventFull } from "lib/types"
 import { signIn, signOut, useSession } from "next-auth/react"
 import Link from "next/link"
@@ -10,7 +10,6 @@ import { searchQueryState } from "components/SearchDialog"
 import { useRecoilState } from "recoil"
 import { enableSearch } from "lib/search/enableSearch"
 import NavDiagramPopover from "./dialogs/navDiagramPop"
-import { use } from "chai"
 
 interface Props {
   material: Material
@@ -23,6 +22,7 @@ interface Props {
   sidebarOpen: boolean
   showAttribution: boolean
   repoUrl?: string
+  excludes?: Excludes
 }
 
 const Navbar: React.FC<Props> = ({
@@ -36,6 +36,7 @@ const Navbar: React.FC<Props> = ({
   sidebarOpen,
   showAttribution,
   repoUrl,
+  excludes,
 }) => {
   const [showSearch, setShowSearch] = useRecoilState(searchQueryState)
   const [showNavDiagram, setShowNavDiagram] = useState(false)
@@ -199,6 +200,9 @@ const Navbar: React.FC<Props> = ({
               </Link>
               {showNavDiagram && (
                 <NavDiagramPopover
+                  material={material}
+                  theme={theme}
+                  excludes={excludes}
                   target={ref?.current || undefined}
                   onMouseEnter={handlePopoverHovered}
                   onMouseLeave={handlePopoverNotHovered}

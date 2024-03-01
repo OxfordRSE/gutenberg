@@ -419,7 +419,10 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course, exclud
       : { aspectRatio: "16 / 9", width: "100%" }
   return (
     <div className="flex justify-center mb-5">
-      <div style={style} className="border border-gray-200 rounded-lg shadow-md dark:border-gray-700">
+      <div
+        style={style}
+        className="border border-gray-200 rounded-lg shadow-md dark:border-gray-700 bg-white dark:bg-gray-800"
+      >
         <ReactFlow
           nodes={nodes}
           edges={edges}
