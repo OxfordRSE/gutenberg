@@ -10,6 +10,7 @@ import { searchQueryState } from "components/SearchDialog"
 import { useRecoilState } from "recoil"
 import { enableSearch } from "lib/search/enableSearch"
 import NavDiagramPopover from "./dialogs/navDiagramPop"
+import ThemeCardsPopover from "./dialogs/themeCardPop"
 
 interface Props {
   material: Material
@@ -42,8 +43,11 @@ const Navbar: React.FC<Props> = ({
   const [showNavDiagram, setShowNavDiagram] = useState(false)
   const [isPopoverHovered, setIsPopoverHovered] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
+  const [itemHovered, setItemHovered] = useState("")
   const { data: session } = useSession()
-  const ref = useRef<HTMLLIElement>(null)
+  const ref1 = useRef<HTMLLIElement>(null)
+  const ref2 = useRef<HTMLLIElement>(null)
+  const ref3 = useRef<HTMLLIElement>(null)
   let enterTimer: NodeJS.Timeout
   let leaveTimer: NodeJS.Timeout
 
@@ -72,24 +76,24 @@ const Navbar: React.FC<Props> = ({
       enterTimer = setTimeout(() => {
         setShowNavDiagram(true)
       }, 500)
-    }
-
-    return () => {
-      clearTimeout(enterTimer)
-      clearTimeout(leaveTimer)
-      setShowNavDiagram(false)
+    } else {
+      leaveTimer = setTimeout(() => {
+        clearTimeout(enterTimer)
+        clearTimeout(leaveTimer)
+        setShowNavDiagram(false)
+      }, 500)
     }
   }, [isHovered, isPopoverHovered])
 
-  const handleIsHovered = () => {
+  const handleIsHovered = (hovered: string) => {
     clearTimeout(leaveTimer)
+    setItemHovered(hovered)
     setIsHovered(true)
   }
 
   const handleIsNotHovered = () => {
-    leaveTimer = setTimeout(() => {
-      setIsHovered(false)
-    }, 500)
+    clearTimeout(enterTimer)
+    setIsHovered(false)
   }
 
   const handlePopoverHovered = () => {
@@ -98,9 +102,8 @@ const Navbar: React.FC<Props> = ({
   }
 
   const handlePopoverNotHovered = () => {
-    leaveTimer = setTimeout(() => {
-      setIsPopoverHovered(false)
-    }, 500)
+    clearTimeout(enterTimer)
+    setIsPopoverHovered(false)
   }
 
   return (
@@ -130,7 +133,12 @@ const Navbar: React.FC<Props> = ({
           </Link>
         </li>
         {theme && (
-          <li>
+          <li
+            ref={ref1}
+            aria-current="page"
+            onMouseEnter={() => handleIsHovered("theme")}
+            onMouseLeave={handleIsNotHovered}
+          >
             <div className="flex items-center">
               <svg
                 className="w-6 h-6 text-gray-400"
@@ -139,6 +147,8 @@ const Navbar: React.FC<Props> = ({
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
+                  className={showNavDiagram && itemHovered === "theme" ? "expanded" : "collapsed"}
+                  style={{ transformOrigin: "50% 50%" }}
                   fill-rule="evenodd"
                   d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
                   clip-rule="evenodd"
@@ -150,11 +160,25 @@ const Navbar: React.FC<Props> = ({
               >
                 Material
               </Link>
+              {showNavDiagram && itemHovered === "theme" && (
+                <ThemeCardsPopover
+                  material={material}
+                  excludes={excludes}
+                  onMouseEnter={handlePopoverHovered}
+                  onMouseLeave={handlePopoverNotHovered}
+                  target={ref1?.current || undefined}
+                />
+              )}
             </div>
           </li>
         )}
         {theme && (
-          <li>
+          <li
+            ref={ref2}
+            aria-current="page"
+            onMouseEnter={() => handleIsHovered("course")}
+            onMouseLeave={handleIsNotHovered}
+          >
             <div className="flex items-center">
               <svg
                 className="w-6 h-6 text-gray-400"
@@ -163,6 +187,8 @@ const Navbar: React.FC<Props> = ({
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
+                  className={showNavDiagram && itemHovered === "course" ? "expanded" : "collapsed"}
+                  style={{ transformOrigin: "50% 50%" }}
                   fill-rule="evenodd"
                   d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
                   clip-rule="evenodd"
@@ -174,11 +200,26 @@ const Navbar: React.FC<Props> = ({
               >
                 {theme.name}
               </Link>
+              {showNavDiagram && itemHovered === "course" && (
+                <NavDiagramPopover
+                  material={material}
+                  theme={theme}
+                  excludes={excludes}
+                  target={ref2?.current || undefined}
+                  onMouseEnter={handlePopoverHovered}
+                  onMouseLeave={handlePopoverNotHovered}
+                />
+              )}
             </div>
           </li>
         )}{" "}
         {theme && course && (
-          <li ref={ref} aria-current="page" onMouseEnter={handleIsHovered} onMouseLeave={handleIsNotHovered}>
+          <li
+            ref={ref3}
+            aria-current="page"
+            onMouseEnter={() => handleIsHovered("section")}
+            onMouseLeave={handleIsNotHovered}
+          >
             <div className="flex items-center">
               <svg
                 className="w-6 h-6 text-gray-400"
@@ -187,6 +228,8 @@ const Navbar: React.FC<Props> = ({
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
+                  className={showNavDiagram && itemHovered === "section" ? "expanded" : "collapsed"}
+                  style={{ transformOrigin: "50% 50%" }}
                   fill-rule="evenodd"
                   d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
                   clip-rule="evenodd"
@@ -198,12 +241,13 @@ const Navbar: React.FC<Props> = ({
               >
                 {course.name}
               </Link>
-              {showNavDiagram && (
+              {showNavDiagram && itemHovered === "section" && (
                 <NavDiagramPopover
                   material={material}
                   theme={theme}
+                  course={course}
                   excludes={excludes}
-                  target={ref?.current || undefined}
+                  target={ref3?.current || undefined}
                   onMouseEnter={handlePopoverHovered}
                   onMouseLeave={handlePopoverNotHovered}
                 />

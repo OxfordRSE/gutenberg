@@ -46,3 +46,16 @@ ul:has(li.mdli) {
   list-style-type: disc !important;
   list-style-position: outside;
 }
+
+
+/* these css classes are used to style the chevron in the navbar when navdiagrams open */
+.collapsed {
+  /* Styles for chevron right */
+  transition: transform 0.3s ease;
+}
+
+.expanded {
+  /* Styles for chevron down */
+  transform: rotate(90deg);
+  transition: transform 0.3s ease;
+}

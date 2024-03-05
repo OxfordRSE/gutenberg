@@ -1,17 +1,7 @@
-import NavDiagram from "components/NavDiagram"
-import React, { useEffect, useState } from "react"
+import ThemeCards from "components/ThemeCards"
+import react, { useEffect, useState } from "react"
 import { createPortal } from "react-dom"
-import { Material, Theme, Course, Excludes } from "lib/material"
-
-interface Props {
-  material: Material
-  theme: Theme
-  course?: Course
-  excludes?: Excludes
-  target?: HTMLElement | null
-  onMouseEnter: () => void
-  onMouseLeave: () => void
-}
+import { Material, Excludes } from "lib/material"
 
 interface PortalProps {
   children: React.ReactNode
@@ -21,19 +11,28 @@ const Portal = ({ children }: PortalProps) => {
   return createPortal(children, document.body)
 }
 
-const NavDiagramPopover = ({ material, theme, course, excludes, target, onMouseEnter, onMouseLeave }: Props) => {
+interface Props {
+  material: Material
+  excludes?: Excludes
+  target?: HTMLElement | null
+  onMouseEnter: () => void
+  onMouseLeave: () => void
+}
+
+const ThemeCardsPopover = ({ material, excludes, target, onMouseEnter, onMouseLeave }: Props) => {
   const [style, setStyle] = useState({ top: 0, left: 0 })
   // delay the render ever so slightly to stop flickering
   useEffect(() => {
     const timeout = setTimeout(() => {
       // remove the hidden class from our div
-      const popover = document.querySelector("[data-cy=nav-diagram-popover]")
+      const popover = document.querySelector("[data-cy=theme-cards-popover]")
       if (popover) {
         popover.classList.remove("hidden")
       }
     }, 50)
     return () => clearTimeout(timeout)
   }, [])
+
   useEffect(() => {
     if (target) {
       const rect = target.getBoundingClientRect()
@@ -49,28 +48,21 @@ const NavDiagramPopover = ({ material, theme, course, excludes, target, onMouseE
   return (
     <Portal>
       <div
-        className="hidden"
-        data-cy="nav-diagram-popover"
+        className="hidden border border-gray-200 shadow-md dark:border-gray-700 bg-white dark:bg-gray-800"
+        data-cy="theme-cards-popover"
         style={{
           left: style.left,
           top: style.top,
           position: "absolute",
-          height: "512px",
-          width: "600px",
+          zIndex: 1000,
         }}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
-        <NavDiagram
-          material={material}
-          theme={theme}
-          course={course}
-          excludes={excludes}
-          style={{ aspectRatio: "12 / 9", width: "100%" }}
-        />
+        <ThemeCards material={material} excludes={excludes} includeSummary={false} />
       </div>
     </Portal>
   )
 }
 
-export default NavDiagramPopover
+export default ThemeCardsPopover
