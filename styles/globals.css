@@ -47,7 +47,6 @@ ul:has(li.mdli) {
   list-style-position: outside;
 }
 
-
 /* these css classes are used to style the chevron in the navbar when navdiagrams open */
 .collapsed {
   /* Styles for chevron right */
