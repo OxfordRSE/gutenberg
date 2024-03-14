@@ -1,12 +1,23 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
 import prisma from "lib/prisma"
-import { getMaterial, Course, Theme, Material, Section, remove_markdown, getRepoUrl } from "lib/material"
+import {
+  getMaterial,
+  Course,
+  Theme,
+  Material,
+  Section,
+  remove_markdown,
+  getRepoUrl,
+  getExcludes,
+  Excludes,
+} from "lib/material"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
 import Content from "components/content/Content"
 import Title from "components/ui/Title"
 import { Event } from "lib/types"
 import { PageTemplate, pageTemplate } from "lib/pageTemplate"
+import excludeVariablesFromRoot from "@mui/material/styles/excludeVariablesFromRoot"
 
 type SectionComponentProps = {
   theme: Theme
@@ -16,6 +27,7 @@ type SectionComponentProps = {
   events: Event[]
   pageInfo?: PageTemplate
   repoUrl?: string
+  excludes?: Excludes
 }
 
 const SectionComponent: NextPage<SectionComponentProps> = ({
@@ -26,9 +38,18 @@ const SectionComponent: NextPage<SectionComponentProps> = ({
   material,
   pageInfo,
   repoUrl,
+  excludes,
 }: SectionComponentProps) => {
   return (
-    <Layout theme={theme} course={course} section={section} material={material} pageInfo={pageInfo} repoUrl={repoUrl}>
+    <Layout
+      theme={theme}
+      course={course}
+      section={section}
+      material={material}
+      pageInfo={pageInfo}
+      repoUrl={repoUrl}
+      excludes={excludes}
+    >
       <Title text={section.name} />
       <Content markdown={section.markdown} theme={theme} course={course} section={section} />
     </Layout>
@@ -61,6 +82,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async (context) => {
   const pageInfo = pageTemplate
   const repoId = context?.params?.repoId
+  const excludes = getExcludes(repoId as string)
   const repoUrl = getRepoUrl(repoId as string)
   const events = await prisma.event
     .findMany({
@@ -95,7 +117,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     return { notFound: true }
   }
   remove_markdown(material, section)
-  return { props: makeSerializable({ theme, course, section, events, material, pageInfo, repoUrl }) }
+  return { props: makeSerializable({ theme, course, section, events, material, pageInfo, repoUrl, excludes }) }
 }
 
 export default SectionComponent

@@ -6,7 +6,7 @@ import { useState } from "react"
 import React, { ReactNode } from "react"
 import Footer from "./Footer"
 import Header from "./Header"
-import { Material } from "lib/material"
+import { Material, Excludes } from "lib/material"
 import Overlay from "./Overlay"
 import Navbar from "./Navbar"
 import { useSidebarOpen } from "lib/hooks/useSidebarOpen"
@@ -22,9 +22,10 @@ type Props = {
   children: ReactNode
   pageInfo?: PageTemplate
   repoUrl?: string
+  excludes?: Excludes
 }
 
-const Layout: React.FC<Props> = ({ material, theme, course, section, children, pageInfo, repoUrl }) => {
+const Layout: React.FC<Props> = ({ material, theme, course, section, children, pageInfo, repoUrl, excludes }) => {
   const [activeEvent, setActiveEvent] = useActiveEvent()
   const router = useRouter()
   const { data: session } = useSession()
@@ -76,6 +77,7 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
             showAttribution={showAttribution}
             setShowAttribution={setShowAttribution}
             repoUrl={repoUrl}
+            excludes={excludes}
           />
           <Overlay
             material={material}
