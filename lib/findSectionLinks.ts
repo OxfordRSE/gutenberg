@@ -26,7 +26,6 @@ export const findLinks = (
             c.sections.map((sec) => {
               sec.dependsOn.map((dep) => {
                 if (dep == pageLabelShort) {
-                  console.log(sec)
                   children.push([th.repo, th.id, c.id, sec.id].join("."))
                 }
               })
@@ -38,7 +37,6 @@ export const findLinks = (
     if (children.length == 0) {
       return undefined
     }
-    console.log("parents", children)
     return children
   }
   // check if this section is part of the active event
