@@ -9,6 +9,7 @@ interface Props {
 }
 
 const ThemeCards = ({ material, excludes, includeSummary = true }: Props) => {
+  const numberCols = includeSummary ? 2 : 1
   const textSize = includeSummary ? "text-2xl" : "text-md"
   const themeCards = material?.themes
     .filter((theme) => !excludes || !excludes.themes.includes(theme.id))
@@ -19,7 +20,7 @@ const ThemeCards = ({ material, excludes, includeSummary = true }: Props) => {
       </Card>
     ))
 
-  return <div className="px-2 mt-2 mb-2 grid grid-cols-1 gap-4 items-start">{themeCards}</div>
+  return <div className={`px-2 mt-2 mb-2 grid grid-cols-${numberCols} gap-4`}>{themeCards}</div>
 }
 
 export default ThemeCards
