@@ -1,9 +1,8 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
 import prisma from "lib/prisma"
-import { getMaterial, Course, Theme, Material, remove_markdown } from "lib/material"
+import { getMaterial, Course, Theme, Material, removeMarkdown } from "lib/material"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
-import { remove } from "cypress/types/lodash"
 import Content from "components/content/Content"
 import NavDiagram from "components/NavDiagram"
 import Title from "components/ui/Title"
@@ -76,7 +75,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   if (!course) {
     return { notFound: true }
   }
-  remove_markdown(material, course)
+  removeMarkdown(material, course)
   return { props: makeSerializable({ theme, course, material, events, pageInfo }) }
 }
 

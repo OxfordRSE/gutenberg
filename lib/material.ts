@@ -60,6 +60,9 @@ export type Material = {
   markdown: string
   themes: Theme[]
   type: string
+  themeNames?: {}
+  courseNames?: {}
+  sectionNames?: {}
 }
 
 export const sectionSplit = (
@@ -105,7 +108,7 @@ export const eventItemSplit = (
   return sectionSplit(eventItem.section, material)
 }
 
-export function remove_markdown(material: Material, except: Material | Theme | Course | Section | undefined) {
+export function removeMarkdown(material: Material, except: Material | Theme | Course | Section | undefined) {
   if (except === undefined || except.type !== "Material") {
     material.markdown = ""
   }

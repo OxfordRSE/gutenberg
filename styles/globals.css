@@ -47,6 +47,18 @@ ul:has(li.mdli) {
   list-style-position: outside;
 }
 
+:root {
+  --icon-stroke-width: 1px;
+}
+
+.parent-hovered {
+  --icon-stroke-width: 2px;
+}
+
+.nav-chevron {
+  stroke-width: var(--icon-stroke-width);
+}
+
 /* these css classes are used to style the chevron in the navbar when navdiagrams open */
 .collapsed {
   /* Styles for chevron right */

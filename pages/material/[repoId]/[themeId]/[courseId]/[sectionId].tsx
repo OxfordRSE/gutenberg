@@ -6,7 +6,7 @@ import {
   Theme,
   Material,
   Section,
-  remove_markdown,
+  removeMarkdown,
   getRepoUrl,
   getExcludes,
   Excludes,
@@ -116,8 +116,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
   if (!section) {
     return { notFound: true }
   }
-  remove_markdown(material, section)
-  return { props: makeSerializable({ theme, course, section, events, material, pageInfo, repoUrl, excludes }) }
+  removeMarkdown(material, section)
+  return { props: makeSerializable({ theme, course, section, events, material, pageInfo, repoUrl }) }
 }
 
 export default SectionComponent
