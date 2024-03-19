@@ -50,7 +50,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
   if (!themeId || Array.isArray(themeId)) {
     return { notFound: true }
   }
-  console.log(process.env.NEXT_PUBLIC_EXCLUDE_THEMES)
   const excludes = getExcludes(repoId as string)
   const theme = material.themes.find((t) => t.id === themeId && t.repo === repoId)
   if (!theme) {

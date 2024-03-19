@@ -355,11 +355,12 @@ interface NavDiagramProps {
   theme?: Theme
   course?: Course
   excludes?: Excludes
+  style?: React.CSSProperties
 }
 
 const blankExcludes: Excludes = { themes: [], courses: [], sections: [] }
 
-const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course, excludes }) => {
+const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course, excludes, style }) => {
   const defaultNodes: Node[] = []
   const [nodes, setNodes] = useState(defaultNodes)
   const onNodesChange = useCallback((changes: NodeChange[]) => {
@@ -412,14 +413,19 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course, exclud
   if (!nodes) {
     return <div>Generating diagram...</div>
   }
-  const style = course
-    ? { aspectRatio: "12 / 9", width: "50%" }
-    : theme
-      ? { aspectRatio: "14 / 9", width: "70%" }
-      : { aspectRatio: "16 / 9", width: "100%" }
+  if (!style) {
+    style = course
+      ? { aspectRatio: "12 / 9", width: "50%" }
+      : theme
+        ? { aspectRatio: "14 / 9", width: "70%" }
+        : { aspectRatio: "16 / 9", width: "100%" }
+  }
   return (
     <div className="flex justify-center mb-5">
-      <div style={style} className="border border-gray-200 rounded-lg shadow-md dark:border-gray-700">
+      <div
+        style={style}
+        className="border border-gray-200 rounded-lg shadow-md dark:border-gray-700 bg-white dark:bg-gray-800"
+      >
         <ReactFlow
           nodes={nodes}
           edges={edges}
