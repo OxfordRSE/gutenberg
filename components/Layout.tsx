@@ -15,6 +15,7 @@ import { RecoilRoot } from "recoil"
 import { PageTemplate } from "lib/pageTemplate"
 import { SectionLink } from "./ui/LinkedSection"
 import { findLinks } from "lib/findSectionLinks"
+import PlausibleProvider from "next-plausible"
 
 type Props = {
   material: Material
@@ -34,7 +35,6 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
 
   const [showAttribution, setShowAttribution] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useSidebarOpen(true)
-
   const sectionLinks: SectionLink[] = findLinks(material, theme, course, section, activeEvent)
   return (
     <RecoilRoot>
@@ -66,7 +66,14 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
             setShowAttribution={setShowAttribution}
             sectionLinks={sectionLinks}
           />
-          {children}
+          <PlausibleProvider
+            domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN ?? ""}
+            enabled={true}
+            trackLocalhost={true}
+            trackOutboundLinks={true}
+          >
+            <div data-testid="plausible-provider">{children}</div>
+          </PlausibleProvider>
         </main>
         <Footer pageInfo={pageInfo} />
       </div>
