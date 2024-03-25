@@ -33,8 +33,6 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
   const router = useRouter()
   const { data: session } = useSession()
 
-  console.log("plausible_debug", process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN)
-
   const [showAttribution, setShowAttribution] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useSidebarOpen(true)
   const sectionLinks: SectionLink[] = findLinks(material, theme, course, section, activeEvent)
@@ -69,8 +67,9 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
             sectionLinks={sectionLinks}
           />
           <PlausibleProvider
-            domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN ?? ""}
+            domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
             enabled={true}
+            trackLocalhost={true}
             trackOutboundLinks={true}
           >
             <div data-testid="plausible-provider">{children}</div>
