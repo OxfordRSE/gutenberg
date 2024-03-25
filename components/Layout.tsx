@@ -69,7 +69,6 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
           <PlausibleProvider
             domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN ?? ""}
             enabled={true}
-            trackLocalhost={true}
             trackOutboundLinks={true}
           >
             <div data-testid="plausible-provider">{children}</div>
