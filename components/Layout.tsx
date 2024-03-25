@@ -67,7 +67,7 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
             sectionLinks={sectionLinks}
           />
           <PlausibleProvider
-            domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
+            domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN ?? ""}
             enabled={true}
             trackLocalhost={true}
             trackOutboundLinks={true}
