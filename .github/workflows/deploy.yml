@@ -24,6 +24,9 @@ jobs:
         shell: bash
         run: yarn pullmat
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy --remote-only --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }} --wait-timeout 240
+      - run: flyctl deploy --remote-only
+          --build-arg DATABASE_URL=${{secrets.DATABASE_URL}}
+          --build-arg NEXT_PUBLIC_PLAUSIBLE_DOMAIN=${{secrets.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}}
+          --wait-timeout 240
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
