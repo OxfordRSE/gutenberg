@@ -113,7 +113,7 @@ jobs:
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy -a gutenberg-staging --remote-only
           --build-arg DATABASE_URL=${{secrets.DATABASE_URL_TEST}}
-          --build-arg NEXT_PUBLIC_PLAUSIBLE_DOMAIN=${{secrets.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}}
+          --build-arg NEXT_PUBLIC_PLAUSIBLE_DOMAIN=${{secrets.NEXT_PUBLIC_PLAUSIBLE_DOMAIN_TEST}}
           --wait-timeout 240
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
