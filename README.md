@@ -42,6 +42,15 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Developing material
+
+You can develop material by editing the `.material` folder.
+Changes will be instantly reflected in the browser if you are running the development server.
+
+All of the content is standard markdown, with the addition of special callouts you can use to present exercises, etc. in a consistent manner.
+
+When you're happy with your changes, you can issue a pull request for your changes to the repository you originally cloned in [Getting Started](#getting-started).
+
 ## Prisma Studio
 
 Prisma Studio is a GUI for viewing and editing the database. It can be started with:
