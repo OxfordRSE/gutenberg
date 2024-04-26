@@ -6,9 +6,9 @@ type Props = {
 
 const Header: React.FC<Props> = (props) => {
   return (
-    <p className="text-center text-2xl font-bold mb-4" data-cy="title">
+    <h1 className="text-center text-2xl font-bold mb-4" data-cy="title">
       {props.text}
-    </p>
+    </h1>
   )
 }
 
