@@ -282,5 +282,19 @@ export async function getSection(
   const regex =
     /:{3,}challenge\s*{\s*(?:id\s*=\s*"?([^"\s]+)"?\s*title\s*=\s*"[^"]+"|title\s*=\s*"[^"]+"\s*id\s*=\s*"?([^"\s]+)"?)\s*}/g
   const problems = Array.from(markdown.matchAll(regex)).map((match) => match[1] || match[2])
-  return { id, file, theme, course, name, markdown, index, type, tags, dependsOn, attribution, learningOutcomes, problems }
+  return {
+    id,
+    file,
+    theme,
+    course,
+    name,
+    markdown,
+    index,
+    type,
+    tags,
+    dependsOn,
+    attribution,
+    learningOutcomes,
+    problems,
+  }
 }
