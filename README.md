@@ -9,6 +9,7 @@ To get a development environment running, follow the instructions below:
 ## Getting started
 
 Setting up a local development requires the following software:
+
 - `git` version 2.43.0 or later - install according to instructions for your system
 - `npm` version `9.2.0` or later - install according to instructions for your system
 - `node` version v18.19.1 or later - packaged with `npm`
@@ -24,17 +25,17 @@ Enter the directory with `cd gutenberg`.
 
 ### 2. Enable `corepack`
 
-Install `corepack` if necessary with `npm install -g corepack`. 
+Install `corepack` if necessary with `npm install -g corepack`.
 
 Enable `corepack` with `corepack enable`.
 
 ### 3. Install dependencies
 
-Run `yarn --version` to check the version of your yarn package manager. 
+Run `yarn --version` to check the version of your yarn package manager.
 `corepack` will prompt you to install it if you don't have it already.
 
 With `yarn` installed you can run `yarn install` to install dependencies listed in `package.json`.
-The specific versions of packages we use are frozen in `yarn.lock`, 
+The specific versions of packages we use are frozen in `yarn.lock`,
 so you'll be guaranteed to have working versions of each dependency.
 
 ### 4. Pull the material from any target repositories
@@ -44,14 +45,14 @@ This means you need to copy some source material before you have anything to dis
 
 The HPC materials are already listed as a source via the `NEXT_PUBLIC_MATERIAL_URL` variable in the `.env` file.
 
-To download those materials, so we have something to work with, run `yarn pullmat` and they will be cloned into 
+To download those materials, so we have something to work with, run `yarn pullmat` and they will be cloned into
 a local `.materials` directory.
 
 ### 5. (Setting up a postgres database)
 
 **If you just want to develop materials and preview their rendering, skip this step.**
 
-If you want to change the *rendering system itself*, you'll need a database.
+If you want to change the _rendering system itself_, you'll need a database.
 The database is required for the interactive parts of the site - tracking users' behaviour etc.
 
 The connection string for the database is listed in `.env`.
@@ -59,13 +60,14 @@ It wants a postgres service listening on `localhost:5432` (the default port),
 that will accept connections from `postgres:password`.
 
 One way to do this fairly simply is using `docker`.
+
 ```shell
 docker run -d -e POSTGRES_PASSWORD=password -p 5432:5432 postgres
 ```
 
 If you're already in a docker container, you can install postgres directly with
 `apt install postgresql` and then run it with `service postgresql start`.
-You'll also need to do a couple more steps to enable serving over `localhost:5432` 
+You'll also need to do a couple more steps to enable serving over `localhost:5432`
 and connecting with `postgres:password` as the username:password.
 Those steps can be found [on the Ubuntu support pages](https://ubuntu.com/server/docs/install-and-configure-postgresql).
 If that's all too hard, you can install `docker` within a container using `apt install docker`
@@ -79,8 +81,8 @@ With the database available, we then need to create the various tables etc. that
 
 The local development server can be started with `yarn dev`.
 
-When the `next` server is ready, it will print out its URL. 
-This will probably be `http://localhost:3000`. 
+When the `next` server is ready, it will print out its URL.
+This will probably be `http://localhost:3000`.
 
 Visit that URL in your browser to see your local instance deployed.
 The development server watches your files, and refreshes when it sees changes.
@@ -99,8 +101,8 @@ When you're happy with your changes, you can issue a pull request for your chang
 
 ## Developing the renderer
 
-The renderer code is written in TypeScript, and consists of a React frontend and NextJS backend, 
-both located within this repository. 
+The renderer code is written in TypeScript, and consists of a React frontend and NextJS backend,
+both located within this repository.
 
 The backend's interaction with the database is performed using `prisma`.
 
