@@ -17,12 +17,15 @@ jobs:
       - name: Enable corepack
         shell: bash
         run: corepack enable
-      - name: install packages
-        shell: bash
-        run: yarn install
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - name: Checkout course material
         shell: bash
-        run: yarn pullmat
+        run: |
+          pip install --upgrade pip setuptools wheel
+          pip install -r scripts/python_requirements.txt
+          python scripts/pull_material.py
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy --remote-only
           --build-arg DATABASE_URL=${{secrets.DATABASE_URL}}
