@@ -1,4 +1,4 @@
-import { Avatar, Dropdown, Tooltip } from "flowbite-react"
+import { Avatar, Button, Dropdown, Tooltip } from "flowbite-react"
 import { Course, Material, Section, Theme, getExcludes, Excludes } from "lib/material"
 import { Event, EventFull } from "lib/types"
 import { signIn, signOut, useSession } from "next-auth/react"
@@ -283,25 +283,39 @@ const Navbar: React.FC<Props> = ({
             className="inline-flex text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
           >
             <Tooltip content="Edit Source">
-              <RxGithubLogo className="m-0 pointer-events-auto cursor-pointer w-8 h-8 text-gray-500 hover:text-gray-400" />
+              <RxGithubLogo
+                role="img"
+                aria-label="Edit Source"
+                className="m-0 pointer-events-auto cursor-pointer w-8 h-8 text-gray-500 hover:text-gray-400"
+              />
             </Tooltip>
           </Link>
         )}
         {enableSearch && (
           <Tooltip content="Search Material">
-            <HiSearchCircle
+            <button
+              aria-label="Search Material"
               onClick={openSearch}
-              style={{ verticalAlign: "bottom'" }}
-              className="pointer-events-auto cursor-pointer w-10 h-10 text-gray-500 hover:text-gray-400"
-            />
+              style={{
+                appearance: "none",
+                display: "flex",
+              }}
+            >
+              <HiSearchCircle
+                style={{ verticalAlign: "bottom'" }}
+                className="pointer-events-auto cursor-pointer w-10 h-10 text-gray-500 hover:text-gray-400"
+              />
+            </button>
           </Tooltip>
         )}
 
         <Dropdown
           label={
-            <div className="inline-flex items-center text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white w-10 h-10">
+            <span className="inline-flex items-center text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white w-10 h-10">
               {session ? (
                 <Avatar
+                  role="img"
+                  aria-label={session.user?.name || "Account details"}
                   img={session.user?.image ? session.user?.image : undefined}
                   className="w-8 h-8"
                   size="sm"
@@ -309,9 +323,16 @@ const Navbar: React.FC<Props> = ({
                   data-cy={`avatar-${session.user?.email}`}
                 />
               ) : (
-                <Avatar className="w-8 h-8" size="sm" rounded={true} data-cy={`avatar-not-signed-in`} />
+                <Avatar
+                  role="img"
+                  aria-label="Sign in"
+                  className="w-8 h-8"
+                  size="sm"
+                  rounded={true}
+                  data-cy={`avatar-not-signed-in`}
+                />
               )}
-            </div>
+            </span>
           }
           arrowIcon={false}
           inline={true}
