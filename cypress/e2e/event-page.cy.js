@@ -18,6 +18,10 @@ describe("event page admin", () => {
     cy.visit("/event/1")
   })
 
+  it("has page language", () => {
+    cy.get('html[lang="en-GB"]').should("exist")
+  })
+
   it("has title", () => {
     cy.contains('[data-cy="title"]', "Introduction to C++").should("be.visible")
   })

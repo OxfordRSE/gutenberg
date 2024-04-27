@@ -7,6 +7,10 @@ describe("landing page", () => {
     cy.contains("Course Events").should("be.visible")
   })
 
+  it("has page language", () => {
+    cy.get('html[lang="en-GB"]').should("exist")
+  })
+
   it("Create event button does not exist", () => {
     cy.contains("Create new Event").should("not.exist")
   })
