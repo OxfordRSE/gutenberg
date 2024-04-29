@@ -17,7 +17,7 @@ import Content from "components/content/Content"
 import Title from "components/ui/Title"
 import { Event } from "lib/types"
 import { PageTemplate, pageTemplate } from "lib/pageTemplate"
-import LearningOutcomes from "../../../../../components/content/LearningOutcomes"
+import LearningOutcomes from "components/content/LearningOutcomes"
 
 type SectionComponentProps = {
   theme: Theme
