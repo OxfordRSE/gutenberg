@@ -1,4 +1,18 @@
+# Gutenberg
+
 [![Build and Test](https://github.com/OxfordRSE/gutenberg/actions/workflows/test.yml/badge.svg)](https://github.com/OxfordRSE/gutenberg/actions/workflows/test.yml)
+
+Gutenberg is an open source research and teaching platform developed by the Oxford Research Software Engineering Group (OxRSE) at the University of Oxford as part of the [UNIVERSE-HPC project](https://www.universe-hpc.ac.uk/).
+
+It provides an environment for hosting training materials in a structured, pathway-based style, offering a visual interface for browsing the various sections of training content and viewing them.
+
+A course management interface allows trainers to create a course syllabus based on materials set up within the system and then to make this available to students. Details of modules completed and results of exercises and challenges within the training material are collated and made available to course leaders to enable them to keep track of student progress.
+
+You can deploy your own instance of the Gutenberg platform locally. Training material is stored in separate GitHub repositories that can be linked to a Gutenberg deployment. A set of open research computing training material that has been collated and updated to fit into the Gutenberg structure is configured within the system by default but you can develop and add your own material to the system.
+
+A hosted deployment of Gutenberg is available at [https://train.oxrse.uk/](https://train.oxrse.uk/).
+
+## Application Overview
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
