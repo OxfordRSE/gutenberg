@@ -40,7 +40,7 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
     <RecoilRoot>
       <div className="container mx-auto">
         <Header theme={theme} course={course} pageInfo={pageInfo} />
-        <main>
+        <header>
           <Navbar
             material={material}
             theme={theme}
@@ -54,6 +54,8 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
             repoUrl={repoUrl}
             excludes={excludes}
           />
+        </header>
+        <main>
           <Overlay
             material={material}
             course={course}
