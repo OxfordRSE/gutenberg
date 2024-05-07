@@ -54,6 +54,7 @@ describe("EventCommentThreads component", () => {
                   file: "",
                   index: 0,
                   tags: [],
+                  learningOutcomes: ["LO 1", "LO 2"],
                 },
               ],
             },

@@ -31,6 +31,7 @@ export type Section = {
   type: string
   attribution: Attribution[]
   problems: string[]
+  learningOutcomes: string[]
 }
 
 export type Course = {
@@ -274,10 +275,26 @@ export async function getSection(
   const name = (sectionObject.attributes.name as string) || humanize(file)
   // @ts-expect-error
   const attribution = (sectionObject.attributes.attribution as Attribution[]) || []
+  // @ts-expect-error
+  const learningOutcomes = (sectionObject.attributes.learningOutcomes as string[]) || []
   const markdown = no_markdown ? "" : (sectionObject.body as string)
   const type = "Section"
   const regex =
     /:{3,}challenge\s*{\s*(?:id\s*=\s*"?([^"\s]+)"?\s*title\s*=\s*"[^"]+"|title\s*=\s*"[^"]+"\s*id\s*=\s*"?([^"\s]+)"?)\s*}/g
   const problems = Array.from(markdown.matchAll(regex)).map((match) => match[1] || match[2])
-  return { id, file, theme, course, name, markdown, index, type, tags, dependsOn, attribution, problems }
+  return {
+    id,
+    file,
+    theme,
+    course,
+    name,
+    markdown,
+    index,
+    type,
+    tags,
+    dependsOn,
+    attribution,
+    learningOutcomes,
+    problems,
+  }
 }

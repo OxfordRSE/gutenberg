@@ -99,6 +99,7 @@ describe("Paragraph", () => {
         license: "test",
       },
     ],
+    learningOutcomes: ["LO 1", "LO 2"],
     problems: ["problem1"],
   }
   const currentUser: User = {
