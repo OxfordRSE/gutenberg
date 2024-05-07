@@ -1,10 +1,11 @@
 import React, { useRef, useState } from "react"
 
 interface SolutionProps {
+  id: string
   content: React.ReactNode
 }
 
-const Solution: React.FC<SolutionProps> = ({ content }) => {
+const Solution: React.FC<SolutionProps> = ({ id, content }) => {
   const [active, setActive] = useState(false)
   const [height, setHeight] = useState("0px")
   const [rotate, setRotate] = useState("transform duration-700 ease")
@@ -26,10 +27,15 @@ const Solution: React.FC<SolutionProps> = ({ content }) => {
   }
 
   const title = "Solution"
+  const headingId = `${id}-heading`
+  const panelId = `${id}-panel`
 
   return (
     <div className="pt-1 flex flex-col">
       <button
+        id={headingId}
+        aria-expanded={active ? "true" : "false"}
+        aria-controls={panelId}
         className="rounded bg-slate-200 dark:bg-slate-700 font-bold appearance-none cursor-pointer flex items-center justify-between"
         onClick={toggleAccordion}
       >
@@ -49,7 +55,11 @@ const Solution: React.FC<SolutionProps> = ({ content }) => {
         </svg>
       </button>
       <div
+        id={panelId}
         ref={contentSpace}
+        role="region"
+        aria-labelledby={headingId}
+        aria-hidden={active ? "false" : "true"}
         style={{ maxHeight: `${height}` }}
         className="overflow-hidden transition-max-height duration-700 ease-in-out"
       >
