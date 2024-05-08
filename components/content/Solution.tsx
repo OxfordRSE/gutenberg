@@ -30,7 +30,7 @@ const Solution: React.FC<SolutionProps> = ({ content }) => {
   return (
     <div className="pt-1 flex flex-col">
       <button
-        className="rounded bg-slate-200 dark:bg-slate-700 font-bold appearance-none cursor-pointer focus:outline-none flex items-center justify-between"
+        className="rounded bg-slate-200 dark:bg-slate-700 font-bold appearance-none cursor-pointer flex items-center justify-between"
         onClick={toggleAccordion}
       >
         <p className="px-4 my-2">{title}</p>
