@@ -1,4 +1,5 @@
 import { Course, Section, Theme } from "lib/material"
+import Link from "next/link"
 
 import { useRouter } from "next/router"
 import { useSession } from "next-auth/react"
@@ -39,6 +40,9 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
   return (
     <RecoilRoot>
       <div className="container mx-auto">
+        <Link href="#main" className="sr-only focus:not-sr-only">
+          Skip to main content
+        </Link>
         <Header theme={theme} course={course} pageInfo={pageInfo} />
         <header>
           <Navbar
@@ -55,7 +59,7 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
             excludes={excludes}
           />
         </header>
-        <main>
+        <main id="main">
           <Overlay
             material={material}
             course={course}
