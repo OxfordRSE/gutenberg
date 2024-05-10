@@ -15,15 +15,6 @@ services:
       POSTGRES_USER: postgres
     ports:
       - "5432:5432"
-
-  # py-matpull:
-  #   image: python-matpull
-  #   build: 
-  #     context: scripts/.
-  #     dockerfile: Dockerfile
-  #     args:
-  #       MATERIAL_METHOD: "placeholder"
-  #   <<: *args
     
   gutenberg:
     image: gutenberg
@@ -31,10 +22,6 @@ services:
       context: .
       dockerfile: Dockerfile
       args: 
-        # Here we use the magical 'host.docker.internal' to connect to the host 
-        # the db container is running on (i.e. the developer's machine in a dev 
-        # environment). Will work if port 5432 is exposed on the db service.
-        # DATABASE_URL: postgresql://postgres:super-secret-password@host.docker.internal:5432
         MATERIAL_METHOD: "pull"
         MATERIAL_DIR: ".material"
         YAML_TEMPLATE: "config/oxford.yaml"
@@ -46,10 +33,5 @@ services:
     depends_on:
       db:
         condition: service_started
-      # py-matpull:
-      #   condition: service_completed_successfully
     environment:
       DATABASE_URL: postgresql://postgres:super-secret-password@db:5432
-
-# volumes:
-#   - ./.material:/app/.material
