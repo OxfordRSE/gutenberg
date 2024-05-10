@@ -3,7 +3,7 @@ version: '3.9'
 
 x-vol-args: &args
   volumes: 
-    - ./.material-bk:/app/.material
+    - ./.material:/app/.material
 
 services:
   db:
