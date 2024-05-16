@@ -1,3 +1,3 @@
 #!/bin/bash
 export CACHE_BUST=$(date +%s)
-docker-compose -f dev-compose.yml up --build
+docker-compose -f docker-compose.yml up --build
