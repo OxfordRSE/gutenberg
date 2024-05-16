@@ -5,6 +5,7 @@ ARG MATERIAL_METHOD=copy
 
 # Define the Python version to use
 ARG PYTHON_VERSION=3.12.3-slim
+ARG NODE_VERSION=20.9-alpine
 
 ####
 # MATERIAL OPTION: PULL
@@ -15,25 +16,30 @@ FROM python:${PYTHON_VERSION} AS pull_material
 # Variables for the material pull script
 ARG YAML_TEMPLATE=config/oxford.yaml
 ARG MATERIAL_DIR=.material
+ARG CACHE_BUST=20240514
 
 # Copy the scripts and config files into the container
 ONBUILD WORKDIR /app
 ONBUILD COPY ../scripts/ /app/scripts/
 ONBUILD COPY ../config/ /app/config/
 
-# Install dependencies and pull the material into the container with git
+# Install dependencies and clean caches afterwards 
 ONBUILD RUN \
     apt-get update && \
     apt-get install -y git && \
     apt-get clean && \
     pip install --upgrade pip setuptools wheel && \
-    pip install -r scripts/python_requirements.txt && \
+    pip install -r scripts/python_requirements.txt && \ 
+    pip cache purge
+# pull the material into the container with git
+ONBUILD RUN \
+    echo ${CACHE_BUST} && \
     python scripts/pull_material.py
 
 ####
 # MATERIAL OPTION: COPY
 # Copy existing course material into this container for the build
-FROM python:${PYTHON_VERSION} AS copy_material
+FROM node:${NODE_VERSION} AS copy_material
 
 ARG MATERIAL_DIR=.material
 # Material dir may not exist yet, so we pass COPY a file which we know will be 
@@ -45,7 +51,7 @@ ONBUILD COPY ../entrypoint.sh ../${MATERIAL_DIR}* /app/${MATERIAL_DIR}/
 ####
 # MATERIAL OPTION: PLACEHOLDER
 # Make a placeholder directory for the material so we can mount over it later on
-FROM python:${PYTHON_VERSION} AS placeholder_material
+FROM node:${NODE_VERSION} AS placeholder_material
 
 ARG MATERIAL_DIR=.material
 ONBUILD RUN \
@@ -62,7 +68,7 @@ FROM ${MATERIAL_METHOD}_material as material
 # Build the app with yarn or npm
 
 # Install dependencies only when needed
-FROM node:20.9-alpine AS builder
+FROM node:${NODE_VERSION} AS builder
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
 WORKDIR /app

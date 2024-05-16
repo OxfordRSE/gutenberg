@@ -1,4 +1,3 @@
-# Use postgres/example user/password credentials
 version: '3.9'
 
 x-vol-args: &args
@@ -22,6 +21,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args: 
+        CACHE_BUST: ${CACHE_BUST}
         MATERIAL_METHOD: "pull"
         MATERIAL_DIR: ".material"
         YAML_TEMPLATE: "config/oxford.yaml"
