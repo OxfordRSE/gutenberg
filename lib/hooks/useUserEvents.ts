@@ -1,7 +1,5 @@
 import useSWR, { Fetcher, KeyedMutator } from "swr"
 import { Data } from "pages/api/user/userEvents"
-import { UserOnEvent } from "@prisma/client"
-import { event } from "cypress/types/jquery"
 
 interface UserEventFetcherParams {
   url: string
@@ -31,7 +29,6 @@ const useUserEvents = (
   )
 
   const errorString = error ? error : data && "error" in data ? data.error : undefined
-  console.log("data", data)
   return { data, error: errorString, isLoading, mutate }
 }
 

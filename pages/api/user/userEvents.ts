@@ -53,18 +53,24 @@ const commentHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) =
             prisma.event
               .findUnique({
                 where: { id: event.eventId },
+                include: { EventGroup: { include: { EventItem: true } } },
               })
               .then((e) => {
                 if (e) {
                   userEvents.push(e)
                 }
               })
+              .then(() => {
+                prisma.problem
+                  .findMany({
+                    where: { userEmail: reqEmail },
+                  })
+                  .then((problems) => {
+                    res.status(200).json({ userEvents, problems })
+                  })
+              })
           }
         })
-      const problems = await prisma.problem.findMany({
-        where: { userEmail: reqEmail },
-      })
-      res.status(200).json({ userEvents, problems })
     }
   } else {
     res.status(405).json({ error: "Method not allowed" })

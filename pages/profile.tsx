@@ -1,15 +1,14 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
-import prisma from "lib/prisma"
 import { getMaterial, Material, removeMarkdown } from "lib/material"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
 import { useSession } from "next-auth/react"
 import { Problem } from "@prisma/client"
-
+import { EventFull as Event } from "lib/types"
+import UserEventProblems from "components/UserEventProblems"
 import useProfile from "lib/hooks/useProfile"
 import useUserEvents from "lib/hooks/useUserEvents"
 import { PageTemplate } from "lib/pageTemplate"
-import { useProblems } from "lib/hooks/useProblems"
 
 type EventProps = {
   material: Material
@@ -20,21 +19,18 @@ type EventProps = {
 const Profile: NextPage<EventProps> = ({ material }) => {
   const { data: session } = useSession()
   const { userProfile, error: profileError, isLoading: profileLoading } = useProfile()
-  const isAdmin = userProfile?.admin
-
   let eventsWithProblems = undefined
 
   eventsWithProblems = useUserEvents(userProfile?.email || "")
-
-  let userEvents = undefined
-  let problems = undefined
+  let userEvents: Event[] = []
+  let userProblems: Problem[] = []
   if (eventsWithProblems) {
     if (eventsWithProblems.data !== undefined) {
       if ("userEvents" in eventsWithProblems.data) {
         userEvents = eventsWithProblems.data.userEvents
       }
       if ("problems" in eventsWithProblems.data) {
-        problems = eventsWithProblems.data.problems
+        userProblems = eventsWithProblems.data.problems
       }
     }
   }
@@ -46,22 +42,34 @@ const Profile: NextPage<EventProps> = ({ material }) => {
   }
   return (
     <Layout material={material}>
-      <div>
-        <h1>Profile</h1>
-        <h2>{userProfile?.email}</h2>
-        <h2>{userProfile?.name}</h2>
-        <h2>{userProfile?.image}</h2>
+      <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-md flex p-6">
+        <div className="avatar">
+          <img className="w-16 h-16 rounded-full" src={userProfile?.image ?? "avatar"} alt="User Avatar" />
+        </div>
+        <div className="ml-4">
+          <h2 className="text-xl font-semibold text-gray-900">{userProfile?.name}</h2>
+          <h2 className="text-gray-700">{userProfile?.email}</h2>
+        </div>
       </div>
       {userEvents && (
         <div>
-          <h1>Events</h1>
-          {/* {userEvents.map((event) => (
-            <div>
-              <h2>{event.userEmail}</h2>
-              <h2>{event.eventId}</h2>
-              <h2>{event.eventType}</h2>
-            </div>
-          ))} */}
+          <h1 className="text-xl font-bold text-gray-900 dark:text-gray-200 pt-4">
+            <u>Enrolled Events</u>
+          </h1>
+          {userEvents.map((event) => (
+            <>
+              <a href={`/event/${event.id}`}>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-200 pt-2">{event.name}</h3>
+                <h2 className="text-m text-gray-700 pb-2">
+                  {`${new Date(event.start).toLocaleString([], {
+                    dateStyle: "medium",
+                    timeStyle: "short",
+                  })} - ${new Date(event.end).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}`}
+                </h2>
+              </a>
+              <UserEventProblems key={event.id} userProblems={userProblems} event={event} material={material} />
+            </>
+          ))}
         </div>
       )}
     </Layout>
