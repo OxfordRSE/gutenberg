@@ -27,11 +27,9 @@ export const deleteUserOnEventIdState = atom<UserOnEvent>({
 export const DeleteUserOnEventModal: React.FC<DeleteUserOnEventProps> = ({ onClose }) => {
   const [showDeleteUserOnEventModal, setShowDeleteUserOnEventModal] = useRecoilState(deleteUserOnEventModalState)
   const [userOnEvent, setDeleteUserOnEventId] = useRecoilState(deleteUserOnEventIdState)
-  const { events, mutate: mutateEvents } = useEvents()
   const [success, setSuccess] = useState<string | null>(null)
   const [failure, setFailure] = useState<string | null>(null)
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(true)
-  let buttonTimer: string = "3"
 
   // disable the button for 1 seconds
   const enableButton = () => {
@@ -56,11 +54,6 @@ export const DeleteUserOnEventModal: React.FC<DeleteUserOnEventProps> = ({ onClo
       .then((deletedEvent) => {
         if (deletedEvent == undefined) {
           return
-        }
-        if (events != undefined) {
-          if ("id" in deletedEvent) {
-            mutateEvents(events.filter((e) => e.id != deletedEvent.id))
-          }
         }
         setFailure(null)
         setSuccess("success")
