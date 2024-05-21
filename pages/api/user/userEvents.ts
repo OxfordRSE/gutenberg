@@ -18,6 +18,7 @@ export type UserPublic = Prisma.UserGetPayload<{
 export type Data = {
   userEvents?: Event[]
   problems?: Problem[]
+  userOnEvents?: UserOnEvent[]
   error?: string
 }
 
@@ -66,7 +67,7 @@ const commentHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) =
                     where: { userEmail: reqEmail },
                   })
                   .then((problems) => {
-                    res.status(200).json({ userEvents, problems })
+                    res.status(200).json({ userEvents, problems, userOnEvents })
                   })
               })
           }

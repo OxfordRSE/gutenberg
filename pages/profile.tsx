@@ -4,11 +4,11 @@ import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
 import { useSession } from "next-auth/react"
 import { Problem } from "@prisma/client"
-import { EventFull as Event } from "lib/types"
-import UserEventProblems from "components/UserEventProblems"
+import { EventFull as Event, UserOnEvent } from "lib/types"
 import useProfile from "lib/hooks/useProfile"
 import useUserEvents from "lib/hooks/useUserEvents"
 import { PageTemplate } from "lib/pageTemplate"
+import ProfileEventView from "components/profileEventView"
 
 type EventProps = {
   material: Material
@@ -20,10 +20,11 @@ const Profile: NextPage<EventProps> = ({ material }) => {
   const { data: session } = useSession()
   const { userProfile, error: profileError, isLoading: profileLoading } = useProfile()
   let eventsWithProblems = undefined
-
   eventsWithProblems = useUserEvents(userProfile?.email || "")
+
   let userEvents: Event[] = []
   let userProblems: Problem[] = []
+  let userOnEvents: UserOnEvent[] = []
   if (eventsWithProblems) {
     if (eventsWithProblems.data !== undefined) {
       if ("userEvents" in eventsWithProblems.data) {
@@ -32,9 +33,12 @@ const Profile: NextPage<EventProps> = ({ material }) => {
       if ("problems" in eventsWithProblems.data) {
         userProblems = eventsWithProblems.data.problems
       }
+      if ("userOnEvents" in eventsWithProblems.data) {
+        userOnEvents = eventsWithProblems.data.userOnEvents
+      }
     }
   }
-
+  console.log(userOnEvents)
   if (profileError) return <div>{profileError}</div>
   if (profileLoading) return <div>loading...</div>
   if (!session) {
@@ -57,18 +61,12 @@ const Profile: NextPage<EventProps> = ({ material }) => {
             <u>Enrolled Events</u>
           </h1>
           {userEvents.map((event) => (
-            <>
-              <a href={`/event/${event.id}`}>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-200 pt-2">{event.name}</h3>
-                <h2 className="text-m text-gray-700 pb-2">
-                  {`${new Date(event.start).toLocaleString([], {
-                    dateStyle: "medium",
-                    timeStyle: "short",
-                  })} - ${new Date(event.end).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}`}
-                </h2>
-              </a>
-              <UserEventProblems key={event.id} userProblems={userProblems} event={event} material={material} />
-            </>
+            <ProfileEventView
+              event={event}
+              material={material}
+              userProblems={userProblems}
+              userOnEvent={userOnEvents.find((userOnEvent) => userOnEvent.eventId === event.id) as UserOnEvent}
+            />
           ))}
         </div>
       )}
