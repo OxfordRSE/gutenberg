@@ -1,4 +1,5 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
+import Image from "next/image"
 import { getMaterial, Material, removeMarkdown } from "lib/material"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
@@ -47,7 +48,7 @@ const Profile: NextPage<EventProps> = ({ material }) => {
     <Layout material={material}>
       <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-md flex p-6">
         <div className="avatar">
-          <img className="w-16 h-16 rounded-full" src={userProfile?.image ?? "avatar"} alt="User Avatar" />
+          <Image className="w-16 h-16 rounded-full" src={userProfile?.image ?? "avatar"} alt="User Avatar" />
         </div>
         <div className="ml-4">
           <h2 className="text-xl font-semibold text-gray-900">{userProfile?.name}</h2>
@@ -61,6 +62,7 @@ const Profile: NextPage<EventProps> = ({ material }) => {
           </h1>
           {userEvents.map((event) => (
             <ProfileEventView
+              key={event.id}
               event={event}
               material={material}
               userProblems={userProblems}
