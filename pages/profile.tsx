@@ -8,7 +8,7 @@ import { EventFull as Event, UserOnEvent } from "lib/types"
 import useProfile from "lib/hooks/useProfile"
 import useUserEvents from "lib/hooks/useUserEvents"
 import { PageTemplate } from "lib/pageTemplate"
-import ProfileEventView from "components/profileEventView"
+import ProfileEventView from "components/ProfileEventView"
 
 type EventProps = {
   material: Material
@@ -38,7 +38,6 @@ const Profile: NextPage<EventProps> = ({ material }) => {
       }
     }
   }
-  console.log(userOnEvents)
   if (profileError) return <div>{profileError}</div>
   if (profileLoading) return <div>loading...</div>
   if (!session) {

@@ -79,6 +79,7 @@ const UserEventProblems: React.FC<Props> = ({ userProblems, event, material }) =
                         <Table.Cell
                           className="py-0"
                           key={`complete: ${event.id}-${eventGroup.id}-${section.id}-${problem}`}
+                          align="center"
                         >
                           <a href={`${url}#${problem}`}>
                             <Tooltip title={problemStr} placement="top">
@@ -92,6 +93,7 @@ const UserEventProblems: React.FC<Props> = ({ userProblems, event, material }) =
                         <Table.Cell
                           className="py-0"
                           key={`incomplete: ${event.id}-${eventGroup.id}-${section.id}-${problem}`}
+                          align="center"
                         >
                           <a href={`${url}#${problem}`}>
                             <Tooltip title={problem} placement="top">
