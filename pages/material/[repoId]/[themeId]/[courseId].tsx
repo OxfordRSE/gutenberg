@@ -76,7 +76,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
     return { notFound: true }
   }
   removeMarkdown(material, course)
-  return { props: makeSerializable({ theme, course, material, events, pageInfo }) }
+  return {
+    props: makeSerializable({ theme, course, material, events, pageInfo }),
+    revalidate: 3600, // Regenerate the page every hour}
+  }
 }
 
 export default CourseComponent

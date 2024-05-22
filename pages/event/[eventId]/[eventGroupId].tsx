@@ -248,6 +248,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   return {
     props: makeSerializable({ event, material, eventGroupId, pageInfo }),
+    revalidate: 3600, // Regenerate the page every hour
   }
 }
 

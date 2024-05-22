@@ -6,7 +6,7 @@ import { makeSerializable } from "lib/utils"
 import Content from "components/content/Content"
 import NavDiagram from "components/NavDiagram"
 import Title from "components/ui/Title"
-import { Event, EventFull } from "lib/types"
+import type { Event } from "lib/types"
 import useSWR, { Fetcher } from "swr"
 import { basePath } from "lib/basePath"
 import EventActions from "components/EventActions"
@@ -239,6 +239,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   return {
     props: makeSerializable({ event, material, pageInfo }),
+    revalidate: 3600, // Regenerate the page every hour
   }
 }
 

@@ -118,7 +118,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
     return { notFound: true }
   }
   removeMarkdown(material, section)
-  return { props: makeSerializable({ theme, course, section, events, material, pageInfo, repoUrl }) }
+  return {
+    props: makeSerializable({ theme, course, section, events, material, pageInfo, repoUrl }),
+    revalidate: 3600, // Regenerate the page every hour
+  }
 }
 
 export default SectionComponent

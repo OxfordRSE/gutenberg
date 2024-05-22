@@ -39,6 +39,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       events: makeSerializable(events),
       pageInfo: makeSerializable(pageInfo),
     },
+    revalidate: 3600, // Regenerate the page every hour
   }
 }
 
