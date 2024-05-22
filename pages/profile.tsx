@@ -48,7 +48,13 @@ const Profile: NextPage<EventProps> = ({ material }) => {
     <Layout material={material}>
       <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-md flex p-6">
         <div className="avatar">
-          <Image className="w-16 h-16 rounded-full" src={userProfile?.image ?? "avatar"} alt="User Avatar" />
+          <Image
+            width={50}
+            height={50}
+            className=" rounded-full"
+            src={userProfile?.image ?? "avatar"}
+            alt="User Avatar"
+          />
         </div>
         <div className="ml-4">
           <h2 className="text-xl font-semibold text-gray-900">{userProfile?.name}</h2>
