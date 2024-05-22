@@ -13,6 +13,7 @@ const useProblem = (
     `${basePath}/api/problems/${sectionId}/${problemTag}`,
     problemFetcher
   )
+  console.log(basePath)
   const errorString = error ? error : data && "error" in data ? data.error : undefined
   const problem = data && "problem" in data ? data.problem : undefined
   const mutateProblem = (problem: Problem) => mutate({ problem })
