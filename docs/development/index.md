@@ -5,7 +5,9 @@ permalink: /development/
 
 `Gutenberg` is a node.js application built using Next.js and Prisma.
 
-This will guide you through the process of setting up a development environment.
+This will guide you through the process of setting up a development environment. 
+
+If you instead wish to build the application via docker then please refer to the [docker guide]({{"/development/docker" | relative_url }})
 
 To see how to to build the docs, please see the [documentation guide]({{"/development/docs" | relative_url }}).
 
