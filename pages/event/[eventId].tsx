@@ -31,6 +31,7 @@ import Checkbox from "components/forms/Checkbox"
 import SubTitle from "components/ui/SubTitle"
 import EventCommentThreads from "components/EventCommentThreads"
 import { PageTemplate, pageTemplate } from "lib/pageTemplate"
+import revalidateTimeout from "lib/revalidateTimeout"
 
 type EventProps = {
   material: Material
@@ -239,7 +240,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   return {
     props: makeSerializable({ event, material, pageInfo }),
-    revalidate: 3600, // Regenerate the page every hour
+    revalidate: revalidateTimeout,
   }
 }
 

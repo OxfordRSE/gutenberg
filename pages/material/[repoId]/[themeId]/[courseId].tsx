@@ -8,6 +8,7 @@ import NavDiagram from "components/NavDiagram"
 import Title from "components/ui/Title"
 import { Event } from "lib/types"
 import { PageTemplate, pageTemplate } from "lib/pageTemplate"
+import revalidateTimeout from "lib/revalidateTimeout"
 
 type CourseComponentProps = {
   theme: Theme
@@ -78,7 +79,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   removeMarkdown(material, course)
   return {
     props: makeSerializable({ theme, course, material, events, pageInfo }),
-    revalidate: 3600, // Regenerate the page every hour}
+    revalidate: revalidateTimeout,
   }
 }
 
