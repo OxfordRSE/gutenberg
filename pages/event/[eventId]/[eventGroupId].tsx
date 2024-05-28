@@ -4,7 +4,6 @@ import { getMaterial, Theme, Material, removeMarkdown, eventItemSplit } from "li
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
 import Content from "components/content/Content"
-import NavDiagram from "components/NavDiagram"
 import Title from "components/ui/Title"
 import { Event, EventFull } from "lib/types"
 import { basePath } from "lib/basePath"
@@ -21,11 +20,12 @@ import Textfield from "components/forms/Textfield"
 import Textarea from "components/forms/Textarea"
 import { MdEdit, MdPreview } from "react-icons/md"
 import DateTimeField from "components/forms/DateTimeField"
-import SelectField from "components/forms/SelectField"
+import SelectSectionField from "components/forms/SelectSectionField"
 import IntegerField from "components/forms/IntegerField"
 import SubTitle from "components/ui/SubTitle"
 import { PageTemplate, pageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
+import type { Option } from "components/forms/SelectField"
 
 type EventGroupProps = {
   material: Material
@@ -37,6 +37,8 @@ type EventGroupProps = {
 const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroupId, pageInfo }) => {
   // don't show date/time until the page is loaded (due to rehydration issues)
   const [showDateTime, setShowDateTime] = useState(false)
+  const [selectedOptions, setSelectedOptions] = useState<Option[]>([])
+
   useEffect(() => {
     setShowDateTime(true)
   }, [])
@@ -185,11 +187,13 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
           const index = eventMapToIndex[item.id]
           return (
             <Stack key={item.id} direction="row" className="items-end">
-              <SelectField
+              <SelectSectionField
                 label="Section"
                 name={`EventItem.${index}.section`}
                 control={control}
                 options={sectionsOptions}
+                selectedOptions={selectedOptions}
+                setSelectedOptions={setSelectedOptions}
               />
               <IntegerField label="Order" name={`EventItem.${index}.order`} control={control} />
               <Button onClick={handleRemoveItem(index)}>Remove</Button>
