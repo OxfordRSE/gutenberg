@@ -1,0 +1,37 @@
+version: '3.9'
+
+x-vol-args: &args
+  volumes: 
+    - ./.material:/app/.material
+
+services:
+  db:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: super-secret-password
+      POSTGRES_USER: postgres
+    ports:
+      - "5432:5432"
+    
+  gutenberg:
+    image: gutenberg
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args: 
+        CACHE_BUST: ${CACHE_BUST}
+        MATERIAL_METHOD: "pull"
+        MATERIAL_DIR: ".material"
+        YAML_TEMPLATE: "config/oxford.yaml"
+    ports:
+      - "3000:3000"
+    links: 
+      - db
+    <<: *args
+    depends_on:
+      db:
+        condition: service_started
+    environment:
+      DATABASE_URL: postgresql://postgres:super-secret-password@db:5432

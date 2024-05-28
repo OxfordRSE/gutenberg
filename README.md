@@ -1,4 +1,4 @@
-# Gutenberg
+# Gutenberg
 
 [![Build and Test](https://github.com/OxfordRSE/gutenberg/actions/workflows/test.yml/badge.svg)](https://github.com/OxfordRSE/gutenberg/actions/workflows/test.yml)
 
@@ -20,7 +20,7 @@ To see our full documentation, please visit [our documentation site](https://blo
 
 To get a development environment running, follow the instructions below:
 
-## Getting started
+## Getting started (installing locally)
 
 Setting up a local development requires the following software:
 
@@ -29,7 +29,7 @@ Setting up a local development requires the following software:
 - `node` version v18.19.1 or later - packaged with `npm`
 - `corepack` version `0.28.0` or later - install with `npm install -g corepack`
 - `yarn` version `3.3.0` or later - installed via `corepack` with `yarn --version`
-- For developing the renderer rather than just materials, you'll also need a `postgres` instance
+- For developing the full web application functionality rather than just previewing materials, you'll also need a `postgres` instance
 
 ### 1. Clone repository
 
@@ -103,6 +103,10 @@ The development server watches your files, and refreshes when it sees changes.
 This means that your edits will be reflected instantly.
 
 Now everything should be set up for local development of the core systems.
+
+## Getting started (using Docker-compose)
+
+Gutenberg also has a deployable dev environment using docker-compose. If you wish to use this alternative then see [getting started using docker compose](blog.oxrse.uk/gutenberg/getting-started-docker-compose).
 
 ## Developing material
 

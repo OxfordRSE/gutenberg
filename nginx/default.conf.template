@@ -1,0 +1,14 @@
+server {
+    listen       ${NGINX_PORT};
+    server_name  ${NGINX_HOST};
+
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location / {
+        proxy_pass ${NGINX_PROXY_PASS};
+    }
+
+    #error_page  404              /404.html;
+    }
+
+

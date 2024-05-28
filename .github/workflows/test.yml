@@ -87,6 +87,19 @@ jobs:
       - name: Run component tests
         run: ${{ env.MANAGER }} component
 
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: docker compose build
+        run: docker-compose -f docker-compose.yml build
+      - name: docker compose up
+        run: docker-compose -f docker-compose.yml up -d
+      - name: docker compose ps
+        run: docker-compose -f docker-compose.yml ps
+      - name: docker compose down
+        run: docker-compose -f docker-compose.yml down
+
   deploy:
     name: Deploy to staging
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -103,7 +116,7 @@ jobs:
         run: corepack enable
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
       - name: Checkout course material
         shell: bash
         run: |

@@ -1,0 +1,61 @@
+# Use postgres/example user/password credentials
+version: "3.9"
+
+services:
+  nginx:
+    image: nginx:${NGINX_IMAGE_TAG} # stable-alpine3.19
+    volumes:
+      - ./nginx:/etc/nginx/templates
+    ports:
+      - "80:8080"
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=8080
+      - NGINX_PROXY_PASS=http://gutenberg:3000
+    depends_on:
+      gutenberg:
+        condition: service_started
+
+  db:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: super-secret-password
+      POSTGRES_USER: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  gutenberg:
+    image: gutenberg
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        CACHE_BUST: ${CACHE_BUST}
+        MATERIAL_METHOD: "pull"
+        MATERIAL_DIR: ".material"
+        YAML_TEMPLATE: "config/oxford.yaml"
+    links:
+      - db
+    depends_on:
+      db:
+        condition: service_started
+    environment:
+      DATABASE_URL: postgresql://postgres:super-secret-password@db:5432
+
+  qdrant:
+    image: qdrant
+    build:
+      context: qdrant/.
+      dockerfile: Dockerfile
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+volumes:
+  db-data:
+  qdrant_data:
