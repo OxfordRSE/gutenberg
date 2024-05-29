@@ -1,30 +1,42 @@
 import React, { useRef, useState } from "react"
-import Accordion from "../ui/Accordian"
 
 interface SolutionProps {
+  id: string
   content: React.ReactNode
 }
 
-const Solution: React.FC<SolutionProps> = ({ content }) => {
+const Solution: React.FC<SolutionProps> = ({ id, content }) => {
   const [active, setActive] = useState(false)
   const [height, setHeight] = useState("0px")
   const [rotate, setRotate] = useState("transform duration-700 ease")
 
-  const contentSpace = useRef(null)
+  const contentSpace = useRef<null | HTMLDivElement>(null)
+  const solutionContentSpace = useRef<null | HTMLDivElement>(null)
 
   function toggleAccordion() {
     setActive((prevState) => !prevState)
     // @ts-ignore
     setHeight(active ? "0px" : `${contentSpace.current.scrollHeight}px`)
     setRotate(active ? "transform duration-700 ease" : "transform duration-700 ease rotate-180")
+
+    setTimeout(() => {
+      if (solutionContentSpace.current !== null && !active) {
+        solutionContentSpace.current.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" })
+      }
+    }, 700)
   }
 
   const title = "Solution"
+  const headingId = `${id}-heading`
+  const panelId = `${id}-panel`
 
   return (
     <div className="pt-1 flex flex-col">
       <button
-        className="rounded bg-slate-200 dark:bg-slate-700 font-bold appearance-none cursor-pointer focus:outline-none flex items-center justify-between"
+        id={headingId}
+        aria-expanded={active ? "true" : "false"}
+        aria-controls={panelId}
+        className="rounded bg-slate-200 dark:bg-slate-700 font-bold appearance-none cursor-pointer flex items-center justify-between"
         onClick={toggleAccordion}
       >
         <p className="px-4 my-2">{title}</p>
@@ -43,17 +55,18 @@ const Solution: React.FC<SolutionProps> = ({ content }) => {
         </svg>
       </button>
       <div
+        id={panelId}
         ref={contentSpace}
+        role="region"
+        aria-labelledby={headingId}
+        aria-hidden={active ? "false" : "true"}
         style={{ maxHeight: `${height}` }}
         className="overflow-hidden transition-max-height duration-700 ease-in-out"
       >
-        <div className="pb-5">{content}</div>
+        <div ref={solutionContentSpace} className="pb-5">
+          {content}
+        </div>
       </div>
-    </div>
-  )
-  return (
-    <div className="py-0 bg-slate-700 dark:bg-slate-100 text-slate-100 dark:text-slate-700 font-bold rounded-t px-4">
-      <Accordion title={"Solution..."} content={content} />
     </div>
   )
 }
