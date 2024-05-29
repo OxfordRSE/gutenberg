@@ -8,6 +8,7 @@ import NavDiagram from "components/NavDiagram"
 import Title from "components/ui/Title"
 import { Event } from "lib/types"
 import { PageTemplate, pageTemplate } from "lib/pageTemplate"
+import revalidateTimeout from "lib/revalidateTimeout"
 
 type ThemeComponentProps = {
   theme: Theme
@@ -60,6 +61,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   return {
     props: makeSerializable({ material, theme, events, pageInfo, excludes }),
+    revalidate: revalidateTimeout,
   }
 }
 

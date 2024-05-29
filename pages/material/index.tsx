@@ -6,6 +6,7 @@ import { Material, getMaterial, removeMarkdown, getExcludes } from "lib/material
 import { EventFull as Event } from "lib/types"
 import { PageTemplate, pageTemplate } from "lib/pageTemplate"
 import ThemeCards from "components/ThemeCards"
+import revalidateTimeout from "lib/revalidateTimeout"
 
 type HomeProps = {
   material: Material
@@ -40,6 +41,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       events: makeSerializable(events),
       pageInfo: makeSerializable(pageInfo),
     },
+    revalidate: revalidateTimeout,
   }
 }
 

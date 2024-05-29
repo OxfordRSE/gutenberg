@@ -10,6 +10,7 @@ import { Button, Card } from "flowbite-react"
 import EventsView from "components/EventsView"
 import { pageTemplate, PageTemplate } from "lib/pageTemplate"
 import { Markdown } from "components/content/Content"
+import revalidateTimeout from "lib/revalidateTimeout"
 
 type HomeProps = {
   material: Material
@@ -75,6 +76,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       events: makeSerializable(events),
       pageInfo: makeSerializable(pageInfo),
     },
+    revalidate: revalidateTimeout,
   }
 }
 

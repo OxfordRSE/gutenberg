@@ -10,7 +10,7 @@ type NodeProps = {
 
 function NavDiagramSectionNode({ data }: NodeProps) {
   return (
-    <a href={`${basePath}/material/${data.theme.repo}/${data.theme.id}/${data.course?.id}/${data.section?.id}`}>
+    <Link href={`/material/${data.theme.repo}/${data.theme.id}/${data.course?.id}/${data.section?.id}`}>
       <div
         className={`px-1 py-1 h-full w-full border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600`}
       >
@@ -28,7 +28,7 @@ function NavDiagramSectionNode({ data }: NodeProps) {
         <Handle type="target" position={Position.Top} className="w-16 !bg-teal-500" />
         <Handle type="source" position={Position.Bottom} className="w-16 !bg-teal-500" />
       </div>
-    </a>
+    </Link>
   )
 }
 

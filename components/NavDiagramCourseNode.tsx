@@ -3,7 +3,6 @@ import Link from "next/link"
 import React, { memo } from "react"
 import { Handle, Position, Node } from "reactflow"
 import { NodeData } from "./NavDiagram"
-import { basePath } from "lib/basePath"
 
 type NodeProps = {
   data: NodeData
@@ -15,10 +14,10 @@ function NavDiagramCourseNode({ data }: NodeProps) {
     <div
       className={`px-4 py-2 h-full w-full border border-gray-200 rounded-lg shadow-md dark:border-gray-600 ${containerBgStyle}`}
     >
-      <a href={`${basePath}/material/${data.theme.repo}/${data.theme.id}/${data.course?.id}`}>
+      <Link href={`/material/${data.theme.repo}/${data.theme.id}/${data.course?.id}`}>
         <div className="text-center text-l font-extrabold">{data.label}</div>
         {data.external && <div className="text-center">Theme: {data.theme.name}</div>}
-      </a>
+      </Link>
 
       <Handle type="target" position={Position.Top} className="w-16 !bg-teal-500" />
       <Handle type="source" position={Position.Bottom} className="w-16 !bg-teal-500" />

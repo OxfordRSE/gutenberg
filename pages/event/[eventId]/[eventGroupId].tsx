@@ -25,6 +25,7 @@ import SelectField from "components/forms/SelectField"
 import IntegerField from "components/forms/IntegerField"
 import SubTitle from "components/ui/SubTitle"
 import { PageTemplate, pageTemplate } from "lib/pageTemplate"
+import revalidateTimeout from "lib/revalidateTimeout"
 
 type EventGroupProps = {
   material: Material
@@ -248,6 +249,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   return {
     props: makeSerializable({ event, material, eventGroupId, pageInfo }),
+    revalidate: revalidateTimeout,
   }
 }
 

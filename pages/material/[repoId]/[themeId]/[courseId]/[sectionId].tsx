@@ -18,6 +18,7 @@ import Title from "components/ui/Title"
 import { Event } from "lib/types"
 import { PageTemplate, pageTemplate } from "lib/pageTemplate"
 import LearningOutcomes from "components/content/LearningOutcomes"
+import revalidateTimeout from "lib/revalidateTimeout"
 
 type SectionComponentProps = {
   theme: Theme
@@ -118,7 +119,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
     return { notFound: true }
   }
   removeMarkdown(material, section)
-  return { props: makeSerializable({ theme, course, section, events, material, pageInfo, repoUrl }) }
+  return {
+    props: makeSerializable({ theme, course, section, events, material, pageInfo, repoUrl }),
+    revalidate: revalidateTimeout,
+  }
 }
 
 export default SectionComponent

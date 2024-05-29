@@ -6,7 +6,7 @@ import { makeSerializable } from "lib/utils"
 import Content from "components/content/Content"
 import NavDiagram from "components/NavDiagram"
 import Title from "components/ui/Title"
-import { Event, EventFull } from "lib/types"
+import type { Event } from "lib/types"
 import useSWR, { Fetcher } from "swr"
 import { basePath } from "lib/basePath"
 import EventActions from "components/EventActions"
@@ -31,6 +31,7 @@ import Checkbox from "components/forms/Checkbox"
 import SubTitle from "components/ui/SubTitle"
 import EventCommentThreads from "components/EventCommentThreads"
 import { PageTemplate, pageTemplate } from "lib/pageTemplate"
+import revalidateTimeout from "lib/revalidateTimeout"
 
 type EventProps = {
   material: Material
@@ -239,6 +240,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   return {
     props: makeSerializable({ event, material, pageInfo }),
+    revalidate: revalidateTimeout,
   }
 }
 
