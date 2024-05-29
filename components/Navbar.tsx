@@ -301,14 +301,13 @@ const Navbar: React.FC<Props> = ({
           </li>
         )}
 
-        <li>
+        <li aria-label={session ? session.user?.name || "Account details" : "Sign in"}>
           <Dropdown
             label={
               <span className="inline-flex items-center text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white w-10 h-10">
                 {session ? (
                   <Avatar
                     role="img"
-                    aria-label={session.user?.name || "Account details"}
                     img={session.user?.image ? session.user?.image : undefined}
                     className="w-8 h-8"
                     size="sm"
@@ -316,14 +315,7 @@ const Navbar: React.FC<Props> = ({
                     data-cy={`avatar-${session.user?.email}`}
                   />
                 ) : (
-                  <Avatar
-                    role="img"
-                    aria-label="Sign in"
-                    className="w-8 h-8"
-                    size="sm"
-                    rounded={true}
-                    data-cy={`avatar-not-signed-in`}
-                  />
+                  <Avatar role="img" className="w-8 h-8" size="sm" rounded={true} data-cy={`avatar-not-signed-in`} />
                 )}
               </span>
             }

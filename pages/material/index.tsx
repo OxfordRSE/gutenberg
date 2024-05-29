@@ -16,6 +16,7 @@ type HomeProps = {
 const Home: NextPage<HomeProps> = ({ material, events, pageInfo }) => {
   return (
     <Layout material={material} pageInfo={pageInfo}>
+      <h1 className="text-3xl font-bold text-center">Material Themes</h1>
       <ThemeCards material={material} />
     </Layout>
   )
