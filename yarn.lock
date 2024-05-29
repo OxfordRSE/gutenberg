@@ -153,6 +153,53 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@dnd-kit/accessibility@npm:^3.0.0":
+  version: 3.1.0
+  resolution: "@dnd-kit/accessibility@npm:3.1.0"
+  dependencies:
+    tslib: ^2.0.0
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: fcb88c961e2f4c226ab575bc4a13712419884bb0f60761befcaa23bcb6c9939dc2cac6633416f2a07baee9a8830350c6df444039332408cdaaf27cad17c6b64b
+  languageName: node
+  linkType: hard
+
+"@dnd-kit/core@npm:^3.0.0":
+  version: 3.1.1
+  resolution: "@dnd-kit/core@npm:3.1.1"
+  dependencies:
+    "@dnd-kit/accessibility": ^3.0.0
+    "@dnd-kit/utilities": ^2.0.0
+    tslib: ^2.0.0
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: e52a49ad1e831644544da0e4a0e2e44621f9bb55754f9498ea5bc915ec6b5c46108444e7d67592f94c517618ef53b569f11ad1846798db31fcdee56a57685334
+  languageName: node
+  linkType: hard
+
+"@dnd-kit/sortable@npm:^3.0.0":
+  version: 3.1.0
+  resolution: "@dnd-kit/sortable@npm:3.1.0"
+  dependencies:
+    "@dnd-kit/utilities": ^2.0.0
+    tslib: ^2.0.0
+  peerDependencies:
+    "@dnd-kit/core": ^3.0.4
+    react: ">=16.8.0"
+  checksum: 31cc190fbcf7c49dc63bb5bcf87d894b7bd7cf2e9f3df1e28ead1a79008462c203437be9b9634f343a5efbe8bc38eb78505ab372a3ec329a4e22037b4f592cef
+  languageName: node
+  linkType: hard
+
+"@dnd-kit/utilities@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@dnd-kit/utilities@npm:2.0.0"
+  dependencies:
+    tslib: ^2.0.0
+  checksum: 10173fc8d6fa8e46394ac2b739e443a3254e31854cbdbe810782bb7b6f4b4dd948752c3114479827c0da757e6616dd44a70394b6e8524d807514db0be192b18d
+  languageName: node
+  linkType: hard
+
 "@emotion/babel-plugin@npm:^11.11.0":
   version: 11.11.0
   resolution: "@emotion/babel-plugin@npm:11.11.0"
@@ -6011,6 +6058,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "gutenberg@workspace:."
   dependencies:
+    "@dnd-kit/core": ^3.0.0
+    "@dnd-kit/sortable": ^3.0.0
     "@emotion/react": ^11.7.1
     "@emotion/styled": ^11.7.1
     "@mui/icons-material": 5.15.18

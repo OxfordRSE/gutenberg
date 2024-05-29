@@ -7,7 +7,6 @@ import Content from "components/content/Content"
 import NavDiagram from "components/NavDiagram"
 import Title from "components/ui/Title"
 import type { Event, EventFull } from "lib/types"
-import useSWR, { Fetcher } from "swr"
 import { basePath } from "lib/basePath"
 import { Avatar, Button, Card, Tabs } from "flowbite-react"
 import EventProblems from "components/EventProblems"
@@ -189,7 +188,7 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
           ))}
           <Button onClick={handleAddGroup}>Add Group</Button>
         </div>
-        <Button type="submit">Save</Button>
+        <Button type="submit">Save Changes</Button>
       </Stack>
     </form>
   )
