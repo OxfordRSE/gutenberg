@@ -39,7 +39,7 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
     cutOffDate.setMonth(cutOffDate.getMonth() - 2)
     setOldEvents(events.filter((event) => event.start < cutOffDate).length)
     setNewEvents(events.filter((event) => event.start >= cutOffDate).length)
-  }, [])
+  }, [events])
 
   const { events: currentEvents, mutate } = useEvents()
   if (currentEvents) {

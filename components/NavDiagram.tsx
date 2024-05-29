@@ -376,7 +376,7 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course, exclud
     } else {
       return generate_material_edges(material, excludes ? excludes : blankExcludes)
     }
-  }, [course, material, theme])
+  }, [course, material, theme, excludes])
   useEffect(() => {
     let children = null
     let edges = undefined
@@ -406,7 +406,7 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course, exclud
       }
       setNodes(nodes)
     })
-  }, [stringifyMaterial, course, material, theme])
+  }, [stringifyMaterial, course, material, theme, excludes])
   const fitViewOptions: FitViewOptions = {
     padding: 0.15,
   }

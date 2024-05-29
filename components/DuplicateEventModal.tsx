@@ -42,7 +42,7 @@ export const DuplicateEventModal: React.FC<DuplicateEventProps> = ({ onClose }) 
 
   useEffect(() => {
     reset({ date: event?.start })
-  }, [event])
+  }, [event, reset])
 
   const duplicateEventGroup = (eg: any, dateOffset: number) => {
     let newEg = JSON.parse(JSON.stringify(eg))

@@ -57,7 +57,6 @@ describe("non admin landing page", () => {
     // check we are an instructor
     cy.request("GET", "/api/userOnEvent/1").then((response) => {
       const uOnE = response.body.userOnEvent
-      console.log(uOnE)
       expect(uOnE.status).to.equal("INSTRUCTOR")
     })
     // Then we remove the user just in case we want to run this test again locally

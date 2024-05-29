@@ -17,7 +17,6 @@ const Problems = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   const session = await getServerSession(req, res, authOptions)
   const user = session?.user
   const eventId = parseInt(req.query.eventId as string)
-
   if (!session) {
     return res.status(401).json({ error: "Unauthorized" })
   }

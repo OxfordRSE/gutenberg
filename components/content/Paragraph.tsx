@@ -1,26 +1,16 @@
-import { Button, Card } from "flowbite-react"
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { createPortal } from "react-dom"
-import { useTextSelection } from "use-text-selection"
-import { BiCommentAdd } from "react-icons/bi"
+import React, { useMemo, useRef, useState } from "react"
 
-//import { similarity } from 'sentence-similarity'
 import similarity from "wink-nlp/utilities/similarity"
 
 import winkNLP, { Bow } from "wink-nlp"
 import model from "wink-eng-lite-web-model"
-import { Markdown } from "./Content"
-import style from "react-syntax-highlighter/dist/cjs/styles/prism/lucario"
 import Thread from "./Thread"
 import Popover from "./Popover"
 import useCommentThreads from "lib/hooks/useCommentThreads"
-import postComment from "lib/actions/postComment"
 import postCommentThread from "lib/actions/postCommentThread"
 import useActiveEvent from "lib/hooks/useActiveEvents"
 import { Comment } from "pages/api/comment/[commentId]"
 import { CommentThread } from "pages/api/commentThread"
-import { post } from "cypress/types/jquery"
-import { set } from "cypress/types/lodash"
 import { useSession } from "next-auth/react"
 
 const nlp = winkNLP(model)

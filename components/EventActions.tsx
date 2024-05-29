@@ -50,7 +50,6 @@ const EventActions: React.FC<EventActionsProps> = ({ event }) => {
 
   const { event: eventData } = useEvent(isMyEvent ? event.id : undefined)
   const handleActivate = (event: Event) => () => {
-    console.log("handleActivate", event, eventData, activeEvent)
     if (eventData) {
       setActiveEvent(eventData)
     }

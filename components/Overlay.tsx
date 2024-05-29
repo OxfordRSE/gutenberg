@@ -13,6 +13,7 @@ import { DuplicateEventModal, duplicateEventModalState } from "components/Duplic
 import { LinkedSection, SectionLink } from "./ui/LinkedSection"
 import { Stack } from "@mui/material"
 import useWindowSize from "lib/hooks/useWindowSize"
+import DeleteUserOnEventModal, { deleteUserOnEventModalState } from "./dialogs/deleteUserOnEventModal"
 
 interface Props {
   material: Material
@@ -43,6 +44,7 @@ const Overlay: NextPage<Props> = ({
   const [showTopButtons, setShowTopButtons] = useState(false)
   const [showDeleteEventModal, setShowDeleteEventModal] = useRecoilState(deleteEventModalState)
   const [showDuplicateEventModal, setShowDuplicateEventModal] = useRecoilState(duplicateEventModalState)
+  const [showDeleteUserOnEventModal, setShowDeleteUserOnEventModal] = useRecoilState(deleteUserOnEventModalState)
   const windowSize = useWindowSize()
   // remove duplicate links in case activeevent includes the same section as dependsOn, reverse so AE comes first
   sectionLinks = sectionLinks
@@ -71,6 +73,9 @@ const Overlay: NextPage<Props> = ({
     setShowDeleteEventModal(false)
   }
 
+  const closeDeleteUserOnEvent = () => {
+    setShowDeleteUserOnEventModal(false)
+  }
   const closeDuplicateEvent = () => {
     setShowDuplicateEventModal(false)
   }
@@ -115,6 +120,7 @@ const Overlay: NextPage<Props> = ({
         <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />
         <SearchDialog onClose={closeSearch} />
         <DeleteEventModal onClose={closeDeleteEvent} />
+        <DeleteUserOnEventModal onClose={closeDeleteUserOnEvent} />
         <DuplicateEventModal onClose={closeDuplicateEvent} />
         <Sidebar material={material} activeEvent={activeEvent} sidebarOpen={sidebarOpen} handleClose={handleClose} />
       </div>

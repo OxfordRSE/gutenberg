@@ -1,10 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next"
-import { Problem } from "lib/types"
 import prisma from "lib/prisma"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "../auth/[...nextauth]"
-import { UserOnEvent } from "@prisma/client"
-import { basePath } from "lib/basePath"
+import type { UserOnEvent } from "@prisma/client"
 
 export type Data = {
   userOnEvent?: UserOnEvent

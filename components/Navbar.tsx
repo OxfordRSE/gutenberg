@@ -324,10 +324,10 @@ const Navbar: React.FC<Props> = ({
           >
             {session ? (
               <Dropdown.Header>
-                <>
+                <Link href="/profile">
                   <span className="block text-sm">{session.user?.name}</span>
                   <span className="block truncate text-sm font-medium">{session.user?.email}</span>
-                </>
+                </Link>
               </Dropdown.Header>
             ) : (
               <Dropdown.Header>
