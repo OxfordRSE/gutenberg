@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
+})
+const { withPlausibleProxy } = require("next-plausible")
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
@@ -15,10 +19,9 @@ const nextConfig = {
   },
   webpack: (config) => {
     config.resolve.fallback = { fs: false }
-
     return config
   },
   basePath: process.env.NEXT_PUBLIC_BASEPATH,
 }
 
-module.exports = nextConfig
+module.exports = withPlausibleProxy()(withBundleAnalyzer(nextConfig))
