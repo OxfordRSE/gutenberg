@@ -5,6 +5,7 @@ import { getMaterial, Theme, Material, removeMarkdown, eventItemSplit } from "li
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
 import Content from "components/content/Content"
+import NavDiagram from "components/navdiagram/NavDiagram"
 import Title from "components/ui/Title"
 import SubTitle from "components/ui/SubTitle"
 import { Event } from "lib/types"

@@ -231,11 +231,17 @@ export async function getCourse(repo: string, theme: string, course: string, no_
   const dependsOn = (courseObject.attributes.dependsOn as string[]) || []
   const markdown = no_markdown ? "" : (courseObject.body as string)
   // @ts-expect-error
-  const files = courseObject.attributes.files as [string]
+  let files = courseObject.attributes.files as string[][] | string[]
+  if (typeof files[0] === "string") {
+    files = [files] as string[][]
+  } else {
+    files = files as string[][]
+  }
+  console.log(files.flatMap((x) => x))
   // @ts-expect-error
   const attribution = (courseObject.attributes.attribution as Attribution[]) || []
   const id = course
-  let sections = await Promise.all(files.map((file, i) => getSection(repo, theme, course, i, file)))
+  let sections = await Promise.all(files.flatMap((x) => x).map((file, i) => getSection(repo, theme, course, i, file)))
   const excludeSections = getExcludes(repo).sections
   sections = sections.filter((section) => !excludeSections.includes(section.id))
   const type = "Course"

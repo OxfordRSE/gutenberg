@@ -4,7 +4,7 @@ import { getMaterial, Course, Theme, Material, removeMarkdown } from "lib/materi
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
 import Content from "components/content/Content"
-import NavDiagram from "components/NavDiagram"
+import NavDiagram from "components/navdiagram/NavDiagram"
 import Title from "components/ui/Title"
 import { Event } from "lib/types"
 import { PageTemplate, pageTemplate } from "lib/pageTemplate"
