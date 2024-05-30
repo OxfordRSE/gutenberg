@@ -1,4 +1,4 @@
-import NavDiagram from "components/NavDiagram"
+import NavDiagram from "components/navdiagram/NavDiagram"
 import React, { useEffect, useState } from "react"
 import { createPortal } from "react-dom"
 import { Material, Theme, Course, Excludes } from "lib/material"
