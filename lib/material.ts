@@ -44,6 +44,7 @@ export type Course = {
   type: string
   attribution: Attribution[]
   summary: string
+  files: string[][]
 }
 
 export type Theme = {
@@ -237,7 +238,6 @@ export async function getCourse(repo: string, theme: string, course: string, no_
   } else {
     files = files as string[][]
   }
-  console.log(files.flatMap((x) => x))
   // @ts-expect-error
   const attribution = (courseObject.attributes.attribution as Attribution[]) || []
   const id = course
@@ -246,7 +246,7 @@ export async function getCourse(repo: string, theme: string, course: string, no_
   sections = sections.filter((section) => !excludeSections.includes(section.id))
   const type = "Course"
 
-  return { id, theme, name, sections, dependsOn, markdown, type, attribution, summary }
+  return { id, theme, name, sections, dependsOn, markdown, type, attribution, summary, files }
 }
 
 // https://stackoverflow.com/questions/21792367/replace-underscores-with-spaces-and-capitalize-words
