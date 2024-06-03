@@ -7,6 +7,9 @@ import { EventFull as Event } from "lib/types"
 import { PageTemplate, pageTemplate } from "lib/pageTemplate"
 import ThemeCards from "components/ThemeCards"
 import revalidateTimeout from "lib/revalidateTimeout"
+import Title from "components/ui/Title"
+import SubTitle from "components/ui/SubTitle"
+import Link from "next/link"
 
 type HomeProps = {
   material: Material
@@ -17,7 +20,10 @@ type HomeProps = {
 const Home: NextPage<HomeProps> = ({ material, events, pageInfo }) => {
   return (
     <Layout material={material} pageInfo={pageInfo}>
-      <h1 className="text-3xl font-bold text-center p-3">Material Themes</h1>
+      <Title text="Material Themes" className="text-3xl font-bold text-center p-3" style={{ marginBottom: "0px" }} />
+      <Link className="text-blue-500 italic" href={`/material/diagram`}>
+        <SubTitle text="view full diagram" />
+      </Link>
       <ThemeCards material={material} />
     </Layout>
   )
