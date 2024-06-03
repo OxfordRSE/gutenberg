@@ -1,23 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from "next"
+import { getEmbedding } from "lib/search/createVectors"
+import { searchVector, SearchResult } from "lib/search/vectorDb"
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const url = "https://plausible.io/api/event"
-
-  // Forward the request to Plausible's API
-  const plausibleRes = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "User-Agent": req.headers["user-agent"] || "",
-    },
-    body: JSON.stringify(req.body),
+export default function searchHandler(req: NextApiRequest, res: NextApiResponse<SearchResult[]>) {
+  getEmbedding(req.body).then(async (vector) => {
+    searchVector(vector.data[0].embedding).then((response: SearchResult[]) => {
+      if (response) {
+        res.status(200).json(response)
+      } else {
+        res.status(404)
+      }
+    })
   })
-
-  // Send the response back to the client
-  if (plausibleRes.ok) {
-    const content = await plausibleRes.json()
-    res.status(200).json(content)
-  } else {
-    res.status(plausibleRes.status).json({ message: "Failed to proxy to Plausible" })
-  }
 }
