@@ -229,8 +229,6 @@ export async function getCourse(repo: string, theme: string, course: string, no_
   const summary = (courseObject.attributes.summary as string) || ""
   // @ts-expect-error
   const dependsOn = (courseObject.attributes.dependsOn as string[]) || []
-  // @ts-expect-error
-  const filenames = (courseObject.attributes.files as string[]) || []
   const markdown = no_markdown ? "" : (courseObject.body as string)
   // @ts-expect-error
   const files = courseObject.attributes.files as [string]

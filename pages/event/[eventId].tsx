@@ -6,12 +6,9 @@ import { makeSerializable } from "lib/utils"
 import Content from "components/content/Content"
 import NavDiagram from "components/NavDiagram"
 import Title from "components/ui/Title"
-import type { Event } from "lib/types"
-import useSWR, { Fetcher } from "swr"
+import type { Event, EventFull } from "lib/types"
 import { basePath } from "lib/basePath"
-import EventActions from "components/EventActions"
 import { Avatar, Button, Card, Tabs } from "flowbite-react"
-import EventUsers from "components/EventUsers"
 import EventProblems from "components/EventProblems"
 import { useForm, Controller, useFieldArray } from "react-hook-form"
 import { useSession } from "next-auth/react"
@@ -25,7 +22,6 @@ import { Event as EventWithUsers } from "pages/api/event/[eventId]"
 import Stack from "components/ui/Stack"
 import { putEvent } from "lib/actions/putEvent"
 import { useEffect, useState } from "react"
-import { Prisma } from "@prisma/client"
 import SelectField from "components/forms/SelectField"
 import Checkbox from "components/forms/Checkbox"
 import SubTitle from "components/ui/SubTitle"
@@ -192,7 +188,7 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
           ))}
           <Button onClick={handleAddGroup}>Add Group</Button>
         </div>
-        <Button type="submit">Save</Button>
+        <Button type="submit">Save Changes</Button>
       </Stack>
     </form>
   )

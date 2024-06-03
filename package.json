@@ -21,8 +21,11 @@
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
+    "@dnd-kit/core": "^3.0.0",
+    "@dnd-kit/sortable": "^3.0.0",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.7.1",
+    "@mui/icons-material": "5.15.18",
     "@mui/material": "^5.2.5",
     "@mui/x-date-pickers": "^6.19.0",
     "@next-auth/prisma-adapter": "^1.0.5",

@@ -81,6 +81,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.23.9":
+  version: 7.24.6
+  resolution: "@babel/runtime@npm:7.24.6"
+  dependencies:
+    regenerator-runtime: ^0.14.0
+  checksum: 44d95ca743898fed31b4cefef31de6fd3cf7906e94493368e9d6538289cc52c6c46185205d9c01d38466a5b3f673550f80892d30b1ed02a2c13e704863a8cc48
+  languageName: node
+  linkType: hard
+
 "@babel/types@npm:^7.22.15":
   version: 7.23.5
   resolution: "@babel/types@npm:7.23.5"
@@ -141,6 +150,53 @@ __metadata:
     debug: ^3.1.0
     lodash.once: ^4.1.1
   checksum: 7bdcdaeb1bb692ec9d9bf8ec52538aa0bead6764753f4a067a171a511807a43fab016f7285a56bef6a606c2467ff3f1365e1ad2d2d583b81beed849ee1573fd1
+  languageName: node
+  linkType: hard
+
+"@dnd-kit/accessibility@npm:^3.0.0":
+  version: 3.1.0
+  resolution: "@dnd-kit/accessibility@npm:3.1.0"
+  dependencies:
+    tslib: ^2.0.0
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: fcb88c961e2f4c226ab575bc4a13712419884bb0f60761befcaa23bcb6c9939dc2cac6633416f2a07baee9a8830350c6df444039332408cdaaf27cad17c6b64b
+  languageName: node
+  linkType: hard
+
+"@dnd-kit/core@npm:^3.0.0":
+  version: 3.1.1
+  resolution: "@dnd-kit/core@npm:3.1.1"
+  dependencies:
+    "@dnd-kit/accessibility": ^3.0.0
+    "@dnd-kit/utilities": ^2.0.0
+    tslib: ^2.0.0
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: e52a49ad1e831644544da0e4a0e2e44621f9bb55754f9498ea5bc915ec6b5c46108444e7d67592f94c517618ef53b569f11ad1846798db31fcdee56a57685334
+  languageName: node
+  linkType: hard
+
+"@dnd-kit/sortable@npm:^3.0.0":
+  version: 3.1.0
+  resolution: "@dnd-kit/sortable@npm:3.1.0"
+  dependencies:
+    "@dnd-kit/utilities": ^2.0.0
+    tslib: ^2.0.0
+  peerDependencies:
+    "@dnd-kit/core": ^3.0.4
+    react: ">=16.8.0"
+  checksum: 31cc190fbcf7c49dc63bb5bcf87d894b7bd7cf2e9f3df1e28ead1a79008462c203437be9b9634f343a5efbe8bc38eb78505ab372a3ec329a4e22037b4f592cef
+  languageName: node
+  linkType: hard
+
+"@dnd-kit/utilities@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@dnd-kit/utilities@npm:2.0.0"
+  dependencies:
+    tslib: ^2.0.0
+  checksum: 10173fc8d6fa8e46394ac2b739e443a3254e31854cbdbe810782bb7b6f4b4dd948752c3114479827c0da757e6616dd44a70394b6e8524d807514db0be192b18d
   languageName: node
   linkType: hard
 
@@ -686,6 +742,22 @@ __metadata:
   version: 5.14.19
   resolution: "@mui/core-downloads-tracker@npm:5.14.19"
   checksum: e71c886f12bbd83791638545017c0b8439c3c6b51125979fea105f938f2f5b109629d4deddd38448c05b8be10b3249334324f1505c1306c52a2b8d315a1005c3
+  languageName: node
+  linkType: hard
+
+"@mui/icons-material@npm:5.15.18":
+  version: 5.15.18
+  resolution: "@mui/icons-material@npm:5.15.18"
+  dependencies:
+    "@babel/runtime": ^7.23.9
+  peerDependencies:
+    "@mui/material": ^5.0.0
+    "@types/react": ^17.0.0 || ^18.0.0
+    react: ^17.0.0 || ^18.0.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: ab8a494ad20a35a43487976c43787443ca4ac1897c9985fe822f52eb57b2d000e8bc6718693a4b22d02f78f7ad8badb1d1a39b0eb679cdd5afafa2b8e2c987bd
   languageName: node
   linkType: hard
 
@@ -5986,8 +6058,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "gutenberg@workspace:."
   dependencies:
+    "@dnd-kit/core": ^3.0.0
+    "@dnd-kit/sortable": ^3.0.0
     "@emotion/react": ^11.7.1
     "@emotion/styled": ^11.7.1
+    "@mui/icons-material": 5.15.18
     "@mui/material": ^5.2.5
     "@mui/x-date-pickers": ^6.19.0
     "@next-auth/prisma-adapter": ^1.0.5
