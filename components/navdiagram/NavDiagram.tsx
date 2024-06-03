@@ -60,8 +60,6 @@ const layoutOptionsTheme = {
   "elk.zoomToFit": "true",
 }
 
-const padding = "[top=50.0,left=12.0,bottom=12.0,right=12.0]"
-
 const labels = [{ width: 200, height: 70 }]
 const labelsTheme = [{ width: 200, height: 90 }]
 
@@ -217,7 +215,6 @@ function generate_theme_nodes_elk(theme: Theme, includeExternalDeps: boolean = f
       .flat()
     nodes = nodes.concat(nodeDeps)
   }
-
   if (nodes.length == 0) {
     return undefined
   }
@@ -330,6 +327,15 @@ function generate_material_nodes(material: Material, graph: ElkNode, excludes: E
       height: graph.children?.[i].height,
     },
   }))
+  nodes = nodes.concat(
+    ...material.themes.map((theme, i) => {
+      if (graph.children?.[i]) {
+        return generate_theme_nodes(material, theme, graph.children?.[i], false, excludes ? excludes : blankExcludes)
+      } else {
+        return []
+      }
+    })
+  )
   return nodes
 }
 
@@ -347,6 +353,7 @@ function generate_material_nodes_elk(
     children: generate_theme_nodes_elk(theme, false, excludes ? excludes : blankExcludes),
     edges: generate_theme_edges_elk(theme, excludes ? excludes : blankExcludes),
   }))
+  console.log(nodes)
   return nodes
 }
 
