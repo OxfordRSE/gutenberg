@@ -3,16 +3,12 @@ import prisma from "lib/prisma"
 import { getMaterial, Course, Theme, Material, removeMarkdown } from "lib/material"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
-import Content from "components/content/Content"
 import NavDiagram from "components/navdiagram/NavDiagram"
 import Title from "components/ui/Title"
 import { Event } from "lib/types"
 import { PageTemplate, pageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
-import CourseGrid from "components/navdiagram/CourseGrid"
-import Stack from "components/ui/Stack"
-import Link from "next/link"
-import SubTitle from "components/ui/SubTitle"
+
 
 type CourseComponentProps = {
   theme: Theme
@@ -31,12 +27,8 @@ const CourseComponent: NextPage<CourseComponentProps> = ({
 }: CourseComponentProps) => {
   return (
     <Layout theme={theme} course={course} material={material} pageInfo={pageInfo}>
-      <Title text={course.name} style={{ marginBottom: "0px" }} />
-      <Link className="text-blue-500 italic" href={`/material/${theme.repo}/${theme.id}/${course.id}/diagram`}>
-        <SubTitle text="View Course Diagram" />
-      </Link>
-      <CourseGrid course={course} theme={theme} />
-      <Content markdown={course.markdown} theme={theme} course={course} />
+      <Title text={course.name} />
+      <NavDiagram material={material} theme={theme} course={course} />
     </Layout>
   )
 }
