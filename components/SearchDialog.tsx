@@ -30,7 +30,6 @@ interface SearchProps {
 export const SearchDialog: React.FC<SearchProps> = ({ onClose }) => {
   const [searchResults, setSearchResults] = useRecoilState(searchResultsState)
   const [isOpen, setIsOpen] = useRecoilState(searchQueryState)
-  console.log(searchResults)
   return (
     <Modal dismissible={true} show={isOpen} onClose={onClose} initialFocus={1} size="7xl">
       <Modal.Header>Search Course Material</Modal.Header>
