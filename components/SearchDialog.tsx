@@ -30,23 +30,24 @@ interface SearchProps {
 export const SearchDialog: React.FC<SearchProps> = ({ onClose }) => {
   const [searchResults, setSearchResults] = useRecoilState(searchResultsState)
   const [isOpen, setIsOpen] = useRecoilState(searchQueryState)
-
   return (
     <Modal dismissible={true} show={isOpen} onClose={onClose} initialFocus={1} size="7xl">
       <Modal.Header>Search Course Material</Modal.Header>
       <SearchBar />
       <Modal.Body>
-        <ul>
-          {searchResults.map((result) => (
-            <li key={result.id}>
-              <Card className="rounded-none" href={result.url ?? ""}>
-                <h6 className="font-bold tracking-tight text-gray-800 dark:text-white">{`${result.course} : ${result.page}`}</h6>
-                <h2 className="text-sm2 text-gray-600 dark:text-gray-400">{result.title}</h2>
-                <Markdown markdown={result.content as string} />
-              </Card>
-            </li>
-          ))}
-        </ul>
+        {searchResults.length > 0 && (
+          <ul>
+            {searchResults.map((result) => (
+              <li key={result.id}>
+                <Card className="rounded-none" href={result.url ?? ""}>
+                  <h6 className="font-bold tracking-tight text-gray-800 dark:text-white">{`${result.course} : ${result.page}`}</h6>
+                  <h2 className="text-sm2 text-gray-600 dark:text-gray-400">{result.title}</h2>
+                  <Markdown markdown={result.content as string} />
+                </Card>
+              </li>
+            ))}
+          </ul>
+        )}
       </Modal.Body>
     </Modal>
   )
