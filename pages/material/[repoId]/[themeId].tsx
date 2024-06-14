@@ -6,9 +6,12 @@ import { makeSerializable } from "lib/utils"
 import Content from "components/content/Content"
 import NavDiagram from "components/navdiagram/NavDiagram"
 import Title from "components/ui/Title"
+import SubTitle from "components/ui/SubTitle"
 import { Event } from "lib/types"
 import { PageTemplate, pageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
+import Link from "next/link"
+import ThemeGrid from "components/navdiagram/ThemeGrid"
 
 type ThemeComponentProps = {
   theme: Theme
@@ -21,8 +24,11 @@ type ThemeComponentProps = {
 const ThemeComponent: NextPage<ThemeComponentProps> = ({ theme, material, events, pageInfo, excludes }) => {
   return (
     <Layout material={material} theme={theme} pageInfo={pageInfo}>
-      <Title text={theme.name} />
-      <NavDiagram material={material} theme={theme} excludes={excludes} />
+      <Title text={theme.name} style={{ marginBottom: "0px" }} />
+      <Link className="text-blue-500 italic" href={`/material/${theme.repo}/${theme.id}/diagram`}>
+        <SubTitle text="View Theme Diagram" />
+      </Link>
+      <ThemeGrid theme={theme} />
       <Content markdown={theme.markdown} theme={theme} />
     </Layout>
   )
