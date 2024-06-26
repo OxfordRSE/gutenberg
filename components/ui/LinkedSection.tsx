@@ -45,6 +45,10 @@ export const LinkedSection = (sectionLink: SectionLink) => {
     (sectionLink.course ? sectionLink.course + " - " : "") +
     (sectionLink.section ? sectionLink.section : "")
 
+  const calcAnchorHeight = () => {
+    sectionLink.section!.length > 16 ? `h-[105px]` : `h-[80px]`
+  }
+
   let stackDirection
   let navIcon
   if (sectionLink.direction === "prev") {
@@ -59,7 +63,7 @@ export const LinkedSection = (sectionLink: SectionLink) => {
     <Tooltip title={tooltipTitle}>
       <a href={`${sectionLink.url}`} className={`pointer-events-auto text-gray-600 hover:text-gray-500 opacity-50`}>
         <div
-          className={`group rounded-md border-2 hover:border-4 ${borderColor} h-[55px] w-[150px] text-sm`}
+          className={`group rounded-md border-2 hover:border-4 ${borderColor} ${calcAnchorHeight} w-[150px] text-sm`}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
