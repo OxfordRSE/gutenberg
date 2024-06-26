@@ -15,7 +15,7 @@ export default function LearningOutcomes({ learningOutcomes }: { learningOutcome
   const [open, setOpen] = React.useState(true)
   if (learningOutcomes.length === 0) return null
   return (
-    <Alert severity="success" sx={{ marginBottom: (t: Theme) => t.spacing(1) }}>
+    <Alert severity="success" className="max-w-2xl mx-auto dark:bg-[#0C130D] dark:text-[#CCE8ED]" sx={{ marginBottom: (t: Theme) => t.spacing(1) }}>
       <Tooltip title={`Click to ${open ? "hide" : "show"} learning outcomes`}>
         <Typography variant="body2" onClick={() => setOpen(!open)} sx={{ cursor: "pointer" }}>
           Learning outcomes
@@ -26,7 +26,7 @@ export default function LearningOutcomes({ learningOutcomes }: { learningOutcome
           {learningOutcomes.map((o, i) => (
             <ListItem key={i}>
               <ListItemIcon>
-                <HiOutlineTrophy />
+                <HiOutlineTrophy className="dark: stroke-[#CCE8ED]" />
               </ListItemIcon>
               <ListItemText>{o}</ListItemText>
             </ListItem>
