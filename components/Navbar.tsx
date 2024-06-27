@@ -44,6 +44,8 @@ const Navbar: React.FC<Props> = ({
   const [isPopoverHovered, setIsPopoverHovered] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
   const [itemHovered, setItemHovered] = useState("")
+  const [width, setWidth] = useState<number>(0)
+  const breakpoint = 900
   const { data: session } = useSession()
   const ref1 = useRef<HTMLLIElement>(null)
   const ref2 = useRef<HTMLLIElement>(null)
@@ -85,6 +87,20 @@ const Navbar: React.FC<Props> = ({
     }
   }, [isHovered, isPopoverHovered])
 
+  useEffect(() => {
+    const handleResize = () => {
+      setWidth(window.innerWidth);
+    };
+
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   const handleIsHovered = (hovered: string) => {
     clearTimeout(leaveTimer)
     setItemHovered(hovered)
@@ -107,7 +123,10 @@ const Navbar: React.FC<Props> = ({
   }
 
   return (
+    // remove width !
     <div className="z-10 flex p-2 mx-2 mt-2 mb-4 text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+      {width}
+      {width > breakpoint ? (
       <nav className="w-full inline-flex" aria-label="Breadcrumb">
         <ol className="z-10 list-none inline-flex items-center space-x-1 md:space-x-3">
           {activeEvent && (
@@ -262,7 +281,7 @@ const Navbar: React.FC<Props> = ({
             </li>
           )}
         </ol>
-      </nav>
+      </nav>) : <p>Too small</p>}
       <ul aria-label="Page tools" className="gap-1 relative flex list-none items-center">
         {theme && course && section && (
           <li className="inline-flex">
