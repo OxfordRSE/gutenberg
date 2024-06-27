@@ -13,6 +13,7 @@ import NavDiagramPopover from "./dialogs/navDiagramPop"
 import ThemeCardsPopover from "./dialogs/themeCardPop"
 import { IconButton } from "@mui/material"
 import MenuIcon from '@mui/icons-material/Menu';
+import useWindowSize from "lib/hooks/useWindowSize"
 
 interface Props {
   material: Material
@@ -48,6 +49,7 @@ const Navbar: React.FC<Props> = ({
   const [itemHovered, setItemHovered] = useState("")
   const [width, setWidth] = useState<number>(0)
   const [menu, setMenu] = useState(false)
+  const windowSize = useWindowSize()
   const breakpoint = 900
   const { data: session } = useSession()
   const ref1 = useRef<HTMLLIElement>(null)
@@ -90,20 +92,6 @@ const Navbar: React.FC<Props> = ({
     }
   }, [isHovered, isPopoverHovered])
 
-  useEffect(() => {
-    const handleResize = () => {
-      setWidth(window.innerWidth)
-    }
-
-    handleResize()
-
-    window.addEventListener("resize", handleResize)
-
-    return () => {
-      window.removeEventListener("resize", handleResize)
-    }
-  }, [])
-
   const handleIsHovered = (hovered: string) => {
     clearTimeout(leaveTimer)
     setItemHovered(hovered)
@@ -128,8 +116,8 @@ const Navbar: React.FC<Props> = ({
   return (
     // remove width !
     <div className="z-10 flex p-2 mx-2 mt-2 mb-4 text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-      {width}
-      {width > breakpoint ? (
+      {windowSize.width}
+      {(windowSize.width ?? 1024) >= 1024 ?  (
         <nav className="w-full inline-flex" aria-label="Breadcrumb">
           <ol className="z-10 list-none inline-flex items-center space-x-1 md:space-x-3">
             {activeEvent && (
