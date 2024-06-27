@@ -47,6 +47,7 @@ const Navbar: React.FC<Props> = ({
   const [isHovered, setIsHovered] = useState(false)
   const [itemHovered, setItemHovered] = useState("")
   const [width, setWidth] = useState<number>(0)
+  const [menu, setMenu] = useState(false)
   const breakpoint = 900
   const { data: session } = useSession()
   const ref1 = useRef<HTMLLIElement>(null)
@@ -289,7 +290,7 @@ const Navbar: React.FC<Props> = ({
           <MenuIcon />
         </IconButton>
       )}
-      <ul aria-label="Page tools" className="gap-1 relative flex list-none items-center">
+      <ul aria-label="Page tools" className="gap-1 relative flex list-none items-center justify-end">
         {theme && course && section && (
           <li className="inline-flex">
             <Link
