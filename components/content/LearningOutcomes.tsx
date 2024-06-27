@@ -17,7 +17,7 @@ export default function LearningOutcomes({ learningOutcomes }: { learningOutcome
   return (
     <Alert
       severity="success"
-      className="max-w-2xl mx-auto dark:bg-[#0C130D] dark:text-[#CCE8ED]"
+      className="max-w-2xl mx-auto dark:bg-green-950 dark:text-teal-50 dark:"
       sx={{ marginBottom: (t: Theme) => t.spacing(1) }}
     >
       <Tooltip title={`Click to ${open ? "hide" : "show"} learning outcomes`}>
@@ -30,7 +30,7 @@ export default function LearningOutcomes({ learningOutcomes }: { learningOutcome
           {learningOutcomes.map((o, i) => (
             <ListItem key={i}>
               <ListItemIcon>
-                <HiOutlineTrophy className="dark: stroke-[#CCE8ED]" />
+                <HiOutlineTrophy className="dark: stroke-teal-50" />
               </ListItemIcon>
               <ListItemText>{o}</ListItemText>
             </ListItem>
