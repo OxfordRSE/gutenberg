@@ -149,7 +149,7 @@ const Content: React.FC<Props> = ({ markdown, theme, course, section }) => {
     section ? section.id : ""
   }`
   return (
-    <div className="mx-auto prose prose-base max-w-2xl prose-slate dark:prose-invert prose-pre:bg-[#263E52] prose-pre:p-0">
+    <div className="mx-auto prose prose-base max-w-2xl prose-slate dark:prose-invert prose-pre:bg-[#263E52] px-5">
       <ReactMarkdown
         remarkPlugins={[directive, reactMarkdownRemarkDirective, remarkMath, remarkGfm]}
         rehypePlugins={[rehypeKatex]}
