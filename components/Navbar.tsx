@@ -359,7 +359,7 @@ const Navbar: React.FC<Props> = ({
             )}
           </Dropdown>
         </li>
-        <li className="h-full border-l border-gray-500 ps-1">
+        <li className="h-full border-l border-gray-500 ps-1 flex items-center">
           <Tooltip content="Licensing and Attribution">
             <button
               aria-label="Licensing and Attribution"
