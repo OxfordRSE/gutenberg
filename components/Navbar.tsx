@@ -115,8 +115,8 @@ const Navbar: React.FC<Props> = ({
 
   return (
     // remove width !
-    <div className="z-10 flex p-2 mx-2 mt-2 mb-4 text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-      {windowSize.width}
+    <div className="z-10 flex p-2 mx-2 mt-2 mb-4 text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 justify-between">
+      {/* {windowSize.width} */}
       {(windowSize.width ?? 1024) >= 1024 ?  (
         <nav className="w-full inline-flex" aria-label="Breadcrumb">
           <ol className="z-10 list-none inline-flex items-center space-x-1 md:space-x-3">
@@ -274,11 +274,11 @@ const Navbar: React.FC<Props> = ({
           </ol>
         </nav>
       ) : (
-        <IconButton size="large" edge="start" color="inherit" aria-label="menu" className="text-gray-400"sx={{ mr: 2 }}>
+        <IconButton size="large" edge="start" color="inherit" aria-label="menu" className="text-gray-400 px-5"sx={{ mr: 2 }}>
           <MenuIcon />
         </IconButton>
       )}
-      <ul aria-label="Page tools" className="gap-1 relative flex list-none items-center justify-end">
+      <ul aria-label="Page tools" className="gap-1 relative flex list-none items-center">
         {theme && course && section && (
           <li className="inline-flex">
             <Link
