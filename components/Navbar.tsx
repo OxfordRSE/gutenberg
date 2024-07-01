@@ -305,7 +305,7 @@ const Navbar: React.FC<Props> = ({
               <IconButton onClick={() => toggleDrawer(false)} sx={{ p: 2 }}>
                 <CloseIcon />
               </IconButton>
-              <ol className="p-5 flex-col">
+              <ol className="p-5 flex flex-col gap-2">
                 <li className="inline-flex items-center">
                   <Link
                     href="/"
@@ -357,18 +357,19 @@ const Navbar: React.FC<Props> = ({
                       >
                         {course.name}
                       </Link>
+                      
                     </div>
                   </li>
                 )}{" "}
                 {section && (
-                  <li aria-current="page">
-                    <div className="flex items-center">
-                      <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">
-                        {section.name}
-                      </span>
-                    </div>
-                  </li>
-                )}
+              <li aria-current="page">
+                <div className="flex items-center">
+                  <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">
+                    {section.name}
+                  </span>
+                </div>
+              </li>
+            )}
               </ol>
             </Box>
           </Drawer>
