@@ -12,7 +12,10 @@ import { enableSearch } from "lib/search/enableSearch"
 import NavDiagramPopover from "./dialogs/navDiagramPop"
 import ThemeCardsPopover from "./dialogs/themeCardPop"
 import { IconButton } from "@mui/material"
-import MenuIcon from '@mui/icons-material/Menu';
+import MenuIcon from "@mui/icons-material/Menu"
+import Drawer from "@mui/material/Drawer"
+import CloseIcon from "@mui/icons-material/Close";
+import Box from "@mui/material/Box"
 import useWindowSize from "lib/hooks/useWindowSize"
 
 interface Props {
@@ -49,6 +52,7 @@ const Navbar: React.FC<Props> = ({
   const [itemHovered, setItemHovered] = useState("")
   const [width, setWidth] = useState<number>(0)
   const [menu, setMenu] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(false)
   const windowSize = useWindowSize()
   const breakpoint = 900
   const { data: session } = useSession()
@@ -113,11 +117,16 @@ const Navbar: React.FC<Props> = ({
     setIsPopoverHovered(false)
   }
 
+  const toggleDrawer = (open: boolean) => {
+    setDrawerOpen(open)
+    console.log(drawerOpen)
+  }
+
   return (
     // remove width !
     <div className="z-10 flex p-2 mx-2 mt-2 mb-4 text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 justify-between">
       {/* {windowSize.width} */}
-      {(windowSize.width ?? 1024) >= 1024 ?  (
+      {(windowSize.width ?? 1024) >= 1024 ? (
         <nav className="w-full inline-flex" aria-label="Breadcrumb">
           <ol className="z-10 list-none inline-flex items-center space-x-1 md:space-x-3">
             {activeEvent && (
@@ -134,7 +143,12 @@ const Navbar: React.FC<Props> = ({
                 href="/"
                 className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
               >
-                <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  className="w-4 h-4 mr-2"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
                 </svg>
                 Home
@@ -274,9 +288,26 @@ const Navbar: React.FC<Props> = ({
           </ol>
         </nav>
       ) : (
-        <IconButton size="large" edge="start" color="inherit" aria-label="menu" className="text-gray-400 px-5"sx={{ mr: 2 }}>
-          <MenuIcon />
-        </IconButton>
+        <div>
+          <IconButton
+            onClick={() => toggleDrawer(true)}
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            className="text-gray-400 ml-1"
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Drawer open={drawerOpen}>
+            <Box  sx={{width: 250}}>
+            <IconButton onClick={() => toggleDrawer(false)} sx={{ p: 2 }}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+          </Drawer>
+        </div>
       )}
       <ul aria-label="Page tools" className="gap-1 relative flex list-none items-center">
         {theme && course && section && (
