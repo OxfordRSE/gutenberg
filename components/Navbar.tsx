@@ -14,7 +14,7 @@ import ThemeCardsPopover from "./dialogs/themeCardPop"
 import { IconButton } from "@mui/material"
 import MenuIcon from "@mui/icons-material/Menu"
 import Drawer from "@mui/material/Drawer"
-import CloseIcon from "@mui/icons-material/Close";
+import CloseIcon from "@mui/icons-material/Close"
 import Box from "@mui/material/Box"
 import useWindowSize from "lib/hooks/useWindowSize"
 
@@ -301,10 +301,75 @@ const Navbar: React.FC<Props> = ({
             <MenuIcon />
           </IconButton>
           <Drawer open={drawerOpen}>
-            <Box  sx={{width: 250}}>
-            <IconButton onClick={() => toggleDrawer(false)} sx={{ p: 2 }}>
+            <Box sx={{ width: 250 }}>
+              <IconButton onClick={() => toggleDrawer(false)} sx={{ p: 2 }}>
                 <CloseIcon />
               </IconButton>
+              <ol className="p-5 flex-col">
+                <li className="inline-flex items-center">
+                  <Link
+                    href="/"
+                    className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                  >
+                    <svg
+                      className="w-4 h-4 mr-2"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                    </svg>
+                    Home
+                  </Link>
+                </li>
+                {theme && (
+                  <li>
+                    <div className="flex items-center">
+                      <Link
+                        href={`/material`}
+                        className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white"
+                      >
+                        Material
+                      </Link>
+                    </div>
+                  </li>
+                )}
+                {theme && (
+                  <li ref={ref2} onMouseEnter={() => handleIsHovered("course")} onMouseLeave={handleIsNotHovered}>
+                    <div className="flex items-center">
+                      <Link
+                        aria-current={!course ? "page" : undefined}
+                        href={`/material/${theme.repo}/${theme.id}`}
+                        className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white"
+                      >
+                        {theme.name}
+                      </Link>
+                    </div>
+                  </li>
+                )}{" "}
+                {theme && course && (
+                  <li>
+                    <div className="flex items-center">
+                      <Link
+                        aria-current={!section ? "page" : undefined}
+                        href={`/material/${theme.repo}/${theme.id}/${course.id}`}
+                        className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white"
+                      >
+                        {course.name}
+                      </Link>
+                    </div>
+                  </li>
+                )}{" "}
+                {section && (
+                  <li aria-current="page">
+                    <div className="flex items-center">
+                      <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">
+                        {section.name}
+                      </span>
+                    </div>
+                  </li>
+                )}
+              </ol>
             </Box>
           </Drawer>
         </div>
