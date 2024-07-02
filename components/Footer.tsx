@@ -17,8 +17,8 @@ const Footer: React.FC<Props> = ({ pageInfo }) => {
         {footerAttrib && <Markdown markdown={"© " + new Date().getFullYear() + " " + footerAttrib} />}
       </span>
       
-      <div className="flex justify-evenly gap-5 content-center">
-        <p className="flex flex-wrap items-center mt-3 text-sm text-gray-500 dark:text-gray-400 sm:mt-0">
+      <div className="flex justify-evenly gap-5 items-center mt-3">
+        <p className="flex flex-wrap items-center text-sm text-gray-500 dark:text-gray-400 sm:mt-0">
           For attribution and license information click the @ symbol on the top right
         </p>
         <ThemeButton />
