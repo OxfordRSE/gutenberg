@@ -30,7 +30,7 @@ export default function LearningOutcomes({ learningOutcomes }: { learningOutcome
           {learningOutcomes.map((o, i) => (
             <ListItem key={i}>
               <ListItemIcon>
-                <HiOutlineTrophy className="dark: stroke-teal-50" />
+                <HiOutlineTrophy color="#2e7d32" />
               </ListItemIcon>
               <ListItemText>{o}</ListItemText>
             </ListItem>
