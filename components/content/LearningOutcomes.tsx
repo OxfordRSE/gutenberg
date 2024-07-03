@@ -17,7 +17,7 @@ export default function LearningOutcomes({ learningOutcomes }: { learningOutcome
   return (
     <Alert
       severity="success"
-      className="max-w-2xl mx-auto dark:bg-green-950 dark:text-teal-50"
+      className="max-w-2xl mx-auto dark:bg-indigo-950 dark:text-teal-50"
       sx={{ marginBottom: (t: Theme) => t.spacing(1) }}
     >
       <Tooltip title={`Click to ${open ? "hide" : "show"} learning outcomes`}>
