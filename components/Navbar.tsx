@@ -327,9 +327,10 @@ const Navbar: React.FC<Props> = ({
                     <div className="flex items-center">
                       <Link
                         href={`/material`}
-                        className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white"
+                        className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
                       >
-                        Material
+                        
+                      Material
                       </Link>
                     </div>
                   </li>
@@ -357,19 +358,18 @@ const Navbar: React.FC<Props> = ({
                       >
                         {course.name}
                       </Link>
-                      
                     </div>
                   </li>
                 )}{" "}
                 {section && (
-              <li aria-current="page">
-                <div className="flex items-center">
-                  <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">
-                    {section.name}
-                  </span>
-                </div>
-              </li>
-            )}
+                  <li aria-current="page">
+                    <div className="flex items-center">
+                      <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">
+                        {section.name}
+                      </span>
+                    </div>
+                  </li>
+                )}
               </ol>
             </Box>
           </Drawer>
