@@ -11,7 +11,7 @@ import { useRecoilState } from "recoil"
 import { enableSearch } from "lib/search/enableSearch"
 import NavDiagramPopover from "./dialogs/navDiagramPop"
 import ThemeCardsPopover from "./dialogs/themeCardPop"
-import { IconButton } from "@mui/material"
+import { Divider, IconButton } from "@mui/material"
 import MenuIcon from "@mui/icons-material/Menu"
 import Drawer from "@mui/material/Drawer"
 import CloseIcon from "@mui/icons-material/Close"
@@ -55,6 +55,7 @@ const Navbar: React.FC<Props> = ({
   const [drawerOpen, setDrawerOpen] = useState(false)
   const windowSize = useWindowSize()
   const breakpoint = 900
+  const burgerDrawerMaterialMargin = "ml-3"
   const { data: session } = useSession()
   const ref1 = useRef<HTMLLIElement>(null)
   const ref2 = useRef<HTMLLIElement>(null)
@@ -305,7 +306,7 @@ const Navbar: React.FC<Props> = ({
               <IconButton onClick={() => toggleDrawer(false)} sx={{ p: 2 }}>
                 <CloseIcon />
               </IconButton>
-              <ol className="p-5 flex flex-col gap-2">
+              <ol className="p-5 flex flex-col gap-3">
                 <li className="inline-flex items-center">
                   <Link
                     href="/"
@@ -323,17 +324,22 @@ const Navbar: React.FC<Props> = ({
                   </Link>
                 </li>
                 {theme && (
-                  <li>
-                    <div className="flex items-center">
-                      <Link
-                        href={`/material`}
-                        className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-                      >
-                        
-                      Material
-                      </Link>
-                    </div>
-                  </li>
+                  <ol>
+                    <li>
+                      <div className="flex items-center">
+                        <Link
+                          href={`/material`}
+                          className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                        >
+                    
+                        <span className="pb-2">Material</span>
+                    
+                        </Link>
+                    
+                      </div>
+                    </li>
+                    <li><Divider variant="fullWidth" /></li>
+                  </ol>
                 )}
                 {theme && (
                   <li ref={ref2} onMouseEnter={() => handleIsHovered("course")} onMouseLeave={handleIsNotHovered}>
@@ -341,7 +347,7 @@ const Navbar: React.FC<Props> = ({
                       <Link
                         aria-current={!course ? "page" : undefined}
                         href={`/material/${theme.repo}/${theme.id}`}
-                        className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white"
+                        className={`${burgerDrawerMaterialMargin} text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white`}
                       >
                         {theme.name}
                       </Link>
@@ -354,7 +360,7 @@ const Navbar: React.FC<Props> = ({
                       <Link
                         aria-current={!section ? "page" : undefined}
                         href={`/material/${theme.repo}/${theme.id}/${course.id}`}
-                        className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white"
+                        className={`${burgerDrawerMaterialMargin} text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white`}
                       >
                         {course.name}
                       </Link>
@@ -364,7 +370,7 @@ const Navbar: React.FC<Props> = ({
                 {section && (
                   <li aria-current="page">
                     <div className="flex items-center">
-                      <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">
+                      <span className={`${burgerDrawerMaterialMargin} text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white`}>
                         {section.name}
                       </span>
                     </div>
@@ -375,7 +381,7 @@ const Navbar: React.FC<Props> = ({
           </Drawer>
         </div>
       )}
-      <ul aria-label="Page tools" className="gap-1 relative flex list-none items-center">
+      <ul aria-label="Page tools" className="gap-2 relative flex list-none items-center">
         {theme && course && section && (
           <li className="inline-flex">
             <Link
