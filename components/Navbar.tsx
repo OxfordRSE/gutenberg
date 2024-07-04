@@ -302,13 +302,13 @@ const Navbar: React.FC<Props> = ({
           </IconButton>
           <Drawer
             PaperProps={{
-              className: "bg-gray-50 dark:bg-gray-800",
+              className: "bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700",
             }}
             open={drawerOpen}
           >
             <Box sx={{ width: 250 }}>
               <IconButton onClick={() => toggleDrawer(false)} sx={{ p: 2 }}>
-                <CloseIcon />
+                <CloseIcon className="stroke-slate-400 fill-slate-400" />
               </IconButton>
               <ol className="p-5 flex flex-col gap-3">
                 <li className="inline-flex items-center">
@@ -349,7 +349,7 @@ const Navbar: React.FC<Props> = ({
                       </div>
                     </li>
                     <li>
-                      <Divider variant="fullWidth" />
+                      <Divider variant="fullWidth" className="dark:bg-slate-400" />
                     </li>
                   </ol>
                 )}
@@ -383,7 +383,7 @@ const Navbar: React.FC<Props> = ({
                   <li aria-current="page">
                     <div className="flex items-center">
                       <span
-                        className={`${burgerDrawerMaterialMargin} text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white`}
+                        className={`${burgerDrawerMaterialMargin} text-sm font-medium text-gray-700 dark:text-gray-400 `}
                       >
                         {section.name}
                       </span>
