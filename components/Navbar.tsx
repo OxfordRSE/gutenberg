@@ -120,7 +120,6 @@ const Navbar: React.FC<Props> = ({
 
   const toggleDrawer = (open: boolean) => {
     setDrawerOpen(open)
-    console.log(drawerOpen)
   }
 
   return (
@@ -301,7 +300,12 @@ const Navbar: React.FC<Props> = ({
           >
             <MenuIcon />
           </IconButton>
-          <Drawer open={drawerOpen}>
+          <Drawer
+            PaperProps={{
+              className: "bg-gray-50 dark:bg-gray-800",
+            }}
+            open={drawerOpen}
+          >
             <Box sx={{ width: 250 }}>
               <IconButton onClick={() => toggleDrawer(false)} sx={{ p: 2 }}>
                 <CloseIcon />
