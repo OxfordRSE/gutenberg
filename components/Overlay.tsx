@@ -15,6 +15,7 @@ import { Stack } from "@mui/material"
 import useWindowSize from "lib/hooks/useWindowSize"
 import DeleteUserOnEventModal, { deleteUserOnEventModalState } from "./dialogs/deleteUserOnEventModal"
 import { Button } from "flowbite-react"
+import createPDF from "lib/actions/createPDF"
 
 interface Props {
   material: Material
@@ -116,7 +117,7 @@ const Overlay: NextPage<Props> = ({
               {sectionLinks &&
                 sectionLinks.filter((link) => link.direction === "next").map((link) => LinkedSection(link))}
             </Stack>
-            {section ? <Button onClick={() => console.log('Create pdf')} className="absolute right-0 top-24 pointer-events-auto">Download PDF</Button> : null}
+            {section ? <Button onClick={() => createPDF(section.name)} className="absolute right-0 top-24 pointer-events-auto">Download PDF</Button> : null}
           </>
         )}
         <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />

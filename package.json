@@ -43,6 +43,7 @@
     "@types/uuid": "^9.0.0",
     "autoprefixer": "^10.4.13",
     "cron": "^2.0.0",
+    "dom-to-pdf": "^0.3.2",
     "dompurify": "^2.4.0",
     "dotenv": "^16.0.0",
     "dotenv-cli": "^7.0.1",
