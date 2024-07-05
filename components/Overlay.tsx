@@ -14,6 +14,7 @@ import { LinkedSection, SectionLink } from "./ui/LinkedSection"
 import { Stack } from "@mui/material"
 import useWindowSize from "lib/hooks/useWindowSize"
 import DeleteUserOnEventModal, { deleteUserOnEventModalState } from "./dialogs/deleteUserOnEventModal"
+import { Button } from "flowbite-react"
 
 interface Props {
   material: Material
@@ -115,6 +116,7 @@ const Overlay: NextPage<Props> = ({
               {sectionLinks &&
                 sectionLinks.filter((link) => link.direction === "next").map((link) => LinkedSection(link))}
             </Stack>
+            {section ? <Button className="absolute right-0 top-20 -z-10">Download PDF</Button> : null}
           </>
         )}
         <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />
