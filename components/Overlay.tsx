@@ -116,7 +116,7 @@ const Overlay: NextPage<Props> = ({
               {sectionLinks &&
                 sectionLinks.filter((link) => link.direction === "next").map((link) => LinkedSection(link))}
             </Stack>
-            {section ? <Button className="absolute right-0 top-20 -z-10">Download PDF</Button> : null}
+            {section ? <Button className="absolute right-0 top-24 -z-10">Download PDF</Button> : null}
           </>
         )}
         <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />
