@@ -72,7 +72,7 @@ export const LinkedSection = (sectionLink: SectionLink) => {
             <div>
               {sectionLink.theme && (
                 <p className="text-slate-500 dark:text-slate-200 text-xs font-medium">
-                  {trimString(sectionLink.theme, 21)}
+                  {trimString(sectionLink.theme, 35)}
                 </p>
               )}
               {sectionLink.course && (
