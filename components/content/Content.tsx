@@ -40,7 +40,7 @@ function reactMarkdownRemarkDirective() {
 
 const p = (sectionStr: string) => {
   function p({ node, children, ...props }: ReactMarkdownProps) {
-    return <Paragraph content={children} section={sectionStr} />
+    return <Paragraph content={children} section={sectionStr} tag="p" />
   }
   return p
 }
@@ -49,7 +49,7 @@ const list = (sectionStr: string) => {
   function list({ node, children, ...props }: ReactMarkdownProps) {
     return (
       <li className="mdli">
-        <Paragraph content={children} section={sectionStr} />
+        <Paragraph content={children} section={sectionStr} tag="p" />
       </li>
     )
   }
@@ -58,7 +58,7 @@ const list = (sectionStr: string) => {
 
 const heading = (sectionStr: string, tag: string) => {
   function heading({ node, children, ...props }: HeadingProps) {
-    return <Paragraph content={children} section={sectionStr} />
+    return <Paragraph content={children} section={sectionStr} tag={tag} />
   }
   return heading
 }
