@@ -137,8 +137,13 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section, tag = "p" }) =>
 
   return (
     <>
-      <div data-cy="paragraph" ref={ref} className="relative pb-2">
-        <Tag id={Tag !== 'p' ? content?.toString().replaceAll(' ', '-').toLowerCase() : ''} className="m-0 pb-0">{content}</Tag>
+      <div data-cy="paragraph" ref={ref} className="relative pb-0">
+        <Tag
+          id={Tag !== "p" ? content?.toString().replaceAll(" ", "-").toLowerCase() : ""}
+          className={Tag === "p" ? "m-0" : "mb-6"}
+        >
+          {content}
+        </Tag>
         {activeEvent && (
           <div className={`absolute top-0 right-0 md:-right-6 xl:-right-[420px]`}>
             <div className={`w-[420px]`}>
