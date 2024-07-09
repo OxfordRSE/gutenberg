@@ -20,7 +20,7 @@ import Solution from "./Solution"
 import { first } from "cypress/types/lodash"
 import remarkDirective from "remark-directive"
 import remarkDirectiveRehype from "remark-directive-rehype"
-import { CodeComponent, CodeProps, ReactMarkdownProps } from "react-markdown/lib/ast-to-react"
+import { CodeComponent, CodeProps, HeadingProps, ReactMarkdownProps } from "react-markdown/lib/ast-to-react"
 import Callout from "../Callout"
 import { Course, Section, Theme } from "lib/material"
 import Paragraph from "./Paragraph"
@@ -54,6 +54,13 @@ const list = (sectionStr: string) => {
     )
   }
   return list
+}
+
+const heading = (sectionStr: string, tag: string) => {
+  function heading({ node, children, ...props }: HeadingProps) {
+    return <Paragraph content={children} section={sectionStr} />
+  }
+  return heading
 }
 
 let solutionCount = 0
@@ -161,6 +168,8 @@ const Content: React.FC<Props> = ({ markdown, theme, course, section }) => {
           code,
           p: p(sectionStr),
           li: list(sectionStr),
+          h2: heading(sectionStr, "h2"),
+          h3: heading(sectionStr, "h3"),
         }}
       >
         {markdown}
