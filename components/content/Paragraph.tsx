@@ -20,9 +20,10 @@ const as = nlp.as
 interface ParagraphProps {
   content: React.ReactNode
   section: string
+  tag: string
 }
 
-const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
+const Paragraph: React.FC<ParagraphProps> = ({ content, section, tag = "p" }) => {
   const ref = useRef<HTMLDivElement>(null)
   const [activeEvent, setActiveEvent] = useActiveEvent()
   const { commentThreads, error, isLoading, mutate } = useCommentThreads(activeEvent?.id)
@@ -30,6 +31,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
   const [tempThread, setTempThread] = useState<CommentThread | undefined>(undefined)
   const [tempActive, setTempActive] = useState<boolean>(false)
   const email = useSession().data?.user?.email
+  const Tag = tag as keyof JSX.IntrinsicElements
 
   const { similarThreads, contentText } = useMemo(() => {
     let contentText = ""
@@ -136,7 +138,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
   return (
     <>
       <div data-cy="paragraph" ref={ref} className="relative pb-2">
-        <p className="m-0 pb-0">{content}</p>
+        <Tag id={Tag !== 'p' ? content?.toString().replace(' ', '-').toLowerCase() : ''} className="m-0 pb-0">{content}</Tag>
         {activeEvent && (
           <div className={`absolute top-0 right-0 md:-right-6 xl:-right-[420px]`}>
             <div className={`w-[420px]`}>
