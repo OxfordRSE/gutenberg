@@ -172,7 +172,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section, tag = "p" }) =>
     </>
   ) : (
     <>
-      <Tag id={content?.toString().replaceAll(' ', '-').toLowerCase()}>{content}</Tag>
+      <Tag id={content?.toString().replaceAll(' ', '-')}>{content}</Tag>
         {activeEvent && (
           <div className={`absolute top-0 right-0 md:-right-6 xl:-right-[420px]`}>
             <div className={`w-[420px]`}>
