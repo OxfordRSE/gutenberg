@@ -353,7 +353,6 @@ function generate_material_nodes_elk(
     children: generate_theme_nodes_elk(theme, false, excludes ? excludes : blankExcludes),
     edges: generate_theme_edges_elk(theme, excludes ? excludes : blankExcludes),
   }))
-  console.log(nodes)
   return nodes
 }
 
