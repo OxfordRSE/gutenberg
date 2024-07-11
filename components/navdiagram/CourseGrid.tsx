@@ -2,7 +2,6 @@ import React from "react"
 import Link from "next/link"
 import { Grid, Paper, Typography, Box, Chip } from "@mui/material"
 import { Course, Theme } from "lib/material"
-import { useTheme } from "next-themes"
 
 function CourseGrid({ course, theme }: { course: Course; theme: Theme }) {
   const files = course.files
@@ -44,7 +43,7 @@ function CourseGrid({ course, theme }: { course: Course; theme: Theme }) {
               {commonTag && (
                 <Box
                   className="bg-slate-50 border-gray-200 text-black dark:bg-gray-800 dark:border-gray-700 dark:text-white p-2"
-                  sx={{ borderRadius: "0px", textAlign: "center" }}
+                  sx={{ borderRadius: "8px 8px 0 0", textAlign: "center" }}
                 >
                   <Typography variant="h6">{commonTag.toUpperCase()}</Typography>
                 </Box>
@@ -54,11 +53,22 @@ function CourseGrid({ course, theme }: { course: Course; theme: Theme }) {
                   const section = findSectionByName(file)
                   if (!section) return null
                   const url = `/material/${repo}/${course.theme}/${course.id}/${section.id}`
-                  console.log(url)
+
+                  // Determine if this is the first or last item
+                  const isFirstItem = rowIndex === 0 && !commonTag
+                  const isLastItem = rowIndex === column.length - 1
+
                   return (
                     <Grid item xs={12} key={rowIndex}>
                       <Link href={url}>
-                        <Paper elevation={3} sx={{ borderRadius: "0px", p: 2, textAlign: "center" }}>
+                        <Paper
+                          elevation={3}
+                          sx={{
+                            borderRadius: isFirstItem ? "8px 8px 0 0" : isLastItem ? "0 0 8px 8px" : "0px",
+                            p: 2,
+                            textAlign: "center",
+                          }}
+                        >
                           <Box
                             sx={{
                               width: "100%",

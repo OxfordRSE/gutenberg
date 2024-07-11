@@ -1,6 +1,6 @@
 import React from "react"
 import Link from "next/link"
-import { Grid, Paper, Typography, Box } from "@mui/material"
+import { Grid, Paper, Typography, Box, Divider } from "@mui/material"
 import { Theme } from "lib/material"
 
 function ThemeGrid({ theme }: { theme: Theme }) {
@@ -12,10 +12,16 @@ function ThemeGrid({ theme }: { theme: Theme }) {
       <Grid container spacing={2} sx={{ paddingBottom: "16px" }}>
         {courses.map((course, colIndex) => {
           return (
-            <Grid item xs={12 / courses.length} key={colIndex}>
+            <Grid item xs={Math.max(12 / courses.length, 4)} key={colIndex}>
               <Link href={`/material/${repo}/${theme.id}/${course.id}`}>
-                <Paper elevation={3} sx={{ borderRadius: "0px", p: 2, textAlign: "center" }}>
-                  <Typography variant="body1">{course ? course.name : "Unnamed Section"}</Typography>
+                <Paper elevation={3} sx={{ p: 2, textAlign: "center" }}>
+                  <Typography variant="h5" component="h2">
+                    {course ? course.name : "Unnamed Section"}
+                  </Typography>
+                  <Divider sx={{ my: 1, width: "90%", mx: "auto" }} />
+                  <Typography variant="body1" sx={{ mt: 1, textAlign: "left" }}>
+                    {course.summary}
+                  </Typography>
                 </Paper>
               </Link>
             </Grid>
