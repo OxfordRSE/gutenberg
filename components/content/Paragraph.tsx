@@ -171,7 +171,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section, tag = "p" }) =>
       {activeEvent && <Popover target={ref?.current || undefined} onCreate={handleCreateThread} />}
     </>
   ) : (
-    <>
+    <div ref={ref} data-cy="paragraph" className="relative">
       <Tag id={content?.toString().replaceAll(" ", "-")}>{content}</Tag>
       {activeEvent && (
         <div className={`absolute top-0 right-0 md:-right-6 xl:-right-[420px]`}>
@@ -200,7 +200,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section, tag = "p" }) =>
         </div>
       )}
       {activeEvent && <Popover target={ref?.current || undefined} onCreate={handleCreateThread} />}
-    </>
+    </div>
   )
 }
 
