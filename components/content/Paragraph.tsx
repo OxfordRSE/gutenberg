@@ -12,6 +12,8 @@ import useActiveEvent from "lib/hooks/useActiveEvents"
 import { Comment } from "pages/api/comment/[commentId]"
 import { CommentThread } from "pages/api/commentThread"
 import { useSession } from "next-auth/react"
+import CopyToClipboard from "react-copy-to-clipboard"
+import { FaClipboard } from "react-icons/fa"
 
 const nlp = winkNLP(model)
 const its = nlp.its
@@ -171,8 +173,16 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section, tag = "p" }) =>
       {activeEvent && <Popover target={ref?.current || undefined} onCreate={handleCreateThread} />}
     </>
   ) : (
-    <div ref={ref} data-cy="paragraph" className="relative">
-      <Tag id={content?.toString().replaceAll(" ", "-")}>{content}</Tag>
+    <>
+      <Tag id={content?.toString().replaceAll(" ", "-")}>
+        {content}{" "}
+        <CopyToClipboard text={content?.toString() ?? ""}>
+          <button className="group absolute top-0 right-0 bg-transparent text-xs text-grey-700 hover:bg-grey-900 px-2 py-1 rounded flex items-center space-x-1">
+            <FaClipboard className="group-hover:text-white" />
+            <span className="group-hover:text-white">Copy</span>
+          </button>
+        </CopyToClipboard>
+      </Tag>
       {activeEvent && (
         <div className={`absolute top-0 right-0 md:-right-6 xl:-right-[420px]`}>
           <div className={`w-[420px]`}>
@@ -200,7 +210,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section, tag = "p" }) =>
         </div>
       )}
       {activeEvent && <Popover target={ref?.current || undefined} onCreate={handleCreateThread} />}
-    </div>
+    </>
   )
 }
 
