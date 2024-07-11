@@ -20,7 +20,7 @@ const as = nlp.as
 interface ParagraphProps {
   content: React.ReactNode
   section: string
-  tag: string
+  tag?: string
 }
 
 const Paragraph: React.FC<ParagraphProps> = ({ content, section, tag = "p" }) => {
