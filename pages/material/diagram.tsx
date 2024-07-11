@@ -1,4 +1,4 @@
-import type { NextPage, GetStaticProps } from "next"
+import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
 import prisma from "lib/prisma"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"

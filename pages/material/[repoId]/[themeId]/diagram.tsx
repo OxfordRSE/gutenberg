@@ -1,4 +1,4 @@
-import type { NextPage, GetStaticProps } from "next"
+import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
 import prisma from "lib/prisma"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
@@ -36,6 +36,22 @@ export const getStaticProps: GetStaticProps = async (context) => {
       material: makeSerializable(material),
       events: makeSerializable(events),
     },
+  }
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const material = await getMaterial()
+  let paths = []
+  for (const theme of material.themes) {
+    for (const course of theme.courses) {
+      paths.push({
+        params: { repoId: `${theme.repo}`, themeId: `${theme.id}`, courseId: `${course.id}` },
+      })
+    }
+  }
+  return {
+    paths,
+    fallback: false,
   }
 }
 
