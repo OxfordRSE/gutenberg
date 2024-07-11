@@ -21,7 +21,7 @@ export const LightTheme = createTheme({
         root: {
           backgroundColor: "#f8fafc", // Similar to bg-slate-50
           borderColor: "#e5e7eb", // border-gray-200
-          borderRadius: "8px", // rounded-lg
+          borderRadius: "8", // rounded-lg
         },
       },
     },
