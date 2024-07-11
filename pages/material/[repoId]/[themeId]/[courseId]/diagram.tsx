@@ -9,7 +9,6 @@ import { Event } from "lib/types"
 import { PageTemplate, pageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
 
-
 type CourseComponentProps = {
   theme: Theme
   course: Course
