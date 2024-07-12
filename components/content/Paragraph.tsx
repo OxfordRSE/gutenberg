@@ -34,6 +34,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section, tag = "p" }) =>
   const [tempActive, setTempActive] = useState<boolean>(false)
   const email = useSession().data?.user?.email
   const Tag = tag as keyof JSX.IntrinsicElements
+  const headingContent = content?.toString().replaceAll(" ", "-")
 
   const { similarThreads, contentText } = useMemo(() => {
     let contentText = ""
@@ -175,16 +176,12 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section, tag = "p" }) =>
   ) : (
     <>
       <div data-cy="paragraph" ref={ref} className="relative pb-2">
-        <Tag id={content?.toString().replaceAll(" ", "-")}>
+        <Tag id={headingContent} className="mt-4 flex justify-start gap-2">
           {content}{" "}
           <CopyToClipboard
-            text={
-              (typeof window !== "undefined" ? window.location.href : "") +
-                "#" +
-                content?.toString().replaceAll(" ", "-") ?? ""
-            }
+            text={(typeof window !== "undefined" ? window.location.href : "") + "#" + headingContent ?? ""}
           >
-            <button className="group absolute top-0 right-0 bg-transparent text-xs text-grey-700 hover:bg-grey-900 px-2 py-1 rounded flex items-center space-x-1">
+            <button className="bg-transparent text-xs text-grey-700 hover:bg-grey-900 px-2 py-1 rounded flex items-center space-x-1">
               <FaClipboard className="group-hover:text-white" />
               <span className="group-hover:text-white">Copy</span>
             </button>
