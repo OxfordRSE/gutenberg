@@ -177,7 +177,13 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section, tag = "p" }) =>
       <div data-cy="paragraph" ref={ref} className="relative pb-2">
         <Tag id={content?.toString().replaceAll(" ", "-")}>
           {content}{" "}
-          <CopyToClipboard text={(typeof window !== 'undefined' ? window.location.href : '') + "#" + content?.toString().replaceAll(" ", "-") ?? ""}>
+          <CopyToClipboard
+            text={
+              (typeof window !== "undefined" ? window.location.href : "") +
+                "#" +
+                content?.toString().replaceAll(" ", "-") ?? ""
+            }
+          >
             <button className="group absolute top-0 right-0 bg-transparent text-xs text-grey-700 hover:bg-grey-900 px-2 py-1 rounded flex items-center space-x-1">
               <FaClipboard className="group-hover:text-white" />
               <span className="group-hover:text-white">Copy</span>
