@@ -14,7 +14,7 @@ function ThemeGrid({ theme }: { theme: Theme }) {
           return (
             <Grid item xs={Math.max(12 / courses.length, 4)} key={colIndex}>
               <Link href={`/material/${repo}/${theme.id}/${course.id}`}>
-                <Paper elevation={3} sx={{ p: 2, textAlign: "center" }}>
+                <Paper elevation={3} sx={{ p: 2, textAlign: "center", height: "100%" }}>
                   <Typography variant="h5" component="h2">
                     {course ? course.name : "Unnamed Section"}
                   </Typography>
