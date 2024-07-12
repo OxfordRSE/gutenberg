@@ -174,41 +174,45 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section, tag = "p" }) =>
     </>
   ) : (
     <>
-      <Tag id={content?.toString().replaceAll(" ", "-")}>
-        {content}{" "}
-        <CopyToClipboard text={content?.toString() ?? ""}>
-          <button className="group absolute top-0 right-0 bg-transparent text-xs text-grey-700 hover:bg-grey-900 px-2 py-1 rounded flex items-center space-x-1">
-            <FaClipboard className="group-hover:text-white" />
-            <span className="group-hover:text-white">Copy</span>
-          </button>
-        </CopyToClipboard>
-      </Tag>
-      {activeEvent && (
-        <div className={`absolute top-0 right-0 md:-right-6 xl:-right-[420px]`}>
-          <div className={`w-[420px]`}>
-            {similarThreads?.map((thread) => (
-              <Thread
-                key={thread.id}
-                thread={thread.id}
-                active={activeThreadId === thread.id}
-                setActive={(active: boolean) => (active ? setActiveThreadId(thread.id) : setActiveThreadId(undefined))}
-                finaliseThread={finaliseThread}
-                onDelete={() => handleDeleteThread(thread)}
-              />
-            ))}
-            {tempThread && (
-              <Thread
-                key={tempThread.id}
-                thread={tempThread}
-                active={tempActive}
-                setActive={setTempActive}
-                finaliseThread={finaliseThread}
-                onDelete={() => handleDeleteThread(tempThread)}
-              />
-            )}
+      <div data-cy="paragraph" ref={ref} className="relative pb-2">
+        <Tag id={content?.toString().replaceAll(" ", "-")}>
+          {content}{" "}
+          <CopyToClipboard text={(typeof window !== 'undefined' ? window.location.href : '') + "#" + content?.toString().replaceAll(" ", "-") ?? ""}>
+            <button className="group absolute top-0 right-0 bg-transparent text-xs text-grey-700 hover:bg-grey-900 px-2 py-1 rounded flex items-center space-x-1">
+              <FaClipboard className="group-hover:text-white" />
+              <span className="group-hover:text-white">Copy</span>
+            </button>
+          </CopyToClipboard>
+        </Tag>
+        {activeEvent && (
+          <div className={`absolute top-0 right-0 md:-right-6 xl:-right-[420px]`}>
+            <div className={`w-[420px]`}>
+              {similarThreads?.map((thread) => (
+                <Thread
+                  key={thread.id}
+                  thread={thread.id}
+                  active={activeThreadId === thread.id}
+                  setActive={(active: boolean) =>
+                    active ? setActiveThreadId(thread.id) : setActiveThreadId(undefined)
+                  }
+                  finaliseThread={finaliseThread}
+                  onDelete={() => handleDeleteThread(thread)}
+                />
+              ))}
+              {tempThread && (
+                <Thread
+                  key={tempThread.id}
+                  thread={tempThread}
+                  active={tempActive}
+                  setActive={setTempActive}
+                  finaliseThread={finaliseThread}
+                  onDelete={() => handleDeleteThread(tempThread)}
+                />
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
       {activeEvent && <Popover target={ref?.current || undefined} onCreate={handleCreateThread} />}
     </>
   )
