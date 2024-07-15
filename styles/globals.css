@@ -26,8 +26,14 @@ body {
 
 /* CSS to target the first h1 or h2 inside a Callout */
 .callout > h1:first-child,
-.callout > h2:first-child {
+.callout > h2:first-child,
+.callout > div > h1:first-child,
+.callout > div > h2:first-child {
   margin-top: 16px;
+}
+
+.prose > h1:first-child {
+  margin-top: 0px;
 }
 
 /* lists in markdown Content */
