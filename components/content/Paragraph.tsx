@@ -138,6 +138,18 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section, tag = "p" }) =>
     }
   }
 
+  const onCopyHandler = () => {
+    setIsCopied(true)
+    setTimeout(() => {
+      setIsCopied(false)
+    }, 2000)
+  }
+
+  const generateHeadingURL = () => {
+    const href: string =  (typeof window !== "undefined" ? window.location.href.split('#')[0] : "")
+    return href + "#" + headingContent ?? ""
+  }
+
   return tag === "p" ? (
     <>
       <div data-cy="paragraph" ref={ref} className="relative pb-2">
@@ -176,16 +188,17 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section, tag = "p" }) =>
   ) : (
     <>
       <div data-cy="paragraph" ref={ref} className="relative pb-2">
-        <Tag id={headingContent} className="mt-4 flex justify-start gap-2">
+        <Tag id={headingContent} className="flex justify-start gap-1">
           {content}{" "}
           <CopyToClipboard
-            text={(typeof window !== "undefined" ? window.location.href : "") + "#" + headingContent ?? ""}
+            text={generateHeadingURL()}
           >
             <button className="bg-transparent text-xs text-grey-700 hover:bg-grey-900 px-2 py-1 rounded flex items-center space-x-1">
               <FaClipboard className="group-hover:text-white" />
               <span className="group-hover:text-white">Copy</span>
             </button>
           </CopyToClipboard>
+          {isCopied && <span className="text-xs text-green-500">Copied!</span>}
         </Tag>
         {activeEvent && (
           <div className={`absolute top-0 right-0 md:-right-6 xl:-right-[420px]`}>
