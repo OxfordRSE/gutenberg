@@ -5,9 +5,10 @@ interface StackProps {
   children: ReactNode
   direction?: "row" | "col" | "row-reverse" | "col-reverse" | undefined
   className?: React.ComponentProps<"div">["className"]
+  style?: React.ComponentProps<"div">["style"]
 }
 
-function Stack({ spacing = 4, children, direction, className }: StackProps) {
+function Stack({ spacing = 4, children, direction, className, style }: StackProps) {
   if (direction === undefined) {
     direction = "col"
   }
@@ -34,7 +35,9 @@ function Stack({ spacing = 4, children, direction, className }: StackProps) {
 
   const axis = direction.includes("col") ? "col" : "row"
   return (
-    <div className={`flex ${flexVariants[direction]} ${spaceVariants[axis][spacing]} ${className}`}>{children}</div>
+    <div style={style} className={`flex ${flexVariants[direction]} ${spaceVariants[axis][spacing]} ${className}`}>
+      {children}
+    </div>
   )
 }
 

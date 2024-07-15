@@ -32,6 +32,7 @@ describe("EventCommentThreads component", () => {
           type: "theme",
           courses: [
             {
+              files: [],
               id: "course1",
               name: "Course 1",
               summary: "",

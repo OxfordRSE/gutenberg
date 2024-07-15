@@ -8,7 +8,6 @@ async function generateTable() {
   const hostname = "https://train.oxrse.uk"
   let content = `| ${headers.join(" | ")} |\n| ${headers.map(() => "---").join(" | ")} |\n`
   for (let theme of material.themes) {
-    console.log(theme.name)
     for (let course of theme.courses) {
       const courseString = `${theme.id}.${course.id}`
       const themeString = `${theme.id}`

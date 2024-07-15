@@ -1,6 +1,7 @@
 import { Material, Excludes } from "lib/material"
 import { basePath } from "lib/basePath"
 import { Card } from "flowbite-react"
+import useWindowSize from "lib/hooks/useWindowSize"
 
 interface Props {
   material: Material
@@ -9,7 +10,9 @@ interface Props {
 }
 
 const ThemeCards = ({ material, excludes, includeSummary = true }: Props) => {
-  const numberCols = includeSummary ? 2 : 1
+  const windowSize = useWindowSize()
+  const columnBreakpoint = 550
+  const numberCols = includeSummary && (windowSize.width ?? 1024) > columnBreakpoint ? 2 : 1
   const textSize = includeSummary ? "text-2xl" : "text-md"
   const themeCards = material?.themes
     .filter((theme) => !excludes || !excludes.themes.includes(theme.id))
