@@ -147,7 +147,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section, tag = "p" }) =>
   }
 
   const generateHeadingURL = () => {
-    const href: string =  (typeof window !== "undefined" ? window.location.href.split('#')[0] : "")
+    const href: string = typeof window !== "undefined" ? window.location.href.split("#")[0] : ""
     return href + "#" + headingContent ?? ""
   }
 
@@ -191,10 +191,11 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section, tag = "p" }) =>
       <div data-cy="paragraph" ref={ref} className="relative pb-2">
         <Tag id={headingContent} className="flex justify-start gap-1">
           {content}{" "}
-          <CopyToClipboard
-            text={generateHeadingURL()}
-          >
-            <button className="bg-transparent text-xs text-transparent hover:text-white hover:bg-grey-900 px-2 py-1 rounded flex items-center space-x-1" onClick={onCopyHandler}>
+          <CopyToClipboard text={generateHeadingURL()}>
+            <button
+              className="bg-transparent text-xs text-transparent hover:text-white hover:bg-grey-900 px-2 py-1 rounded flex items-center space-x-1"
+              onClick={onCopyHandler}
+            >
               <FaClipboard className="group-hover:text-white" />
               <span className="group-hover:text-white">Share</span>
             </button>
