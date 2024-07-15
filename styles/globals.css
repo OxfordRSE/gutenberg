@@ -32,7 +32,7 @@ body {
   margin-top: 16px;
 }
 
-.prose > h1:first-child {
+.prose > div:first-child > h2 {
   margin-top: 0px;
 }
 

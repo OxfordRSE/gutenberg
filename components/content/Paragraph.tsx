@@ -143,7 +143,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section, tag = "p" }) =>
     setIsCopied(true)
     setTimeout(() => {
       setIsCopied(false)
-    }, 2000)
+    }, 1500)
   }
 
   const generateHeadingURL = () => {
@@ -194,12 +194,12 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section, tag = "p" }) =>
           <CopyToClipboard
             text={generateHeadingURL()}
           >
-            <button className="bg-transparent text-xs text-transparent hover:text-white hover:bg-grey-900 px-2 py-1 rounded flex items-center space-x-1">
+            <button className="bg-transparent text-xs text-transparent hover:text-white hover:bg-grey-900 px-2 py-1 rounded flex items-center space-x-1" onClick={onCopyHandler}>
               <FaClipboard className="group-hover:text-white" />
               <span className="group-hover:text-white">Share</span>
             </button>
           </CopyToClipboard>
-          {isCopied && <span className="text-xs text-green-500">Copied!</span>}
+          {isCopied && <span className="text-xs text-green-500 flex items-center">Copied to clipboard!</span>}
         </Tag>
         {activeEvent && (
           <div className={`absolute top-0 right-0 md:-right-6 xl:-right-[420px]`}>
