@@ -35,6 +35,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section, tag = "p" }) =>
   const email = useSession().data?.user?.email
   const Tag = tag as keyof JSX.IntrinsicElements
   const headingContent = content?.toString().replaceAll(" ", "-")
+  const [isCopied, setIsCopied] = useState(false)
 
   const { similarThreads, contentText } = useMemo(() => {
     let contentText = ""
@@ -193,9 +194,9 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section, tag = "p" }) =>
           <CopyToClipboard
             text={generateHeadingURL()}
           >
-            <button className="bg-transparent text-xs text-grey-700 hover:bg-grey-900 px-2 py-1 rounded flex items-center space-x-1">
+            <button className="bg-transparent text-xs text-transparent hover:text-white hover:bg-grey-900 px-2 py-1 rounded flex items-center space-x-1">
               <FaClipboard className="group-hover:text-white" />
-              <span className="group-hover:text-white">Copy</span>
+              <span className="group-hover:text-white">Share</span>
             </button>
           </CopyToClipboard>
           {isCopied && <span className="text-xs text-green-500">Copied!</span>}
