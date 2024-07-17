@@ -20,7 +20,7 @@ import Solution from "./Solution"
 import { first } from "cypress/types/lodash"
 import remarkDirective from "remark-directive"
 import remarkDirectiveRehype from "remark-directive-rehype"
-import { CodeComponent, CodeProps, ReactMarkdownProps } from "react-markdown/lib/ast-to-react"
+import { CodeComponent, CodeProps, HeadingProps, ReactMarkdownProps } from "react-markdown/lib/ast-to-react"
 import Callout from "../Callout"
 import { Course, Section, Theme } from "lib/material"
 import Paragraph from "./Paragraph"
@@ -58,7 +58,7 @@ const list = (sectionStr: string) => {
 }
 
 const h = (sectionStr: string, tag: string) => {
-  function h({ node, children, ...props }: ReactMarkdownProps) {
+  function h({ node, children, ...props }: HeadingProps) {
     return <Heading content={children} section={sectionStr} tag={tag} />
   }
   return h
