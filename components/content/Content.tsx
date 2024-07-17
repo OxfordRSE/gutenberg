@@ -24,6 +24,7 @@ import { CodeComponent, CodeProps, ReactMarkdownProps } from "react-markdown/lib
 import Callout from "../Callout"
 import { Course, Section, Theme } from "lib/material"
 import Paragraph from "./Paragraph"
+import Heading from "./Heading"
 
 function reactMarkdownRemarkDirective() {
   return (tree: any) => {
@@ -54,6 +55,13 @@ const list = (sectionStr: string) => {
     )
   }
   return list
+}
+
+const h = (sectionStr: string, tag: string) => {
+  function h({ node, children, ...props }: ReactMarkdownProps) {
+    return <Heading content={children} section={sectionStr} tag={tag} />
+  }
+  return h
 }
 
 let solutionCount = 0
@@ -161,6 +169,9 @@ const Content: React.FC<Props> = ({ markdown, theme, course, section }) => {
           code,
           p: p(sectionStr),
           li: list(sectionStr),
+          h2: h(sectionStr, "h2"),
+          h3: h(sectionStr, "h3"),
+          h4: h(sectionStr, "h4"),
         }}
       >
         {markdown}
