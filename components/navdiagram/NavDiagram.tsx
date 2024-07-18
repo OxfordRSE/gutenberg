@@ -441,6 +441,9 @@ const NavDiagram: React.FC<NavDiagramProps> = ({ material, theme, course, exclud
           maxZoom={2}
           fitView
           fitViewOptions={fitViewOptions}
+          edgesFocusable={false}
+          nodesFocusable={false}
+          nodesDraggable={false}
         ></ReactFlow>
       </div>
     </div>
