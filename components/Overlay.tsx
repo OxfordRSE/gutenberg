@@ -15,7 +15,7 @@ import { Card, Stack } from "@mui/material"
 import useWindowSize from "lib/hooks/useWindowSize"
 import DeleteUserOnEventModal, { deleteUserOnEventModalState } from "./dialogs/deleteUserOnEventModal"
 import ReactMarkdown from "react-markdown"
-import remarkGfm from "remark-gfm"
+import { useHeadingObserver } from "lib/hooks/useHeadingObserver"
 
 interface Props {
   material: Material
@@ -90,11 +90,23 @@ const Overlay: NextPage<Props> = ({
     setSidebarOpen(!sidebarOpen)
   }
 
+  const { activeId } = useHeadingObserver()
+
   const HeadingRenderer = ({ level, children }: { level: number; children: React.ReactNode }) => {
     const Tag = `h${level}`
     return (
       <li className="bg-gray-800 border-2 hover:bg-slate-400">
-          <a className="font-bold" href={typeof window !== "undefined" ? (window.location.href.split("#")[0]+"#"+children).replaceAll(' ', '-') : ""}>{children}</a>
+        <a
+          className={activeId === String(children)?.replaceAll(" ", "-") ? "font-bold text-blue-800" : "font-normal"}
+          href={
+            typeof window !== "undefined"
+              ? (window.location.href.split("#")[0] + "#" + String(children)).replaceAll(" ", "-")
+              : ""
+          }
+          onClick={() => activeId === String(children)?.replaceAll(" ", "-")}
+        >
+          {children}
+        </a>
       </li>
     )
   }
