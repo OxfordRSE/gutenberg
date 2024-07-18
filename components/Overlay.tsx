@@ -93,11 +93,9 @@ const Overlay: NextPage<Props> = ({
   const HeadingRenderer = ({ level, children }: { level: number; children: React.ReactNode }) => {
     const Tag = `h${level}`
     return (
-      <div className="bg-gray-800 border-2 hover:bg-slate-400 z-auto">
-        <h2 className="font-bold ">
-          {children}
-        </h2>
-      </div>
+      <li className="bg-gray-800 border-2 hover:bg-slate-400 z-auto">
+          <a className="font-bold" href={typeof window !== "undefined" ? (window.location.href.split("#")[0]+"#"+children).replaceAll(' ', '-') : ""}>{children}</a>
+      </li>
     )
   }
 
@@ -128,7 +126,7 @@ const Overlay: NextPage<Props> = ({
               {sectionLinks &&
                 sectionLinks.filter((link) => link.direction === "next").map((link) => LinkedSection(link))}
             </Stack>
-            <Card className="absolute top-32 right-0 w-48 h-36 p-2 overflow-scroll z-10 font-bold">
+            <Card className="absolute top-32 right-0 w-48  p-2 ml-4 overflow-scroll font-bold pointer-events-auto">
               <ReactMarkdown
                 components={{
                   h1: HeadingRenderer,
