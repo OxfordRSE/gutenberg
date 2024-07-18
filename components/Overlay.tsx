@@ -93,7 +93,7 @@ const Overlay: NextPage<Props> = ({
   const HeadingRenderer = ({ level, children }: { level: number; children: React.ReactNode }) => {
     const Tag = `h${level}`
     return (
-      <li className="bg-gray-800 border-2 hover:bg-slate-400 z-auto">
+      <li className="bg-gray-800 border-2 hover:bg-slate-400">
           <a className="font-bold" href={typeof window !== "undefined" ? (window.location.href.split("#")[0]+"#"+children).replaceAll(' ', '-') : ""}>{children}</a>
       </li>
     )
