@@ -11,9 +11,11 @@ import { useRecoilState } from "recoil"
 import { DeleteEventModal, deleteEventModalState } from "components/deleteEventModal"
 import { DuplicateEventModal, duplicateEventModalState } from "components/DuplicateEventModal"
 import { LinkedSection, SectionLink } from "./ui/LinkedSection"
-import { Stack } from "@mui/material"
+import { Card, Stack } from "@mui/material"
 import useWindowSize from "lib/hooks/useWindowSize"
 import DeleteUserOnEventModal, { deleteUserOnEventModalState } from "./dialogs/deleteUserOnEventModal"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 
 interface Props {
   material: Material
@@ -88,6 +90,17 @@ const Overlay: NextPage<Props> = ({
     setSidebarOpen(!sidebarOpen)
   }
 
+  const HeadingRenderer = ({ level, children }: { level: number; children: React.ReactNode }) => {
+    const Tag = `h${level}`
+    return (
+      <div className="bg-gray-800 border-2 hover:bg-slate-400 z-auto">
+        <h2 className="font-bold ">
+          {children}
+        </h2>
+      </div>
+    )
+  }
+
   const attribution = section ? section.attribution : course ? course.attribution : []
 
   return (
@@ -115,6 +128,28 @@ const Overlay: NextPage<Props> = ({
               {sectionLinks &&
                 sectionLinks.filter((link) => link.direction === "next").map((link) => LinkedSection(link))}
             </Stack>
+            <Card className="absolute top-32 right-0 w-48 h-36 p-2 overflow-scroll z-10 font-bold">
+              <ReactMarkdown
+                components={{
+                  h1: HeadingRenderer,
+                  h2: HeadingRenderer,
+                  h3: HeadingRenderer,
+                  h4: HeadingRenderer,
+                  h5: HeadingRenderer,
+                  h6: HeadingRenderer,
+                  // Ignore other elements by returning null
+                  p: () => null,
+                  ul: () => null,
+                  ol: () => null,
+                  table: () => null,
+                  blockquote: () => null,
+                  code: () => null,
+                  // Add more elements as needed
+                }}
+              >
+                {section?.markdown || ""}
+              </ReactMarkdown>
+            </Card>
           </>
         )}
         <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />
