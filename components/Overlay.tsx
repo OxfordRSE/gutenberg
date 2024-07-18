@@ -103,7 +103,6 @@ const Overlay: NextPage<Props> = ({
               ? (window.location.href.split("#")[0] + "#" + String(children)).replaceAll(" ", "-")
               : ""
           }
-          onClick={() => activeId === String(children)?.replaceAll(" ", "-")}
         >
           {children}
         </a>
