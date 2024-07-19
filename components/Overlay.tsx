@@ -94,10 +94,11 @@ const Overlay: NextPage<Props> = ({
 
   const HeadingRenderer = ({ level, children }: { level: number; children: React.ReactNode }) => {
     const Tag = `h${level}`
+    let headingContent = String(children)?.replaceAll(" ", "-")
     return (
       <li className="bg-gray-800 border-2 hover:bg-slate-400">
         <a
-          className={activeId === String(children)?.replaceAll(" ", "-") ? "font-bold text-blue-800" : "font-normal"}
+          className={activeId === headingContent ? "font-bold text-blue-800" : "font-normal"}
           href={
             typeof window !== "undefined"
               ? (window.location.href.split("#")[0] + "#" + String(children)).replaceAll(" ", "-")
@@ -147,14 +148,12 @@ const Overlay: NextPage<Props> = ({
                     h4: HeadingRenderer,
                     h5: HeadingRenderer,
                     h6: HeadingRenderer,
-                    // Ignore other elements by returning null
                     p: () => null,
                     ul: () => null,
                     ol: () => null,
                     table: () => null,
                     blockquote: () => null,
                     code: () => null,
-                    // Add more elements as needed
                   }}
                 >
                   {section?.markdown || ""}
