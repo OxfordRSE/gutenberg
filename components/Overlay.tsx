@@ -96,9 +96,9 @@ const Overlay: NextPage<Props> = ({
     const Tag = `h${level}`
     let headingContent = String(children)?.replaceAll(" ", "-")
     return (
-      <li className="bg-gray-800 border-2 hover:bg-slate-400">
+      <li className={activeId === headingContent ? "border-l-2 border-purple-600 bg-slate-600 pl-2 py-1 text-sm list-none bg-transparent rounded-r-lg" : "border-l-2 pl-2 py-1 text-sm list-none bg-transparent"}>
         <a
-          className={activeId === headingContent ? "font-bold text-blue-800" : "font-normal"}
+          className={activeId === headingContent ? "font-bold text-slate-200 hover:text-slate-50" : "font-normal text-slate-200  hover:text-slate-50"}
           href={
             typeof window !== "undefined"
               ? (window.location.href.split("#")[0] + "#" + String(children)).replaceAll(" ", "-")
@@ -139,15 +139,15 @@ const Overlay: NextPage<Props> = ({
                 sectionLinks.filter((link) => link.direction === "next").map((link) => LinkedSection(link))}
             </Stack>
             {section && (
-              <Card className="absolute top-32 right-0 w-48  p-2 ml-4 overflow-scroll font-bold pointer-events-auto">
+              <Card className="absolute top-32 right-0 w-48  p-2 ml-4 overflow-scroll font-bold pointer-events-auto bg-transparent" sx={{ bgcolor: 'transparent'}}>
                 <ReactMarkdown
                   components={{
-                    h1: HeadingRenderer,
+                    h1: () => null,
                     h2: HeadingRenderer,
-                    h3: HeadingRenderer,
-                    h4: HeadingRenderer,
-                    h5: HeadingRenderer,
-                    h6: HeadingRenderer,
+                    h3: () => null,
+                    h4: () => null,
+                    h5: () => null,
+                    h6: () => null,
                     p: () => null,
                     ul: () => null,
                     ol: () => null,
