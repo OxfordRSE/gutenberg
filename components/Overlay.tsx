@@ -137,28 +137,30 @@ const Overlay: NextPage<Props> = ({
               {sectionLinks &&
                 sectionLinks.filter((link) => link.direction === "next").map((link) => LinkedSection(link))}
             </Stack>
-            <Card className="absolute top-32 right-0 w-48  p-2 ml-4 overflow-scroll font-bold pointer-events-auto">
-              <ReactMarkdown
-                components={{
-                  h1: HeadingRenderer,
-                  h2: HeadingRenderer,
-                  h3: HeadingRenderer,
-                  h4: HeadingRenderer,
-                  h5: HeadingRenderer,
-                  h6: HeadingRenderer,
-                  // Ignore other elements by returning null
-                  p: () => null,
-                  ul: () => null,
-                  ol: () => null,
-                  table: () => null,
-                  blockquote: () => null,
-                  code: () => null,
-                  // Add more elements as needed
-                }}
-              >
-                {section?.markdown || ""}
-              </ReactMarkdown>
-            </Card>
+            {section && (
+              <Card className="absolute top-32 right-0 w-48  p-2 ml-4 overflow-scroll font-bold pointer-events-auto">
+                <ReactMarkdown
+                  components={{
+                    h1: HeadingRenderer,
+                    h2: HeadingRenderer,
+                    h3: HeadingRenderer,
+                    h4: HeadingRenderer,
+                    h5: HeadingRenderer,
+                    h6: HeadingRenderer,
+                    // Ignore other elements by returning null
+                    p: () => null,
+                    ul: () => null,
+                    ol: () => null,
+                    table: () => null,
+                    blockquote: () => null,
+                    code: () => null,
+                    // Add more elements as needed
+                  }}
+                >
+                  {section?.markdown || ""}
+                </ReactMarkdown>
+              </Card>
+            )}
           </>
         )}
         <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />
