@@ -3,6 +3,7 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true",
 })
 const { withPlausibleProxy } = require("next-plausible")
+
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
@@ -22,6 +23,21 @@ const nextConfig = {
     return config
   },
   basePath: process.env.NEXT_PUBLIC_BASEPATH,
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [
+          {
+            type: "host",
+            value: "train.oxrse.uk",
+          },
+        ],
+        destination: "https://train.rse.ox.ac.uk/:path*",
+        permanent: true,
+      },
+    ]
+  },
 }
 
 module.exports = withPlausibleProxy()(withBundleAnalyzer(nextConfig))
