@@ -1,3 +1,4 @@
+import { set } from "cypress/types/lodash"
 import { useEffect, useState, useRef } from "react"
 
 export function useHeadingObserver() {
@@ -5,6 +6,7 @@ export function useHeadingObserver() {
   const [activeId, setActiveId] = useState<string | null>(null)
 
   useEffect(() => {
+    const headings = document.querySelectorAll("h2")
     const handleObserver = (entries: any) => {
       entries.forEach((entry: any) => {
         if (entry?.isIntersecting) {
@@ -18,10 +20,29 @@ export function useHeadingObserver() {
       threshold: 1,
     })
 
-    const headings = document.querySelectorAll("h2")
+    window.addEventListener("scroll", () => handleScroll(headings))
+
     headings.forEach((heading) => observer.current?.observe(heading))
-    return () => observer.current?.disconnect()
+    console.log('observing')
+    return () => {
+      observer.current?.disconnect()
+      window.removeEventListener("scroll", handleScroll)
+    }
+    
   }, [])
+
+  const handleScroll = (headings: any) => {
+    const isAtTop = window.scrollY === 0;
+    if (isAtTop) {
+      setActiveId(headings[0].id);
+    }
+    const isAtBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight
+    if (isAtBottom) {
+      setActiveId(headings[headings.length - 1].id)
+    }
+  }
+
+
 
   return { activeId }
 }
