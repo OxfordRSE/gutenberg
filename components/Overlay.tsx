@@ -96,7 +96,7 @@ const Overlay: NextPage<Props> = ({
     const Tag = `h${level}`
     let headingContent = String(children)?.replaceAll(" ", "-")
     return (
-      <li className={activeId === headingContent ? "border-l-2 border-purple-600 bg-slate-600 pl-2 py-1 text-sm list-none bg-transparent rounded-r-lg" : "border-l-2 pl-2 py-1 text-sm list-none bg-transparent"}>
+      <li key={headingContent} className={activeId === headingContent ? "border-l-2 border-purple-600 bg-slate-600 pl-2 py-1 text-sm list-none bg-transparent rounded-r-lg" : "border-l-2 pl-2 py-1 text-sm list-none bg-transparent"}>
         <a
           className={activeId === headingContent ? "font-bold text-slate-200 hover:text-slate-50" : "font-normal text-slate-200  hover:text-slate-50"}
           href={
