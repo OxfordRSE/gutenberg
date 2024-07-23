@@ -10,7 +10,6 @@ interface HeadingProps {
 
 const Heading: React.FC<HeadingProps> = ({ content, section, tag }) => {
   const Tag = tag as keyof JSX.IntrinsicElements
-  const headingContent = content?.toString().replace(/#/g, "").trim().replace(/ /g, "-").replace(/:/g, "").replace(/`/g, "")
   const [isCopied, setIsCopied] = useState(false)
 
   const generateHeadingContent = () => {
