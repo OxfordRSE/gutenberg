@@ -42,14 +42,14 @@ const Heading: React.FC<HeadingProps> = ({ content, section, tag }) => {
 
   return (
     <>
-      <Tag id={generateHeadingContent()} className="flex gap-3">
+      <Tag id={generateHeadingContent()}>
         {content}
         <CopyToClipboard text={generateHeadingURL()}>
-          <button className="text-xs align-top" onClick={onCopyHandler}>
-            <FaLink className="group-hover:text-white" />
+          <button className="text-xs align-center" onClick={onCopyHandler}>
+            <FaLink className="group-hover:text-white ml-3" />
           </button>
         </CopyToClipboard>
-        {isCopied && <span className="text-xs text-green-500 flex items-center">Copied to clipboard!</span>}
+        {isCopied && <span className="text-xs text-green-500 items-center ml-3">Copied to clipboard!</span>}
       </Tag>
     </>
   )
