@@ -13,18 +13,18 @@ const Heading: React.FC<HeadingProps> = ({ content, section, tag }) => {
   const [isCopied, setIsCopied] = useState(false)
 
   const generateHeadingContent = () => {
-    let headingContent = ''
-    if (typeof content === 'object') {
+    let headingContent = ""
+    if (typeof content === "object") {
       for (let key in content) {
-        if (typeof (content as any)[key] === 'object') {
-          headingContent += (content as any)[key].props.children  
+        if (typeof (content as any)[key] === "object") {
+          headingContent += (content as any)[key].props.children
         } else {
           headingContent += (content as any)[key]
         }
+      }
+      return headingContent.replace(/#/g, "").trim().replace(/ /g, "-").replace(/:/g, "").replace(/`/g, "")
     }
-    return headingContent.replace(/#/g, "").trim().replace(/ /g, "-").replace(/:/g, "").replace(/`/g, "")
-  }}
-
+  }
 
   const generateHeadingURL = () => {
     const href: string = typeof window !== "undefined" ? window.location.href.split("#")[0] : ""
