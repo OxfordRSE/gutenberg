@@ -10,12 +10,27 @@ interface HeadingProps {
 
 const Heading: React.FC<HeadingProps> = ({ content, section, tag }) => {
   const Tag = tag as keyof JSX.IntrinsicElements
-  const headingContent = content?.toString().replaceAll(" ", "-")
+  const headingContent = content?.toString().replace(/#/g, "").trim().replace(/ /g, "-").replace(/:/g, "").replace(/`/g, "")
   const [isCopied, setIsCopied] = useState(false)
 
+  const generateHeadingContent = () => {
+    let headingContent = ''
+    if (typeof content === 'object') {
+      for (let key in content) {
+        if (typeof (content as any)[key] === 'object') {
+          headingContent += (content as any)[key].props.children  
+        } else {
+          headingContent += (content as any)[key]
+        }
+    }
+    return headingContent.replace(/#/g, "").trim().replace(/ /g, "-").replace(/:/g, "").replace(/`/g, "")
+  }}
+
+
   const generateHeadingURL = () => {
+    console.log(generateHeadingContent())
     const href: string = typeof window !== "undefined" ? window.location.href.split("#")[0] : ""
-    return href + "#" + headingContent ?? ""
+    return href + "#" + generateHeadingContent() ?? ""
   }
 
   const onCopyHandler = () => {
@@ -27,7 +42,7 @@ const Heading: React.FC<HeadingProps> = ({ content, section, tag }) => {
 
   return (
     <>
-      <Tag id={headingContent} className="flex gap-3">
+      <Tag id={generateHeadingContent()} className="flex gap-3">
         {content}
         <CopyToClipboard text={generateHeadingURL()}>
           <button className="text-xs align-top" onClick={onCopyHandler}>
