@@ -27,7 +27,6 @@ const Heading: React.FC<HeadingProps> = ({ content, section, tag }) => {
 
 
   const generateHeadingURL = () => {
-    console.log(generateHeadingContent())
     const href: string = typeof window !== "undefined" ? window.location.href.split("#")[0] : ""
     return href + "#" + generateHeadingContent() ?? ""
   }
