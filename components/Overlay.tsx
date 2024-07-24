@@ -94,16 +94,32 @@ const Overlay: NextPage<Props> = ({
 
   const HeadingRenderer = ({ level, children }: { level: number; children: React.ReactNode }) => {
     const Tag = `h${level}`
+    const [href, setHref] = useState("")
+
+    useEffect(() => {
+      const headingContent = String(children)?.replaceAll(" ", "-")
+      if (typeof window !== "undefined") {
+        setHref((window.location.href.split("#")[0] + "#" + headingContent).replaceAll(" ", "-"))
+      }
+    }, [children])
+
     let headingContent = String(children)?.replaceAll(" ", "-")
     return (
-      <li key={headingContent} className={activeId === headingContent ? "border-l-2 border-purple-600 bg-slate-600 pl-2 py-1 text-sm list-none bg-transparent rounded-r-lg" : "border-l-2 pl-2 py-1 text-sm list-none bg-transparent"}>
+      <li
+        key={headingContent}
+        className={
+          activeId === headingContent
+            ? "border-l-2 border-purple-600 bg-slate-600 pl-2 py-1 text-sm list-none bg-transparent rounded-r-lg"
+            : "border-l-2 pl-2 py-1 text-sm list-none bg-transparent"
+        }
+      >
         <a
-          className={activeId === headingContent ? "font-bold text-slate-200 hover:text-slate-50" : "font-normal text-slate-200  hover:text-slate-50"}
-          href={
-            typeof window !== "undefined"
-              ? (window.location.href.split("#")[0] + "#" + String(children)).replaceAll(" ", "-")
-              : ""
+          className={
+            activeId === headingContent
+              ? "font-bold text-slate-200 hover:text-slate-50"
+              : "font-normal text-slate-200  hover:text-slate-50"
           }
+          href={href}
         >
           {children}
         </a>
@@ -132,15 +148,15 @@ const Overlay: NextPage<Props> = ({
           <>
             <Stack direction="column" className="absolute bottom-20 left-0 ">
               {sectionLinks &&
-                sectionLinks.filter((link) => link.direction === "prev").map((link) => (
-                  <LinkedSection key={link.url} {...link} />
-                ))}
+                sectionLinks
+                  .filter((link) => link.direction === "prev")
+                  .map((link) => <LinkedSection key={link.url} {...link} />)}
             </Stack>
             <Stack direction="column" className="absolute bottom-20 right-0 ">
               {sectionLinks &&
-                sectionLinks.filter((link) => link.direction === "next").map((link) => (
-                  <LinkedSection key={link.url} {...link} />
-                ))}
+                sectionLinks
+                  .filter((link) => link.direction === "next")
+                  .map((link) => <LinkedSection key={link.url} {...link} />)}
             </Stack>
             {section && (
               <Card className="absolute top-32 right-0 w-48  p-2 ml-4 overflow-scroll font-bold pointer-events-auto bg-transparent">
