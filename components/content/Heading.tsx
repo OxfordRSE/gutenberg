@@ -10,12 +10,25 @@ interface HeadingProps {
 
 const Heading: React.FC<HeadingProps> = ({ content, section, tag }) => {
   const Tag = tag as keyof JSX.IntrinsicElements
-  const headingContent = content?.toString().replaceAll(" ", "-")
   const [isCopied, setIsCopied] = useState(false)
+
+  const generateHeadingContent = () => {
+    let headingContent = ""
+    if (typeof content === "object") {
+      for (let key in content) {
+        if (typeof (content as any)[key] === "object") {
+          headingContent += (content as any)[key].props.children
+        } else {
+          headingContent += (content as any)[key]
+        }
+      }
+      return headingContent.replace(/#/g, "").trim().replace(/ /g, "-").replace(/:/g, "").replace(/`/g, "")
+    }
+  }
 
   const generateHeadingURL = () => {
     const href: string = typeof window !== "undefined" ? window.location.href.split("#")[0] : ""
-    return href + "#" + headingContent ?? ""
+    return href + "#" + generateHeadingContent() ?? ""
   }
 
   const onCopyHandler = () => {
@@ -27,14 +40,14 @@ const Heading: React.FC<HeadingProps> = ({ content, section, tag }) => {
 
   return (
     <>
-      <Tag id={headingContent} className="flex gap-3">
+      <Tag id={generateHeadingContent()}>
         {content}
         <CopyToClipboard text={generateHeadingURL()}>
-          <button className="text-xs align-top" onClick={onCopyHandler}>
-            <FaLink className="group-hover:text-white" />
+          <button className="text-xs align-center" onClick={onCopyHandler}>
+            <FaLink className="group-hover:text-white ml-3" />
           </button>
         </CopyToClipboard>
-        {isCopied && <span className="text-xs text-green-500 flex items-center">Copied to clipboard!</span>}
+        {isCopied && <span className="text-xs text-green-500 items-center ml-3">Copied to clipboard!</span>}
       </Tag>
     </>
   )
