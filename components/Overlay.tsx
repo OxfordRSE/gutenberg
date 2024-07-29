@@ -159,7 +159,7 @@ const Overlay: NextPage<Props> = ({
                   .map((link) => <LinkedSection key={link.url} {...link} />)}
             </Stack>
             {section && (
-              <Card className="absolute top-32 right-0 w-48  p-2 ml-4 overflow-scroll font-bold pointer-events-auto bg-transparent">
+              <nav className="absolute top-32 right-0 w-48  p-2 ml-4 overflow-scroll font-bold pointer-events-auto bg-transparent">
                 <ReactMarkdown
                   components={{
                     h1: () => null,
@@ -178,7 +178,7 @@ const Overlay: NextPage<Props> = ({
                 >
                   {section?.markdown || ""}
                 </ReactMarkdown>
-              </Card>
+              </nav>
             )}
           </>
         )}

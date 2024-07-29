@@ -5,13 +5,11 @@ export function useHeadingObserver() {
   const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (typeof document === "undefined") {
-      return;
-    }
-
     const headings = document.querySelectorAll("h2");
+    console.log(`Headings are ${headings}`)
 
     const handleObserver = (entries: IntersectionObserverEntry[]) => {
+      console.log('Observer callback', entries);
       entries.forEach((entry) => {
         if (entry?.isIntersecting) {
           setActiveId(entry.target.id);
@@ -21,11 +19,15 @@ export function useHeadingObserver() {
 
     const initializeObserver = () => {
       observer.current = new IntersectionObserver(handleObserver, {
-        rootMargin: "13% 0px -95% 0px",
-        threshold: 1,
+        root: null, // Use viewport as the root
+        rootMargin: '-110px 0px -40% 0px',
+        threshold: [0, 0.25, 0.5, 0.75, 1], // Adjusted thresholds
       });
 
-      headings.forEach((heading) => observer.current?.observe(heading));
+      headings.forEach((heading) => {
+        console.log(`Observing heading: ${heading.id}`);
+        observer.current?.observe(heading);
+      });
     };
 
     const handleScroll = () => {
@@ -43,12 +45,7 @@ export function useHeadingObserver() {
 
     window.addEventListener("scroll", handleScroll);
 
-    try {
-      initializeObserver();
-      console.log('IntersectionObserver initialized');
-    } catch (error) {
-      console.error("IntersectionObserver initialization failed:", error);
-    }
+    initializeObserver();
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
