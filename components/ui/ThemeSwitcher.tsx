@@ -1,10 +1,16 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { BsSunFill, BsFillMoonFill } from "react-icons/bs"
 import { useTheme } from "next-themes"
 
 export const ThemeButton = () => {
   const { systemTheme, theme, setTheme } = useTheme()
   const currentTheme = theme === "system" ? systemTheme : theme
+
+  const [mounted, setMounted] = React.useState(false)
+
+  useEffect(() => setMounted(true), [])
+
+  if (!mounted) return null
 
   let icon = currentTheme == "dark" ? <BsSunFill /> : <BsFillMoonFill />
   return (
