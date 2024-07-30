@@ -109,11 +109,15 @@ const Overlay: NextPage<Props> = ({
           <>
             <Stack direction="column" className="absolute bottom-20 left-0 ">
               {sectionLinks &&
-                sectionLinks.filter((link) => link.direction === "prev").map((link) => LinkedSection(link))}
+                sectionLinks
+                  .filter((link) => link.direction === "prev")
+                  .map((link) => <LinkedSection key={link.url} {...link} />)}
             </Stack>
             <Stack direction="column" className="absolute bottom-20 right-0 ">
               {sectionLinks &&
-                sectionLinks.filter((link) => link.direction === "next").map((link) => LinkedSection(link))}
+                sectionLinks
+                  .filter((link) => link.direction === "next")
+                  .map((link) => <LinkedSection key={link.url} {...link} />)}
             </Stack>
           </>
         )}
