@@ -16,6 +16,7 @@ import useWindowSize from "lib/hooks/useWindowSize"
 import DeleteUserOnEventModal, { deleteUserOnEventModalState } from "./dialogs/deleteUserOnEventModal"
 import ReactMarkdown from "react-markdown"
 import { useHeadingObserver } from "lib/hooks/useHeadingObserver"
+import TableOfContents from "./TableOfContents"
 
 interface Props {
   material: Material
@@ -90,43 +91,6 @@ const Overlay: NextPage<Props> = ({
     setSidebarOpen(!sidebarOpen)
   }
 
-  const { activeId } = useHeadingObserver()
-
-  const HeadingRenderer = ({ level, children }: { level: number; children: React.ReactNode }) => {
-    const Tag = `h${level}`
-    const [href, setHref] = useState("")
-
-    useEffect(() => {
-      const headingContent = String(children)?.replaceAll(" ", "-")
-      if (typeof window !== "undefined") {
-        setHref((window.location.href.split("#")[0] + "#" + headingContent).replaceAll(" ", "-"))
-      }
-    }, [children])
-
-    let headingContent = String(children)?.replaceAll(" ", "-")
-    return (
-      <li
-        key={headingContent}
-        className={
-          activeId === headingContent
-            ? "border-l-2 border-purple-600 bg-slate-600 pl-2 py-1 text-sm list-none bg-transparent rounded-r-lg"
-            : "border-l-2 pl-2 py-1 text-sm list-none bg-transparent"
-        }
-      >
-        <a
-          className={
-            activeId === headingContent
-              ? "font-bold text-slate-200 hover:text-slate-50"
-              : "font-normal text-slate-200  hover:text-slate-50"
-          }
-          href={href}
-        >
-          {children}
-        </a>
-      </li>
-    )
-  }
-
   const attribution = section ? section.attribution : course ? course.attribution : []
 
   return (
@@ -158,28 +122,7 @@ const Overlay: NextPage<Props> = ({
                   .filter((link) => link.direction === "next")
                   .map((link) => <LinkedSection key={link.url} {...link} />)}
             </Stack>
-            {section && (
-              <nav className="absolute top-32 right-0 w-48  p-2 ml-4 overflow-scroll font-bold pointer-events-auto bg-transparent">
-                <ReactMarkdown
-                  components={{
-                    h1: () => null,
-                    h2: HeadingRenderer,
-                    h3: () => null,
-                    h4: () => null,
-                    h5: () => null,
-                    h6: () => null,
-                    p: () => null,
-                    ul: () => null,
-                    ol: () => null,
-                    table: () => null,
-                    blockquote: () => null,
-                    code: () => null,
-                  }}
-                >
-                  {section?.markdown || ""}
-                </ReactMarkdown>
-              </nav>
-            )}
+            {section && <TableOfContents markdown={section.markdown} />}
           </>
         )}
         <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />

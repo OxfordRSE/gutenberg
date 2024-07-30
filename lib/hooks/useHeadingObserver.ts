@@ -17,9 +17,9 @@ export function useHeadingObserver() {
 
     const initializeObserver = () => {
       observer.current = new IntersectionObserver(handleObserver, {
-        root: null, // Use viewport as the root
-        rootMargin: "-110px 0px -40% 0px",
-        threshold: 1, // Adjusted thresholds
+        root: null,
+        rootMargin: "-0px 0px -40% 0px",
+        threshold: 1,
       })
 
       headings.forEach((heading) => {
