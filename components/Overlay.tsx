@@ -14,8 +14,6 @@ import { LinkedSection, SectionLink } from "./ui/LinkedSection"
 import { Stack } from "@mui/material"
 import useWindowSize from "lib/hooks/useWindowSize"
 import DeleteUserOnEventModal, { deleteUserOnEventModalState } from "./dialogs/deleteUserOnEventModal"
-import ReactMarkdown from "react-markdown"
-import { useHeadingObserver } from "lib/hooks/useHeadingObserver"
 import TableOfContents from "./TableOfContents"
 
 interface Props {
