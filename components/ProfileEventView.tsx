@@ -30,7 +30,7 @@ const ProfileEventView: React.FC<EventProps> = ({ material, event, userProblems,
     setDeleteUserOnEventId(userOnEvent)
   }
   return (
-    <>
+    <div className="mb-4">
       <Stack direction="row">
         <a href={`/event/${event.id}`}>
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-200 pt-2">{event.name}</h3>
@@ -44,7 +44,7 @@ const ProfileEventView: React.FC<EventProps> = ({ material, event, userProblems,
         </a>
         <Tooltip title="Unsubscribe from event">
           <Button
-            className="text-xs"
+            className="text-xs mt-2"
             color="failure"
             data-cy={`delete-event-${event.id}`}
             size={8}
@@ -55,7 +55,7 @@ const ProfileEventView: React.FC<EventProps> = ({ material, event, userProblems,
         </Tooltip>
       </Stack>
       <UserEventProblems key={event.id} userProblems={userProblems} event={event} material={material} />
-    </>
+    </div>
   )
 }
 
