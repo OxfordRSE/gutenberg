@@ -61,7 +61,12 @@ const Profile: NextPage<EventProps> = ({ material }) => {
           <h2 className="">{userProfile?.email}</h2>
         </div>
       </div>
-      <span className="ml-2">To delete account, please email <a href="mailto:martin.robinson@dtc.ox.ac.uk" className="text-blue-700 dark:text-blue-500">martin.robinson@dtc.ox.ac.uk</a></span>
+      <span className="ml-2">
+        To delete account, please email{" "}
+        <a href="mailto:martin.robinson@dtc.ox.ac.uk" className="text-blue-700 dark:text-blue-500">
+          martin.robinson@dtc.ox.ac.uk
+        </a>
+      </span>
       {userEvents && (
         <div className="ml-2">
           <h1 className="text-xl font-bold text-gray-900 dark:text-gray-200 pt-4">
