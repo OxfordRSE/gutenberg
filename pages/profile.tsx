@@ -46,7 +46,7 @@ const Profile: NextPage<EventProps> = ({ material }) => {
   }
   return (
     <Layout material={material}>
-      <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-md flex p-6">
+      <div className="max-w-sm text-gray-00 dark:text-gray-400 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-md flex p-6 mb-3 ml-2">
         <div className="avatar">
           <Image
             width={50}
@@ -57,12 +57,18 @@ const Profile: NextPage<EventProps> = ({ material }) => {
           />
         </div>
         <div className="ml-4">
-          <h2 className="text-xl font-semibold text-gray-900">{userProfile?.name}</h2>
-          <h2 className="text-gray-700">{userProfile?.email}</h2>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-400">{userProfile?.name}</h2>
+          <h2 className="">{userProfile?.email}</h2>
         </div>
       </div>
+      <span className="ml-2">
+        To delete account, please email{" "}
+        <a href="mailto:martin.robinson@dtc.ox.ac.uk" className="text-blue-700 dark:text-blue-500">
+          martin.robinson@dtc.ox.ac.uk
+        </a>
+      </span>
       {userEvents && (
-        <div>
+        <div className="ml-2">
           <h1 className="text-xl font-bold text-gray-900 dark:text-gray-200 pt-4">
             <u>Enrolled Events</u>
           </h1>
