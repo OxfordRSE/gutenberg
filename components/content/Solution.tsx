@@ -1,5 +1,3 @@
-"use client"
-
 import React, { useRef, useState } from "react"
 
 interface SolutionProps {
