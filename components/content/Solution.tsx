@@ -3,12 +3,14 @@ import React, { useRef, useState } from "react"
 interface SolutionProps {
   id: string
   content: React.ReactNode
+  instanceId: string
 }
 
 const Solution: React.FC<SolutionProps> = ({ id, content }) => {
   const [active, setActive] = useState(false)
   const [height, setHeight] = useState("0px")
   const [rotate, setRotate] = useState("transform duration-700 ease")
+  const [solutionCount, setSolutionCount] = useState(0)
 
   const contentSpace = useRef<null | HTMLDivElement>(null)
   const solutionContentSpace = useRef<null | HTMLDivElement>(null)
