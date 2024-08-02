@@ -67,7 +67,7 @@ const h = (sectionStr: string, tag: string) => {
 let solutionCount = 0
 function solution({ node, children, ...props }: ReactMarkdownProps) {
   solutionCount++
-  return <Solution id={`solution-${solutionCount}`} content={children} />
+  return <Solution id={`solution-${solutionCount}`} content={children} instanceId="solution" />
 }
 
 type CalloutProps = ReactMarkdownProps & {
