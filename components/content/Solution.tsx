@@ -31,7 +31,6 @@ const Solution: React.FC<SolutionProps> = ({ id, content }) => {
   }
 
   const title = "Solution"
-  console.log(id)
   const headingId = `${id}-heading`
   const panelId = `${id}-panel`
 
