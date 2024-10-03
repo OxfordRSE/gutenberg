@@ -92,13 +92,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: docker compose build
-        run: docker-compose -f docker-compose.yml build
+        run: docker compose -f docker-compose.yml build
       - name: docker compose up
-        run: docker-compose -f docker-compose.yml up -d
+        run: docker compose -f docker-compose.yml up -d
       - name: docker compose ps
-        run: docker-compose -f docker-compose.yml ps
+        run: docker compose -f docker-compose.yml ps
       - name: docker compose down
-        run: docker-compose -f docker-compose.yml down
+        run: docker compose -f docker-compose.yml down
 
   deploy:
     name: Deploy to staging
