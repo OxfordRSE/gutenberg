@@ -18,7 +18,8 @@ import { SectionLink } from "./ui/LinkedSection"
 import { findLinks } from "lib/findSectionLinks"
 import PlausibleProvider from "next-plausible"
 import { useTheme } from "next-themes"
-import { ThemeProvider, CssBaseline } from "@mui/material"
+import { ThemeProvider } from "@mui/material/styles"
+import { CssBaseline } from "@mui/material"
 import { LightTheme, DarkTheme } from "./MuiTheme"
 
 type Props = {

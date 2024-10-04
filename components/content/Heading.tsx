@@ -28,7 +28,7 @@ const Heading: React.FC<HeadingProps> = ({ content, section, tag }) => {
 
   const generateHeadingURL = () => {
     const href: string = typeof window !== "undefined" ? window.location.href.split("#")[0] : ""
-    return href + "#" + generateHeadingContent() ?? ""
+    return href + "#" + generateHeadingContent()
   }
 
   const onCopyHandler = () => {
