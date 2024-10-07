@@ -46,7 +46,6 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
   return (
     <RecoilRoot>
       <ThemeProvider theme={muiTheme}>
-        <CssBaseline />
         <div className="container mx-auto">
           <Link href="#main" className="sr-only focus:not-sr-only">
             Skip to main content
