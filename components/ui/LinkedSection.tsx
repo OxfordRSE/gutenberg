@@ -63,7 +63,7 @@ export const LinkedSection = (sectionLink: SectionLink) => {
     <Tooltip title={tooltipTitle}>
       <a href={`${sectionLink.url}`} className={`pointer-events-auto text-gray-600 hover:text-gray-500 opacity-50`}>
         <div
-          className={`group rounded-md border-2 hover:border-4 hover:-mt-1 ${borderColor} ${calcAnchorHeight} w-[150px] text-sm`}
+          className={`group rounded-md border-2 hover:border-4 hover:-mt-1 ${calcAnchorHeight()} ${borderColor}  w-[150px] text-sm`}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >

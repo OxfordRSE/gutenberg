@@ -60,8 +60,8 @@ const Navbar: React.FC<Props> = ({
   const ref1 = useRef<HTMLLIElement>(null)
   const ref2 = useRef<HTMLLIElement>(null)
   const ref3 = useRef<HTMLLIElement>(null)
-  let enterTimer: NodeJS.Timeout
-  let leaveTimer: NodeJS.Timeout
+  const enterTimer = useRef<NodeJS.Timeout | null>(null)
+  const leaveTimer = useRef<NodeJS.Timeout | null>(null)
 
   const openAttribution = () => {
     setShowAttribution(true)
@@ -85,36 +85,36 @@ const Navbar: React.FC<Props> = ({
 
   useEffect(() => {
     if (isHovered || isPopoverHovered) {
-      enterTimer = setTimeout(() => {
+      enterTimer.current = setTimeout(() => {
         setShowNavDiagram(true)
       }, 500)
     } else {
-      leaveTimer = setTimeout(() => {
-        clearTimeout(enterTimer)
-        clearTimeout(leaveTimer)
+      leaveTimer.current = setTimeout(() => {
+        clearTimeout(enterTimer.current as NodeJS.Timeout)
+        clearTimeout(leaveTimer.current as NodeJS.Timeout)
         setShowNavDiagram(false)
       }, 500)
     }
   }, [isHovered, isPopoverHovered])
 
   const handleIsHovered = (hovered: string) => {
-    clearTimeout(leaveTimer)
+    clearTimeout(leaveTimer.current as NodeJS.Timeout)
     setItemHovered(hovered)
     setIsHovered(true)
   }
 
   const handleIsNotHovered = () => {
-    clearTimeout(enterTimer)
+    clearTimeout(enterTimer.current as NodeJS.Timeout)
     setIsHovered(false)
   }
 
   const handlePopoverHovered = () => {
-    clearTimeout(leaveTimer)
+    clearTimeout(leaveTimer.current as NodeJS.Timeout)
     setIsPopoverHovered(true)
   }
 
   const handlePopoverNotHovered = () => {
-    clearTimeout(enterTimer)
+    clearTimeout(enterTimer.current as NodeJS.Timeout)
     setIsPopoverHovered(false)
   }
 

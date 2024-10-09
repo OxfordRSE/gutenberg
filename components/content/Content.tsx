@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react"
+import React, { ReactNode, useRef } from "react"
 import ReactDom from "react-dom"
 import ReactMarkdown, { Components, uriTransformer } from "react-markdown"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
@@ -64,10 +64,8 @@ const h = (sectionStr: string, tag: string) => {
   return h
 }
 
-let solutionCount = 0
 function solution({ node, children, ...props }: ReactMarkdownProps) {
-  solutionCount++
-  return <Solution id={`solution-${solutionCount}`} content={children} />
+  return <Solution content={children} />
 }
 
 type CalloutProps = ReactMarkdownProps & {
