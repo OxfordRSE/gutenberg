@@ -88,7 +88,7 @@ const Overlay: NextPage<Props> = ({
   const handleToggle = () => {
     setSidebarOpen(!sidebarOpen)
   }
-
+  const sectionTitle = section ? section.name : ""
   const attribution = section ? section.attribution : course ? course.attribution : []
 
   return (
@@ -120,7 +120,7 @@ const Overlay: NextPage<Props> = ({
                   .filter((link) => link.direction === "next")
                   .map((link) => <LinkedSection key={link.url} {...link} />)}
             </Stack>
-            {section && <TableOfContents markdown={section.markdown} />}
+            {section && <TableOfContents markdown={section.markdown} tocTitle={sectionTitle} />}
           </>
         )}
         <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />

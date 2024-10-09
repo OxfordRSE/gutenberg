@@ -1,21 +1,38 @@
-import { useEffect, useState, useRef } from "react"
+import { useLayoutEffect, useState, useRef } from "react"
 
 export function useHeadingObserver() {
   const observer = useRef<IntersectionObserver | undefined>()
   const [activeId, setActiveId] = useState<string | null>(null)
 
-  useEffect(() => {
-    const headings = document.querySelectorAll("h2")
-
-    const handleObserver = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry?.isIntersecting) {
-          setActiveId(entry.target.id)
-        }
-      })
-    }
-
+  useLayoutEffect(() => {
     const initializeObserver = () => {
+      const headings = document.querySelectorAll("h2")
+
+      if (headings.length === 0) {
+        return
+      }
+
+      const handleObserver = (entries: IntersectionObserverEntry[]) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveId(entry.target.id)
+          }
+        })
+      }
+
+      const handleScroll = () => {
+        if (headings.length === 0) return
+        // is at the top
+        if (window.scrollY === 0) {
+          setActiveId(headings[0].id)
+        }
+        // is at the bottom
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+          setActiveId(headings[headings.length - 1].id)
+        }
+      }
+
+      window.addEventListener("scroll", handleScroll)
       observer.current = new IntersectionObserver(handleObserver, {
         root: null,
         rootMargin: "-0px 0px -40% 0px",
@@ -27,28 +44,20 @@ export function useHeadingObserver() {
       })
     }
 
-    const handleScroll = () => {
-      if (headings.length === 0) return
+    // Use MutationObserver to detect when headings are added to the DOM
+    const targetNode = document.body
+    const config = { childList: true, subtree: true }
 
-      const isAtTop = window.scrollY === 0
-      if (isAtTop) {
-        setActiveId(headings[0].id)
-      }
-      const isAtBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight
-      if (isAtBottom) {
-        setActiveId(headings[headings.length - 1].id)
-      }
-    }
+    const mutationObserver = new MutationObserver(() => {
+      initializeObserver() // Re-initialize the observer when the DOM changes the mutation observer stops this from breaking on page reload
+    })
 
-    window.addEventListener("scroll", handleScroll)
-
-    initializeObserver()
-
+    mutationObserver.observe(targetNode, config)
     return () => {
-      window.removeEventListener("scroll", handleScroll)
+      mutationObserver.disconnect()
       observer.current?.disconnect()
     }
-  }, [])
+  }, [activeId])
 
   return { activeId }
 }
