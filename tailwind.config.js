@@ -11,7 +11,7 @@ module.exports = {
   },
   mode: "jit",
   // These paths are just examples, customize them to match your project structure
-  purge: [
+  content: [
     "./public/**/*.html",
     "./node_modules/flowbite-react/**/*.js",
     "./components/**/*.{js,jsx,ts,tsx,vue}",
