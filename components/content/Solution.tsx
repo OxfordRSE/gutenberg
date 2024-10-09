@@ -1,17 +1,16 @@
+import { uniqueId } from "cypress/types/lodash"
 import React, { useRef, useState } from "react"
+import { v4 as uuidv4 } from "uuid"
 
 interface SolutionProps {
-  id: string
   content: React.ReactNode
-  instanceId: string
 }
 
-const Solution: React.FC<SolutionProps> = ({ id, content }) => {
+const Solution: React.FC<SolutionProps> = ({ content }) => {
   const [active, setActive] = useState(false)
   const [height, setHeight] = useState("0px")
   const [rotate, setRotate] = useState("transform duration-700 ease")
-  const [solutionCount, setSolutionCount] = useState(0)
-
+  const id = useRef("solution-" + uuidv4())
   const contentSpace = useRef<null | HTMLDivElement>(null)
   const solutionContentSpace = useRef<null | HTMLDivElement>(null)
 
