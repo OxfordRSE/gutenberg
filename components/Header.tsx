@@ -22,7 +22,6 @@ const Header: React.FC<Props> = ({ theme, course, pageInfo }) => {
       <title>{pageTitle}</title>
       {pageInfo && <meta name="description" content={description} />}
       {pageInfo && <link rel="icon" href={logoSrc} />}
-      <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.css" rel="stylesheet" />
     </Head>
   )
 }
