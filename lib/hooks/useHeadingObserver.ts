@@ -14,6 +14,7 @@ export function useHeadingObserver() {
 
       const handleObserver = (entries: IntersectionObserverEntry[]) => {
         entries.forEach((entry) => {
+          console.log(entry.target.id, entry.isIntersecting)
           if (entry.isIntersecting) {
             setActiveId(entry.target.id)
           }

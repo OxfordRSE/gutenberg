@@ -3,7 +3,6 @@ import ReactMarkdown from "react-markdown"
 import { useHeadingObserver } from "lib/hooks/useHeadingObserver"
 import useWindowSize from "lib/hooks/useWindowSize"
 import { Toc } from "@mui/icons-material"
-import { Section } from "lib/material"
 
 interface TableOfContentsProps {
   markdown: any
@@ -11,12 +10,11 @@ interface TableOfContentsProps {
 }
 
 const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }: TableOfContentsProps) => {
-  console.log("tt", tocTitle)
   const { activeId } = useHeadingObserver()
   const windowSize = useWindowSize()
-  console.log(markdown)
   let maxHeightClass = "max-h-72"
-  // might be a better way but trying here to stop it clipping into next section links
+
+  // Adjusting max height based on window size
   if (windowSize.height) {
     if (windowSize.height < 380) {
       maxHeightClass = "max-h-24"
@@ -32,6 +30,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }:
       maxHeightClass = "max-h-96"
     }
   }
+
   const HeadingRenderer = ({ level, children }: { level: number; children: React.ReactNode }) => {
     const Tag = `h${level}`
     const [href, setHref] = useState("")
@@ -42,7 +41,9 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }:
         setHref((window.location.href.split("#")[0] + "#" + headingContent).replaceAll(" ", "-"))
       }
     }, [children])
+
     let headingContent = String(children)?.replaceAll(" ", "-").replaceAll(":", "")
+
     return (
       <li
         key={headingContent}
@@ -60,10 +61,10 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }:
           }
           href={href}
           onClick={(e) => {
-            e.preventDefault() // Prevent the default anchor behavior
-            const targetElement = document.getElementById(headingContent) // Get the target element by ID
+            e.preventDefault()
+            const targetElement = document.getElementById(headingContent)
             if (targetElement) {
-              targetElement.scrollIntoView({ behavior: "smooth", block: "start" }) // Smooth scroll to target element
+              targetElement.scrollIntoView({ behavior: "smooth", block: "start" })
             }
           }}
         >
@@ -74,37 +75,42 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }:
   }
 
   return (
-    <nav
-      className={`${maxHeightClass} absolute top-32 right-0 w-56  p-2 ml-4
-                 overflow-y-auto font-bold pointer-events-auto bg-transparent`}
-    >
-      <div
-        className="flex items-center mb-4"
-        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        style={{ cursor: "pointer" }} // Optional: adds pointer cursor for better UX
-      >
-        <Toc className="mr-2" />
-        <span className="text-sm font-bold">{tocTitle}</span>
+    <div className="absolute top-32 right-0 w-56 p-2 ml-4">
+      {/* Container div that holds both the tocTitle and scrollable nav */}
+      <div className="flex flex-col h-full">
+        <div
+          className="flex items-center mb-4 absolute top-0 z-9999 p-2 bg-transparent"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          style={{ cursor: "pointer", pointerEvents: "auto" }}
+        >
+          <span className="text-sm font-bold -ml-4">
+            <Toc className="mr-2 mb-1" />
+            {tocTitle}
+          </span>
+        </div>
+
+        <nav className={`${maxHeightClass} overflow-y-auto font-bold pointer-events-auto bg-transparent mt-6`}>
+          <ReactMarkdown
+            components={{
+              h1: () => null,
+              h2: HeadingRenderer,
+              h3: () => null,
+              h4: () => null,
+              h5: () => null,
+              h6: () => null,
+              p: () => null,
+              ul: () => null
+              ol: () => null,
+              table: () => null,
+              blockquote: () => null,
+              code: () => null,
+            }}
+          >
+            {markdown || ""}
+          </ReactMarkdown>
+        </nav>
       </div>
-      <ReactMarkdown
-        components={{
-          h1: () => null,
-          h2: HeadingRenderer,
-          h3: () => null,
-          h4: () => null,
-          h5: () => null,
-          h6: () => null,
-          p: () => null,
-          ul: () => null,
-          ol: () => null,
-          table: () => null,
-          blockquote: () => null,
-          code: () => null,
-        }}
-      >
-        {markdown || ""}
-      </ReactMarkdown>
-    </nav>
+    </div>
   )
 }
 
