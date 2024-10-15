@@ -18,8 +18,11 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Tooltip,
 } from "@mui/material"
 import Stack from "./ui/Stack"
+import Thread from "./content/Thread"
+import { FaLink } from "react-icons/fa"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import ExpandLessIcon from "@mui/icons-material/ExpandLess"
 import { CommentThread } from "pages/api/commentThread/[commentThreadId]"
@@ -52,6 +55,7 @@ type Props = {
 }
 
 const EventCommentThreads: React.FC<Props> = ({ material, event }) => {
+  const [activeThreadId, setActiveThreadId] = useState<number | undefined>(undefined)
   const { commentThreads, error: threadsError, isLoading: threadsIsLoading } = useCommentThreads(event.id)
   const [expandedSections, setExpandedSections] = useState<{ [key: string]: boolean }>({})
   const { theme: currentTheme } = useTheme()
@@ -160,6 +164,9 @@ const EventCommentThreads: React.FC<Props> = ({ material, event }) => {
                             <TableCell sx={{ width: "75%" }}>
                               <strong>Comment</strong>
                             </TableCell>
+                            <TableCell sx={{ width: "10%" }}>
+                              <strong>Expand</strong>
+                            </TableCell>
                           </TableRow>
                           {groupedUnresolvedThreads[sectionName].map((thread) => {
                             const urlWithAnchor = url + `#comment-thread-${thread.id}`
@@ -173,7 +180,7 @@ const EventCommentThreads: React.FC<Props> = ({ material, event }) => {
 
                             return (
                               <TableRow key={thread.id}>
-                                <TableCell sx={{ width: "25%", padding: "6px 12px" }}>
+                                <TableCell sx={{ width: "25%" }}>
                                   <Stack direction="row" spacing={1}>
                                     <Avatar
                                       className="pr-2"
@@ -184,10 +191,26 @@ const EventCommentThreads: React.FC<Props> = ({ material, event }) => {
                                     <>{thread.createdByEmail}</>
                                   </Stack>
                                 </TableCell>
-                                <TableCell sx={{ width: "75%", padding: "6px 12px" }}>
+                                <TableCell sx={{ width: "75%" }}>
                                   <Link href={urlWithAnchor}>
-                                    <Typography variant="body1">{commentText}</Typography>
+                                    <Typography variant="body1">
+                                      <Tooltip title="Go to comment thread">
+                                        <span>{commentText}</span>
+                                      </Tooltip>
+                                    </Typography>
                                   </Link>
+                                </TableCell>
+                                <TableCell sx={{ width: "25%" }}>
+                                  <Thread
+                                    key={thread.id}
+                                    thread={thread.id}
+                                    active={activeThreadId === thread.id}
+                                    setActive={(active: boolean) =>
+                                      active ? setActiveThreadId(thread.id) : setActiveThreadId(undefined)
+                                    }
+                                    finaliseThread={() => {}}
+                                    onDelete={() => {}}
+                                  />
                                 </TableCell>
                               </TableRow>
                             )
@@ -249,6 +272,9 @@ const EventCommentThreads: React.FC<Props> = ({ material, event }) => {
                             <TableCell sx={{ width: "75%" }}>
                               <strong>Comment</strong>
                             </TableCell>
+                            <TableCell sx={{ width: "10%" }}>
+                              <strong>Expand</strong>
+                            </TableCell>
                           </TableRow>
                           {groupedResolvedThreads[sectionName].map((thread) => {
                             const urlWithAnchor = url + `#comment-thread-${thread.id}`
@@ -262,14 +288,37 @@ const EventCommentThreads: React.FC<Props> = ({ material, event }) => {
 
                             return (
                               <TableRow key={thread.id}>
-                                <TableCell sx={{ width: "25%", padding: "6px 12px" }}>
-                                  {/* <Avatar size="xs" rounded img={getAvatar(thread.createdByEmail) || undefined} /> */}
-                                  {thread.createdByEmail}
+                                <TableCell sx={{ width: "25%" }}>
+                                  <Stack direction="row" spacing={1}>
+                                    <Avatar
+                                      className="pr-2"
+                                      size="xs"
+                                      rounded
+                                      img={users[thread.createdByEmail]?.image || undefined}
+                                    />
+                                    <>{thread.createdByEmail}</>
+                                  </Stack>
                                 </TableCell>
-                                <TableCell sx={{ width: "75%", padding: "2px 4px" }}>
+                                <TableCell sx={{ width: "75%" }}>
                                   <Link href={urlWithAnchor}>
-                                    <Typography variant="body1">{commentText}</Typography>
+                                    <Typography variant="body1">
+                                      <Tooltip title={`Go to comment thread: ${thread.textRef}`}>
+                                        <span>{commentText}</span>
+                                      </Tooltip>
+                                    </Typography>
                                   </Link>
+                                </TableCell>
+                                <TableCell sx={{ width: "10%" }}>
+                                  <Thread
+                                    key={thread.id}
+                                    thread={thread.id}
+                                    active={activeThreadId === thread.id}
+                                    setActive={(active: boolean) =>
+                                      active ? setActiveThreadId(thread.id) : setActiveThreadId(undefined)
+                                    }
+                                    finaliseThread={() => {}}
+                                    onDelete={() => {}}
+                                  />
                                 </TableCell>
                               </TableRow>
                             )
