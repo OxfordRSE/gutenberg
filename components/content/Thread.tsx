@@ -101,7 +101,6 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadP
   const triggerRef = useRef<HTMLDivElement | null>(null) // Reference for the trigger (Thread component)
 
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 })
-  console.log("Popup position", popupPosition)
   const calculatePosition = () => {
     if (triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect()

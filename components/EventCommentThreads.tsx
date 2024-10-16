@@ -20,9 +20,9 @@ import {
   Paper,
   Tooltip,
 } from "@mui/material"
+import LinkIcon from "@mui/icons-material/Link"
 import Stack from "./ui/Stack"
 import Thread from "./content/Thread"
-import { FaLink } from "react-icons/fa"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import ExpandLessIcon from "@mui/icons-material/ExpandLess"
 import { CommentThread } from "pages/api/commentThread/[commentThreadId]"
@@ -67,8 +67,6 @@ const EventCommentThreads: React.FC<Props> = ({ material, event }) => {
 
   const { users, error: usersError } = useUsersList(emails)
 
-  console.log("us", users)
-
   useEffect(() => {
     if (commentThreads) {
       const unresolvedSectionNames = Object.keys(groupedUnresolvedThreads)
@@ -109,7 +107,6 @@ const EventCommentThreads: React.FC<Props> = ({ material, event }) => {
   )
 
   const toggleSection = (sectionName: string) => {
-    console.log("toggleSection", sectionName, expandedSections)
     setExpandedSections((prevState) => ({
       ...prevState,
       [sectionName]: !prevState[sectionName],
@@ -151,6 +148,13 @@ const EventCommentThreads: React.FC<Props> = ({ material, event }) => {
                         >
                           <Typography variant="body1" fontWeight="bold">
                             {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />} {sectionName}
+                            <LinkIcon
+                              onClick={(e) => {
+                                e.stopPropagation() // Prevent row click event from firing
+                                window.open(url, "_blank") // Open the link in a new tab
+                              }}
+                              style={{ marginLeft: 8, cursor: "pointer" }} // Adjust styling as needed
+                            />
                           </Typography>
                         </TableCell>
                       </TableRow>
@@ -259,6 +263,13 @@ const EventCommentThreads: React.FC<Props> = ({ material, event }) => {
                         >
                           <Typography variant="body1" fontWeight="bold">
                             {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />} {sectionName}
+                            <LinkIcon
+                              onClick={(e) => {
+                                e.stopPropagation() // Prevent row click event from firing
+                                window.open(url, "_blank") // Open the link in a new tab
+                              }}
+                              style={{ marginLeft: 8, cursor: "pointer" }} // Adjust styling as needed
+                            />
                           </Typography>
                         </TableCell>
                       </TableRow>
