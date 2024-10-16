@@ -68,9 +68,13 @@ const EventActions: React.FC<EventActionsProps> = ({ event }) => {
           <HiArrowNarrowRight className="ml-2 h-3 w-3" />
         </Button>
       ) : isRequested ? (
-        <Button color="gray" style={{ zIndex: 1 }} disabled>
-          Requested
-        </Button>
+        <>
+          <Button color="gray" onClick={handleEnrol(event)} style={{ zIndex: 1 }}>
+            Requested
+            <HiArrowNarrowRight className="ml-2 h-3 w-3" />
+          </Button>
+          <EnrolDialog event={event} show={showEvent == event} onEnrol={onEnrol} />
+        </>
       ) : (
         session && (
           <>
