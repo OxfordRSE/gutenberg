@@ -1,7 +1,3 @@
----
-permalink: /
----
-
 # Gutenberg
 
 This is the documentation for `Gutenberg`.
