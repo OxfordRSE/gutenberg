@@ -20,3 +20,5 @@ Once you are up and running, check out the user guide for instructions on how to
 ## Development
 
 If you wish to contribute to `Gutenberg` or simply want to customise the site further please refer to our [development guide](development).
+
+[A full change log can be found here](/changelog).
