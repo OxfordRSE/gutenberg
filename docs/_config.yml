@@ -22,15 +22,13 @@ title: Gutenberg
 email: your-email@example.com
 description: >- # this means to ignore newlines until "baseurl:"
   Gutenberg is a research and teaching platform developed by the Oxford Research Engineering Group
-  at the University of Oxford. 
+  at the University of Oxford.
 baseurl: "/gutenberg" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 
-
 # Build settings
 markdown: kramdown
-# remote_theme: pages-themes/slate
-theme: jekyll-theme-slate
+theme: just-the-docs
 plugins:
   - jekyll-remote-theme
   - jekyll-feed
