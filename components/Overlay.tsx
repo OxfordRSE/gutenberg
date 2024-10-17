@@ -14,6 +14,7 @@ import { LinkedSection, SectionLink } from "./ui/LinkedSection"
 import { Stack } from "@mui/material"
 import useWindowSize from "lib/hooks/useWindowSize"
 import DeleteUserOnEventModal, { deleteUserOnEventModalState } from "./dialogs/deleteUserOnEventModal"
+import TableOfContents from "./TableOfContents"
 
 interface Props {
   material: Material
@@ -87,7 +88,7 @@ const Overlay: NextPage<Props> = ({
   const handleToggle = () => {
     setSidebarOpen(!sidebarOpen)
   }
-
+  const sectionTitle = section ? section.name : ""
   const attribution = section ? section.attribution : course ? course.attribution : []
 
   return (
@@ -119,6 +120,7 @@ const Overlay: NextPage<Props> = ({
                   .filter((link) => link.direction === "next")
                   .map((link) => <LinkedSection key={link.url} {...link} />)}
             </Stack>
+            {section && <TableOfContents markdown={section.markdown} tocTitle={sectionTitle} />}
           </>
         )}
         <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />

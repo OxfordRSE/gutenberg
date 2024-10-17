@@ -137,12 +137,6 @@ function code({ node, inline, className, children, ...props }: CodeProps): JSX.E
   }
 }
 
-//function transformImageUri(src, alt, title)  {
-//  console.log('transformImageUri(', src, alt, title, ')')
-//  let url = uriTransformer(src)
-//  return url
-//}
-
 type Props = {
   markdown: string
   theme?: Theme
