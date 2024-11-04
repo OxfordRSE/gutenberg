@@ -46,7 +46,7 @@ export const LinkedSection = (sectionLink: SectionLink) => {
     (sectionLink.section ? sectionLink.section : "")
 
   const calcAnchorHeight = () => {
-    sectionLink.section!.length > 16 ? `h-[105px]` : `h-[80px]`
+    sectionLink.section && sectionLink.section.length > 16 ? `h-[105px]` : `h-[80px]`
   }
 
   let stackDirection
