@@ -2,6 +2,7 @@ import { EventStatus, UserOnEvent } from "@prisma/client"
 import { Button, Modal, Toast, TextInput } from "flowbite-react"
 import { Event } from "lib/types"
 import { useSession } from "next-auth/react"
+import { useUserOnEvent } from "lib/hooks/useUserOnEvent"
 import React from "react"
 import Content from "./content/Content"
 import { HiCheckCircle, HiMail, HiX } from "react-icons/hi"
@@ -30,8 +31,9 @@ const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol }) => {
   const [keySuccess, setKeySuccess] = React.useState<string | undefined>(undefined)
   const [success, setSuccess] = React.useState<string | null>(null)
   const session = useSession()
+  const { userOnEvent } = useUserOnEvent(event.id)
   const { event: eventData, error: eventError, isLoading: eventIsLoading, mutate: mutateEvent } = useEvent(event.id)
-
+  const isRequested = userOnEvent ? userOnEvent.eventId == event.id && userOnEvent.status == "REQUEST" : false
   const onClose = () => {
     onEnrol(undefined)
   }
@@ -142,8 +144,8 @@ const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol }) => {
         </Modal.Body>
         <Modal.Footer>
           <p>If you have not received an enrolment key, you can request enrolment:</p>
-          <Button data-cy={`request-enrol-${event.id}`} onClick={onClick}>
-            Request Enrollment
+          <Button data-cy={`request-enrol-${event.id}`} onClick={onClick} disabled={isRequested}>
+            {isRequested ? "Enrollment requested" : "Request Enrollment"}
           </Button>
         </Modal.Footer>
       </Modal>
