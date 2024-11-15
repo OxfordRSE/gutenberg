@@ -38,6 +38,7 @@ describe("EventCommentThreads component", () => {
               summary: "",
               type: "course",
               attribution: [],
+              learningOutcomes: ["LO 1", "LO 2"],
               dependsOn: [],
               markdown: "",
               theme: "theme1",
