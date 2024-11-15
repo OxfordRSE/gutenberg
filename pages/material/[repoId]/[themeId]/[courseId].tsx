@@ -11,6 +11,7 @@ import { PageTemplate, pageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
 import CourseGrid from "components/navdiagram/CourseGrid"
 import Stack from "components/ui/Stack"
+import LearningOutcomes from "components/content/LearningOutcomes"
 import Link from "next/link"
 import SubTitle from "components/ui/SubTitle"
 
@@ -35,6 +36,7 @@ const CourseComponent: NextPage<CourseComponentProps> = ({
       <Link className="text-blue-500 italic" href={`/material/${theme.repo}/${theme.id}/${course.id}/diagram`}>
         <SubTitle text="View Course Diagram" />
       </Link>
+      <LearningOutcomes learningOutcomes={course.learningOutcomes} />
       <CourseGrid course={course} theme={theme} />
       <Content markdown={course.markdown} theme={theme} course={course} />
     </Layout>
