@@ -14,6 +14,8 @@ services:
       POSTGRES_USER: postgres
     ports:
       - "5432:5432"
+    volumes:
+      - dev-data:/var/lib/postgresql/data
     
   gutenberg:
     image: gutenberg
@@ -35,3 +37,5 @@ services:
         condition: service_started
     environment:
       DATABASE_URL: postgresql://postgres:super-secret-password@db:5432
+volumes:
+  dev-data:
