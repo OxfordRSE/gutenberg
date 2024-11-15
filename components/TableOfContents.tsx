@@ -75,7 +75,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }:
   }
 
   return (
-    <div className="absolute top-32 right-0 w-56 p-2 ml-4">
+    <div className="absolute top-32 right-0 w-48 p-2 ml-4">
       {/* Container div that holds both the tocTitle and scrollable nav */}
       <div className="flex flex-col h-full">
         <div
