@@ -1,6 +1,4 @@
 # Use postgres/example user/password credentials
-version: "3.9"
-
 services:
   nginx:
     image: nginx:${NGINX_IMAGE_TAG} # stable-alpine3.19
