@@ -1,6 +1,6 @@
 ---
 Title: Deploying with Docker-compose
-permalink: /gutenberg/docker
+permalink: /development/docker
 ---
 
 Gutenberg can be deployed both locally and to production using docker-compose.
@@ -20,7 +20,7 @@ cd gutenberg
 From here we can simply run:
 
 ```
-docker-compose up
+docker compose up
 ```
 
 which should make gutenberg available to you at http://localhost:3000. This will
@@ -30,7 +30,7 @@ this might take a few minutes. If you want to force a rebuild after you've made
 some changes you can append the `--build` flag after `up`, i.e.
 
 ```
-docker-compose up --build
+docker compose up --build
 ```
 
 Although this isn't particularly quick. By default the compose setup will pull
