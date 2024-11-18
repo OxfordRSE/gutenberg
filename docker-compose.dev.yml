@@ -1,5 +1,3 @@
-version: '3.9'
-
 x-vol-args: &args
   volumes: 
     - ./.material:/app/.material
