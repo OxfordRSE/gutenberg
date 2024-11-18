@@ -18,15 +18,20 @@ services:
       - dev-data:/var/lib/postgresql/data
     
   gutenberg:
-    image: gutenberg
+    image: gutenberg-dev
     build:
       context: .
       dockerfile: Dockerfile
+      target: builder
       args: 
         CACHE_BUST: ${CACHE_BUST}
         MATERIAL_METHOD: "pull"
         MATERIAL_DIR: ".material"
         YAML_TEMPLATE: "config/oxford.yaml"
+    command: "yarn dev"
+    volumes:
+      - ./components:/app/components
+      - ./pages:/app/pages
     ports:
       - "3000:3000"
     links: 
