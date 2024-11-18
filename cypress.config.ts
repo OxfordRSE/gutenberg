@@ -1,6 +1,10 @@
 import { defineConfig } from "cypress"
 import path from "path"
 
+// @ts-expect-error: import.meta.dirname is available in Node 20.11 and higher.
+const __dirname = import.meta.dirname
+const { default: installLogsPrinter } = await import("cypress-terminal-report/src/installLogsPrinter")
+
 export default defineConfig({
   env: {
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
@@ -9,7 +13,7 @@ export default defineConfig({
   viewportHeight: 1080,
   e2e: {
     setupNodeEvents(on, config) {
-      require("cypress-terminal-report/src/installLogsPrinter")(on)
+      installLogsPrinter(on)
 
       // implement node event listeners here
       on("before:browser:launch", (browser, launchOptions) => {
@@ -44,8 +48,7 @@ export default defineConfig({
   },
   component: {
     setupNodeEvents(on, config) {
-      const termReportConfig = { printLogsToConsole: "onFail" }
-      require("cypress-terminal-report/src/installLogsPrinter")(on, termReportConfig)
+      installLogsPrinter(on, { printLogsToConsole: "onFail" })
     },
     devServer: {
       framework: "next",
