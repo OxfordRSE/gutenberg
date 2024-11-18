@@ -106,7 +106,7 @@ Now everything should be set up for local development of the core systems.
 
 ## Getting started (using Docker-compose)
 
-Gutenberg also has a deployable dev environment using docker-compose. If you wish to use this alternative then see [getting started using docker compose](blog.oxrse.uk/gutenberg/getting-started-docker-compose).
+Gutenberg also has a deployable dev environment using docker-compose. If you wish to use this alternative then see [getting started using docker compose](https://blog.oxrse.uk/gutenberg/development/docker).
 
 ## Developing material
 
