@@ -1,7 +1,6 @@
 import { defineConfig } from "cypress"
 import path from "path"
 
-// @ts-expect-error: import.meta.dirname is available in Node 20.11 and higher.
 const __dirname = import.meta.dirname
 const { default: installLogsPrinter } = await import("cypress-terminal-report/src/installLogsPrinter")
 
