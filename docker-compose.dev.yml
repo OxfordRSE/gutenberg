@@ -28,8 +28,13 @@ services:
         YAML_TEMPLATE: "config/oxford.yaml"
     command: "yarn dev"
     volumes:
+      - ./.material:/app/.material
+      - ./config:/app/config
       - ./components:/app/components
+      - ./lib:/app/lib
       - ./pages:/app/pages
+      - ./public:/app/public
+      - ./styles:/app/styles
     ports:
       - "3000:3000"
     links: 
