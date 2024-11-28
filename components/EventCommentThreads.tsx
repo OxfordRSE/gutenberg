@@ -116,7 +116,7 @@ const EventCommentThreads: React.FC<Props> = ({ material, event }) => {
   return (
     <div>
       <Accordion defaultExpanded>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} data-cy="unresolved-threads-expand">
           <Typography variant="h6">Unresolved Comment Threads</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -139,7 +139,11 @@ const EventCommentThreads: React.FC<Props> = ({ material, event }) => {
 
                   return (
                     <React.Fragment key={sectionName}>
-                      <TableRow onClick={() => toggleSection(sectionName)} style={{ cursor: "pointer" }}>
+                      <TableRow
+                        onClick={() => toggleSection(sectionName)}
+                        style={{ cursor: "pointer" }}
+                        data-cy={`section:${sectionName}:unresolved`}
+                      >
                         <TableCell
                           colSpan={3}
                           sx={{
@@ -231,7 +235,7 @@ const EventCommentThreads: React.FC<Props> = ({ material, event }) => {
       </Accordion>
 
       <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} data-cy="resolved-threads-expand">
           <Typography variant="h6">Resolved Comment Threads</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -254,7 +258,11 @@ const EventCommentThreads: React.FC<Props> = ({ material, event }) => {
 
                   return (
                     <React.Fragment key={sectionName}>
-                      <TableRow onClick={() => toggleSection(sectionName)} style={{ cursor: "pointer" }}>
+                      <TableRow
+                        onClick={() => toggleSection(sectionName)}
+                        style={{ cursor: "pointer" }}
+                        data-cy={`section:${sectionName}:resolved`}
+                      >
                         <TableCell
                           colSpan={3}
                           sx={{
