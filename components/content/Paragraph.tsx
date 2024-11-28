@@ -27,7 +27,10 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
   const [activeEvent, setActiveEvent] = useActiveEvent()
   const { commentThreads, error, isLoading, mutate } = useCommentThreads(activeEvent?.id)
   const [activeThreadId, setActiveThreadId] = useState<number | undefined>(undefined)
-  const [tempThread, setTempThread] = useState<CommentThread | undefined>(undefined)
+  const [tempThread, setTempThread] = useState<{
+    thread: CommentThread
+    initialAnchor?: { top: number; left: number }
+  } | null>(null)
   const [tempActive, setTempActive] = useState<boolean>(false)
   const email = useSession().data?.user?.email
 
@@ -59,8 +62,10 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
 
   const handleCreateThread = (text: string) => {
     if (!activeEvent) return
+
     const textRefStart = contentText.indexOf(text)
     const textRefEnd = textRefStart + text.length
+    const buttonRect = ref?.current?.getBoundingClientRect()
     const newThread: CommentThread = createEmptyThread(
       activeEvent.id,
       section,
@@ -69,7 +74,10 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
       text,
       email as string
     )
-    setTempThread(newThread)
+    setTempThread({
+      thread: newThread,
+      initialAnchor: buttonRect ? { top: buttonRect.top + window.scrollY, left: buttonRect.left + 355 } : undefined,
+    })
     setTempActive(true)
   }
 
@@ -120,7 +128,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
     postCommentThread(newThread).then((thread) => {
       const newThreads = commentThreads ? [...commentThreads, thread] : [thread]
       mutate(newThreads)
-      setTempThread(undefined)
+      setTempThread(null)
       setActiveThreadId(thread.id)
     })
   }
@@ -154,12 +162,13 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
               ))}
               {tempThread && (
                 <Thread
-                  key={tempThread.id}
-                  thread={tempThread}
+                  key={tempThread.thread.id}
+                  thread={tempThread.thread}
                   active={tempActive}
                   setActive={setTempActive}
                   finaliseThread={finaliseThread}
-                  onDelete={() => handleDeleteThread(tempThread)}
+                  onDelete={() => handleDeleteThread(tempThread.thread)}
+                  initialAnchor={tempThread.initialAnchor}
                 />
               )}
             </div>
