@@ -108,17 +108,17 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAn
   const calculatePosition = () => {
     if (triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect()
-      const popupWidth = 355 // Adjust this value based on your actual popup width
+      const popupWidth = 355
       const viewportWidth = window.innerWidth
 
-      let leftPosition = rect.right + 10 // Position to the right of the thread
+      let leftPosition = rect.left + 35
       if (leftPosition + popupWidth > viewportWidth) {
         // If the popup overflows the viewport, adjust to the left
         leftPosition = rect.left - popupWidth - 10
       }
 
       setPopupPosition({
-        top: rect.top + window.scrollY, // Account for vertical scroll
+        top: rect.top + window.scrollY,
         left: leftPosition,
       })
     }
@@ -128,7 +128,7 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAn
     if (active) {
       calculatePosition()
     }
-  }, [active]) // Recalculate when the active state changes
+  }, [active]) // Recalculate popup position when the thread is opened
 
   const sortedComments = useMemo(() => {
     if (!commentThread) return []
@@ -332,7 +332,7 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAn
           </Stack>
         )}
       </div>,
-      document.body // Render the popup in the root of the document
+      document.body // Render the popup in the body
     )
   }
 
