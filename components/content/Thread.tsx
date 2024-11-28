@@ -56,6 +56,7 @@ interface ThreadProps {
   setActive: (active: boolean) => void
   onDelete: () => void
   finaliseThread: (thread: CommentThread, comment: Comment) => void
+  initialAnchor?: { top: number; left: number }
 }
 
 function useResolveThread(thread: number | CommentThread) {
@@ -84,7 +85,7 @@ function useResolveThread(thread: number | CommentThread) {
   return { commentThread, threadId, commentThreadIsLoading, isLoading, isPlaceholder, mutate }
 }
 
-const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadProps) => {
+const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAnchor }: ThreadProps) => {
   const { commentThread, threadId, commentThreadIsLoading, isLoading, isPlaceholder, mutate } = useResolveThread(thread)
   const { user, isLoading: userIsLoading, error: userError } = useUser(commentThread?.createdByEmail)
   const { userProfile, isLoading: profileLoading, error: profileError } = useProfile()
@@ -97,10 +98,13 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadP
     mutate: mutateEvent,
   } = useEvent(activeEvent?.id)
 
-  const popupRef = useRef<HTMLDivElement | null>(null) // Reference for the popup element
-  const triggerRef = useRef<HTMLDivElement | null>(null) // Reference for the trigger (Thread component)
+  const popupRef = useRef<HTMLDivElement | null>(null) // Reference for the popup element (the comment thread)
+  const triggerRef = useRef<HTMLDivElement | null>(null) // Reference for the trigger (Thread component) in paragraph
 
-  const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 })
+  const [popupPosition, setPopupPosition] = useState(
+    initialAnchor || { top: 0, left: 0 } // Use initialAnchor if provided
+  )
+
   const calculatePosition = () => {
     if (triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect()
@@ -122,7 +126,7 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadP
 
   useEffect(() => {
     if (active) {
-      calculatePosition() // Calculate the position when the popup is active
+      calculatePosition()
     }
   }, [active]) // Recalculate when the active state changes
 
@@ -243,7 +247,7 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadP
         <div className={`flex items-center justify-between rounded-t-lg`}>
           <h3 className="w-full mx-2 my-0 text-base text-slate-100 dark:text-slate-900">{}</h3>
           <Stack direction="row-reverse">
-            <TinyButton onClick={() => setActive(false)}>
+            <TinyButton onClick={() => setActive(false)} dataCy={`Thread:${threadId}:CloseButton`}>
               <IoClose />
             </TinyButton>
             {!isPlaceholder && (
