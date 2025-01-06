@@ -1106,12 +1106,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/eslint-plugin-next@npm:14.2.14":
-  version: 14.2.14
-  resolution: "@next/eslint-plugin-next@npm:14.2.14"
+"@next/eslint-plugin-next@npm:14.2.21":
+  version: 14.2.21
+  resolution: "@next/eslint-plugin-next@npm:14.2.21"
   dependencies:
     glob: 10.3.10
-  checksum: 4ec9c81b22f651afa2ff50910d6055ff169b3a7b8c0134d1ba312f6ceef2c89389b7da6fcd78cde9e6c4ec215a1bce63047781fc6077345393533fb6dcbe3275
+  checksum: 2ccd4dfb54e66d9b8fe9dbb5e0487cd249cb523af4ac2683524d3e538a19cca717bd2335d171bebabe5f7632bdc99528b8dbc041987df94a6ab65ad20c411b2e
   languageName: node
   linkType: hard
 
@@ -5308,11 +5308,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-next@npm:14.2.14":
-  version: 14.2.14
-  resolution: "eslint-config-next@npm:14.2.14"
+"eslint-config-next@npm:14.2.21":
+  version: 14.2.21
+  resolution: "eslint-config-next@npm:14.2.21"
   dependencies:
-    "@next/eslint-plugin-next": 14.2.14
+    "@next/eslint-plugin-next": 14.2.21
     "@rushstack/eslint-patch": ^1.3.3
     "@typescript-eslint/eslint-plugin": ^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0
     "@typescript-eslint/parser": ^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0
@@ -5328,7 +5328,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 6f2c1fbae53d9ef024dc84f509e37746c243f0224024facf2c51c9386e89e26b1873fef636042f2b49c46e63effc74783a07060960581961ee62e1b5e6fcdee3
+  checksum: 4d65ef9e343662dcf2fd9dee63d40c312e1890ec77d65c409668acad8e90717226c61d534110f5e7f7e38d37f83e090434062a3f4b81bb09899846c21e07c89b
   languageName: node
   linkType: hard
 
@@ -6282,7 +6282,7 @@ __metadata:
     dotenv-cli: ^7.0.1
     elkjs: ^0.8.2
     eslint: 8.56.0
-    eslint-config-next: 14.2.14
+    eslint-config-next: 14.2.21
     flowbite: ^1.6.4
     flowbite-react: ^0.5.0
     front-matter: ^4.0.2
