@@ -1,4 +1,5 @@
-import { Avatar, Button, Dropdown, Tooltip } from "flowbite-react"
+import { Button, Dropdown, Tooltip } from "flowbite-react"
+import Avatar from "@mui/material/Avatar"
 import { Course, Material, Section, Theme, getExcludes, Excludes } from "lib/material"
 import { Event, EventFull } from "lib/types"
 import { signIn, signOut, useSession } from "next-auth/react"
@@ -439,15 +440,12 @@ const Navbar: React.FC<Props> = ({
               <span className="inline-flex items-center text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white w-10 h-10">
                 {session ? (
                   <Avatar
-                    role="img"
-                    img={session.user?.image ? session.user?.image : undefined}
-                    className="w-8 h-8"
-                    size="sm"
-                    rounded={true}
+                    src={session.user?.image ? session.user?.image : undefined}
+                    sx={{ width: 32, height: 32 }}
                     data-cy={`avatar-${session.user?.email}`}
                   />
                 ) : (
-                  <Avatar role="img" className="w-8 h-8" size="sm" rounded={true} data-cy={`avatar-not-signed-in`} />
+                  <Avatar sx={{ width: 32, height: 32 }} data-cy={`avatar-not-signed-in`} />
                 )}
               </span>
             }

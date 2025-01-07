@@ -1,4 +1,5 @@
-import { Avatar, Button, Card, Dropdown, Tabs, Tooltip } from "flowbite-react"
+import { Button, Card, Dropdown, Tabs, Tooltip } from "flowbite-react"
+import Avatar from "@mui/material/Avatar"
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Markdown } from "./Content"
 import { Comment } from "pages/api/comment/[commentId]"
@@ -117,7 +118,7 @@ const CommentView = ({
                     </>
                   }
                 >
-                  <Avatar size="xs" rounded img={user?.image || undefined} />
+                  <Avatar src={user?.image || undefined} alt={user?.name || "Sign in"} />
                 </Tooltip>
               </div>
             )}

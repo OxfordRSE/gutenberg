@@ -8,7 +8,8 @@ import NavDiagram from "components/navdiagram/NavDiagram"
 import Title from "components/ui/Title"
 import type { Event, EventFull } from "lib/types"
 import { basePath } from "lib/basePath"
-import { Avatar, Button, Card, Tabs } from "flowbite-react"
+import { Button, Card, Tabs } from "flowbite-react"
+import Avatar from "@mui/material/Avatar"
 import EventProblems from "components/EventProblems"
 import { useForm, Controller, useFieldArray } from "react-hook-form"
 import { useSession } from "next-auth/react"
@@ -145,7 +146,7 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
           {eventUser.map((user, index) => (
             <div key={user.id} className="flex items-center space-x-4">
               <div className="shrink-0">
-                <Avatar img={user.user?.image || undefined} rounded={true} size="sm" />
+                <Avatar src={user.user?.image || undefined} alt={user.user?.name || undefined} />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium text-gray-900 dark:text-white">{user.user?.name}</p>

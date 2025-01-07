@@ -1,4 +1,5 @@
-import { Avatar, Button, ButtonProps, Card, Checkbox, Dropdown, Label, Spinner, Tooltip } from "flowbite-react"
+import { Button, ButtonProps, Card, Checkbox, Dropdown, Label, Spinner, Tooltip } from "flowbite-react"
+import Avatar from "@mui/material/Avatar"
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Markdown } from "./Content"
 import { CommentThread, Comment } from "pages/api/commentThread"
@@ -15,7 +16,7 @@ import putCommentThread from "lib/actions/putCommentThread"
 import useActiveEvent from "lib/hooks/useActiveEvents"
 import useEvent from "lib/hooks/useEvent"
 import useProfile from "lib/hooks/useProfile"
-
+import { createPortal } from "react-dom"
 import Stack from "components/ui/Stack"
 
 import { GoIssueClosed } from "react-icons/go"
@@ -56,6 +57,7 @@ interface ThreadProps {
   setActive: (active: boolean) => void
   onDelete: () => void
   finaliseThread: (thread: CommentThread, comment: Comment) => void
+  initialAnchor?: { top: number; left: number }
 }
 
 function useResolveThread(thread: number | CommentThread) {
@@ -84,7 +86,7 @@ function useResolveThread(thread: number | CommentThread) {
   return { commentThread, threadId, commentThreadIsLoading, isLoading, isPlaceholder, mutate }
 }
 
-const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadProps) => {
+const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAnchor }: ThreadProps) => {
   const { commentThread, threadId, commentThreadIsLoading, isLoading, isPlaceholder, mutate } = useResolveThread(thread)
   const { user, isLoading: userIsLoading, error: userError } = useUser(commentThread?.createdByEmail)
   const { userProfile, isLoading: profileLoading, error: profileError } = useProfile()
@@ -96,6 +98,38 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadP
     isLoading: eventIsLoading,
     mutate: mutateEvent,
   } = useEvent(activeEvent?.id)
+
+  const popupRef = useRef<HTMLDivElement | null>(null) // Reference for the popup element (the comment thread)
+  const triggerRef = useRef<HTMLDivElement | null>(null) // Reference for the trigger (Thread component) in paragraph
+
+  const [popupPosition, setPopupPosition] = useState(
+    initialAnchor || { top: 0, left: 0 } // Use initialAnchor if provided
+  )
+
+  const calculatePosition = () => {
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect()
+      const popupWidth = 355
+      const viewportWidth = window.innerWidth
+
+      let leftPosition = rect.left + 35
+      if (leftPosition + popupWidth > viewportWidth) {
+        // If the popup overflows the viewport, adjust to the left
+        leftPosition = rect.left - popupWidth - 10
+      }
+
+      setPopupPosition({
+        top: rect.top + window.scrollY,
+        left: leftPosition,
+      })
+    }
+  }
+
+  useEffect(() => {
+    if (active) {
+      calculatePosition()
+    }
+  }, [active]) // Recalculate popup position when the thread is opened
 
   const sortedComments = useMemo(() => {
     if (!commentThread) return []
@@ -138,6 +172,7 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadP
   }
 
   const handleOpen = () => {
+    calculatePosition()
     setActive(!active)
   }
 
@@ -175,9 +210,136 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadP
     })
   }
 
+  const renderPopup = () => {
+    if (!active) return null
+
+    return createPortal(
+      <div
+        ref={popupRef}
+        className="absolute w-[355px] border border-gray-200 rounded-lg bg-slate-50 dark:bg-slate-900 dark:border-gray-700 z-50"
+        style={{ top: `${popupPosition.top}px`, left: `${popupPosition.left}px` }} // Apply calculated position
+        data-cy={`Thread:${threadId}:Main`}
+      >
+        <div className="absolute -top-1 left-0 not-prose">
+          <Tooltip
+            content={
+              <>
+                <span className="block text-sm">{user?.name}</span>
+                <span className="block truncate text-sm font-medium">{commentThread?.createdByEmail}</span>
+                <span className="block text-sm">
+                  {commentThread?.created
+                    ? new Date(commentThread?.created).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })
+                    : ""}
+                </span>
+              </>
+            }
+          >
+            <Stack direction="row" spacing={2} className="justify-center">
+              <Avatar sx={{ width: 32, height: 32 }} src={user?.image || undefined} alt={user?.name || "Sign in"} />
+              {commentThread?.resolved === true && (
+                <GoIssueClosed
+                  className="h-6 w-6 font-bold text-green dark:text-green-600"
+                  data-cy={`Thread:${threadId}:IsResolved`}
+                />
+              )}
+            </Stack>
+          </Tooltip>
+        </div>
+        <div className={`flex items-center justify-between rounded-t-lg`}>
+          <h3 className="w-full mx-2 my-0 text-base text-slate-100 dark:text-slate-900">{}</h3>
+          <Stack direction="row-reverse">
+            <TinyButton onClick={() => setActive(false)} dataCy={`Thread:${threadId}:CloseButton`}>
+              <IoClose />
+            </TinyButton>
+            {!isPlaceholder && (
+              <Dropdown
+                renderTrigger={() => (
+                  <TinyButton>
+                    <BiDotsVerticalRounded className="h-4 w-4" data-cy={`Thread:${threadId}:Dropdown`} />
+                  </TinyButton>
+                )}
+                label={undefined}
+                className="not-prose"
+              >
+                <Dropdown.Item
+                  className="hover:bg-gray-400"
+                  icon={commentThread?.instructorOnly === true ? ImEyeBlocked : ImEye}
+                  onClick={handleInstructorOnly}
+                  data-cy={`Thread:${threadId}:Visibility`}
+                >
+                  Visibility
+                </Dropdown.Item>
+                <Dropdown.Item
+                  className="hover:bg-gray-400"
+                  icon={MdDelete}
+                  onClick={handleDelete}
+                  data-cy={`Thread:${threadId}:Delete`}
+                >
+                  Delete
+                </Dropdown.Item>
+              </Dropdown>
+            )}
+          </Stack>
+        </div>
+        {isPlaceholder &&
+          sortedComments.map((comment) => (
+            <RecoilRoot key={comment.id}>
+              <CommentView
+                key={comment.id}
+                comment={comment}
+                mutateComment={savePlaceholder}
+                saveComment={savePlaceholder}
+                deleteComment={deleteComment}
+                isPlaceholder={true}
+                threadEditing={threadEditing}
+                setThreadEditing={setThreadEditing}
+              />
+            </RecoilRoot>
+          ))}
+        {!isPlaceholder &&
+          sortedComments.map((comment) => (
+            <RecoilRoot key={comment.id}>
+              <CommentView
+                key={comment.id}
+                comment={comment}
+                mutateComment={mutateComment}
+                deleteComment={deleteComment}
+                isPlaceholder={false}
+                threadEditing={threadEditing}
+                setThreadEditing={setThreadEditing}
+              />
+            </RecoilRoot>
+          ))}
+        {!isPlaceholder && (
+          <Stack direction="row-reverse">
+            {canResolve && (
+              <Tooltip content="Mark as Resolved" placement="top">
+                <TinyButton onClick={handleResolved} dataCy={`Thread:${threadId}:Resolved`}>
+                  {commentThread?.resolved ? (
+                    <GoIssueClosed className="h-4 w-4 text-green dark:text-green-600" />
+                  ) : (
+                    <GoIssueClosed className="h-4 w-4" />
+                  )}
+                </TinyButton>
+              </Tooltip>
+            )}
+            {!threadEditing && (
+              <Tooltip content="Reply in Thread" placement="top">
+                <TinyButton onClick={handleReply}>
+                  <BiReply className="h-4 w-4" data-cy={`Thread:${threadId}:Reply`} />
+                </TinyButton>
+              </Tooltip>
+            )}
+          </Stack>
+        )}
+      </div>,
+      document.body // Render the popup in the body
+    )
+  }
+
   return (
     <div className="relative" id={`comment-thread-${threadId}`}>
-      <div className="flex justify-end opacity-50 md:opacity-100 xl:justify-start">
+      <div className="flex justify-end opacity-50 md:opacity-100 xl:justify-start" ref={triggerRef}>
         <TinyButton onClick={handleOpen} dataCy={`Thread:${threadId}:OpenCloseButton`}>
           {commentThread?.resolved ? (
             <BiCommentCheck className="text-green dark:text-green-600" />
@@ -186,125 +348,7 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadP
           )}
         </TinyButton>
       </div>
-      {active && (
-        <div
-          className="absolute ml-8 top-0 w-[355px] border border-gray-200 rounded-lg bg-slate-50 dark:bg-slate-900 dark:border-gray-700 mb-4 z-50 "
-          data-cy={`Thread:${threadId}:Main`}
-        >
-          <div className="absolute -top-1 left-0 not-prose">
-            <Tooltip
-              content={
-                <>
-                  <span className="block text-sm">{user?.name}</span>
-                  <span className="block truncate text-sm font-medium">{commentThread?.createdByEmail}</span>
-                  <span className="block text-sm">
-                    {commentThread?.created
-                      ? new Date(commentThread?.created).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })
-                      : ""}
-                  </span>
-                </>
-              }
-            >
-              <Stack direction="row" spacing={2} className="justify-center">
-                <Avatar size="xs" rounded img={user?.image || undefined} />
-                {commentThread?.resolved === true && (
-                  <GoIssueClosed
-                    className="h-6 w-6 font-bold text-green dark:text-green-600"
-                    data-cy={`Thread:${threadId}:IsResolved`}
-                  />
-                )}
-              </Stack>
-            </Tooltip>
-          </div>
-          <div className={`flex items-center justify-between rounded-t-lg`}>
-            <h3 className="w-full mx-2 my-0 text-base text-slate-100 dark:text-slate-900">{}</h3>
-            <Stack direction="row-reverse">
-              <TinyButton onClick={handleClose}>
-                <IoClose />
-              </TinyButton>
-              {!isPlaceholder && (
-                <Dropdown
-                  renderTrigger={() => (
-                    <TinyButton>
-                      <BiDotsVerticalRounded className="h-4 w-4" data-cy={`Thread:${threadId}:Dropdown`} />
-                    </TinyButton>
-                  )}
-                  label={undefined}
-                  className="not-prose"
-                >
-                  <Dropdown.Item
-                    className="hover:bg-gray-400"
-                    icon={commentThread?.instructorOnly === true ? ImEyeBlocked : ImEye}
-                    onClick={handleInstructorOnly}
-                    data-cy={`Thread:${threadId}:Visibility`}
-                  >
-                    Visibility
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    className="hover:bg-gray-400"
-                    icon={MdDelete}
-                    onClick={handleDelete}
-                    data-cy={`Thread:${threadId}:Delete`}
-                  >
-                    Delete
-                  </Dropdown.Item>
-                </Dropdown>
-              )}
-            </Stack>
-          </div>
-          {isPlaceholder &&
-            sortedComments.map((comment) => (
-              <RecoilRoot key={comment.id}>
-                <CommentView
-                  key={comment.id}
-                  comment={comment}
-                  mutateComment={savePlaceholder}
-                  saveComment={savePlaceholder}
-                  deleteComment={deleteComment}
-                  isPlaceholder={true}
-                  threadEditing={threadEditing}
-                  setThreadEditing={setThreadEditing}
-                />
-              </RecoilRoot>
-            ))}
-          {!isPlaceholder &&
-            sortedComments.map((comment) => (
-              <RecoilRoot key={comment.id}>
-                <CommentView
-                  key={comment.id}
-                  comment={comment}
-                  mutateComment={mutateComment}
-                  deleteComment={deleteComment}
-                  isPlaceholder={false}
-                  threadEditing={threadEditing}
-                  setThreadEditing={setThreadEditing}
-                />
-              </RecoilRoot>
-            ))}
-          {!isPlaceholder && (
-            <Stack direction="row-reverse">
-              {canResolve && (
-                <Tooltip content="Mark as Resolved" placement="top">
-                  <TinyButton onClick={handleResolved} dataCy={`Thread:${threadId}:Resolved`}>
-                    {commentThread?.resolved ? (
-                      <GoIssueClosed className="h-4 w-4 text-green dark:text-green-600" />
-                    ) : (
-                      <GoIssueClosed className="h-4 w-4" />
-                    )}
-                  </TinyButton>
-                </Tooltip>
-              )}
-              {!threadEditing && (
-                <Tooltip content="Reply in Thread" placement="top">
-                  <TinyButton onClick={handleReply}>
-                    <BiReply className="h-4 w-4" data-cy={`Thread:${threadId}:Reply`} />
-                  </TinyButton>
-                </Tooltip>
-              )}
-            </Stack>
-          )}
-        </div>
-      )}
+      {renderPopup()} {/* Render the popup using a portal */}
     </div>
   )
 }
