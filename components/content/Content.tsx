@@ -1,8 +1,7 @@
-import React, { ReactNode, useRef } from "react"
-import ReactDom from "react-dom"
-import ReactMarkdown, { Components, uriTransformer } from "react-markdown"
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
-import { CopyToClipboard } from "react-copy-to-clipboard"
+import React, { JSX, ReactNode, useRef } from "react"
+import ReactMarkdown, { ExtraProps, Components } from "react-markdown"
+import { Prism, SyntaxHighlighterProps } from "react-syntax-highlighter"
+import CopyToClipboard from "components/ui/CopyToClipboard"
 import { FaClipboard } from "react-icons/fa"
 
 import { lucario as codeStyle } from "react-syntax-highlighter/dist/cjs/styles/prism"
@@ -17,14 +16,20 @@ import "katex/dist/katex.min.css" // `rehype-katex` does not import the CSS for 
 
 import Challenge from "./Challenge"
 import Solution from "./Solution"
-import { first } from "cypress/types/lodash"
-import remarkDirective from "remark-directive"
-import remarkDirectiveRehype from "remark-directive-rehype"
-import { CodeComponent, CodeProps, HeadingProps, ReactMarkdownProps } from "react-markdown/lib/ast-to-react"
 import Callout from "../Callout"
 import { Course, Section, Theme } from "lib/material"
 import Paragraph from "./Paragraph"
 import Heading from "./Heading"
+
+const SyntaxHighlighter = Prism as any as React.FC<SyntaxHighlighterProps>
+
+type ReactMarkdownProps = JSX.IntrinsicElements["p"] & ExtraProps
+type HeadingProps = JSX.IntrinsicElements["h2"] & ExtraProps
+type CodeProps = JSX.IntrinsicElements["code"] &
+  ExtraProps & {
+    inline?: boolean
+  }
+type ListProps = JSX.IntrinsicElements["li"] & ExtraProps
 
 function reactMarkdownRemarkDirective() {
   return (tree: any) => {
@@ -47,7 +52,7 @@ const p = (sectionStr: string) => {
 }
 
 const list = (sectionStr: string) => {
-  function list({ node, children, ...props }: ReactMarkdownProps) {
+  function list({ node, children, ...props }: ListProps) {
     return (
       <li className="mdli">
         <Paragraph content={children} section={sectionStr} />
@@ -88,7 +93,7 @@ const challenge = (sectionStr: string) => {
   return challenge
 }
 
-function code({ node, inline, className, children, ...props }: CodeProps): JSX.Element {
+function code({ node, inline, className, children, ...props }: CodeProps): React.JSX.Element {
   const match = /language-(\w+)/.exec(className || "")
   const code = String(children).replace(/\n$/, "")
   if (!inline) {
@@ -102,12 +107,12 @@ function code({ node, inline, className, children, ...props }: CodeProps): JSX.E
             </button>
           </CopyToClipboard>
           <SyntaxHighlighter
+            {...(props as any)}
+            language={match[1]}
+            PreTag="div"
             style={codeStyle}
             codeTagProps={{ className: "text-sm" }}
-            language={match[1]}
             customStyle={{ margin: 0 }}
-            PreTag="div"
-            {...props}
           >
             {code}
           </SyntaxHighlighter>
