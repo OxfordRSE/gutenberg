@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react"
 import { Material, sectionSplit } from "lib/material"
 import { EventFull } from "lib/types"
-import { Avatar } from "flowbite-react"
+import Avatar from "@mui/material/Avatar"
 import Link from "next/link"
 import useCommentThreads from "lib/hooks/useCommentThreads"
 import { useTheme } from "next-themes"
@@ -84,12 +84,12 @@ const EventCommentThreads: React.FC<Props> = ({ material, event }) => {
         initialExpandedState[sectionName] = true
       })
 
-      // ensure noSectionKey is collapsed
+      // ensure if the section was not found then that section is collapsed
       initialExpandedState[noSectionKey] = false
 
       setExpandedSections(initialExpandedState)
     }
-  }, [commentThreads]) // Only run when commentThreads change
+  }, [commentThreads])
 
   if (threadsIsLoading) return <div>Loading...</div>
   if (!commentThreads) return <div>Failed to load</div>
@@ -192,9 +192,9 @@ const EventCommentThreads: React.FC<Props> = ({ material, event }) => {
                                   <Stack direction="row" spacing={1}>
                                     <Avatar
                                       className="pr-2"
-                                      size="xs"
-                                      rounded
-                                      img={users[thread.createdByEmail]?.image || undefined}
+                                      sx={{ width: 24, height: 24 }}
+                                      src={users[thread.createdByEmail]?.image || undefined}
+                                      alt={users[thread.createdByEmail]?.name || undefined}
                                     />
                                     <>{thread.createdByEmail}</>
                                   </Stack>
@@ -311,9 +311,8 @@ const EventCommentThreads: React.FC<Props> = ({ material, event }) => {
                                   <Stack direction="row" spacing={1}>
                                     <Avatar
                                       className="pr-2"
-                                      size="xs"
-                                      rounded
-                                      img={users[thread.createdByEmail]?.image || undefined}
+                                      src={users[thread.createdByEmail]?.image || undefined}
+                                      alt={users[thread.createdByEmail]?.name || undefined}
                                     />
                                     <>{thread.createdByEmail}</>
                                   </Stack>

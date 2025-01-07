@@ -1,7 +1,8 @@
 import React from "react"
 import { Course, Material, Section, Theme, eventItemSplit } from "lib/material"
 import { EventFull, Event, Problem } from "lib/types"
-import { Avatar, Table } from "flowbite-react"
+import { Table } from "flowbite-react"
+import Avatar from "@mui/material/Avatar"
 import { useProblems } from "lib/hooks/useProblems"
 import useUsersOnEvent from "lib/hooks/useUsersOnEvent"
 import Tooltip from "@mui/material/Tooltip"
@@ -36,7 +37,7 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
           <Table.HeadCell key={user.userEmail} align="center" className="p-0">
             <Tooltip title={`${user?.user?.name} <${user?.userEmail}>`}>
               <div>
-                <Avatar img={user?.user?.image || undefined} rounded={true} size="xs" />
+                <Avatar src={user?.user?.image || undefined} />
               </div>
             </Tooltip>
           </Table.HeadCell>

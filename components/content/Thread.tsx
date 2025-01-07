@@ -1,4 +1,5 @@
-import { Avatar, Button, ButtonProps, Card, Checkbox, Dropdown, Label, Spinner, Tooltip } from "flowbite-react"
+import { Button, ButtonProps, Card, Checkbox, Dropdown, Label, Spinner, Tooltip } from "flowbite-react"
+import Avatar from "@mui/material/Avatar"
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Markdown } from "./Content"
 import { CommentThread, Comment } from "pages/api/commentThread"
@@ -234,7 +235,7 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAn
             }
           >
             <Stack direction="row" spacing={2} className="justify-center">
-              <Avatar size="xs" rounded img={user?.image || undefined} />
+              <Avatar sx={{ width: 32, height: 32 }} src={user?.image || undefined} alt={user?.name || "Sign in"} />
               {commentThread?.resolved === true && (
                 <GoIssueClosed
                   className="h-6 w-6 font-bold text-green dark:text-green-600"

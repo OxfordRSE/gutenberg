@@ -4,7 +4,8 @@ import { Material } from "lib/material"
 import { EventFull, Event, Problem } from "lib/types"
 import useSWR, { Fetcher } from "swr"
 import Title from "components/ui/Title"
-import { Avatar, Button, Card, Timeline } from "flowbite-react"
+import { Button, Card, Timeline } from "flowbite-react"
+import Avatar from "@mui/material/Avatar"
 import { ListGroup } from "flowbite-react"
 import { basePath } from "lib/basePath"
 import { useFieldArray, useForm } from "react-hook-form"
@@ -88,7 +89,7 @@ const EventUsers: React.FC<Props> = ({ event }) => {
                   <li className="py-3 sm:py-4">
                     <div className="flex items-center space-x-4">
                       <div className="shrink-0">
-                        <Avatar img={user.user.image || undefined} rounded={true} size="sm" />
+                        <Avatar src={user.user.image || undefined} alt={user.user.name || undefined} />
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-medium text-gray-900 dark:text-white">{user.user.name}</p>
