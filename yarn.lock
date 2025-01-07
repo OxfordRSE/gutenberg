@@ -6567,6 +6567,7 @@ __metadata:
     isomorphic-dompurify: ^0.23.0
     isomorphic-git: ^1.21.0
     jose: ^4.15.5
+    jotai: ^2.11.0
     js-yaml: ^4.1.0
     marked: ^4.1.1
     next: 15.1.3
@@ -6588,7 +6589,6 @@ __metadata:
     react-string-replace: ^1.1.1
     react-syntax-highlighter: ^15.6.1
     reactflow: ^11.11.4
-    recoil: ^0.7.0
     rehype-katex: ^7.0.1
     remark-directive: ^3.0.0
     remark-directive-rehype: ^0.4.2
@@ -6616,13 +6616,6 @@ __metadata:
   dependencies:
     duplexer: ^0.1.2
   checksum: 2df97f359696ad154fc171dcb55bc883fe6e833bca7a65e457b9358f3cb6312405ed70a8da24a77c1baac0639906cd52358dc0ce2ec1a937eaa631b934c94194
-  languageName: node
-  linkType: hard
-
-"hamt_plus@npm:1.0.2":
-  version: 1.0.2
-  resolution: "hamt_plus@npm:1.0.2"
-  checksum: af26ea32db03009019cc83dfa9411521a2fa16079443de1a502c9be46d8b3c975acda8ed93fc5750ef08d3186d35901e2d8cfe717dd54bea67b358601fa74e4c
   languageName: node
   linkType: hard
 
@@ -7662,6 +7655,21 @@ __metadata:
   version: 4.15.9
   resolution: "jose@npm:4.15.9"
   checksum: 41abe1c99baa3cf8a78ebbf93da8f8e50e417b7a26754c4afa21865d87527b8ac2baf66de2c5f6accc3f7d7158658dae7364043677236ea1d07895b040097f15
+  languageName: node
+  linkType: hard
+
+"jotai@npm:^2.11.0":
+  version: 2.11.0
+  resolution: "jotai@npm:2.11.0"
+  peerDependencies:
+    "@types/react": ">=17.0.0"
+    react: ">=17.0.0"
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    react:
+      optional: true
+  checksum: fcac735f6183cf6b32154ab07a5117cf79f9be4c9c5a06ed797021da6f7b6619ae696fa1b45bf69fbdc9c213e31f2c6bbe842ff10ea154cb4e1ae4a1a79430b9
   languageName: node
   linkType: hard
 
@@ -10696,22 +10704,6 @@ __metadata:
   dependencies:
     picomatch: ^2.2.1
   checksum: 1ced032e6e45670b6d7352d71d21ce7edf7b9b928494dcaba6f11fba63180d9da6cd7061ebc34175ffda6ff529f481818c962952004d273178acd70f7059b320
-  languageName: node
-  linkType: hard
-
-"recoil@npm:^0.7.0":
-  version: 0.7.7
-  resolution: "recoil@npm:0.7.7"
-  dependencies:
-    hamt_plus: 1.0.2
-  peerDependencies:
-    react: ">=16.13.1"
-  peerDependenciesMeta:
-    react-dom:
-      optional: true
-    react-native:
-      optional: true
-  checksum: 65edecbcb8d2cde89bfd61ec679c200483472a6cd343c33e4e9142b6ce524fb17d1fecc2bfd8c392926aaa8178c81457f165b32abce2a9662f51f98822c0a9cc
   languageName: node
   linkType: hard
 

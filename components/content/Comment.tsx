@@ -13,12 +13,9 @@ import Stack from "components/ui/Stack"
 import { TinyButton } from "./Thread"
 import deleteCommentAction from "lib/actions/deleteComment"
 import useUser from "lib/hooks/useUser"
-import { useRecoilState, atom } from "recoil"
+import { useAtom, atom } from "jotai"
 
-export const textAreaValue = atom({
-  key: "textAreaValue",
-  default: "",
-})
+export const textAreaValue = atom("")
 
 interface Props {
   comment: Comment
