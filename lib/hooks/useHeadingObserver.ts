@@ -1,7 +1,7 @@
 import { useLayoutEffect, useState, useRef } from "react"
 
 export function useHeadingObserver() {
-  const observer = useRef<IntersectionObserver | undefined>()
+  const observer = useRef<IntersectionObserver | undefined>(undefined)
   const [activeId, setActiveId] = useState<string | null>(null)
 
   useLayoutEffect(() => {
