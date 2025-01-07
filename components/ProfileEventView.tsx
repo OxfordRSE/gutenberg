@@ -4,7 +4,7 @@ import { Problem } from "@prisma/client"
 import { EventFull as Event, UserOnEvent } from "lib/types"
 import UserEventProblems from "components/UserEventProblems"
 import { PageTemplate } from "lib/pageTemplate"
-import { useRecoilState } from "recoil"
+import { useAtom } from "jotai"
 import deleteUserOnEventModal, {
   deleteUserOnEventModalState,
   deleteUserOnEventIdState,
@@ -22,8 +22,8 @@ type EventProps = {
 }
 
 const ProfileEventView: React.FC<EventProps> = ({ material, event, userProblems, userOnEvent }) => {
-  const [showDeleteUserOnEventModal, setShowDeleteUserOnEventModal] = useRecoilState(deleteUserOnEventModalState)
-  const [deleteUserOnEventId, setDeleteUserOnEventId] = useRecoilState(deleteUserOnEventIdState)
+  const [showDeleteUserOnEventModal, setShowDeleteUserOnEventModal] = useAtom(deleteUserOnEventModalState)
+  const [deleteUserOnEventId, setDeleteUserOnEventId] = useAtom(deleteUserOnEventIdState)
 
   const openDeleteUserOnEventModal = (eventId: number) => {
     setShowDeleteUserOnEventModal(true)
