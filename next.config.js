@@ -7,7 +7,6 @@ import { withPlausibleProxy } from "next-plausible"
 
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   trailingSlash: false,
   images: {
     remotePatterns: [
