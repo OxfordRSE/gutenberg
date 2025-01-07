@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import ReactMarkdown from "react-markdown"
+import ReactMarkdown, { ExtraProps } from "react-markdown"
 import { useHeadingObserver } from "lib/hooks/useHeadingObserver"
 import useWindowSize from "lib/hooks/useWindowSize"
 import { Toc } from "@mui/icons-material"
@@ -8,6 +8,8 @@ interface TableOfContentsProps {
   markdown: any
   tocTitle: string
 }
+
+type HeadingProps = React.JSX.IntrinsicElements["h2"] & ExtraProps & { level: number }
 
 const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }: TableOfContentsProps) => {
   const { activeId } = useHeadingObserver()
@@ -31,7 +33,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }:
     }
   }
 
-  const HeadingRenderer = ({ level, children }: { level: number; children: React.ReactNode }) => {
+  const HeadingRenderer = ({ level, children }: any) => {
     const Tag = `h${level}`
     const [href, setHref] = useState("")
 

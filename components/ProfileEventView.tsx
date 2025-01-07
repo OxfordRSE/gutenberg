@@ -47,7 +47,7 @@ const ProfileEventView: React.FC<EventProps> = ({ material, event, userProblems,
             className="text-xs mt-2"
             color="failure"
             data-cy={`delete-event-${event.id}`}
-            size={8}
+            size="md"
             onClick={() => openDeleteUserOnEventModal(event.id)}
           >
             Remove

@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import CopyToClipboard from "react-copy-to-clipboard"
+import CopyToClipboard from "components/ui/CopyToClipboard"
 import { FaLink } from "react-icons/fa"
 
 interface HeadingProps {
@@ -9,7 +9,7 @@ interface HeadingProps {
 }
 
 const Heading: React.FC<HeadingProps> = ({ content, section, tag }) => {
-  const Tag = tag as keyof JSX.IntrinsicElements
+  const Tag = tag as keyof React.JSX.IntrinsicElements
   const [isCopied, setIsCopied] = useState(false)
 
   const generateHeadingContent = () => {
