@@ -12,7 +12,7 @@ import Overlay from "./Overlay"
 import Navbar from "./Navbar"
 import { useSidebarOpen } from "lib/hooks/useSidebarOpen"
 import useActiveEvent from "lib/hooks/useActiveEvents"
-import { RecoilRoot } from "recoil"
+import { Provider } from "jotai"
 import { PageTemplate } from "lib/pageTemplate"
 import { SectionLink } from "./ui/LinkedSection"
 import { findLinks } from "lib/findSectionLinks"
@@ -45,7 +45,7 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
 
   const muiTheme = React.useMemo(() => (currentTheme === "light" ? LightTheme : DarkTheme), [currentTheme])
   return (
-    <RecoilRoot>
+    <Provider>
       <ThemeProvider theme={muiTheme}>
         <div className="container mx-auto">
           <Link href="#main" className="sr-only focus:not-sr-only">
@@ -93,7 +93,7 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
           <Footer pageInfo={pageInfo} />
         </div>
       </ThemeProvider>
-    </RecoilRoot>
+    </Provider>
   )
 }
 

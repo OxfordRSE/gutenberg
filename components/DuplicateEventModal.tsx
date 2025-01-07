@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import { useState } from "react"
 import { Button, Modal } from "flowbite-react"
-import { atom, useRecoilState } from "recoil"
+import { atom, useAtom } from "jotai"
 import useEvent from "lib/hooks/useEvent"
 import useEvents from "lib/hooks/useEvents"
 import { postEvent } from "lib/actions/postEvent"
@@ -21,19 +21,13 @@ interface DuplicateEventForm {
   date: Date
 }
 
-export const duplicateEventModalState = atom({
-  key: "duplicateEventModalState",
-  default: false,
-})
+export const duplicateEventModalState = atom<boolean>(false)
 
-export const duplicateEventIdState = atom<number>({
-  key: "duplicateEventIdState",
-  default: undefined,
-})
+export const duplicateEventIdState = atom<number | undefined>(undefined)
 
 export const DuplicateEventModal: React.FC<DuplicateEventProps> = ({ onClose }) => {
-  const [showDuplicateEventModal, setShowDuplicateEventModal] = useRecoilState(duplicateEventModalState)
-  const [duplicateEventId, setDuplicateEventId] = useRecoilState(duplicateEventIdState)
+  const [showDuplicateEventModal, setShowDuplicateEventModal] = useAtom(duplicateEventModalState)
+  const [duplicateEventId, setDuplicateEventId] = useAtom(duplicateEventIdState)
   const { events: currentEvents, mutate } = useEvents()
   const { event } = useEvent(duplicateEventId)
   const { events, mutate: mutateEvents } = useEvents()

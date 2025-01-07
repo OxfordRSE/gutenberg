@@ -2,7 +2,7 @@ import React from "react"
 import { useState, useEffect } from "react"
 import { Button, Modal } from "flowbite-react"
 import Stack from "./ui/Stack"
-import { atom, useRecoilState } from "recoil"
+import { atom, useAtom } from "jotai"
 import useEvent from "lib/hooks/useEvent"
 import { deleteEvent } from "lib/actions/deleteEvent"
 import useEvents from "lib/hooks/useEvents"
@@ -13,19 +13,13 @@ interface DeleteEventProps {
   onClose: () => void
 }
 
-export const deleteEventModalState = atom({
-  key: "deleteEventModalState",
-  default: false,
-})
+export const deleteEventModalState = atom<boolean>(false)
 
-export const deleteEventIdState = atom<number>({
-  key: "deleteEventIdState",
-  default: undefined,
-})
+export const deleteEventIdState = atom<number | undefined>(undefined)
 
 export const DeleteEventModal: React.FC<DeleteEventProps> = ({ onClose }) => {
-  const [showDeleteEventModal, setShowDeleteEventModal] = useRecoilState(deleteEventModalState)
-  const [deleteEventId, setDeleteEventId] = useRecoilState(deleteEventIdState)
+  const [showDeleteEventModal, setShowDeleteEventModal] = useAtom(deleteEventModalState)
+  const [deleteEventId, setDeleteEventId] = useAtom(deleteEventIdState)
   const { event } = useEvent(deleteEventId)
   const { events, mutate: mutateEvents } = useEvents()
   const [success, setSuccess] = useState<string | null>(null)

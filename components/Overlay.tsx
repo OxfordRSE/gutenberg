@@ -7,7 +7,7 @@ import { HiAtSymbol, HiArrowCircleLeft, HiArrowCircleRight, HiCalendar } from "r
 import AttributionDialog from "./AttributionDialog"
 import Sidebar from "./Sidebar"
 import { SearchDialog, searchQueryState } from "components/SearchDialog"
-import { useRecoilState } from "recoil"
+import { useAtom } from "jotai"
 import { DeleteEventModal, deleteEventModalState } from "components/deleteEventModal"
 import { DuplicateEventModal, duplicateEventModalState } from "components/DuplicateEventModal"
 import { LinkedSection, SectionLink } from "./ui/LinkedSection"
@@ -41,11 +41,11 @@ const Overlay: NextPage<Props> = ({
   setSidebarOpen,
   sectionLinks,
 }: Props) => {
-  const [showSearch, setShowSearch] = useRecoilState(searchQueryState)
+  const [showSearch, setShowSearch] = useAtom(searchQueryState)
   const [showTopButtons, setShowTopButtons] = useState(false)
-  const [showDeleteEventModal, setShowDeleteEventModal] = useRecoilState(deleteEventModalState)
-  const [showDuplicateEventModal, setShowDuplicateEventModal] = useRecoilState(duplicateEventModalState)
-  const [showDeleteUserOnEventModal, setShowDeleteUserOnEventModal] = useRecoilState(deleteUserOnEventModalState)
+  const [showDeleteEventModal, setShowDeleteEventModal] = useAtom(deleteEventModalState)
+  const [showDuplicateEventModal, setShowDuplicateEventModal] = useAtom(duplicateEventModalState)
+  const [showDeleteUserOnEventModal, setShowDeleteUserOnEventModal] = useAtom(deleteUserOnEventModalState)
   const windowSize = useWindowSize()
   // remove duplicate links in case activeevent includes the same section as dependsOn, reverse so AE comes first
   sectionLinks = sectionLinks
