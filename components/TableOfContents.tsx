@@ -33,7 +33,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }:
     }
   }
 
-  const HeadingRenderer = ({ level, children }: any) => {
+  const HeadingRenderer = ({ level, children }: HeadingProps) => {
     const Tag = `h${level}`
     const [href, setHref] = useState("")
 
