@@ -3,11 +3,9 @@ import { useLayoutEffect, useState, useRef } from "react"
 export function useHeadingObserver() {
   const observer = useRef<IntersectionObserver | undefined>(undefined)
   const [activeId, setActiveId] = useState<string | null>(null)
-
   useLayoutEffect(() => {
     const initializeObserver = () => {
       const headings = document.querySelectorAll("h2")
-
       if (headings.length === 0) {
         return
       }
@@ -16,6 +14,8 @@ export function useHeadingObserver() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setActiveId(entry.target.id)
+            console.log("helpme", activeId)
+            console.log(entry)
           }
         })
       }
