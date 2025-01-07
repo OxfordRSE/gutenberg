@@ -8,7 +8,6 @@ import plausibleHost from "./lib/plausibleHost.js"
 
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   trailingSlash: false,
   images: {
     remotePatterns: [
