@@ -23,13 +23,10 @@ import Heading from "./Heading"
 
 const SyntaxHighlighter = Prism as any as React.FC<SyntaxHighlighterProps>
 
-type ReactMarkdownProps = JSX.IntrinsicElements["p"] & ExtraProps
-type HeadingProps = JSX.IntrinsicElements["h2"] & ExtraProps
-type CodeProps = JSX.IntrinsicElements["code"] &
-  ExtraProps & {
-    inline?: boolean
-  }
-type ListProps = JSX.IntrinsicElements["li"] & ExtraProps
+type ReactMarkdownProps = React.JSX.IntrinsicElements["p"] & ExtraProps
+type HeadingProps = React.JSX.IntrinsicElements["h2"] & ExtraProps
+type CodeProps = React.JSX.IntrinsicElements["code"] & ExtraProps
+type ListProps = React.JSX.IntrinsicElements["li"] & ExtraProps
 
 function reactMarkdownRemarkDirective() {
   return (tree: any) => {
@@ -93,10 +90,12 @@ const challenge = (sectionStr: string) => {
   return challenge
 }
 
-function code({ node, inline, className, children, ...props }: CodeProps): React.JSX.Element {
+function code({ node, className, children, ...props }: CodeProps): React.JSX.Element {
   const match = /language-(\w+)/.exec(className || "")
   const code = String(children).replace(/\n$/, "")
-  if (!inline) {
+  const isBlockCode = Boolean(className && /language-(\w+)/.test(className))
+
+  if (isBlockCode) {
     if (match) {
       return (
         <div className="relative m-0">
