@@ -13,6 +13,11 @@ const Heading: React.FC<HeadingProps> = ({ content, section, tag }) => {
   const [isCopied, setIsCopied] = useState(false)
 
   const generateHeadingContent = () => {
+    if (typeof content === "string") {
+      // NOTE(ADW): I think the behaviour here has been changed in react 19 and we get a string instead of an object
+      // I have kept the old code in case this is not universally true.
+      return content.replace(/#/g, "").trim().replace(/ /g, "-").replace(/:/g, "").replace(/`/g, "").replace(/$/g, "")
+    }
     let headingContent = ""
     if (typeof content === "object") {
       for (let key in content) {
@@ -22,7 +27,13 @@ const Heading: React.FC<HeadingProps> = ({ content, section, tag }) => {
           headingContent += (content as any)[key]
         }
       }
-      return headingContent.replace(/#/g, "").trim().replace(/ /g, "-").replace(/:/g, "").replace(/`/g, "")
+      return headingContent
+        .replace(/#/g, "")
+        .trim()
+        .replace(/ /g, "-")
+        .replace(/:/g, "")
+        .replace(/`/g, "")
+        .replace(/$/g, "")
     }
   }
 
