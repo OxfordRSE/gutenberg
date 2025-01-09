@@ -14,8 +14,6 @@ export function useHeadingObserver() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setActiveId(entry.target.id)
-            console.log("helpme", activeId)
-            console.log(entry)
           }
         })
       }
