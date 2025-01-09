@@ -3,6 +3,8 @@ import ReactMarkdown, { ExtraProps } from "react-markdown"
 import { useHeadingObserver } from "lib/hooks/useHeadingObserver"
 import useWindowSize from "lib/hooks/useWindowSize"
 import { Toc } from "@mui/icons-material"
+import { max } from "cypress/types/lodash"
+import { margin } from "@mui/system"
 
 interface TableOfContentsProps {
   markdown: any
@@ -15,6 +17,11 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }:
   const { activeId } = useHeadingObserver()
   const windowSize = useWindowSize()
   let maxHeightClass = "max-h-72"
+
+  let marginTopClass = "mt-6"
+  if (tocTitle.length >= 22) {
+    marginTopClass = "mt-12"
+  }
 
   // Adjusting max height based on window size
   if (windowSize.height) {
@@ -91,7 +98,9 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }:
           </span>
         </div>
 
-        <nav className={`${maxHeightClass} overflow-y-auto font-bold pointer-events-auto bg-transparent mt-6`}>
+        <nav
+          className={`${maxHeightClass} overflow-y-auto font-bold pointer-events-auto bg-transparent ${marginTopClass}`}
+        >
           <ReactMarkdown
             components={{
               h1: () => null,
