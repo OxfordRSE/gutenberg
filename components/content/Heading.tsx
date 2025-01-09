@@ -51,14 +51,14 @@ const Heading: React.FC<HeadingProps> = ({ content, section, tag }) => {
 
   return (
     <>
-      <Tag id={generateHeadingContent()}>
-        {content}
+      <Tag id={generateHeadingContent()} className="inline-flex items-center space-x-2">
+        <span>{content}</span> {/* Ensure the content stays inline */}
         <CopyToClipboard text={generateHeadingURL()}>
-          <button className="text-xs align-center" onClick={onCopyHandler}>
-            <FaLink className="group-hover:text-white ml-3" />
+          <button className="text-xs flex items-center space-x-1" onClick={onCopyHandler}>
+            <FaLink className="group-hover:text-white" />
           </button>
         </CopyToClipboard>
-        {isCopied && <span className="text-xs text-green-500 items-center ml-3">Copied to clipboard!</span>}
+        {isCopied && <span className="text-xs text-green-500 ml-3">Copied to clipboard!</span>}
       </Tag>
     </>
   )
