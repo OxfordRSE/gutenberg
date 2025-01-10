@@ -20,6 +20,7 @@ import Callout from "../Callout"
 import { Course, Section, Theme } from "lib/material"
 import Paragraph from "./Paragraph"
 import Heading from "./Heading"
+import { reduceRepeatingPatterns, extractTextValues } from "lib/utils"
 
 const SyntaxHighlighter = Prism as any as React.FC<SyntaxHighlighterProps>
 
@@ -61,7 +62,9 @@ const list = (sectionStr: string) => {
 
 const h = (sectionStr: string, tag: string) => {
   function h({ node, children, ...props }: HeadingProps) {
-    return <Heading content={children} section={sectionStr} tag={tag} />
+    // so we can have ids that match the anchor links
+    const spanId = reduceRepeatingPatterns(extractTextValues(node)).replace(/ /g, "-").replace(/:/g, "")
+    return <Heading content={children} section={sectionStr} tag={tag} spanId={spanId} />
   }
   return h
 }
@@ -174,10 +177,6 @@ const Content: React.FC<Props> = ({ markdown, theme, course, section }) => {
       </ReactMarkdown>
     </div>
   )
-}
-
-type MarkdownProps = {
-  markdown: string
 }
 
 export const Markdown: React.FC<Props> = ({ markdown }) => {

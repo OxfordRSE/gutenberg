@@ -1,14 +1,16 @@
 import React, { useState } from "react"
 import CopyToClipboard from "components/ui/CopyToClipboard"
 import { FaLink } from "react-icons/fa"
+import { reduceRepeatingPatterns } from "lib/utils"
 
 interface HeadingProps {
   content: React.ReactNode
   section: string
   tag: string
+  spanId?: string
 }
 
-const Heading: React.FC<HeadingProps> = ({ content, section, tag }) => {
+const Heading: React.FC<HeadingProps> = ({ content, section, tag, spanId }) => {
   const Tag = tag as keyof React.JSX.IntrinsicElements
   const [isCopied, setIsCopied] = useState(false)
 
@@ -52,7 +54,7 @@ const Heading: React.FC<HeadingProps> = ({ content, section, tag }) => {
   return (
     <>
       <Tag id={generateHeadingContent()} className="inline-flex items-center space-x-2">
-        <span>{content}</span> {/* Ensure the content stays inline */}
+        <span id={spanId}>{content}</span>
         <CopyToClipboard text={generateHeadingURL()}>
           <button className="text-xs flex items-center space-x-1" onClick={onCopyHandler}>
             <FaLink className="group-hover:text-white" />
