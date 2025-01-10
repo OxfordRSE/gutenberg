@@ -11,10 +11,11 @@ interface TableOfContentsProps {
   tocTitle: string
 }
 
-type HeadingProps = React.JSX.IntrinsicElements["h2"] & ExtraProps & { level: number }
+type HeadingProps = React.JSX.IntrinsicElements["h2"] & ExtraProps
 
 const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }: TableOfContentsProps) => {
   const { activeId } = useHeadingObserver()
+
   const windowSize = useWindowSize()
   let maxHeightClass = "max-h-72"
 
@@ -40,9 +41,9 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }:
     }
   }
 
-  const HeadingRenderer = ({ level, children }: HeadingProps) => {
-    const Tag = `h${level}`
+  const HeadingRenderer = ({ children }: HeadingProps) => {
     const [href, setHref] = useState("")
+    children = String(children).replaceAll("$", "")
 
     useEffect(() => {
       const headingContent = String(children)?.replaceAll(" ", "-")
@@ -50,7 +51,6 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }:
         setHref((window.location.href.split("#")[0] + "#" + headingContent).replaceAll(" ", "-"))
       }
     }, [children])
-
     let headingContent = String(children)?.replaceAll(" ", "-").replaceAll(":", "")
 
     return (
