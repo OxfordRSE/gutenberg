@@ -21,21 +21,23 @@ const Heading: React.FC<HeadingProps> = ({ content, section, tag, spanId }) => {
       return content.replace(/#/g, "").trim().replace(/ /g, "-").replace(/:/g, "").replace(/`/g, "").replace(/$/g, "")
     }
     let headingContent = ""
-    if (typeof content === "object") {
-      for (let key in content) {
-        if (typeof (content as any)[key] === "object") {
-          headingContent += (content as any)[key].props.children
-        } else {
-          headingContent += (content as any)[key]
+    if (React.isValidElement(content)) {
+      React.Children.forEach(content, (child) => {
+        if (React.isValidElement(child)) {
+          if (child.props && typeof child.props === "object" && "children" in child.props) {
+            headingContent += child.props.children
+          }
+        } else if (typeof child === "string") {
+          headingContent += child
         }
-      }
+      })
       return headingContent
         .replace(/#/g, "")
         .trim()
         .replace(/ /g, "-")
         .replace(/:/g, "")
         .replace(/`/g, "")
-        .replace(/$/g, "")
+        .replace(/\$/g, "")
     }
   }
 

@@ -43,10 +43,19 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }:
 
   const HeadingRenderer = ({ children }: HeadingProps) => {
     const [href, setHref] = useState("")
+    if (
+      children &&
+      typeof children === "object" &&
+      "$$typeof" in children &&
+      children?.$$typeof === Symbol.for("react.transitional.element")
+    ) {
+      if (typeof children === "object" && children !== null && "props" in children) {
+        children = (children as any).props.children ?? undefined
+      }
+    }
     children = String(children).replaceAll("$", "")
-
     useEffect(() => {
-      const headingContent = String(children)?.replaceAll(" ", "-")
+      const headingContent = String(children)?.replaceAll(" ", "-").replace(/`/g, "")
       if (typeof window !== "undefined") {
         setHref((window.location.href.split("#")[0] + "#" + headingContent).replaceAll(" ", "-"))
       }
