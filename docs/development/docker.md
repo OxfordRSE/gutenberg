@@ -40,3 +40,18 @@ value (under `services.gutenberg.build.args`) to a different config yaml file or
 changing `MATERIAL_METHOD` to `"copy"` to copy a locally checked out folder into
 the container at build-time instead of pulling fresh - for more details on how
 to pull material to edit locally follow the below section.
+
+## Local development with Docker
+
+`docker-compose.dev.yaml` configures a local development environment in Docker,
+including Node and Yarn. It runs the app in development mode, so that you can make
+changes to the code and see them on http://localhost:3000.
+
+```sh
+# build the development image
+docker compose -f docker-compose.dev.yaml build
+# run the Next.js app on http://localhost:3000 in development mode
+docker compose -f docker-compose.dev.yaml up
+# shut down the app and database when you're finished
+docker compose -f docker-compose.dev.yaml down
+```
