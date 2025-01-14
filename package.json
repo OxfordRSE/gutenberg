@@ -2,7 +2,6 @@
   "name": "gutenberg",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "format": "prettier --write \"**/*.{ts,tsx,js,md,mdx,css,yaml}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,md,mdx,css,yaml}\"",
@@ -14,12 +13,12 @@
     "e2e": "start-server-and-test 'yarn dev' http://127.0.0.1:3000 \"dotenv -e .env.local -e .env cypress run --e2e\"",
     "ci:e2e": "start-server-and-test 'yarn start' http://127.0.0.1:3000 \"cypress run --e2e\"",
     "component": "cypress run --component",
-    "table": "NEXT_PUBLIC_BASEPATH='' MATERIAL_DIR=.material tsx scripts/table.ts",
-    "cron": "dotenv -e .env.local -e .env -- tsx scripts/cronScripts.ts",
-    "pullmat": "dotenv -e .env -e .env.local -- tsx scripts/pullMaterial.ts"
+    "table": "NEXT_PUBLIC_BASEPATH='' MATERIAL_DIR=.material ts-node --skip-project --compiler-options '{\"module\":\"CommonJS\"}' scripts/table.ts",
+    "cron": "dotenv -e .env.local -e .env -- ts-node --skip-project --compiler-options '{\"module\":\"CommonJS\"}' scripts/cronScripts.ts",
+    "pullmat": "dotenv -e .env -e .env.local -- ts-node --skip-project  --transpile-only --compiler-options '{\"module\":\"CommonJS\"}' scripts/pullMaterial.ts"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^3.0.0",
@@ -92,7 +91,7 @@
   "devDependencies": {
     "@panva/hkdf": "^1.1.1",
     "@testing-library/cypress": "^10.0.0",
-    "@types/node": "^20.11.0",
+    "@types/node": "^20.4.0",
     "@types/react": "^18.0.21",
     "@types/react-dom": "18.0.6",
     "@types/react-syntax-highlighter": "^15.5.6",
@@ -103,7 +102,7 @@
     "jose": "^4.15.5",
     "prisma": "^4.11.0",
     "start-server-and-test": "^2.0.0",
-    "tsx": "^4.19.2",
+    "ts-node": "^10.9.1",
     "typescript": "5.6.2"
   },
   "packageManager": "yarn@3.3.0",
