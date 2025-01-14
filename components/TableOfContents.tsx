@@ -47,11 +47,10 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }:
       children &&
       typeof children === "object" &&
       "$$typeof" in children &&
-      children?.$$typeof === Symbol.for("react.transitional.element")
+      children?.$$typeof === Symbol.for("react.transitional.element") &&
+      "props" in children
     ) {
-      if (typeof children === "object" && children !== null && "props" in children) {
-        children = (children as any).props.children ?? undefined
-      }
+      children = (children as any).props.children ?? undefined
     }
     children = String(children).replaceAll("$", "")
     useEffect(() => {
