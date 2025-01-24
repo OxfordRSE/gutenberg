@@ -22,10 +22,10 @@ const CopyToClipboard: React.FC<CopyToClipboardProps> = ({ text, onCopy, childre
 
   return (
     <div>
-      <span>{copied ? "Copied!" : ""}</span>
       <div onClick={handleCopy} style={{ display: "inline-block", cursor: "pointer" }}>
         {children}
       </div>
+      {copied && <span className="text-xs text-green-500 ml-3">Copied to clipboard!</span>}
     </div>
   )
 }
