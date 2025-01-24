@@ -117,6 +117,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }:
               h4: () => null,
               h5: () => null,
               h6: () => null,
+              hr: () => null,
               p: () => null,
               ul: () => null,
               ol: () => null,
