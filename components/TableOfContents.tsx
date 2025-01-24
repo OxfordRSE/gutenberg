@@ -3,8 +3,6 @@ import ReactMarkdown, { ExtraProps } from "react-markdown"
 import { useHeadingObserver } from "lib/hooks/useHeadingObserver"
 import useWindowSize from "lib/hooks/useWindowSize"
 import { Toc } from "@mui/icons-material"
-import { max } from "cypress/types/lodash"
-import { margin } from "@mui/system"
 
 interface TableOfContentsProps {
   markdown: any
@@ -43,16 +41,28 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }:
 
   const HeadingRenderer = ({ children }: HeadingProps) => {
     const [href, setHref] = useState("")
-    if (
-      children &&
-      typeof children === "object" &&
-      "$$typeof" in children &&
-      children?.$$typeof === Symbol.for("react.transitional.element") &&
-      "props" in children
-    ) {
-      children = (children as any).props.children ?? undefined
+
+    if (typeof children === "object") {
+      let headingContent = ""
+      React.Children.forEach(children, (child) => {
+        if (typeof child === "string") {
+          headingContent += child
+        }
+        if (
+          child &&
+          typeof child === "object" &&
+          "props" in child &&
+          child.props &&
+          typeof child.props === "object" &&
+          "children" in child.props
+        ) {
+          headingContent += child.props.children
+        }
+      })
+      children = headingContent
     }
-    children = String(children).replaceAll("$", "")
+    children = String(children).replace(/#/g, "").replace(/`/g, "")
+
     useEffect(() => {
       const headingContent = String(children)?.replaceAll(" ", "-").replace(/`/g, "")
       if (typeof window !== "undefined") {
