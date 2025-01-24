@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Control, Controller, FieldPath, FieldValues, useFormState } from "react-hook-form"
 import { Label, Textarea as FlowbiteTextarea } from "flowbite-react"
-import { useRecoilState } from "recoil"
+import { useAtom } from "jotai"
 import { textAreaValue } from "components/content/Comment"
 import { text } from "stream/consumers"
 
@@ -13,7 +13,7 @@ type Props<T extends FieldValues> = {
 }
 
 function Textarea<T extends FieldValues>({ label, name, control, rules }: Props<T>): React.ReactElement {
-  const [textareaValue, setTextareaValue] = useRecoilState(textAreaValue)
+  const [textareaValue, setTextareaValue] = useAtom(textAreaValue)
 
   return (
     <div>

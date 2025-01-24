@@ -2,7 +2,7 @@ import React from "react"
 import { useState, useEffect } from "react"
 import { Button, Modal } from "flowbite-react"
 import Stack from "components/ui/Stack"
-import { atom, useRecoilState } from "recoil"
+import { atom, useAtom } from "jotai"
 import useUsersOnEvent from "lib/hooks/useUsersOnEvent"
 import useEvents from "lib/hooks/useEvents"
 import { Toast } from "flowbite-react"
@@ -14,19 +14,13 @@ interface DeleteUserOnEventProps {
   onClose: () => void
 }
 
-export const deleteUserOnEventModalState = atom({
-  key: "deleteUserOnEventModalState",
-  default: false,
-})
+export const deleteUserOnEventModalState = atom<boolean>(false)
 
-export const deleteUserOnEventIdState = atom<UserOnEvent>({
-  key: "deleteUserOnEventIdState",
-  default: undefined,
-})
+export const deleteUserOnEventIdState = atom<UserOnEvent | undefined>(undefined)
 
 export const DeleteUserOnEventModal: React.FC<DeleteUserOnEventProps> = ({ onClose }) => {
-  const [showDeleteUserOnEventModal, setShowDeleteUserOnEventModal] = useRecoilState(deleteUserOnEventModalState)
-  const [userOnEvent, setDeleteUserOnEventId] = useRecoilState(deleteUserOnEventIdState)
+  const [showDeleteUserOnEventModal, setShowDeleteUserOnEventModal] = useAtom(deleteUserOnEventModalState)
+  const [userOnEvent, setDeleteUserOnEventId] = useAtom(deleteUserOnEventIdState)
   const [success, setSuccess] = useState<string | null>(null)
   const [failure, setFailure] = useState<string | null>(null)
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(true)
