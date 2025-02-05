@@ -28,6 +28,7 @@ services:
         YAML_TEMPLATE: "config/oxford.yaml"
     command: "yarn dev"
     volumes:
+      - node-modules:/app/node_modules
       - ./.material:/app/.material
       - ./config:/app/config
       - ./components:/app/components
@@ -53,3 +54,4 @@ services:
       DATABASE_URL: postgresql://postgres:super-secret-password@db:5432
 volumes:
   dev-data:
+  node-modules:
