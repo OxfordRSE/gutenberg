@@ -1,28 +1,46 @@
 import React, { useState } from "react"
-import CopyToClipboard from "react-copy-to-clipboard"
+import CopyToClipboard from "components/ui/CopyToClipboard"
 import { FaLink } from "react-icons/fa"
+import { reduceRepeatingPatterns, extractTextValues } from "lib/utils"
 
 interface HeadingProps {
   content: React.ReactNode
   section: string
   tag: string
+  spanId?: string
 }
 
-const Heading: React.FC<HeadingProps> = ({ content, section, tag }) => {
-  const Tag = tag as keyof JSX.IntrinsicElements
-  const [isCopied, setIsCopied] = useState(false)
-
+const Heading: React.FC<HeadingProps> = ({ content, section, tag, spanId }) => {
+  const Tag = tag as keyof React.JSX.IntrinsicElements
   const generateHeadingContent = () => {
+    if (typeof content === "string") {
+      // NOTE(ADW): I think the behaviour here has been changed in react 19 and we often a string instead of an object
+      return content.replace(/#/g, "").trim().replace(/ /g, "-").replace(/:/g, "").replace(/`/g, "").replace(/$/g, "")
+    }
     let headingContent = ""
     if (typeof content === "object") {
-      for (let key in content) {
-        if (typeof (content as any)[key] === "object") {
-          headingContent += (content as any)[key].props.children
-        } else {
-          headingContent += (content as any)[key]
+      React.Children.forEach(content, (child) => {
+        if (typeof child === "string") {
+          headingContent += child
         }
-      }
-      return headingContent.replace(/#/g, "").trim().replace(/ /g, "-").replace(/:/g, "").replace(/`/g, "")
+        if (
+          child &&
+          typeof child === "object" &&
+          "props" in child &&
+          child.props &&
+          typeof child.props === "object" &&
+          "children" in child.props
+        ) {
+          headingContent += child.props.children
+        }
+      })
+      return headingContent
+        .replace(/#/g, "")
+        .trim()
+        .replace(/ /g, "-")
+        .replace(/:/g, "")
+        .replace(/`/g, "")
+        .replace(/\$/g, "")
     }
   }
 
@@ -31,23 +49,15 @@ const Heading: React.FC<HeadingProps> = ({ content, section, tag }) => {
     return href + "#" + generateHeadingContent()
   }
 
-  const onCopyHandler = () => {
-    setIsCopied(true)
-    setTimeout(() => {
-      setIsCopied(false)
-    }, 1500)
-  }
-
   return (
     <>
-      <Tag id={generateHeadingContent()}>
-        {content}
+      <Tag id={generateHeadingContent()} className="inline-flex items-center space-x-2">
+        <span id={spanId}>{content}</span>
         <CopyToClipboard text={generateHeadingURL()}>
-          <button className="text-xs align-center" onClick={onCopyHandler}>
-            <FaLink className="group-hover:text-white ml-3" />
+          <button className="text-xs flex items-center space-x-1">
+            <FaLink className="group-hover:text-white" />
           </button>
         </CopyToClipboard>
-        {isCopied && <span className="text-xs text-green-500 items-center ml-3">Copied to clipboard!</span>}
       </Tag>
     </>
   )

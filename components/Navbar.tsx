@@ -8,7 +8,7 @@ import React, { useState, useRef, useEffect } from "react"
 import { RxGithubLogo } from "react-icons/rx"
 import { HiAtSymbol, HiCalendar, HiSearchCircle } from "react-icons/hi"
 import { searchQueryState } from "components/SearchDialog"
-import { useRecoilState } from "recoil"
+import { useAtom } from "jotai"
 import { enableSearch } from "lib/search/enableSearch"
 import NavDiagramPopover from "./dialogs/navDiagramPop"
 import ThemeCardsPopover from "./dialogs/themeCardPop"
@@ -46,7 +46,7 @@ const Navbar: React.FC<Props> = ({
   repoUrl,
   excludes,
 }) => {
-  const [showSearch, setShowSearch] = useRecoilState(searchQueryState)
+  const [showSearch, setShowSearch] = useAtom(searchQueryState)
   const [showNavDiagram, setShowNavDiagram] = useState(false)
   const [isPopoverHovered, setIsPopoverHovered] = useState(false)
   const [isHovered, setIsHovered] = useState(false)

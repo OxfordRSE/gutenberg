@@ -24,7 +24,7 @@ import { ImEye, ImEyeBlocked } from "react-icons/im"
 import useUser from "lib/hooks/useUser"
 import { useSession } from "next-auth/react"
 import CommentView from "./Comment"
-import { RecoilRoot } from "recoil"
+import { Provider } from "jotai"
 
 interface TinyButtonProps {
   children: React.ReactNode
@@ -283,7 +283,7 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAn
         </div>
         {isPlaceholder &&
           sortedComments.map((comment) => (
-            <RecoilRoot key={comment.id}>
+            <Provider key={comment.id}>
               <CommentView
                 key={comment.id}
                 comment={comment}
@@ -294,11 +294,11 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAn
                 threadEditing={threadEditing}
                 setThreadEditing={setThreadEditing}
               />
-            </RecoilRoot>
+            </Provider>
           ))}
         {!isPlaceholder &&
           sortedComments.map((comment) => (
-            <RecoilRoot key={comment.id}>
+            <Provider key={comment.id}>
               <CommentView
                 key={comment.id}
                 comment={comment}
@@ -308,7 +308,7 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAn
                 threadEditing={threadEditing}
                 setThreadEditing={setThreadEditing}
               />
-            </RecoilRoot>
+            </Provider>
           ))}
         {!isPlaceholder && (
           <Stack direction="row-reverse">
