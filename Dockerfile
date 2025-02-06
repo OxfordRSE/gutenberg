@@ -61,7 +61,7 @@ ONBUILD RUN \
 
 # Here we use the MATERIAL_METHOD arg to determine which method we use to get 
 # material into our container for build time.
-FROM ${MATERIAL_METHOD}_material as material
+FROM ${MATERIAL_METHOD}_material AS material
 
 #### 
 # BUILDER

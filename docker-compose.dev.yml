@@ -28,8 +28,20 @@ services:
         YAML_TEMPLATE: "config/oxford.yaml"
     command: "yarn dev"
     volumes:
+      - node-modules:/app/node_modules
+      - ./.material:/app/.material
+      - ./config:/app/config
       - ./components:/app/components
+      - ./lib:/app/lib
       - ./pages:/app/pages
+      - ./public:/app/public
+      - ./scripts:/app/scripts
+      - ./styles:/app/styles
+      - ./.env:/app/.env
+      - ./next.config.js:/app/next.config.js
+      - ./cypress.config.ts:/app/cypress.config.ts
+      - ./postcss.config.js:/app/postcss.config.js
+      - ./tailwind.config.js:/app/tailwind.config.js
     ports:
       - "3000:3000"
     links: 
@@ -42,3 +54,4 @@ services:
       DATABASE_URL: postgresql://postgres:super-secret-password@db:5432
 volumes:
   dev-data:
+  node-modules:
