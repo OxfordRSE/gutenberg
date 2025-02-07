@@ -107,7 +107,7 @@ RUN yarn build
 # RUN npm run build
 
 # Production image, copy all the files and run next
-FROM node:20.9-alpine AS runner
+FROM node:${NODE_VERSION} AS runner
 WORKDIR /app
 RUN apk add --no-cache git
 ENV NODE_ENV production
