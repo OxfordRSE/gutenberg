@@ -43,15 +43,15 @@ to pull material to edit locally follow the below section.
 
 ## Local development with Docker
 
-`docker-compose.dev.yaml` configures a local development environment in Docker,
+`docker-compose.dev.yml` configures a local development environment in Docker,
 including Node and Yarn. It runs the app in development mode, so that you can make
 changes to the code and see them on http://localhost:3000.
 
 ```sh
 # build the development image
-docker compose -f docker-compose.dev.yaml build
+docker compose -f docker-compose.dev.yml build
 # run the Next.js app on http://localhost:3000 in development mode
-docker compose -f docker-compose.dev.yaml up
+docker compose -f docker-compose.dev.yml up
 # shut down the app and database when you're finished
-docker compose -f docker-compose.dev.yaml down
+docker compose -f docker-compose.dev.yml down
 ```
