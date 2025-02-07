@@ -49,6 +49,7 @@ changes to the code and see them on http://localhost:3000.
 
 ```sh
 # install the course materials locally
+pip install -r scripts/python_requirements.txt
 python scripts/pull_material.py
 # build the development image
 docker compose -f docker-compose.dev.yaml build
