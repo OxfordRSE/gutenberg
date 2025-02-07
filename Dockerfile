@@ -5,7 +5,7 @@ ARG MATERIAL_METHOD=copy
 
 # Define the Python version to use
 ARG PYTHON_VERSION=3.12.3-slim
-ARG NODE_VERSION=20-alpine
+ARG NODE_VERSION=22.10-alpine
 
 ####
 # MATERIAL OPTION: PULL
