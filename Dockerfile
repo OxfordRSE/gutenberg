@@ -116,6 +116,7 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 COPY --from=builder --chown=nextjs:nextjs /app ./
 COPY ./prisma /app/prisma
+RUN corepack enable
 
 USER nextjs
 
