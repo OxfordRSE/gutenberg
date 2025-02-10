@@ -48,6 +48,9 @@ including Node and Yarn. It runs the app in development mode, so that you can ma
 changes to the code and see them on http://localhost:3000.
 
 ```sh
+# install the course materials locally
+pip install -r scripts/python_requirements.txt
+python scripts/pull_material.py
 # build the development image
 docker compose -f docker-compose.dev.yml build
 # run the Next.js app on http://localhost:3000 in development mode
