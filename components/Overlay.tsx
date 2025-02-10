@@ -106,7 +106,6 @@ const Overlay: NextPage<Props> = ({
             className="pointer-events-auto absolute top-0 right-0 cursor-pointer w-12 h-12 text-gray-600 hover:text-gray-500 opacity-50"
           />
         )}
-        {(windowSize?.width ?? 1024) >= 1024 && (
           <>
             <Stack direction="column" className="absolute bottom-20 left-0 ">
               {sectionLinks &&
@@ -122,7 +121,6 @@ const Overlay: NextPage<Props> = ({
             </Stack>
             {section && <TableOfContents markdown={section.markdown} tocTitle={sectionTitle} />}
           </>
-        )}
         <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />
         <SearchDialog onClose={closeSearch} />
         <DeleteEventModal onClose={closeDeleteEvent} />
