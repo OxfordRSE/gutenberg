@@ -1,5 +1,5 @@
 x-vol-args: &args
-  volumes: 
+  volumes:
     - ./.material:/app/.material
 
 services:
@@ -14,19 +14,19 @@ services:
       - "5432:5432"
     volumes:
       - dev-data:/var/lib/postgresql/data
-    
+
   gutenberg:
     image: gutenberg-dev
     build:
       context: .
       dockerfile: Dockerfile
       target: builder
-      args: 
+      args:
         CACHE_BUST: ${CACHE_BUST}
         MATERIAL_METHOD: "pull"
         MATERIAL_DIR: ".material"
         YAML_TEMPLATE: "config/oxford.yaml"
-    command: "yarn dev"
+        NODE_ENV: "development"
     volumes:
       - node-modules:/app/node_modules
       - ./.material:/app/.material
@@ -44,7 +44,7 @@ services:
       - ./tailwind.config.js:/app/tailwind.config.js
     ports:
       - "3000:3000"
-    links: 
+    links:
       - db
     <<: *args
     depends_on:
