@@ -26,7 +26,7 @@ services:
         MATERIAL_METHOD: "pull"
         MATERIAL_DIR: ".material"
         YAML_TEMPLATE: "config/oxford.yaml"
-    command: "yarn dev"
+    command: "sh /app/entrypoint.dev.sh"
     volumes:
       - node-modules:/app/node_modules
       - ./.material:/app/.material
