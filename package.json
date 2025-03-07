@@ -44,7 +44,7 @@
     "@types/uuid": "^9.0.0",
     "autoprefixer": "^10.4.13",
     "cron": "^2.0.0",
-    "dompurify": "^2.5.4",
+    "dompurify": "^3.2.4",
     "dotenv": "^16.0.0",
     "dotenv-cli": "^7.0.1",
     "elkjs": "^0.8.2",

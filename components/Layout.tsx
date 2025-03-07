@@ -21,6 +21,7 @@ import { useTheme } from "next-themes"
 import { ThemeProvider } from "@mui/material/styles"
 import { CssBaseline } from "@mui/material"
 import { LightTheme, DarkTheme } from "./MuiTheme"
+import plausibleHost from "lib/plausibleHost"
 
 type Props = {
   material: Material
@@ -81,6 +82,7 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
             />
             <PlausibleProvider
               domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN ?? ""}
+              customDomain={plausibleHost}
               enabled={true}
               trackLocalhost={true}
               trackOutboundLinks={true}
