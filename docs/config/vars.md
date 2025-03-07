@@ -70,4 +70,3 @@ The following variables are used for the search functionality, you need both an 
 `NEXT_PUBLIC_PLAUSIBLE_HOST`
 : Default: "<https://plausible.io>"
 : This is the host for the plausible analytics service. This needs set to your custom domain if you are using a self-hosted version of plausible.
-
