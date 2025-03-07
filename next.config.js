@@ -4,7 +4,7 @@ const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 })
 import { withPlausibleProxy } from "next-plausible"
-import plausibleHost from "lib/plausibleHost"
+import plausibleHost from "./lib/plausibleHost.js"
 
 const nextConfig = {
   reactStrictMode: true,
