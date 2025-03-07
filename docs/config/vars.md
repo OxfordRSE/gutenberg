@@ -5,7 +5,7 @@ permalink: /config/vars
 
 This document describes the environment variables used in the project, please set theses as either an env file or as secrets on fly.io.
 
-Note that only NEXT_PUBLIC_ variables are available in the frontend, while other variables are used in the backend.
+Note that only `NEXT_PUBLIC_` variables are available in the frontend, while other variables are used in the backend.
 Since these "public" variables are available in the frontend, they should not contain sensitive information, they are also set at build time and cannot be changed at runtime.
 
 ## Essential
