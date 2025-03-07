@@ -107,6 +107,7 @@ RUN yarn build
 
 # Production image, copy all the files and run next
 FROM node:${NODE_VERSION} AS runner
+RUN ln -s /usr/lib/libssl.so.3 /lib/libssl.so.3
 WORKDIR /app
 RUN apk add --no-cache git
 ENV NODE_ENV production
