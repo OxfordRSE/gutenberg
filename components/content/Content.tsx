@@ -167,6 +167,12 @@ const Content: React.FC<Props> = ({ markdown, theme, course, section }) => {
     section ? section.id : ""
   }`
   
+  
+  function replaceBaseUrl(markdown: string): string {
+    const baseUrl = `${process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}/material/${theme?.repo}`;
+    return markdown.replace(/\{\{\s*base_url\s*\}\}/g, baseUrl);
+  }
+  
   const transformLink = (href: string): string => {
     if (!href) return href;
     if (href.startsWith('#')) {
@@ -183,6 +189,8 @@ const Content: React.FC<Props> = ({ markdown, theme, course, section }) => {
     const cleanPath = cleanedHref.replace(/^\/+/, '');
     return `/material/${theme?.repo}/${cleanPath}`;
   };
+
+  markdown = replaceBaseUrl(markdown); // we look for {{ base_url }} and replace it with a domain/material/${theme.repo}
 
   return (
     <div className="mx-auto prose prose-base max-w-2xl prose-slate dark:prose-invert prose-pre:bg-[#263E52] px-5">
