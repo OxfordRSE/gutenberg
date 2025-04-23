@@ -1,64 +1,63 @@
 import { defineConfig } from "cypress"
 import path from "path"
+import { fileURLToPath } from "url"
+import { dirname } from "path"
 
-const __dirname = import.meta.dirname
-const { default: installLogsPrinter } = await import("cypress-terminal-report/src/installLogsPrinter")
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
-export default defineConfig({
-  env: {
-    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
-  },
-  viewportWidth: 1920,
-  viewportHeight: 1080,
-  e2e: {
-    setupNodeEvents(on, config) {
-      installLogsPrinter(on)
+export default async function () {
+  const { default: installLogsPrinter } = await import("cypress-terminal-report/src/installLogsPrinter")
 
-      // implement node event listeners here
-      on("before:browser:launch", (browser, launchOptions) => {
-        // the browser width and height we want to get
-        // our screenshots and videos will be of that resolution
-        const width = 1920
-        const height = 1080
-
-        if (browser.name === "chrome" && browser.isHeadless) {
-          launchOptions.args.push(`--window-size=${width},${height}`)
-
-          // force screen to be non-retina and just use our given resolution
-          launchOptions.args.push("--force-device-scale-factor=1")
-        }
-
-        if (browser.name === "electron" && browser.isHeadless) {
-          // might not work on CI for some reason
-          launchOptions.preferences.width = width
-          launchOptions.preferences.height = height
-        }
-
-        if (browser.name === "firefox" && browser.isHeadless) {
-          launchOptions.args.push(`--width=${width}`)
-          launchOptions.args.push(`--height=${height}`)
-        }
-
-        // IMPORTANT: return the updated browser launch options
-        return launchOptions
-      })
+  return defineConfig({
+    env: {
+      NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     },
-    baseUrl: "http://localhost:3000",
-  },
-  component: {
-    setupNodeEvents(on, config) {
-      installLogsPrinter(on, { printLogsToConsole: "onFail" })
+    viewportWidth: 1920,
+    viewportHeight: 1080,
+    e2e: {
+      setupNodeEvents(on, config) {
+        installLogsPrinter(on)
+
+        on("before:browser:launch", (browser, launchOptions) => {
+          const width = 1920
+          const height = 1080
+
+          if (browser.name === "chrome" && browser.isHeadless) {
+            launchOptions.args.push(`--window-size=${width},${height}`)
+            launchOptions.args.push("--force-device-scale-factor=1")
+          }
+
+          if (browser.name === "electron" && browser.isHeadless) {
+            launchOptions.preferences.width = width
+            launchOptions.preferences.height = height
+          }
+
+          if (browser.name === "firefox" && browser.isHeadless) {
+            launchOptions.args.push(`--width=${width}`)
+            launchOptions.args.push(`--height=${height}`)
+          }
+
+          return launchOptions
+        })
+      },
+      baseUrl: "http://localhost:3000",
     },
-    devServer: {
-      framework: "next",
-      bundler: "webpack",
-      webpackConfig: {
-        resolve: {
-          alias: {
-            "@components": path.resolve(__dirname, "./src/components"),
+    component: {
+      setupNodeEvents(on, config) {
+        installLogsPrinter(on, { printLogsToConsole: "onFail" })
+      },
+      devServer: {
+        framework: "next",
+        bundler: "webpack",
+        webpackConfig: {
+          resolve: {
+            alias: {
+              "@components": path.resolve(__dirname, "./src/components"),
+            },
           },
         },
       },
     },
-  },
-})
+  })
+}
