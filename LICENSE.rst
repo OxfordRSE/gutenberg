@@ -1,4 +1,4 @@
-Copyright (c) 2022-2024, University of Oxford Research Software Engineering Group
+Copyright (c) 2022-2025, University of Oxford Research Software Engineering Group
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
