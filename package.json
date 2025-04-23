@@ -12,7 +12,7 @@
     "lint": "next lint",
     "cypress": "cypress open",
     "e2e": "start-server-and-test 'yarn dev' http://127.0.0.1:3000 \"dotenv -e .env.local -e .env cypress run --e2e\"",
-    "ci:e2e": "start-server-and-test 'yarn start' http://127.0.0.1:3000 \"cypress run --e2e\"",
+    "ci:e2e": "start-server-and-test 'yarn start' http://127.0.0.1:3000 \"dotenv -e .env.local -e .env cypress run --e2e\"",
     "component": "cypress run --component",
     "table": "NEXT_PUBLIC_BASEPATH='' MATERIAL_DIR=.material tsx scripts/table.ts",
     "cron": "dotenv -e .env.local -e .env -- tsx scripts/cronScripts.ts",

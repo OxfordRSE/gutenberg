@@ -5,7 +5,8 @@
   "compilerOptions": {
     "types": ["cypress", "@percy/cypress", "node"],
     "lib": ["es2015", "dom"],
-    "isolatedModules": false,
+    "module": "NodeNext",
+    "moduleResolution": "Node16",
     "allowJs": true,
     "noEmit": true
   }
