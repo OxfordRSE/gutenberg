@@ -11,8 +11,8 @@
     "start": "next start",
     "lint": "next lint",
     "cypress": "cypress open",
-    "e2e": "start-server-and-test 'yarn dev' http://127.0.0.1:3000 \"dotenv -e .env.local -e .env -- node --loader ts-node/esm ./node_modules/.bin/cypress run --e2e\"",
-    "ci:e2e": "start-server-and-test 'yarn start' http://127.0.0.1:3000 \"dotenv -e .env.local -e .env -- node --loader ts-node/esm ./node_modules/.bin/cypress run --e2e\"",
+    "e2e": "start-server-and-test 'yarn dev' http://127.0.0.1:3000 \"dotenv -e .env.local -e .env cypress run --e2e\"",
+    "ci:e2e": "start-server-and-test 'yarn start' http://127.0.0.1:3000 \"dotenv -e .env.local -e .env cypress run --e2e\"",
     "component": "cypress run --component",
     "table": "NEXT_PUBLIC_BASEPATH='' MATERIAL_DIR=.material tsx scripts/table.ts",
     "cron": "dotenv -e .env.local -e .env -- tsx scripts/cronScripts.ts",
@@ -103,7 +103,6 @@
     "jose": "^4.15.5",
     "prisma": "^4.11.0",
     "start-server-and-test": "^2.0.0",
-    "ts-node": "^10.9.2",
     "tsx": "^4.19.2",
     "typescript": "5.6.2"
   },
