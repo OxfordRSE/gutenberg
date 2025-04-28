@@ -42,6 +42,17 @@ function reactMarkdownRemarkDirective() {
   }
 }
 
+const isLikelyExternal = (href: string): boolean => {
+  return (
+    // Fully qualified URL
+    /^https?:\/\//i.test(href) ||
+    // Starts with www.
+    /^www\.[^\s]+\.[^\s]+/.test(href) ||
+    // Has a domain-like pattern
+    /^[^\s]+\.[^\s]+/.test(href)
+  )
+}
+
 const p = (sectionStr: string) => {
   function p({ node, children, ...props }: ReactMarkdownProps) {
     return <Paragraph content={children} section={sectionStr} />
@@ -155,6 +166,31 @@ const Content: React.FC<Props> = ({ markdown, theme, course, section }) => {
   const sectionStr = `${theme ? theme.repo + "." : ""}${theme ? theme.id + "." : ""}${course ? course.id + "." : ""}${
     section ? section.id : ""
   }`
+
+  function replaceBaseUrl(markdown: string): string {
+    const baseUrl = `${process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}/material/${theme?.repo}`
+    return markdown.replace(/\{\{\s*base_url\s*\}\}/g, baseUrl)
+  }
+
+  const transformLink = (href: string): string => {
+    if (!href) return href
+    if (href.startsWith("#")) {
+      return href // anchor link — don't rewrite
+    }
+
+    let cleanedHref = href.replace(/\.md$/i, "")
+
+    if (isLikelyExternal(cleanedHref)) {
+      return cleanedHref.startsWith("http") ? href : `https://${href}`
+    }
+
+    // Treat as internal
+    const cleanPath = cleanedHref.replace(/^\/+/, "")
+    return `/material/${theme?.repo}/${cleanPath}`
+  }
+
+  markdown = replaceBaseUrl(markdown) // we look for {{ base_url }} and replace it with a domain/material/${theme.repo}
+
   return (
     <div className="mx-auto prose prose-base max-w-2xl prose-slate dark:prose-invert prose-pre:bg-[#263E52] px-5">
       <ReactMarkdown
@@ -171,6 +207,10 @@ const Content: React.FC<Props> = ({ markdown, theme, course, section }) => {
           h2: h(sectionStr, "h2"),
           h3: h(sectionStr, "h3"),
           h4: h(sectionStr, "h4"),
+          a: ({ node, ...props }) => {
+            const newHref = transformLink(props.href || "")
+            return <a {...props} href={newHref} />
+          },
         }}
       >
         {markdown}
