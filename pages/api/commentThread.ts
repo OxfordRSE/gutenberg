@@ -19,7 +19,6 @@ export type CommentThreadPost = {
   initialCommentText: string
 }
 
-
 export type Comment = Prisma.CommentGetPayload<{}>
 
 export type Event = Prisma.EventGetPayload<{}>
