@@ -10,7 +10,7 @@ import useCommentThreads from "lib/hooks/useCommentThreads"
 import postCommentThread from "lib/actions/postCommentThread"
 import useActiveEvent from "lib/hooks/useActiveEvents"
 import { Comment } from "pages/api/comment/[commentId]"
-import { CommentThread } from "pages/api/commentThread"
+import { CommentThread, CommentThreadPost } from "pages/api/commentThread"
 import { useSession } from "next-auth/react"
 
 const nlp = winkNLP(model)
@@ -117,7 +117,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
 
   const finaliseThread = (thread: CommentThread, comment: Comment) => {
     if (!activeEvent) return
-    const newThread = {
+    const newThread: CommentThreadPost = {
       textRef: thread.textRef,
       textRefStart: thread.textRefStart,
       textRefEnd: thread.textRefEnd,

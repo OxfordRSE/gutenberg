@@ -67,7 +67,7 @@ model Problem {
   tag        String
   section    String   @default("")
   createdAt  DateTime @default(now())
-  User       User     @relation(fields: [userEmail], references: [email])
+  User       User     @relation(fields: [userEmail], references: [email]) @ignore
   userEmail  String
   complete   Boolean  @default(false)
   solution   String   @default("")
@@ -145,7 +145,7 @@ model CommentThread {
   textRefEnd     Int         @default(0)
   Comment        Comment[]
   created        DateTime    @default(now())
-  createdBy      User?       @relation(fields: [createdByEmail], references: [email])
+  createdBy      User?       @relation(fields: [createdByEmail], references: [email]) @ignore
   createdByEmail String
   resolved       Boolean     @default(false)
   instructorOnly Boolean     @default(false)
@@ -158,6 +158,6 @@ model Comment {
   markdown       String        @default("")
   index          Int
   created        DateTime      @default(now())
-  createdBy      User?         @relation(fields: [createdByEmail], references: [email])
+  createdBy      User?         @relation(fields: [createdByEmail], references: [email]) 
   createdByEmail String
 }

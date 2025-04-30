@@ -10,8 +10,14 @@ import { is } from "cypress/types/bluebird"
 export type CommentThread = Prisma.CommentThreadGetPayload<{
   include: { Comment: true }
 }>
-
-export type CommentThreadPost = Prisma.CommentThreadCreateManyCreatedByInput
+export type CommentThreadPost = {
+  textRef: string
+  textRefStart: number
+  textRefEnd: number
+  eventId: number
+  section: string
+  initialCommentText: string
+}
 
 export type Comment = Prisma.CommentGetPayload<{}>
 
