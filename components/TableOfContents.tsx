@@ -84,15 +84,15 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }:
         key={headingContent}
         className={
           activeId === headingContent
-            ? "transition-all border-l-2 border-purple-600 dark:bg-gray-800 bg-slate-300 pl-2 py-1 text-sm list-none bg-transparent rounded-r-lg"
+            ? "transition-all border-l-2 border-purple-600 dark:bg-gray-800 bg-slate-400 pl-2 py-1 text-sm list-none bg-transparent"
             : "transition-all border-l-2 pl-2 py-1 text-sm list-none bg-transparent"
         }
       >
         <a
           className={
             activeId === headingContent
-              ? "font-bold dark:text-slate-200 hover:text-purple-600"
-              : "font-normal dark:text-slate-200 dark:hover:text-slate-50 hover:text-purple-600"
+              ? "font-bold dark:text-slate-200 hover:text-purple-600 dark:hover:text-purple-600"
+              : "font-normal dark:text-slate-200 hover:text-purple-600 dark:hover:text-purple-600"
           }
           href={href}
           onClick={(e) => {
@@ -138,25 +138,29 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }:
                   e.stopPropagation()
                   setCollapsed(false)
                 }}
+                aria-label="Expand Table of Contents"
               >
                 <span className="flex items-center justify-center">
                   <Toc className="w-6 h-6 mr-" />
-                  <KeyboardArrowLeftIcon className="w-4 h-4  hover:text-purple-600" />
+                  <KeyboardArrowLeftIcon className="w-4 h-4  hover:text-purple-600 dark:hover:text-purple-600" />
                 </span>
               </button>
             </button>
           ) : (
             <>
               <Toc className="w-6 h-6 mr-2 mb-1" />
-              <span className="text-sm font-bold mb-1 hover:text-purple-600">{tocTitle}</span>
+              <span className="text-sm font-bold mb-1 hover:text-purple-600 dark:hover:text-purple-600">
+                {tocTitle}
+              </span>
               <button
                 className="ml-auto p-1"
                 onClick={(e) => {
                   e.stopPropagation()
                   setCollapsed(true)
                 }}
+                aria-label="Collapse Table of Contents"
               >
-                <KeyboardArrowRightIcon className="w-4 h-4 mb-1 hover:text-purple-600" />
+                <KeyboardArrowRightIcon className="w-4 h-4 mb-1 hover:text-purple-600 dark:hover:text-purple-600" />
               </button>
             </>
           )}
