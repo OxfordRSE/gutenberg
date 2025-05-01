@@ -3,6 +3,8 @@ import ReactMarkdown, { ExtraProps } from "react-markdown"
 import { useHeadingObserver } from "lib/hooks/useHeadingObserver"
 import useWindowSize from "lib/hooks/useWindowSize"
 import { Toc } from "@mui/icons-material"
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft"
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight"
 
 interface TableOfContentsProps {
   markdown: any
@@ -13,14 +15,20 @@ type HeadingProps = React.JSX.IntrinsicElements["h2"] & ExtraProps
 
 const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }: TableOfContentsProps) => {
   const { activeId } = useHeadingObserver()
-
   const windowSize = useWindowSize()
+  const isSmallScreen = (windowSize?.width ?? 1024) < 1024
+  const [collapsed, setCollapsed] = useState(isSmallScreen)
+
   let maxHeightClass = "max-h-72"
 
   let marginTopClass = "mt-6"
   if (tocTitle.length >= 22) {
     marginTopClass = "mt-12"
   }
+  // auto-update collapse when screen size changes
+  useEffect(() => {
+    setCollapsed(isSmallScreen)
+  }, [isSmallScreen])
 
   // Adjusting max height based on window size
   if (windowSize.height) {
@@ -76,15 +84,15 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }:
         key={headingContent}
         className={
           activeId === headingContent
-            ? "transition-all border-l-2 border-purple-600 dark:bg-gray-800 bg-slate-300 pl-2 py-1 text-sm list-none bg-transparent rounded-r-lg"
+            ? "transition-all border-l-2 border-purple-600 dark:bg-gray-800 bg-slate-400 pl-2 py-1 text-sm list-none bg-transparent"
             : "transition-all border-l-2 pl-2 py-1 text-sm list-none bg-transparent"
         }
       >
         <a
           className={
             activeId === headingContent
-              ? "font-bold dark:text-slate-200 hover:text-slate-50"
-              : "font-normal dark:text-slate-200 dark:hover:text-slate-50"
+              ? "font-bold dark:text-slate-200 hover:text-purple-600 dark:hover:text-purple-600"
+              : "font-normal dark:text-slate-200 hover:text-purple-600 dark:hover:text-purple-600"
           }
           href={href}
           onClick={(e) => {
@@ -102,43 +110,88 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }:
   }
 
   return (
-    <div className="absolute top-32 right-0 w-48 p-2 ml-4">
-      {/* Container div that holds both the tocTitle and scrollable nav */}
-      <div className="flex flex-col h-full">
+    <div
+      className={`absolute top-32 right-0 z-50 transition-all duration-300 ease-in-out backdrop-blur-lg dark:shadow-lg rounded-md ${
+        collapsed ? "w-10" : "w-64"
+      }`}
+    >
+      <div className="flex flex-col h-full relative">
+        {/* Header with collapse toggle */}
         <div
-          className="flex items-center mb-4 absolute top-0 z-9999 p-2 bg-transparent"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="flex items-center mb-4 absolute top-0 z-50 p-1 bg-transparent"
           style={{ cursor: "pointer", pointerEvents: "auto" }}
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         >
-          <span className="text-sm font-bold -ml-4">
-            <Toc className="mr-2 mb-1" />
-            {tocTitle}
-          </span>
+          {collapsed ? (
+            <button
+              className="p-1"
+              onClick={(e) => {
+                e.stopPropagation()
+                setCollapsed(false)
+              }}
+            >
+              {" "}
+              <button
+                className="ml-auto p-1"
+                style={{ width: "2.25rem", height: "2.25rem" }}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setCollapsed(false)
+                }}
+                aria-label="Expand Table of Contents"
+              >
+                <span className="flex items-center justify-center">
+                  <Toc className="w-6 h-6 mr-" />
+                  <KeyboardArrowLeftIcon className="w-4 h-4  hover:text-purple-600 dark:hover:text-purple-600" />
+                </span>
+              </button>
+            </button>
+          ) : (
+            <>
+              <Toc className="w-6 h-6 mr-2 mb-1" />
+              <span className="text-sm font-bold mb-1 hover:text-purple-600 dark:hover:text-purple-600">
+                {tocTitle}
+              </span>
+              <button
+                className="ml-auto p-1"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setCollapsed(true)
+                }}
+                aria-label="Collapse Table of Contents"
+              >
+                <KeyboardArrowRightIcon className="w-4 h-4 mb-1 hover:text-purple-600 dark:hover:text-purple-600" />
+              </button>
+            </>
+          )}
         </div>
 
-        <nav
-          className={`${maxHeightClass} overflow-y-auto font-bold pointer-events-auto bg-transparent ${marginTopClass}`}
-        >
-          <ReactMarkdown
-            components={{
-              h1: () => null,
-              h2: HeadingRenderer,
-              h3: () => null,
-              h4: () => null,
-              h5: () => null,
-              h6: () => null,
-              hr: () => null,
-              p: () => null,
-              ul: () => null,
-              ol: () => null,
-              table: () => null,
-              blockquote: () => null,
-              code: () => null,
-            }}
+        {/* TOC content (only when not collapsed) */}
+        {!collapsed && (
+          <nav
+            className={`${maxHeightClass} mt-8 overflow-y-auto font-bold pointer-events-auto bg-transparent ${marginTopClass}`}
           >
-            {markdown || ""}
-          </ReactMarkdown>
-        </nav>
+            <ReactMarkdown
+              components={{
+                h1: () => null,
+                h2: HeadingRenderer,
+                h3: () => null,
+                h4: () => null,
+                h5: () => null,
+                h6: () => null,
+                hr: () => null,
+                p: () => null,
+                ul: () => null,
+                ol: () => null,
+                table: () => null,
+                blockquote: () => null,
+                code: () => null,
+              }}
+            >
+              {markdown || ""}
+            </ReactMarkdown>
+          </nav>
+        )}
       </div>
     </div>
   )
