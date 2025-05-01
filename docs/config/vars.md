@@ -5,6 +5,9 @@ permalink: /config/vars
 
 This document describes the environment variables used in the project, please set theses as either an env file or as secrets on fly.io.
 
+Note that only `NEXT_PUBLIC_` variables are available in the frontend, while other variables are used in the backend.
+Since these "public" variables are available in the frontend, they should not contain sensitive information, they are also set at build time and cannot be changed at runtime.
+
 ## Essential
 
 `DATABASE_URL`
@@ -58,4 +61,12 @@ The following variables are used for the search functionality, you need both an 
 `QDRANT_API_KEY`
 : This is the API key for Qdrant, if you have set one in the Qdrant container.
 
-Please replace the placeholder values with your actual values when setting up the environment variables.
+## Analytics
+
+`NEXT_PUBLIC_PLAUSIBLE_DOMAIN`
+: Default: None
+: This is the domain name necessary to use analytics with plausible e.g "train.rse.ox.ac.uk". This might produce build errors due to the way the environment variables are set up, if this happens please set this variable in the github secrets.
+
+`NEXT_PUBLIC_PLAUSIBLE_HOST`
+: Default: "<https://plausible.io>"
+: This is the host for the plausible analytics service. This needs set to your custom domain if you are using a self-hosted version of plausible.

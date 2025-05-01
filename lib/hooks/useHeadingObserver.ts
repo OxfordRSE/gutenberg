@@ -1,13 +1,13 @@
 import { useLayoutEffect, useState, useRef } from "react"
+import { reduceRepeatingPatterns } from "lib/utils"
 
 export function useHeadingObserver() {
-  const observer = useRef<IntersectionObserver | undefined>()
+  const observer = useRef<IntersectionObserver | undefined>(undefined)
   const [activeId, setActiveId] = useState<string | null>(null)
 
   useLayoutEffect(() => {
     const initializeObserver = () => {
       const headings = document.querySelectorAll("h2")
-
       if (headings.length === 0) {
         return
       }
@@ -15,7 +15,18 @@ export function useHeadingObserver() {
       const handleObserver = (entries: IntersectionObserverEntry[]) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setActiveId(entry.target.id)
+            if (entry.target.id.includes("[object-Object]")) {
+              setActiveId(
+                reduceRepeatingPatterns(entry.target.textContent)
+                  .trim()
+                  .replaceAll(" ", "-")
+                  .replaceAll(":", "")
+                  .replaceAll("`", "")
+                  .replaceAll("$", "")
+              )
+            } else {
+              setActiveId(entry.target.id)
+            }
           }
         })
       }
@@ -58,6 +69,5 @@ export function useHeadingObserver() {
       observer.current?.disconnect()
     }
   }, [activeId])
-
   return { activeId }
 }

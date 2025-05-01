@@ -1,8 +1,7 @@
-import React, { ReactNode, useRef } from "react"
-import ReactDom from "react-dom"
-import ReactMarkdown, { Components, uriTransformer } from "react-markdown"
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
-import { CopyToClipboard } from "react-copy-to-clipboard"
+import React, { JSX, ReactNode, useRef } from "react"
+import ReactMarkdown, { ExtraProps, Components } from "react-markdown"
+import { Prism, SyntaxHighlighterProps } from "react-syntax-highlighter"
+import CopyToClipboard from "components/ui/CopyToClipboard"
 import { FaClipboard } from "react-icons/fa"
 
 import { lucario as codeStyle } from "react-syntax-highlighter/dist/cjs/styles/prism"
@@ -17,14 +16,18 @@ import "katex/dist/katex.min.css" // `rehype-katex` does not import the CSS for 
 
 import Challenge from "./Challenge"
 import Solution from "./Solution"
-import { first } from "cypress/types/lodash"
-import remarkDirective from "remark-directive"
-import remarkDirectiveRehype from "remark-directive-rehype"
-import { CodeComponent, CodeProps, HeadingProps, ReactMarkdownProps } from "react-markdown/lib/ast-to-react"
 import Callout from "../Callout"
 import { Course, Section, Theme } from "lib/material"
 import Paragraph from "./Paragraph"
 import Heading from "./Heading"
+import { reduceRepeatingPatterns, extractTextValues } from "lib/utils"
+
+const SyntaxHighlighter = Prism as any as React.FC<SyntaxHighlighterProps>
+
+type ReactMarkdownProps = React.JSX.IntrinsicElements["p"] & ExtraProps
+type HeadingProps = React.JSX.IntrinsicElements["h2"] & ExtraProps
+type CodeProps = React.JSX.IntrinsicElements["code"] & ExtraProps
+type ListProps = React.JSX.IntrinsicElements["li"] & ExtraProps
 
 function reactMarkdownRemarkDirective() {
   return (tree: any) => {
@@ -39,6 +42,17 @@ function reactMarkdownRemarkDirective() {
   }
 }
 
+const isLikelyExternal = (href: string): boolean => {
+  return (
+    // Fully qualified URL
+    /^https?:\/\//i.test(href) ||
+    // Starts with www.
+    /^www\.[^\s]+\.[^\s]+/.test(href) ||
+    // Has a domain-like pattern
+    /^[^\s]+\.[^\s]+/.test(href)
+  )
+}
+
 const p = (sectionStr: string) => {
   function p({ node, children, ...props }: ReactMarkdownProps) {
     return <Paragraph content={children} section={sectionStr} />
@@ -47,7 +61,7 @@ const p = (sectionStr: string) => {
 }
 
 const list = (sectionStr: string) => {
-  function list({ node, children, ...props }: ReactMarkdownProps) {
+  function list({ node, children, ...props }: ListProps) {
     return (
       <li className="mdli">
         <Paragraph content={children} section={sectionStr} />
@@ -59,7 +73,9 @@ const list = (sectionStr: string) => {
 
 const h = (sectionStr: string, tag: string) => {
   function h({ node, children, ...props }: HeadingProps) {
-    return <Heading content={children} section={sectionStr} tag={tag} />
+    // so we can have ids that match the anchor links
+    const spanId = reduceRepeatingPatterns(extractTextValues(node)).replace(/ /g, "-").replace(/:/g, "")
+    return <Heading content={children} section={sectionStr} tag={tag} spanId={spanId} />
   }
   return h
 }
@@ -88,10 +104,12 @@ const challenge = (sectionStr: string) => {
   return challenge
 }
 
-function code({ node, inline, className, children, ...props }: CodeProps): JSX.Element {
+function code({ node, className, children, ...props }: CodeProps): React.JSX.Element {
   const match = /language-(\w+)/.exec(className || "")
   const code = String(children).replace(/\n$/, "")
-  if (!inline) {
+  const isBlockCode = Boolean(className && /language-(\w+)/.test(className))
+
+  if (isBlockCode) {
     if (match) {
       return (
         <div className="relative m-0">
@@ -102,12 +120,12 @@ function code({ node, inline, className, children, ...props }: CodeProps): JSX.E
             </button>
           </CopyToClipboard>
           <SyntaxHighlighter
+            {...(props as any)}
+            language={match[1]}
+            PreTag="div"
             style={codeStyle}
             codeTagProps={{ className: "text-sm" }}
-            language={match[1]}
             customStyle={{ margin: 0 }}
-            PreTag="div"
-            {...props}
           >
             {code}
           </SyntaxHighlighter>
@@ -148,6 +166,31 @@ const Content: React.FC<Props> = ({ markdown, theme, course, section }) => {
   const sectionStr = `${theme ? theme.repo + "." : ""}${theme ? theme.id + "." : ""}${course ? course.id + "." : ""}${
     section ? section.id : ""
   }`
+
+  function replaceBaseUrl(markdown: string): string {
+    const baseUrl = `${process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}/material/${theme?.repo}`
+    return markdown.replace(/\{\{\s*base_url\s*\}\}/g, baseUrl)
+  }
+
+  const transformLink = (href: string): string => {
+    if (!href) return href
+    if (href.startsWith("#")) {
+      return href // anchor link — don't rewrite
+    }
+
+    let cleanedHref = href.replace(/\.md$/i, "")
+
+    if (isLikelyExternal(cleanedHref)) {
+      return cleanedHref.startsWith("http") ? href : `https://${href}`
+    }
+
+    // Treat as internal
+    const cleanPath = cleanedHref.replace(/^\/+/, "")
+    return `/material/${theme?.repo}/${cleanPath}`
+  }
+
+  markdown = replaceBaseUrl(markdown) // we look for {{ base_url }} and replace it with a domain/material/${theme.repo}
+
   return (
     <div className="mx-auto prose prose-base max-w-2xl prose-slate dark:prose-invert prose-pre:bg-[#263E52] px-5">
       <ReactMarkdown
@@ -164,16 +207,16 @@ const Content: React.FC<Props> = ({ markdown, theme, course, section }) => {
           h2: h(sectionStr, "h2"),
           h3: h(sectionStr, "h3"),
           h4: h(sectionStr, "h4"),
+          a: ({ node, ...props }) => {
+            const newHref = transformLink(props.href || "")
+            return <a {...props} href={newHref} />
+          },
         }}
       >
         {markdown}
       </ReactMarkdown>
     </div>
   )
-}
-
-type MarkdownProps = {
-  markdown: string
 }
 
 export const Markdown: React.FC<Props> = ({ markdown }) => {

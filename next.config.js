@@ -4,10 +4,10 @@ const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 })
 import { withPlausibleProxy } from "next-plausible"
+import plausibleHost from "./lib/plausibleHost.js"
 
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   trailingSlash: false,
   images: {
     remotePatterns: [
@@ -41,4 +41,6 @@ const nextConfig = {
   },
 }
 
-export default withPlausibleProxy()(withBundleAnalyzer(nextConfig))
+export default withPlausibleProxy({
+  customDomain: plausibleHost,
+})(nextConfig)

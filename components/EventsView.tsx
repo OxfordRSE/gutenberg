@@ -10,7 +10,7 @@ import useProfile from "lib/hooks/useProfile"
 import useActiveEvent from "lib/hooks/useActiveEvents"
 import { postEvent } from "lib/actions/postEvent"
 import { MdContentCopy, MdDelete } from "react-icons/md"
-import { useRecoilState } from "recoil"
+import { useAtom } from "jotai"
 import { deleteEventModalState, deleteEventIdState } from "components/deleteEventModal"
 import { duplicateEventModalState, duplicateEventIdState } from "components/DuplicateEventModal"
 import { Tooltip } from "@mui/material"
@@ -27,10 +27,10 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
   const [oldEvents, setOldEvents] = useState(0)
   const [newEvents, setNewEvents] = useState(0)
   const [activeEvent] = useActiveEvent()
-  const [showDeleteEventModal, setShowDeleteEventModal] = useRecoilState(deleteEventModalState)
-  const [deleteEventId, setDeleteEventId] = useRecoilState(deleteEventIdState)
-  const [showDuplicateEventModal, setShowDuplicateEventModal] = useRecoilState(duplicateEventModalState)
-  const [duplicateEventId, setDuplicateEventId] = useRecoilState(duplicateEventIdState)
+  const [showDeleteEventModal, setShowDeleteEventModal] = useAtom(deleteEventModalState)
+  const [deleteEventId, setDeleteEventId] = useAtom(deleteEventIdState)
+  const [showDuplicateEventModal, setShowDuplicateEventModal] = useAtom(duplicateEventModalState)
+  const [duplicateEventId, setDuplicateEventId] = useAtom(duplicateEventIdState)
 
   useEffect(() => {
     setShowDateTime(true)

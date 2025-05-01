@@ -12,7 +12,7 @@ import Overlay from "./Overlay"
 import Navbar from "./Navbar"
 import { useSidebarOpen } from "lib/hooks/useSidebarOpen"
 import useActiveEvent from "lib/hooks/useActiveEvents"
-import { RecoilRoot } from "recoil"
+import { Provider } from "jotai"
 import { PageTemplate } from "lib/pageTemplate"
 import { SectionLink } from "./ui/LinkedSection"
 import { findLinks } from "lib/findSectionLinks"
@@ -21,6 +21,7 @@ import { useTheme } from "next-themes"
 import { ThemeProvider } from "@mui/material/styles"
 import { CssBaseline } from "@mui/material"
 import { LightTheme, DarkTheme } from "./MuiTheme"
+import plausibleHost from "lib/plausibleHost"
 
 type Props = {
   material: Material
@@ -44,7 +45,7 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
 
   const muiTheme = React.useMemo(() => (currentTheme === "light" ? LightTheme : DarkTheme), [currentTheme])
   return (
-    <RecoilRoot>
+    <Provider>
       <ThemeProvider theme={muiTheme}>
         <div className="container mx-auto">
           <Link href="#main" className="sr-only focus:not-sr-only">
@@ -81,6 +82,7 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
             />
             <PlausibleProvider
               domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN ?? ""}
+              customDomain={plausibleHost}
               enabled={true}
               trackLocalhost={true}
               trackOutboundLinks={true}
@@ -91,7 +93,7 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
           <Footer pageInfo={pageInfo} />
         </div>
       </ThemeProvider>
-    </RecoilRoot>
+    </Provider>
   )
 }
 

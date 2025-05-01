@@ -10,26 +10,20 @@ import { BiCommentAdd } from "react-icons/bi"
 import { useTextSelection } from "use-text-selection"
 import { SearchResult } from "lib/search/vectorDb"
 import { Card } from "flowbite-react"
-import { atom, useRecoilState } from "recoil"
+import { atom, useAtom } from "jotai"
 import SearchBar from "components/forms/SearchBar"
 
-export const searchQueryState = atom({
-  key: "searchQueryState",
-  default: false,
-})
+export const searchQueryState = atom<boolean>(false)
 
-export const searchResultsState = atom({
-  key: "searchResultsState",
-  default: [] as SearchResult[],
-})
+export const searchResultsState = atom<SearchResult[]>([] as SearchResult[])
 
 interface SearchProps {
   onClose: () => void
 }
 
 export const SearchDialog: React.FC<SearchProps> = ({ onClose }) => {
-  const [searchResults, setSearchResults] = useRecoilState(searchResultsState)
-  const [isOpen, setIsOpen] = useRecoilState(searchQueryState)
+  const [searchResults, setSearchResults] = useAtom(searchResultsState)
+  const [isOpen, setIsOpen] = useAtom(searchQueryState)
   return (
     <Modal dismissible={true} show={isOpen} onClose={onClose} initialFocus={1} size="7xl">
       <Modal.Header>Search Course Material</Modal.Header>

@@ -3,14 +3,14 @@ import { BiSearch } from "react-icons/bi"
 import React, { useEffect, useState, useRef } from "react"
 import searchQuery from "lib/actions/searchMaterial"
 import { SearchResult } from "lib/search/vectorDb"
-import { useRecoilState } from "recoil"
+import { useAtom } from "jotai"
 import { searchQueryState, searchResultsState } from "components/SearchDialog"
 
 function SearchBar() {
   const ref = useRef<HTMLDivElement>(null)
   const [query, setQuery] = useState<string>("")
-  const [searchResults, setSearchResults] = useRecoilState(searchResultsState)
-  const [isOpen, setIsOpen] = useRecoilState(searchQueryState)
+  const [searchResults, setSearchResults] = useAtom(searchResultsState)
+  const [isOpen, setIsOpen] = useAtom(searchQueryState)
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newQuery = event.target.value

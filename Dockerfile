@@ -5,7 +5,7 @@ ARG MATERIAL_METHOD=copy
 
 # Define the Python version to use
 ARG PYTHON_VERSION=3.12.3-slim
-ARG NODE_VERSION=20-alpine
+ARG NODE_VERSION=22.10-alpine
 
 ####
 # MATERIAL OPTION: PULL
@@ -78,13 +78,10 @@ COPY prisma ./prisma
 RUN corepack enable && yarn install --immutable
 COPY . .
 
-# If using npm with a `package-lock.json` comment out above and use below instead
-# RUN npm ci
-
 ENV NEXT_TELEMETRY_DISABLED 1
 
 # Add `ARG` instructions below if you need `NEXT_PUBLIC_` variables
-# then put the value on your fly.toml
+# then put the value on your fly.toml or github secrets
 # Example:
 # ARG NEXT_PUBLIC_EXAMPLE="value here"
 
@@ -96,6 +93,8 @@ ARG DATABASE_URL
 ENV DATABASE_URL ${DATABASE_URL}
 ARG NEXT_PUBLIC_PLAUSIBLE_DOMAIN
 ENV NEXT_PUBLIC_PLAUSIBLE_DOMAIN ${NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
+ARG NEXT_PUBLIC_PLAUSIBLE_HOST
+ENV NEXT_PUBLIC_PLAUSIBLE_HOST ${NEXT_PUBLIC_PLAUSIBLE_HOST}
 
 # Copy the course material into this container for the build
 ARG MATERIAL_DIR=.material
@@ -108,6 +107,8 @@ RUN yarn build
 
 # Production image, copy all the files and run next
 FROM node:${NODE_VERSION} AS runner
+# only make the symlink if it doesn't exist
+RUN [ ! -e /lib/libssl.so.3 ] && ln -s /usr/lib/libssl.so.3 /lib/libssl.so.3 || true
 WORKDIR /app
 RUN apk add --no-cache git
 ENV NODE_ENV production
