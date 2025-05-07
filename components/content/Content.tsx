@@ -3,6 +3,7 @@ import ReactMarkdown, { ExtraProps, Components } from "react-markdown"
 import { Prism, SyntaxHighlighterProps } from "react-syntax-highlighter"
 import CopyToClipboard from "components/ui/CopyToClipboard"
 import { FaClipboard } from "react-icons/fa"
+import path from "path"
 
 import { lucario as codeStyle } from "react-syntax-highlighter/dist/cjs/styles/prism"
 
@@ -183,10 +184,21 @@ const Content: React.FC<Props> = ({ markdown, theme, course, section }) => {
     if (isLikelyExternal(cleanedHref)) {
       return cleanedHref.startsWith("http") ? href : `https://${href}`
     }
+    // Relative path if explicitly starts with ./
+    if (cleanedHref.startsWith("./")) {
+      const linkedPage = cleanedHref.replace(/^\.\//, "")
+      if (section) {
+        return `/material/${theme?.repo}/${theme?.id}/${course?.id}/${linkedPage}`
+      } else if (course) {
+        return `/material/${theme?.repo}/${theme?.id}/${linkedPage}`
+      } else if (theme) {
+        return `/material/${theme?.repo}/${linkedPage}`
+      }
+    }
 
-    // Treat as internal
-    const cleanPath = cleanedHref.replace(/^\/+/, "")
-    return `/material/${theme?.repo}/${cleanPath}`
+    // Absolute path otherwise
+    const absolutePath = cleanedHref.replace(/^\/+/, "")
+    return `/material/${theme?.repo}/${absolutePath}`
   }
 
   markdown = replaceBaseUrl(markdown) // we look for {{ base_url }} and replace it with a domain/material/${theme.repo}
