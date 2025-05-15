@@ -49,7 +49,7 @@ const isLikelyExternal = (href: string): boolean => {
     // Starts with www.
     /^www\.[^\s]+\.[^\s]+/.test(href) ||
     // Has a domain-like pattern
-    /^[^\s]+\.[^\s]+/.test(href)
+    /^[^\s\/]+\.[^\s]+/.test(href)
   )
 }
 
