@@ -2,6 +2,7 @@ import { HiChevronLeft, HiChevronRight } from "react-icons/hi"
 import Stack from "./Stack"
 import React, { SyntheticEvent, useRef } from "react"
 import { Tooltip } from "@mui/material"
+import useWindowSize from "lib/hooks/useWindowSize"
 
 export type SectionLink = {
   theme?: String
@@ -16,6 +17,7 @@ export type SectionLink = {
 export const LinkedSection = (sectionLink: SectionLink) => {
   let iconColor = "grey"
   let borderColor = "border-grey-700 dark:border-grey-500"
+  const windowSize = useWindowSize()
 
   const trimString = (str: String, len: number) => {
     return str.length > len ? str.substring(0, len - 3) + "..." : str
@@ -47,6 +49,38 @@ export const LinkedSection = (sectionLink: SectionLink) => {
 
   const calcAnchorHeight = () => {
     sectionLink.section && sectionLink.section.length > 16 ? `h-[105px]` : `h-[80px]`
+  }
+
+  // For small screens, show only the icon, can mouseover for full tooltip
+  if ((windowSize?.width ?? 0) < 1024) {
+    console.log(sectionLink)
+    if (sectionLink.direction === "prev") {
+      return (
+        <Tooltip title={tooltipTitle} enterDelay={400}>
+          <a
+            href={`${sectionLink.url}`}
+            className={`pointer-events-auto text-gray-600 hover:text-gray-500 opacity-50`}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            <HiChevronLeft className="nav-chevron mt-3 h-10 w-6" style={{ color: iconColor }} />
+          </a>
+        </Tooltip>
+      )
+    } else if (sectionLink.direction === "next") {
+      return (
+        <Tooltip title={tooltipTitle} enterDelay={400}>
+          <a
+            href={`${sectionLink.url}`}
+            className={`pointer-events-auto text-gray-600 hover:text-gray-500 opacity-50`}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            <HiChevronRight className="nav-chevron mt-3 h-10 w-6" style={{ color: iconColor }} />
+          </a>
+        </Tooltip>
+      )
+    }
   }
 
   let stackDirection
