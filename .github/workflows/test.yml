@@ -88,7 +88,7 @@ jobs:
         run: ${{ env.MANAGER }} component
   
   link-check:
-    name: Check Static and External Links
+    name: Check Links
     runs-on: ubuntu-latest
     env:
       NEXTAUTH_URL: http://localhost:3000
@@ -122,10 +122,20 @@ jobs:
       - name: Wait for site to be ready
         run: npx wait-on http://localhost:3000
 
+      - name: Check links on main page
+        uses: lycheeverse/lychee-action@v1.10.0
+        with:
+          args: http://localhost:3000 --verbose --no-progress --exclude "#"
+
+      - name: Crawl site under /material to find pages
+        run: |
+          wget --recursive --no-verbose --level=5 --spider --output-file=wget.log http://localhost:3000/material
+          grep '^http' wget.log | sort | uniq > urls.txt
+
       - name: Check links using lychee
         uses: lycheeverse/lychee-action@v1.10.0
         with:
-          args: http://localhost:3000 --verbose --no-progress --exclude-mail --exclude "#"
+          args: --verbose --no-progress --exclude-mail --exclude "#" --input urls.txt
 
 
   docker-build:
