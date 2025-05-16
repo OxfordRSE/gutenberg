@@ -86,6 +86,47 @@ jobs:
         run: ${{ env.MANAGER }} ci:e2e
       - name: Run component tests
         run: ${{ env.MANAGER }} component
+  
+  link-check:
+    name: Check Static and External Links
+    runs-on: ubuntu-latest
+    env:
+      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_SECRET: "secret here"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Pull course material
+        run: yarn pullmat
+
+      - name: Build site
+        run: yarn build
+
+      - name: Start Next.js server
+        run: yarn start &
+        env:
+          PORT: 3000
+
+      - name: Wait for site to be ready
+        run: npx wait-on http://localhost:3000
+
+      - name: Check links using lychee
+        uses: lycheeverse/lychee-action@v1.10.0
+        with:
+          args: http://localhost:3000 --verbose --no-progress --exclude-mail --exclude "#"
+
 
   docker-build:
     runs-on: ubuntu-latest
