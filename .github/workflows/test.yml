@@ -119,23 +119,27 @@ jobs:
         env:
           PORT: 3000
 
-      - name: Wait for site to be ready
+      - name: Wait for site
         run: npx wait-on http://localhost:3000
 
-      - name: Check links on main page
+      - name: Check links on /
         uses: lycheeverse/lychee-action@v1.10.0
         with:
           args: http://localhost:3000 --verbose --no-progress --exclude "#"
 
-      - name: Crawl site under /material to find pages
+      - name: Crawl /material for URLs
         run: |
-          wget --recursive --no-verbose --level=5 --spider --output-file=wget.log http://localhost:3000/material
+          wget --recursive --no-verbose --level=5 --spider --output-file=wget.log http://localhost:3000/material || true
           grep '^http' wget.log | sort | uniq > urls.txt
+          echo "Discovered URLs:"
+          cat urls.txt
 
-      - name: Check links using lychee
-        uses: lycheeverse/lychee-action@v1.10.0
-        with:
-          args: --verbose --no-progress --exclude-mail --exclude "#" --input urls.txt
+      - name: Install lychee
+        run: cargo install lychee
+
+      - name: Run lychee material URLs
+        run: |
+          lychee --verbose --no-progress --exclude-mail --exclude "#" --input urls.txt
 
 
   docker-build:
