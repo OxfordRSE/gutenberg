@@ -175,28 +175,37 @@ const Content: React.FC<Props> = ({ markdown, theme, course, section }) => {
 
   const transformLink = (href: string): string => {
     if (!href) return href
-    if (href.startsWith("#")) {
-      return href // anchor link — don't rewrite
+    if (href.startsWith("#")) return href // anchor link — don't rewrite
+
+    const cleanedHref = href.replace(/\.md$/i, "")
+    // if we are in /diagram we need to do one less level
+    //Internal relative links
+    if (!cleanedHref.includes(".") && !cleanedHref.includes("/")) {
+      return href
     }
 
-    let cleanedHref = href.replace(/\.md$/i, "")
+    if (cleanedHref.startsWith("./")) {
+      const linkedPage = cleanedHref.slice(2)
 
+      // if we are in /diagram we need to do one less level
+      if (section) return `/material/${theme?.repo}/${theme?.id}/${course?.id}/${linkedPage}`
+      if (course) return `/material/${theme?.repo}/${theme?.id}/${linkedPage}`
+      if (theme) return `/material/${theme?.repo}/${linkedPage}`
+    }
+
+    if (cleanedHref.startsWith("../")) {
+      const linkedPage = cleanedHref.slice(3)
+      if (section) return `/material/${theme?.repo}/${theme?.id}/${linkedPage}`
+      if (course) return `/material/${theme?.repo}/${linkedPage}`
+      return cleanedHref
+    }
+
+    //External links
     if (isLikelyExternal(cleanedHref)) {
       return cleanedHref.startsWith("http") ? href : `https://${href}`
     }
-    // Relative path if explicitly starts with ./
-    if (cleanedHref.startsWith("./")) {
-      const linkedPage = cleanedHref.replace(/^\.\//, "")
-      if (section) {
-        return `/material/${theme?.repo}/${theme?.id}/${course?.id}/${linkedPage}`
-      } else if (course) {
-        return `/material/${theme?.repo}/${theme?.id}/${linkedPage}`
-      } else if (theme) {
-        return `/material/${theme?.repo}/${linkedPage}`
-      }
-    }
 
-    // Absolute path otherwise
+    //Internal absolute
     const absolutePath = cleanedHref.replace(/^\/+/, "")
     return `/material/${theme?.repo}/${absolutePath}`
   }
