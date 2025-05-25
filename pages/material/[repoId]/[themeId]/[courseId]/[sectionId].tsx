@@ -41,6 +41,7 @@ const SectionComponent: NextPage<SectionComponentProps> = ({
   repoUrl,
   excludes,
 }: SectionComponentProps) => {
+  const pageTitle = pageInfo?.title ? `${section.name}: ${pageInfo.title}` : section.name
   return (
     <Layout
       theme={theme}
@@ -48,6 +49,7 @@ const SectionComponent: NextPage<SectionComponentProps> = ({
       section={section}
       material={material}
       pageInfo={pageInfo}
+      pageTitle={pageTitle}
       repoUrl={repoUrl}
       excludes={excludes}
     >

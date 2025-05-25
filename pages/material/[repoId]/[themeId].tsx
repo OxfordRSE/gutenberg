@@ -22,8 +22,9 @@ type ThemeComponentProps = {
 }
 
 const ThemeComponent: NextPage<ThemeComponentProps> = ({ theme, material, events, pageInfo, excludes }) => {
+  const pageTitle = pageInfo?.title ? `${theme.name}: ${pageInfo.title}` : theme.name
   return (
-    <Layout material={material} theme={theme} pageInfo={pageInfo}>
+    <Layout material={material} theme={theme} pageInfo={pageInfo} pageTitle={pageTitle}>
       <Title text={theme.name} style={{ marginBottom: "0px" }} />
       <Link className="text-blue-500 italic" href={`/material/${theme.repo}/${theme.id}/diagram`}>
         <SubTitle text="View Theme Diagram" />

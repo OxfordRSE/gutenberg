@@ -193,8 +193,9 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
       </Stack>
     </form>
   )
+  const pageTitle = pageInfo?.title ? `${event.name}: ${pageInfo.title}` : event.name
   return (
-    <Layout material={material} pageInfo={pageInfo}>
+    <Layout material={material} pageInfo={pageInfo} pageTitle={pageTitle}>
       {eventData && isAdmin ? (
         <Tabs.Group style="underline">
           <Tabs.Item active icon={MdPreview} title="Event">
