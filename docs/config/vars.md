@@ -18,7 +18,7 @@ Since these "public" variables are available in the frontend, they should not co
 : This is the directory where the material files should be stored.
 
 `YAML_TEMPLATE`
-: This is the path to the YAML template file. This should be laid out as described [here]({{ "/config/template" | relative_url }}).
+: This is the path to the YAML template file. This should be laid out as described [in the template configuration page]({{ "/config/template" | relative_url }}).
 
 `NEXT_PUBLIC_MATERIAL_URL`
 : Default: `https://github.com/UNIVERSE-HPC/course-material`

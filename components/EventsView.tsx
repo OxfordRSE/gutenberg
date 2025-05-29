@@ -41,6 +41,10 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
     setNewEvents(events.filter((event) => event.start >= cutOffDate).length)
   }, [events])
 
+  const getFormattedDate = (date: Date) => {
+    return showDateTime ? date.toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) : date.toUTCString()
+  }
+
   const { events: currentEvents, mutate } = useEvents()
   if (currentEvents) {
     events = currentEvents
@@ -135,14 +139,14 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
               <Timeline.Point />
               <Timeline.Content>
                 <Timeline.Time className="flex justify-between">
-                  <Link href={`/event/${event.id}`}>
-                    {showDateTime && event.start.toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}
+                  <Link href={`/event/${event.id}`} className="text-gray-600 dark:text-gray-200">
+                    {getFormattedDate(event.start)}
                   </Link>
                   {isAdmin && (
                     <Stack direction="row">
                       <Tooltip title="Duplicate Event">
                         <MdContentCopy
-                          className="ml-2 inline flex cursor-pointer"
+                          className="ml-2 flex cursor-pointer"
                           data-cy={`duplicate-event-${event.id}`}
                           size={18}
                           onClick={() => openDuplicateEventModal(event.id)}
@@ -150,7 +154,7 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
                       </Tooltip>
                       <Tooltip title="Delete Event">
                         <MdDelete
-                          className="ml-2 inline text-red-500 flex cursor-pointer"
+                          className="ml-2 text-red-500 flex cursor-pointer"
                           data-cy={`delete-event-${event.id}`}
                           size={18}
                           onClick={() => openDeleteEventModal(event.id)}
