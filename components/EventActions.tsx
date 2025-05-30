@@ -12,14 +12,16 @@ import { Button } from "flowbite-react"
 import { useUserOnEvent } from "lib/hooks/useUserOnEvent"
 import useActiveEvent from "lib/hooks/useActiveEvents"
 import useEvent from "lib/hooks/useEvent"
+import { verify } from "crypto"
 
 type EventActionsProps = {
   event: Event
+  verbose?: boolean
 }
 
 const userOnEventFetcher: Fetcher<UserOnEvent, string> = (url) => fetch(url).then((r) => r.json())
 
-const EventActions: React.FC<EventActionsProps> = ({ event }) => {
+const EventActions: React.FC<EventActionsProps> = ({ event, verbose }) => {
   const [activeEvent, setActiveEvent] = useActiveEvent()
 
   const { data: session } = useSession()
@@ -59,18 +61,18 @@ const EventActions: React.FC<EventActionsProps> = ({ event }) => {
     <div className="flex flex-row gap-2">
       {isActiveEvent ? (
         <Button color="gray" onClick={handleDeactivate(event)} style={{ zIndex: 1 }}>
-          Unselect
+          {verbose ? "Deselect as active event" : "Unselect"}
           <HiArrowNarrowRight className="ml-2 h-3 w-3" />
         </Button>
       ) : isMyEvent ? (
         <Button color="gray" onClick={handleActivate(event)} style={{ zIndex: 1 }}>
-          Select
+          {verbose ? "Select as your active event" : "Select"}
           <HiArrowNarrowRight className="ml-2 h-3 w-3" />
         </Button>
       ) : isRequested ? (
         <>
           <Button color="gray" onClick={handleEnrol(event)} style={{ zIndex: 1 }}>
-            Requested
+            {verbose ? "Enrolment has been requested" : "Requested"}
             <HiArrowNarrowRight className="ml-2 h-3 w-3" />
           </Button>
           <EnrolDialog event={event} show={showEvent == event} onEnrol={onEnrol} />
@@ -79,7 +81,7 @@ const EventActions: React.FC<EventActionsProps> = ({ event }) => {
         session && (
           <>
             <Button color="gray" data-cy={`event-enrol-${event.id}`} onClick={handleEnrol(event)} style={{ zIndex: 1 }}>
-              Enrol
+              {verbose ? "Enrol onto this event" : "Enrol"}
               <HiArrowNarrowRight className="ml-2 h-3 w-3" />
             </Button>
             <EnrolDialog event={event} show={showEvent == event} onEnrol={onEnrol} />
