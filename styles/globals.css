@@ -1,3 +1,4 @@
+@import "flowbite.min.css";
 @import "callouts.css";
 @tailwind base;
 @tailwind components;

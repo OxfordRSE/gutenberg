@@ -4,3 +4,4 @@ next-env.d.ts
 .material
 yarn.lock
 node_modules
+flowbite.min.css
