@@ -301,8 +301,9 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
     </form>
   )
 
+  const pageTitle = pageInfo?.title ? `${eventGroup.name}: ${pageInfo.title}` : eventGroup.name
   return (
-    <Layout material={material} pageInfo={pageInfo}>
+    <Layout material={material} pageInfo={pageInfo} pageTitle={pageTitle}>
       {isAdmin ? (
         <Tabs.Group style="underline">
           <Tabs.Item active icon={MdPreview} title="Event">

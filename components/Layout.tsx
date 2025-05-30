@@ -1,7 +1,6 @@
 import { Course, Section, Theme } from "lib/material"
 import Link from "next/link"
 
-import { useRouter } from "next/router"
 import { useSession } from "next-auth/react"
 import { useState } from "react"
 import React, { ReactNode } from "react"
@@ -19,7 +18,6 @@ import { findLinks } from "lib/findSectionLinks"
 import PlausibleProvider from "next-plausible"
 import { useTheme } from "next-themes"
 import { ThemeProvider } from "@mui/material/styles"
-import { CssBaseline } from "@mui/material"
 import { LightTheme, DarkTheme } from "./MuiTheme"
 import plausibleHost from "lib/plausibleHost"
 
@@ -30,15 +28,25 @@ type Props = {
   section?: Section
   children: ReactNode
   pageInfo?: PageTemplate
+  pageTitle?: string
   repoUrl?: string
   excludes?: Excludes
 }
 
-const Layout: React.FC<Props> = ({ material, theme, course, section, children, pageInfo, repoUrl, excludes }) => {
+const Layout: React.FC<Props> = ({
+  material,
+  theme,
+  course,
+  section,
+  children,
+  pageInfo,
+  pageTitle,
+  repoUrl,
+  excludes,
+}) => {
   const [activeEvent, setActiveEvent] = useActiveEvent()
-  const router = useRouter()
   const { data: session } = useSession()
-  const { systemTheme, theme: currentTheme } = useTheme()
+  const { theme: currentTheme } = useTheme()
   const [showAttribution, setShowAttribution] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useSidebarOpen(true)
   const sectionLinks: SectionLink[] = findLinks(material, theme, course, section, activeEvent)
@@ -51,7 +59,7 @@ const Layout: React.FC<Props> = ({ material, theme, course, section, children, p
           <Link href="#main" className="sr-only focus:not-sr-only">
             Skip to main content
           </Link>
-          <Header theme={theme} course={course} pageInfo={pageInfo} />
+          <Header pageInfo={pageInfo} pageTitle={pageTitle} />
           <header>
             <Navbar
               material={material}

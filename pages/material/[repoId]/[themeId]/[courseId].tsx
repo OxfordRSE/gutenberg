@@ -30,8 +30,9 @@ const CourseComponent: NextPage<CourseComponentProps> = ({
   events,
   pageInfo,
 }: CourseComponentProps) => {
+  const pageTitle = pageInfo?.title ? `${course.name}: ${pageInfo.title}` : course.name
   return (
-    <Layout theme={theme} course={course} material={material} pageInfo={pageInfo}>
+    <Layout theme={theme} course={course} material={material} pageInfo={pageInfo} pageTitle={pageTitle}>
       <Title text={course.name} style={{ marginBottom: "0px" }} />
       <Link className="text-blue-500 italic" href={`/material/${theme.repo}/${theme.id}/${course.id}/diagram`}>
         <SubTitle text="View Course Diagram" />

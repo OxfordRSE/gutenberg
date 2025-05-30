@@ -18,8 +18,9 @@ type HomeProps = {
 }
 
 const Home: NextPage<HomeProps> = ({ material, events, pageInfo }) => {
+  const pageTitle = pageInfo?.title ? `Material Themes: ${pageInfo.title}` : "Material Themes"
   return (
-    <Layout material={material} pageInfo={pageInfo}>
+    <Layout material={material} pageInfo={pageInfo} pageTitle={pageTitle}>
       <Title text="Material Themes" className="text-3xl font-bold text-center p-3" style={{ marginBottom: "0px" }} />
       <Link className="text-blue-500 italic" href={`/material/diagram`}>
         <SubTitle text="view full diagram" />
