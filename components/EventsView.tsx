@@ -138,14 +138,17 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
             <Timeline.Item key={event.id}>
               <Timeline.Point />
               <Timeline.Content>
-                <Timeline.Time className="flex justify-between">
+                <div className="flex justify-between">
                   <Link href={`/event/${event.id}`} className="text-gray-600 dark:text-gray-200">
-                    {getFormattedDate(event.start)}
+                    <Timeline.Time dateTime={event.start.toISOString()}>{getFormattedDate(event.start)}</Timeline.Time>
                   </Link>
                   {isAdmin && (
                     <Stack direction="row">
                       <Tooltip title="Duplicate Event">
                         <MdContentCopy
+                          role="button"
+                          tabIndex={0}
+                          aria-label="Duplicate Event"
                           className="ml-2 flex cursor-pointer"
                           data-cy={`duplicate-event-${event.id}`}
                           size={18}
@@ -154,6 +157,9 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
                       </Tooltip>
                       <Tooltip title="Delete Event">
                         <MdDelete
+                          role="button"
+                          tabIndex={0}
+                          aria-label="Delete Event"
                           className="ml-2 text-red-500 flex cursor-pointer"
                           data-cy={`delete-event-${event.id}`}
                           size={18}
@@ -162,7 +168,7 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
                       </Tooltip>
                     </Stack>
                   )}
-                </Timeline.Time>
+                </div>
                 <Link href={`/event/${event.id}`}>
                   <Timeline.Title>{event.name}</Timeline.Title>
                   <Timeline.Body>{event.summary}</Timeline.Body>
