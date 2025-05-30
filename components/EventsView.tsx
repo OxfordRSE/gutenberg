@@ -144,22 +144,22 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
                   </Link>
                   {isAdmin && (
                     <Stack direction="row">
-                      <Tooltip title="Duplicate Event">
+                      <Tooltip id={`duplicate-event-${event.id}`} title={`Duplicate Event: ${event.id}`}>
                         <MdContentCopy
                           role="button"
                           tabIndex={0}
-                          aria-label="Duplicate Event"
+                          aria-labelledby={`duplicate-event-${event.id}`}
                           className="ml-2 flex cursor-pointer"
                           data-cy={`duplicate-event-${event.id}`}
                           size={18}
                           onClick={() => openDuplicateEventModal(event.id)}
                         />
                       </Tooltip>
-                      <Tooltip title="Delete Event">
+                      <Tooltip id={`delete-event-${event.id}`} title={`Delete Event: ${event.id}`}>
                         <MdDelete
                           role="button"
                           tabIndex={0}
-                          aria-label="Delete Event"
+                          aria-labelledby={`delete-event-${event.id}`}
                           className="ml-2 text-red-500 flex cursor-pointer"
                           data-cy={`delete-event-${event.id}`}
                           size={18}
