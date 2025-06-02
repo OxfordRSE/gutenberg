@@ -90,6 +90,14 @@ const AttributionDialog: React.FC<CitationDialogProps> = ({ citations, isOpen, o
   useEffect(() => {
     setMounted(true)
   }, [])
+  // NOTE(ADW): This absolutely disgusting hack is because the hrefs are one level deeper in diagram mode so relative urls either match on the course page or here
+  if (typeof window !== "undefined" && window.location.href.includes("diagram")) {
+    citations.forEach((citation) => {
+      if (citation.image.startsWith("./")) {
+        citation.image = "." + citation.image
+      }
+    })
+  }
 
   const pageLicense = overallLicense(citations)
 

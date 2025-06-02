@@ -53,7 +53,6 @@ export const LinkedSection = (sectionLink: SectionLink) => {
 
   // For small screens, show only the icon, can mouseover for full tooltip
   if ((windowSize?.width ?? 0) < 1024) {
-    console.log(sectionLink)
     if (sectionLink.direction === "prev") {
       return (
         <Tooltip title={tooltipTitle} enterDelay={400}>
