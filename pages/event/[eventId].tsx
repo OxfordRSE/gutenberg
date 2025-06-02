@@ -29,6 +29,7 @@ import SubTitle from "components/ui/SubTitle"
 import EventCommentThreads from "components/EventCommentThreads"
 import { PageTemplate, pageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
+import EventActions from "components/EventActions"
 
 type EventProps = {
   material: Material
@@ -108,6 +109,7 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
 
   const eventView = (
     <>
+      <EventActions event={event} verbose={true} />
       <Title text={event.name} />
       <SubTitle
         text={
