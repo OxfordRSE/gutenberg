@@ -127,6 +127,7 @@ jobs:
             --exclude "stackexchange.com" \
             --exclude "mathworks.com" \
             --exclude "shinyapps.io" \
+            --exclude "support.microsoft.com" \
             --exclude "essential_maths/essential_maths/" \
           ; true)
           echo "$OUTPUT"
