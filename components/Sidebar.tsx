@@ -1,15 +1,11 @@
-import React, { useEffect, useRef, useState } from "react"
-import Image from "next/image"
+import React, { useEffect, useRef } from "react"
 import { Material } from "lib/material"
-import { Event, EventFull } from "lib/types"
-import { basePath } from "lib/basePath"
-import useSWR, { Fetcher } from "swr"
-import { Button, Sidebar } from "flowbite-react"
+import type { EventFull } from "lib/types"
+import EventSwitcher from "./EventSwitcher"
+import { Fetcher } from "swr"
 import EventView from "./EventView"
-import EventsView from "./EventsView"
-import { MdClose } from "react-icons/md"
-import { HiArrowNarrowRight, HiCalendar, HiMenuAlt1, HiXCircle } from "react-icons/hi"
-import { HiArrowNarrowLeft } from "react-icons/hi"
+import { HiXCircle } from "react-icons/hi"
+import { MdKeyboardArrowLeft } from "react-icons/md"
 
 type SidebarProps = {
   material: Material
@@ -54,13 +50,17 @@ const MySidebar: React.FC<SidebarProps> = ({ material, activeEvent, sidebarOpen,
   return (
     <>
       {sidebarOpen && activeEvent ? (
-        <div className="pointer-events-auto fixed top-0 pl-2 h-screen overflow-x-hidden rounded border top-15 left-0 text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 w-96">
-          <HiXCircle
-            className="absolute top-1 right-2 z-50 text-gray-500 hover:text-gray-400 opacity-50 w-10 h-10"
-            onClick={handleClose}
-          />
+        <div className="pointer-events-auto fixed top-0 pl-2 h-screen overflow-x-hidden border top-15 left-0 text-gray-700 border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 w-96">
           <div id="sidebar" ref={sidebarRef} className="p-1 overflow-y-auto h-full">
+            <EventSwitcher />
             <EventView material={material} event={activeEvent} />
+            <button
+              onClick={handleClose}
+              aria-label="Close sidebar"
+              className="absolute top-1 right-0 z-50 text-gray-500 hover:text-gray-400 opacity-50 w-10 h-10"
+            >
+              <MdKeyboardArrowLeft className="w-full h-full" />
+            </button>
           </div>
         </div>
       ) : (
