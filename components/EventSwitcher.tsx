@@ -5,6 +5,7 @@ import { Select, MenuItem, FormControl, InputLabel, Typography, Box } from "@mui
 import { CheckCircle } from "@mui/icons-material"
 import { SelectChangeEvent } from "@mui/material"
 import { HiSwitchHorizontal } from "react-icons/hi"
+import { GoArrowRight } from "react-icons/go"
 
 const EventSwitcher: React.FC = () => {
   const [editMode, setEditMode] = useState(false)
@@ -23,7 +24,11 @@ const EventSwitcher: React.FC = () => {
   if (isLoading || !events) return null
 
   return (
-    <Box className="px-3 py-2 border-b border-gray-300 dark:border-gray-600">
+    <Box
+      component="section"
+      aria-label="Active event selection"
+      className="px-3 py-2 border-b border-gray-300 dark:border-gray-600"
+    >
       {editMode ? (
         <FormControl fullWidth size="small" variant="outlined">
           <InputLabel id="event-select-label">Select Event</InputLabel>
@@ -33,10 +38,18 @@ const EventSwitcher: React.FC = () => {
             value={activeEvent?.id?.toString() ?? ""}
             onChange={(event: SelectChangeEvent) => {
               const selectedId = Number(event.target.value)
+
+              if (!event.target.value) {
+                setActiveEvent(undefined)
+                setEditMode(false)
+                return
+              }
+
               const selectedEvent = events?.find((e) => e.id === selectedId)
               if (selectedEvent) {
                 setActiveEvent(selectedEvent)
               }
+
               setEditMode(false)
             }}
             onBlur={() => setEditMode(false)}
@@ -65,6 +78,9 @@ const EventSwitcher: React.FC = () => {
                 </MenuItem>
               )
             })}
+            <MenuItem value="" aria-label="Set no active event">
+              <Box className="w-full text-gray-500 dark:text-gray-400 italic">Set no active event</Box>
+            </MenuItem>
           </Select>
         </FormControl>
       ) : (
@@ -72,12 +88,22 @@ const EventSwitcher: React.FC = () => {
           <button
             onClick={() => setEditMode(true)}
             className="text-sm flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+            aria-label={activeEvent ? "Swap active event" : "Select active event"}
           >
-            <HiSwitchHorizontal className="w-4 h-4 mr-1" />
-            <span className="mr-1">Swap</span>
+            {activeEvent ? (
+              <>
+                <HiSwitchHorizontal className="w-4 h-4 mr-1" />
+                <span>Swap</span>
+              </>
+            ) : (
+              <>
+                <GoArrowRight className="w-4 h-4 mr-1" />
+                <span>Select</span>
+              </>
+            )}
           </button>
           <Typography variant="h6" className="truncate text-gray-800 dark:text-gray-400 text-light">
-            {activeEvent?.name ?? "No Active Event"}
+            {activeEvent?.name ?? ""}
           </Typography>
         </Box>
       )}

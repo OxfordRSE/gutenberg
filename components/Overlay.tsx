@@ -15,6 +15,7 @@ import { Stack } from "@mui/material"
 import useWindowSize from "lib/hooks/useWindowSize"
 import DeleteUserOnEventModal, { deleteUserOnEventModalState } from "./dialogs/deleteUserOnEventModal"
 import TableOfContents from "./TableOfContents"
+import { useSession } from "next-auth/react"
 
 interface Props {
   material: Material
@@ -47,6 +48,8 @@ const Overlay: NextPage<Props> = ({
   const [showDuplicateEventModal, setShowDuplicateEventModal] = useAtom(duplicateEventModalState)
   const [showDeleteUserOnEventModal, setShowDeleteUserOnEventModal] = useAtom(deleteUserOnEventModalState)
   const windowSize = useWindowSize()
+  const { data: session, status } = useSession()
+  const isLoggedIn = status === "authenticated"
   // remove duplicate links in case activeevent includes the same section as dependsOn, reverse so AE comes first
   sectionLinks = sectionLinks
     ?.filter((item, index, array) => array.findIndex((other) => other.url === item.url) === index)
@@ -90,11 +93,11 @@ const Overlay: NextPage<Props> = ({
   }
   const sectionTitle = section ? section.name : ""
   const attribution = section ? section.attribution : course ? course.attribution : []
-
+  console.log(isLoggedIn, status, session)
   return (
     <div className="z-10 pointer-events-none fixed top-0 container mx-auto">
       <div className="pointer-events-none h-screen w-full flex-col content-between">
-        {activeEvent && showTopButtons && (
+        {isLoggedIn && showTopButtons && (
           <HiCalendar
             className="pointer-events-auto absolute top-0 left-0 cursor-pointer opacity-50 text-gray-600 hover:text-gray-500 w-12 h-12"
             onClick={handleToggle}

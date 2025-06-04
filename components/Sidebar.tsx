@@ -4,7 +4,6 @@ import type { EventFull } from "lib/types"
 import EventSwitcher from "./EventSwitcher"
 import { Fetcher } from "swr"
 import EventView from "./EventView"
-import { HiXCircle } from "react-icons/hi"
 import { MdKeyboardArrowLeft } from "react-icons/md"
 
 type SidebarProps = {
@@ -49,11 +48,17 @@ const MySidebar: React.FC<SidebarProps> = ({ material, activeEvent, sidebarOpen,
 
   return (
     <>
-      {sidebarOpen && activeEvent ? (
+      {sidebarOpen && (
         <div className="pointer-events-auto fixed top-0 pl-2 h-screen overflow-x-hidden border top-15 left-0 text-gray-700 border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 w-96">
           <div id="sidebar" ref={sidebarRef} className="p-1 overflow-y-auto h-full">
             <EventSwitcher />
-            <EventView material={material} event={activeEvent} />
+
+            {activeEvent ? (
+              <EventView material={material} event={activeEvent} />
+            ) : (
+              <div className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">No active event selected</div>
+            )}
+
             <button
               onClick={handleClose}
               aria-label="Close sidebar"
@@ -63,8 +68,6 @@ const MySidebar: React.FC<SidebarProps> = ({ material, activeEvent, sidebarOpen,
             </button>
           </div>
         </div>
-      ) : (
-        activeEvent && <div className="fixed top-15 left-0 m-2"></div>
       )}
     </>
   )
