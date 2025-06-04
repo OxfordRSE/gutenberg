@@ -9,6 +9,7 @@ import { GoArrowRight } from "react-icons/go"
 
 const EventSwitcher: React.FC = () => {
   const [editMode, setEditMode] = useState(false)
+  const [selectOpen, setSelectOpen] = useState(false)
   const { events, isLoading } = useMyEvents()
   const [activeEvent, setActiveEvent] = useActiveEvent()
 
@@ -33,6 +34,7 @@ const EventSwitcher: React.FC = () => {
         <FormControl fullWidth size="small" variant="outlined">
           <InputLabel id="event-select-label">Select Event</InputLabel>
           <Select
+            open={selectOpen}
             labelId="event-select-label"
             label="Select Active Event"
             value={activeEvent?.id?.toString() ?? ""}
@@ -86,9 +88,12 @@ const EventSwitcher: React.FC = () => {
       ) : (
         <Box className="flex items-center gap-2">
           <button
-            onClick={() => setEditMode(true)}
-            className="text-sm flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+            onClick={() => {
+              setEditMode(true)
+              setSelectOpen(true)
+            }}
             aria-label={activeEvent ? "Swap active event" : "Select active event"}
+            className="text-sm flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
           >
             {activeEvent ? (
               <>
