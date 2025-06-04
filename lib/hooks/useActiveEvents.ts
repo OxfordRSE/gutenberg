@@ -1,8 +1,4 @@
 import { useState, useEffect, useContext, useCallback } from "react"
-import { basePath } from "lib/basePath"
-import { useSession } from "next-auth/react"
-import { data } from "cypress/types/jquery"
-import { User } from "@prisma/client"
 import { EventFull, Event } from "lib/types"
 import useEvent from "./useEvent"
 import { AppContext } from "lib/context/ContextProvider"
