@@ -132,7 +132,7 @@ jobs:
           echo "$OUTPUT"
 
           echo "Parsing broken links..."
-          BROKEN_LINKS=$(echo "$OUTPUT" | grep -Po 'BROKEN─ \K[^ ]+')
+          BROKEN_LINKS=$(echo "$OUTPUT" | grep -Po 'BROKEN─ \K[^ ]+' || true)
 
           RETRIED=0
           FIXED=0
