@@ -57,7 +57,8 @@ const Navbar: React.FC<Props> = ({
   const windowSize = useWindowSize()
   const breakpoint = 900
   const burgerDrawerMaterialMargin = "ml-9"
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
+  const isLoggedIn = status === "authenticated"
   const ref1 = useRef<HTMLLIElement>(null)
   const ref2 = useRef<HTMLLIElement>(null)
   const ref3 = useRef<HTMLLIElement>(null)
@@ -122,6 +123,7 @@ const Navbar: React.FC<Props> = ({
   const toggleDrawer = (open: boolean) => {
     setDrawerOpen(open)
   }
+  console.log(isLoggedIn)
 
   return (
     // remove width !
@@ -130,7 +132,7 @@ const Navbar: React.FC<Props> = ({
       {(windowSize.width ?? 1024) >= 1024 ? (
         <nav className="w-full inline-flex" aria-label="Breadcrumb">
           <ol className="z-10 list-none inline-flex items-center space-x-1 md:space-x-3">
-            {activeEvent && (
+            {isLoggedIn && (
               <>
                 <HiCalendar
                   className="pointer-events-auto cursor-pointer text-gray-500 hover:text-gray-400 w-10 h-10"
