@@ -82,7 +82,6 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
       return
     }
 
-    // 1. Update event core fields
     await prisma.event.update({
       where: { id: parseInt(eventId) },
       data: {
@@ -98,7 +97,6 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
       },
     })
 
-    // 2. Handle EventGroup deletions
     const existingGroups = await prisma.eventGroup.findMany({
       where: { eventId: parseInt(eventId) },
       select: { id: true },
@@ -106,12 +104,16 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     const existingGroupIds = new Set(existingGroups.map((g) => g.id))
     const submittedGroupIds = new Set(eventGroupData.filter((g) => g.id).map((g) => g.id))
     const deletedGroupIds = [...existingGroupIds].filter((id) => !submittedGroupIds.has(id))
-
+    // Delete groups that were removed in the form
     if (deletedGroupIds.length > 0) {
-      await prisma.eventGroup.deleteMany({ where: { id: { in: deletedGroupIds } } })
+      try {
+        await prisma.eventGroup.deleteMany({ where: { id: { in: deletedGroupIds } } })
+      } catch (error) {
+        res.status(500).json({ error: "Failed to delete one or more event groups." })
+        return
+      }
     }
-
-    // 3. Upsert EventGroups and EventItems
+    // Save or update each event group
     for (const group of eventGroupData) {
       let savedGroup
       if (group.id && existingGroupIds.has(group.id)) {
@@ -139,7 +141,7 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
           },
         })
       }
-
+      // Update or create EventItems for the group
       for (const item of group.EventItem) {
         if (item.id) {
           await prisma.eventItem.update({
@@ -160,8 +162,7 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
         }
       }
     }
-
-    // 4. Return updated event
+    // Fetch the updated event with all groups and items
     const event = await prisma.event.findUnique({
       where: { id: parseInt(eventId) },
       include: {
@@ -171,7 +172,7 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     })
 
     if (!event) {
-      res.status(404).json({ error: "Problem updating event, could not get from database" })
+      res.status(404).json({ error: "Problem updating event, could not get from the database" })
       return
     }
 

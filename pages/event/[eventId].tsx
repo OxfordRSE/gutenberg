@@ -69,7 +69,6 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
   const myUserOnEvent = eventData?.UserOnEvent.find((e) => e.userEmail == session?.user?.email)
   const isInstructor = myUserOnEvent?.status === "INSTRUCTOR" || false
   const isAdmin = userProfile?.admin
-  console.log(userProfile, isAdmin)
 
   const onSubmit = (data: EventWithUsers) => {
     putEvent(data).then((data) => {
