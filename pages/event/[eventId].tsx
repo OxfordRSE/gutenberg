@@ -69,6 +69,7 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
   const myUserOnEvent = eventData?.UserOnEvent.find((e) => e.userEmail == session?.user?.email)
   const isInstructor = myUserOnEvent?.status === "INSTRUCTOR" || false
   const isAdmin = userProfile?.admin
+  console.log(userProfile, isAdmin)
 
   const onSubmit = (data: EventWithUsers) => {
     putEvent(data).then((data) => {
@@ -162,6 +163,7 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
         <div className="grid grid-cols-3 items-end gap-4 ">
           {eventGroups.map((group, index) => (
             <Stack key={group.id}>
+              <input type="hidden" name={`EventGroup.${index}.id`} value={group.id} />
               <Textfield label="Group Name" name={`EventGroup.${index}.name`} control={control} />
               <Textfield label="Group Summary" name={`EventGroup.${index}.summary`} control={control} />
               <Textfield label="Group Location" name={`EventGroup.${index}.location`} control={control} />
