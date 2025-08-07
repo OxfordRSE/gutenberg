@@ -29,6 +29,7 @@ const commentHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) =
   const userEmail = session.user?.email || undefined
 
   const currentUser = await prisma.user.findUnique({
+    where: { email: userEmail },
   })
 
   const isAdmin = currentUser?.admin
