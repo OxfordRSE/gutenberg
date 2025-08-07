@@ -96,6 +96,20 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
         hidden,
       },
     })
+    // Update UserOnEvent statuses
+    for (const user of req.body.event.UserOnEvent) {
+      if (user.userEmail && user.status) {
+        await prisma.userOnEvent.updateMany({
+          where: {
+            userEmail: user.userEmail,
+            eventId: parseInt(eventId),
+          },
+          data: {
+            status: user.status,
+          },
+        })
+      }
+    }
 
     const existingGroups = await prisma.eventGroup.findMany({
       where: { eventId: parseInt(eventId) },
