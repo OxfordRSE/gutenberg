@@ -162,6 +162,7 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
         <div className="grid grid-cols-3 items-end gap-4 ">
           {eventGroups.map((group, index) => (
             <Stack key={group.id}>
+              <input type="hidden" name={`EventGroup.${index}.id`} value={group.id} />
               <Textfield label="Group Name" name={`EventGroup.${index}.name`} control={control} />
               <Textfield label="Group Summary" name={`EventGroup.${index}.summary`} control={control} />
               <Textfield label="Group Location" name={`EventGroup.${index}.location`} control={control} />

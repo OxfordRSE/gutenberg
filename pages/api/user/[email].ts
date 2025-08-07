@@ -26,7 +26,6 @@ const commentHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) =
     res.status(401).json({ error: "Unauthorized" })
     return
   }
-
   const userEmail = session.user?.email || undefined
 
   const currentUser = await prisma.user.findUnique({

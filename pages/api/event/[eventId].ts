@@ -76,14 +76,13 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
   } else if (req.method === "PUT") {
     const { name, enrol, content, enrolKey, instructorKey, start, end, summary, hidden } = req.body.event
     const eventGroupData: EventGroup[] = req.body.event.EventGroup
-    const userOnEventData: UserOnEvent[] = req.body.event.UserOnEvent
 
     if (!isAdmin) {
       res.status(401).json({ error: "Unauthorized" })
       return
     }
 
-    let updatedEvent = await prisma.event.update({
+    await prisma.event.update({
       where: { id: parseInt(eventId) },
       data: {
         name,
@@ -95,52 +94,88 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
         start,
         end,
         hidden,
-        EventGroup: {
-          deleteMany: {},
-          createMany: {
-            data: eventGroupData.map((group) => ({
-              ...group,
-              eventId: undefined,
-              id: undefined,
-              EventItem: undefined,
-            })),
-          },
-        },
-        UserOnEvent: {
-          deleteMany: {},
-          createMany: {
-            data: userOnEventData.map((userOnEvent) => ({
-              ...userOnEvent,
-              eventId: undefined,
-              id: undefined,
-              user: undefined,
-            })),
-          },
-        },
       },
-      include: { EventGroup: { include: { EventItem: true } }, UserOnEvent: { include: { user: true } } },
     })
-    for (let i = 0; i < eventGroupData.length; i++) {
-      const group = eventGroupData[i]
-      let newGroup = updatedEvent.EventGroup[i]
-      if (group.EventItem.length > 0) {
-        const createdItems = await prisma.eventItem.createMany({
-          data: group.EventItem.map((item) => ({
-            ...item,
-            groupId: newGroup.id,
-          })),
-        })
+
+    const existingGroups = await prisma.eventGroup.findMany({
+      where: { eventId: parseInt(eventId) },
+      select: { id: true },
+    })
+    const existingGroupIds = new Set(existingGroups.map((g) => g.id))
+    const submittedGroupIds = new Set(eventGroupData.filter((g) => g.id).map((g) => g.id))
+    const deletedGroupIds = [...existingGroupIds].filter((id) => !submittedGroupIds.has(id))
+    // Delete groups that were removed in the form
+    if (deletedGroupIds.length > 0) {
+      try {
+        await prisma.eventGroup.deleteMany({ where: { id: { in: deletedGroupIds } } })
+      } catch (error) {
+        res.status(500).json({ error: "Failed to delete one or more event groups." })
+        return
       }
     }
+    // Save or update each event group
+    for (const group of eventGroupData) {
+      let savedGroup
+      if (group.id && existingGroupIds.has(group.id)) {
+        savedGroup = await prisma.eventGroup.update({
+          where: { id: group.id },
+          data: {
+            name: group.name,
+            summary: group.summary,
+            content: group.content,
+            location: group.location,
+            start: group.start,
+            end: group.end,
+          },
+        })
+      } else {
+        savedGroup = await prisma.eventGroup.create({
+          data: {
+            name: group.name,
+            summary: group.summary,
+            content: group.content,
+            location: group.location,
+            start: group.start,
+            end: group.end,
+            event: { connect: { id: parseInt(eventId) } },
+          },
+        })
+      }
+      // Update or create EventItems for the group
+      for (const item of group.EventItem) {
+        if (item.id) {
+          await prisma.eventItem.update({
+            where: { id: item.id },
+            data: {
+              order: item.order,
+              section: item.section,
+            },
+          })
+        } else {
+          await prisma.eventItem.create({
+            data: {
+              order: item.order,
+              section: item.section,
+              group: { connect: { id: savedGroup.id } },
+            },
+          })
+        }
+      }
+    }
+    // Fetch the updated event with all groups and items
     const event = await prisma.event.findUnique({
-      where: { id: updatedEvent.id },
-      include: { EventGroup: { include: { EventItem: true } }, UserOnEvent: { include: { user: true } } },
+      where: { id: parseInt(eventId) },
+      include: {
+        EventGroup: { include: { EventItem: true }, orderBy: { start: "asc" } },
+        UserOnEvent: { include: { user: true } },
+      },
     })
-    console.log("updated event", event)
+
     if (!event) {
-      res.status(404).json({ error: "Problem updating event, could not get from dbase" })
+      res.status(404).json({ error: "Problem updating event, could not get from the database" })
       return
     }
+
     res.status(200).json({ event })
   } else if (req.method === "DELETE") {
     if (!isAdmin) {
