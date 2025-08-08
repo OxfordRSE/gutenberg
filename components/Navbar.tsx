@@ -123,7 +123,6 @@ const Navbar: React.FC<Props> = ({
   const toggleDrawer = (open: boolean) => {
     setDrawerOpen(open)
   }
-  console.log(isLoggedIn)
 
   return (
     // remove width !

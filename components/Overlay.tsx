@@ -93,7 +93,6 @@ const Overlay: NextPage<Props> = ({
   }
   const sectionTitle = section ? section.name : ""
   const attribution = section ? section.attribution : course ? course.attribution : []
-  console.log(isLoggedIn, status, session)
   return (
     <div className="z-10 pointer-events-none fixed top-0 container mx-auto">
       <div className="pointer-events-none h-screen w-full flex-col content-between">
