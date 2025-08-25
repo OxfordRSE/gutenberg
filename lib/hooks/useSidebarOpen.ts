@@ -1,23 +1,31 @@
-import { useState, useEffect } from "react"
+import { useEffect, useMemo, useState } from "react"
 
-export function useSidebarOpen(defaultValue: boolean): [boolean, (value: boolean) => void] {
+export function useSidebarOpen(
+  defaultWhenEventSelected: boolean,
+  activeEventId?: number
+): [boolean, (value: boolean) => void] {
   const [open, setOpen] = useState<number | null>(null)
 
-  useEffect(() => {
-    const store = sessionStorage.getItem("sidebarOpen")
-    if (store) {
-      setOpen(parseInt(store))
-    } else {
-      setOpen(defaultValue ? 1 : 0)
-    }
-  }, [defaultValue])
+  const storageKey = useMemo(
+    () => (activeEventId != null ? `sidebarOpen:${activeEventId}` : `sidebarOpen:none`),
+    [activeEventId]
+  )
 
   useEffect(() => {
-    const store = open?.toString()
-    if (store) {
-      sessionStorage.setItem("sidebarOpen", store)
+    const stored = sessionStorage.getItem(storageKey)
+    if (stored != null) {
+      setOpen(parseInt(stored, 10) === 1 ? 1 : 0)
+      return
     }
-  }, [open])
+
+    setOpen(activeEventId != null ? (defaultWhenEventSelected ? 1 : 0) : 0)
+  }, [storageKey, activeEventId, defaultWhenEventSelected])
+
+  // Persist on change (for both event-specific and "none" states)
+  useEffect(() => {
+    if (open == null) return
+    sessionStorage.setItem(storageKey, open.toString())
+  }, [open, storageKey])
 
   const sidebarOpen = open === 1
   const setSidebarOpen = (value: boolean) => setOpen(value ? 1 : 0)

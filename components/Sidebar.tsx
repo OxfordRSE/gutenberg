@@ -62,6 +62,7 @@ const MySidebar: React.FC<SidebarProps> = ({ material, activeEvent, sidebarOpen,
             <button
               onClick={handleClose}
               aria-label="Close sidebar"
+              data-cy="close-sidebar"
               className="absolute top-1 right-0 z-50 text-gray-500 hover:text-gray-400 opacity-50 w-10 h-10"
             >
               <MdKeyboardArrowLeft className="w-full h-full" />

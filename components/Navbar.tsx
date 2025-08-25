@@ -134,8 +134,13 @@ const Navbar: React.FC<Props> = ({
             {isLoggedIn && (
               <>
                 <HiCalendar
-                  className="pointer-events-auto cursor-pointer text-gray-500 hover:text-gray-400 w-10 h-10"
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Toggle Sidebar"
+                  data-cy="toggle-sidebar"
                   onClick={handleToggle}
+                  onKeyDown={(e) => e.key === "Enter" && handleToggle()}
+                  className="cursor-pointer text-gray-500 hover:text-gray-400 w-10 h-10"
                 />
                 <div className="h-full border-r border-gray-500"></div>
               </>

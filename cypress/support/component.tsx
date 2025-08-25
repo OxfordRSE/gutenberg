@@ -34,10 +34,10 @@ require("cypress-terminal-report/src/installLogsCollector")(logCollectorConfig)
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-import { mount } from "cypress/react18"
+import { mount } from "cypress/react"
 import { MountOptions, MountReturn } from "cypress/react"
 import { SessionProvider, SessionProviderProps } from "next-auth/react"
-import { ContextProvider } from "../../lib/context/ContextProvider"
+import { ContextProvider } from "../../lib/context/ContextProvider.jsx"
 import React from "react"
 
 //Ensure global styles are loaded
