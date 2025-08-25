@@ -52,7 +52,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: ${{ env.MANAGER }}
       - name: Restore cache
         uses: actions/cache@v4
@@ -86,6 +86,79 @@ jobs:
         run: ${{ env.MANAGER }} ci:e2e
       - name: Run component tests
         run: ${{ env.MANAGER }} component
+
+  check-links:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Enable corepack
+        shell: bash
+        run: corepack enable
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: ${{ env.MANAGER }}
+
+      - name: Install broken-link-checker
+        run: npm install -g broken-link-checker
+
+      - name: Start the site
+        run: |
+          yarn install
+          yarn pullmat
+          yarn build
+          yarn start &
+          sleep 5 # wait for server to be ready
+
+      - name: Run broken link check
+        id: blc
+        run: |
+          echo "Checking for broken links..."
+          OUTPUT=$(npx broken-link-checker http://localhost:3000/ -rof \
+            --exclude "github.com" \
+            --exclude "intel.com" \
+            --exclude "visualstudio.com" \
+            --exclude "pixabay.com" \
+            --exclude "doi.org" \
+            --exclude "stackoverflow.com" \
+            --exclude "stackexchange.com" \
+            --exclude "mathworks.com" \
+            --exclude "shinyapps.io" \
+            --exclude "essential_maths/essential_maths/" \
+            --exclude "sitepoint.com" \
+          ; true)
+          echo "$OUTPUT"
+
+          echo "Parsing broken links..."
+          BROKEN_LINKS=$(echo "$OUTPUT" | grep -Po 'BROKEN─ \K[^ ]+' || true)
+
+          RETRIED=0
+          FIXED=0
+          STILL_BROKEN=0
+
+          for LINK in $BROKEN_LINKS; do
+            RETRIED=$((RETRIED + 1))
+            CODE=$(curl -s -o /dev/null -w "%{http_code}" "$LINK" || echo "000")
+            if [[ "$CODE" =~ ^2 ]]; then
+              echo "FIXED: $LINK"
+              FIXED=$((FIXED + 1))
+            else
+              echo "STILL BROKEN: $LINK (HTTP $CODE)"
+              STILL_BROKEN=$((STILL_BROKEN + 1))
+            fi
+          done
+
+          echo "==== Link Check Summary ===="
+          echo "Retried: $RETRIED"
+          echo "Fixed: $FIXED"
+          echo "Still Broken: $STILL_BROKEN"
+
+          if [[ "$STILL_BROKEN" -gt 0 ]]; then
+            exit 1
+          fi
 
   docker-build:
     runs-on: ubuntu-latest

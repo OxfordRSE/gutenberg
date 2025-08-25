@@ -29,6 +29,7 @@ import SubTitle from "components/ui/SubTitle"
 import EventCommentThreads from "components/EventCommentThreads"
 import { PageTemplate, pageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
+import EventActions from "components/EventActions"
 
 type EventProps = {
   material: Material
@@ -108,6 +109,7 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
 
   const eventView = (
     <>
+      <EventActions event={event} verbose={true} />
       <Title text={event.name} />
       <SubTitle
         text={
@@ -160,6 +162,7 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
         <div className="grid grid-cols-3 items-end gap-4 ">
           {eventGroups.map((group, index) => (
             <Stack key={group.id}>
+              <input type="hidden" name={`EventGroup.${index}.id`} value={group.id} />
               <Textfield label="Group Name" name={`EventGroup.${index}.name`} control={control} />
               <Textfield label="Group Summary" name={`EventGroup.${index}.summary`} control={control} />
               <Textfield label="Group Location" name={`EventGroup.${index}.location`} control={control} />
