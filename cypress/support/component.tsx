@@ -37,7 +37,7 @@ require("cypress-terminal-report/src/installLogsCollector")(logCollectorConfig)
 import { mount } from "cypress/react"
 import { MountOptions, MountReturn } from "cypress/react"
 import { SessionProvider, SessionProviderProps } from "next-auth/react"
-import { ContextProvider } from "../../lib/context/ContextProvider.jsx"
+import { ContextProvider } from "../../lib/context/ContextProvider"
 import React from "react"
 
 //Ensure global styles are loaded

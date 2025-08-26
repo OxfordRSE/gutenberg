@@ -1,13 +1,18 @@
 {
   "extends": "../tsconfig.json",
-  "include": ["./**/*.ts", "../cypress.d.ts", "support/component.tsx"],
-  "exclude": [],
+  "include": ["./**/*.ts", "./**/*.tsx", "../cypress.d.ts", "support/component.tsx"],
   "compilerOptions": {
     "types": ["cypress", "@percy/cypress", "node"],
     "lib": ["es2015", "dom"],
-    "module": "NodeNext",
-    "moduleResolution": "Node16",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
     "allowJs": true,
-    "noEmit": true
+    "noEmit": true,
+    "baseUrl": "..",
+    "paths": {
+      "lib/*": ["lib/*"],
+      "components/*": ["components/*"]
+    }
   }
 }
