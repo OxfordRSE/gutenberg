@@ -4,8 +4,6 @@ import { User } from "pages/api/user/[email]"
 import React from "react"
 import { Event } from "pages/api/event/[eventId]"
 import { Comment } from "pages/api/comment/[commentId]"
-import { getContainerEl } from "cypress/react"
-import ReactDom from "react-dom"
 
 describe("CommentThread component", () => {
   context("with non-owner student", () => {

@@ -1,5 +1,4 @@
 import EventCommentThreads from "components/EventCommentThreads"
-import { data } from "cypress/types/jquery"
 import { Material } from "lib/material"
 import { EventFull } from "lib/types"
 import { CommentThread } from "pages/api/commentThread/[commentThreadId]"

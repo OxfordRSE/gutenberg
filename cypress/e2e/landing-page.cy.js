@@ -30,4 +30,17 @@ describe("landing page", () => {
     cy.intercept("GET", "/api/auth/session").as("getSession")
     cy.get('[data-cy="avatar-admin@localhost"]').should("be.visible")
   })
+
+  it("can open, close sidebar", () => {
+    const user = {
+      name: "admin",
+      email: "admin@localhost",
+    }
+    cy.login(user)
+    cy.visit("/")
+    cy.get('[data-cy="toggle-sidebar"]').should("be.visible").click()
+    cy.contains("button", /select|swap/i).should("be.visible")
+    cy.get('[data-cy="close-sidebar"]').click()
+    cy.contains("button", /select|swap/i).should("not.exist")
+  })
 })
