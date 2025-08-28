@@ -1,17 +1,14 @@
 import React, { useEffect, useRef, useState, useMemo } from "react"
-import { useForm, Controller } from "react-hook-form"
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useForm } from "react-hook-form"
+import { useSession } from "next-auth/react"
 import { basePath } from "lib/basePath"
-import { Tooltip, Button, Label, Modal, Select, TextInput } from "flowbite-react"
+import { Tooltip, Button } from "flowbite-react"
 import { MdEdit, MdOutlineCheckBoxOutlineBlank, MdOutlineCheckBox } from "react-icons/md"
 import { ProblemUpdate } from "lib/types"
-import Checkbox from "components/forms/Checkbox"
-import Textarea from "components/forms/Textarea"
-import Slider from "components/forms/Slider"
-import Stack from "components/ui/Stack"
 import useProblem from "lib/hooks/useProblem"
 import putProblem from "lib/actions/putProblem"
 import { useSWRConfig } from "swr"
+import ProblemSubmitModal from "components/dialogs/ProblemSubmitModal"
 
 interface ChallengeProps {
   content: React.ReactNode
@@ -122,33 +119,14 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
                 </Tooltip>
               )}
             </div>
-            <Modal show={showModal} size="3xl" dismissible={true} onClose={() => setShowModal(false)}>
-              <Modal.Header>Edit Challenge</Modal.Header>
-              <Modal.Body>
-                <div className="space-y-6 px-6 pb-4 sm:pb-6 lg:px-8 xl:pb-8">
-                  <form onSubmit={handleSubmit(onSubmit)}>
-                    <Stack spacing={4}>
-                      <p className="text-sm text-gray-900 dark:text-slate-400">
-                        Submitted data is <span className="font-bold">entirely optional</span> but allows us to improve
-                        this course. All data is saved securely, is only available to course instructors, and can be
-                        deleted on request.
-                      </p>
-                      <Checkbox name={"complete"} control={control} label="Mark as complete" />
-                      <Textarea name={"solution"} control={control} label="Your solution" />
-                      <Slider
-                        name={"difficulty"}
-                        control={control}
-                        label="Difficulty (1-10) compared with surrounding challenges"
-                        min={0}
-                        max={10}
-                      />
-                      <Textarea name={"notes"} control={control} label="Feedback for course instructors" />
-                      <Button type="submit">Save</Button>
-                    </Stack>
-                  </form>
-                </div>
-              </Modal.Body>
-            </Modal>
+            <ProblemSubmitModal
+              show={showModal}
+              onClose={() => setShowModal(false)}
+              defaultValues={problem ?? defaultProblem}
+              onSubmit={(data) => {
+                onSubmit(data)
+              }}
+            />
           </>
         )}
       </div>
