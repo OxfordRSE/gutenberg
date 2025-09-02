@@ -4828,6 +4828,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cypress-real-events@npm:^1.14.0":
+  version: 1.14.0
+  resolution: "cypress-real-events@npm:1.14.0"
+  peerDependencies:
+    cypress: ^4.x || ^5.x || ^6.x || ^7.x || ^8.x || ^9.x || ^10.x || ^11.x || ^12.x || ^13.x || ^14.x
+  checksum: d0cd19376124d8f0074f4f9f90cc419b1dcf1b17fd040863f5b924610f269971178ac0a22c8dd527d4d0d0bf817b4cdeebd41c05f798ce4974d304477b0f9af9
+  languageName: node
+  linkType: hard
+
 "cypress-terminal-report@npm:^5.3.0":
   version: 5.3.12
   resolution: "cypress-terminal-report@npm:5.3.12"
@@ -6877,6 +6886,7 @@ __metadata:
     autoprefixer: ^10.4.13
     cron: ^2.0.0
     cypress: 15.0.0
+    cypress-real-events: ^1.14.0
     cypress-terminal-report: ^5.3.0
     dompurify: ^3.2.4
     dotenv: ^16.0.0

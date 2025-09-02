@@ -1,7 +1,6 @@
 import React from "react"
 import { Modal, Button } from "flowbite-react"
 import { useForm } from "react-hook-form"
-import Stack from "components/ui/Stack"
 import Checkbox from "components/forms/Checkbox"
 import Textarea from "components/forms/Textarea"
 import Slider from "components/forms/Slider"
@@ -15,14 +14,16 @@ interface ProblemSubmitModalProps {
 }
 
 const ProblemSubmitModal: React.FC<ProblemSubmitModalProps> = ({ show, onClose, defaultValues, onSubmit }) => {
-  const { control, handleSubmit, reset } = useForm<ProblemUpdate>({
+  const { control, handleSubmit, reset, setValue } = useForm<ProblemUpdate>({
     defaultValues,
   })
 
-  // reset form when defaultValues change
+  // If defaultValues or visibility changes, re-sync RHF's state.
   React.useEffect(() => {
-    reset(defaultValues)
-  }, [defaultValues, reset])
+    if (show) {
+      reset(defaultValues)
+    }
+  }, [defaultValues, show, reset])
 
   return (
     <Modal show={show} size="3xl" dismissible onClose={onClose}>

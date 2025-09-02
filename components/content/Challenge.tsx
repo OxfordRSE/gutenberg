@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useMemo } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useSession } from "next-auth/react"
 import { basePath } from "lib/basePath"
@@ -36,34 +36,49 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
     }),
     [id, section]
   )
-  const { control, handleSubmit, reset, setValue } = useForm<ProblemUpdate>({ defaultValues: defaultProblem })
-  const problemApi = (problem: ProblemUpdate) => {
-    if (typeof problem.difficulty === "string") {
-      problem.difficulty = parseInt(problem.difficulty)
+
+  const { reset } = useForm<ProblemUpdate>({ defaultValues: defaultProblem })
+
+  const problemApi = async (p: ProblemUpdate) => {
+    const payload: ProblemUpdate = {
+      ...p,
+      difficulty: typeof p.difficulty === "string" ? parseInt(p.difficulty, 10) : p.difficulty,
+      complete: !!p.complete,
     }
-    putProblem(section, id, problem).then((data) => {
-      if (data.problem) {
-        mutate(data.problem)
-        mutateGlobal((key: string) => key.startsWith(`${basePath}/api/event/`) && key.endsWith(`/problems`))
-      }
-    })
+    const data = await putProblem(section, id, payload)
+    if (data.problem) {
+      mutate(data.problem)
+      mutateGlobal((key: string) => key.startsWith(`${basePath}/api/event/`) && key.endsWith(`/problems`))
+    }
+    return data
   }
 
-  const onSubmit = (problem: ProblemUpdate) => {
-    problemApi(problem)
+  const onSubmit = (p: ProblemUpdate) => {
+    const payload: ProblemUpdate = {
+      ...p,
+      complete: !!p.complete,
+      difficulty: typeof p.difficulty === "string" ? parseInt(p.difficulty, 10) : p.difficulty,
+    }
+    problemApi(payload)
     setShowModal(false)
   }
 
-  const handleClickComplete = (complete: boolean) => {
+  const handleClickComplete = async (complete: boolean) => {
     const newComplete = !complete
+    let base: ProblemUpdate
+
     if (noProblem) {
-      problemApi({ ...defaultProblem, complete: newComplete })
+      base = { ...defaultProblem, complete: newComplete }
     } else {
-      problemApi({ ...problem, complete: newComplete })
+      base = { ...(problem as ProblemUpdate), complete: newComplete }
     }
-    //@ts-ignore
-    setValue("complete", newComplete)
-    setShowModal(newComplete)
+
+    await problemApi(base)
+
+    // only open modal when marking complete
+    if (newComplete) {
+      setShowModal(true)
+    }
   }
 
   useEffect(() => {
@@ -84,6 +99,9 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
   if (problem && typeof problem !== "string") {
     isComplete = problem.complete
   }
+
+  // IMPORTANT: force-remount the modal's RHF instance when the completion state (or id) changes
+  const modalKey = `${id}-${isComplete ? "1" : "0"}`
 
   return (
     <div id={id} className="border border-gray-200 rounded-lg bg-slate-50 dark:bg-slate-800 dark:border-gray-700 mb-4">
@@ -124,10 +142,8 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
             <ProblemSubmitModal
               show={showModal}
               onClose={() => setShowModal(false)}
-              defaultValues={problem ?? defaultProblem}
-              onSubmit={(data) => {
-                onSubmit(data)
-              }}
+              defaultValues={(problem && typeof problem !== "string" ? problem : defaultProblem) as ProblemUpdate}
+              onSubmit={onSubmit}
             />
           </>
         )}

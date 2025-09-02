@@ -12,7 +12,7 @@ const pathParams = (url: string) => {
   return { section, tag }
 }
 
-describe("<Challenge /> submit modal", () => {
+describe("<Challenge /> ProblemSubmitModal", () => {
   const section = "HPCu.software_architecture_and_design.procedural.containers_cpp"
   const tag = "dot_product"
   const userEmail = "testUser@testUser.com"
@@ -51,66 +51,175 @@ describe("<Challenge /> submit modal", () => {
       win.sessionStorage.clear()
     })
 
-    // fake session (next-auth)
     cy.login({ name: "Student", email: userEmail })
 
-    // GET /api/problems/:section/:tag
+    // --- In-memory "server" state ---
+    let serverProblem = { ...problemInitial }
+    let putCount = 0
+
+    // GET /api/problems/:section/:tag -> always return current serverProblem
     cy.intercept("GET", "**/api/problems/**", (req) => {
       const { section: s, tag: t } = pathParams(req.url)
       if (s === section && t === tag) {
-        req.reply({ statusCode: 200, body: { problem: problemInitial } })
+        req.reply({ statusCode: 200, body: { problem: serverProblem } })
       } else {
         req.reply({ statusCode: 404, body: { error: "Problem not found for this user" } })
       }
     }).as("getProblem")
 
-    let putCount = 0
-
+    // PUT /api/problems/:section/:tag -> update serverProblem then return it
     cy.intercept("PUT", "**/api/problems/**", (req) => {
       putCount += 1
       const { section: s, tag: t } = pathParams(req.url)
       expect(s).to.eq(section)
       expect(t).to.eq(tag)
 
-      const body = req.body || {}
-      expect(body).to.have.property("problem")
+      const sent = req.body?.problem || {}
 
       if (putCount === 1) {
-        // First PUT: toggle -> return blank fields
-        req.reply({
-          statusCode: 200,
-          body: {
-            problem: {
-              ...problemInitial,
-              complete: true,
-              difficulty: 5,
-              solution: "",
-              notes: "",
-            },
-          },
-        })
+        // Toggle complete -> blank fields
+        serverProblem = {
+          ...serverProblem,
+          complete: true,
+          difficulty: 5,
+          solution: "",
+          notes: "",
+        }
       } else if (putCount === 2) {
-        // Second PUT: save -> return filled-in fields
-        req.reply({
-          statusCode: 200,
-          body: { problem: problemAfterSave },
-        })
+        // Save from modal -> keep complete true, apply entered values
+        serverProblem = {
+          ...serverProblem,
+          complete: sent.complete, // should remain true unless user unticked
+          solution: sent.solution ?? serverProblem.solution,
+          difficulty: sent.difficulty ?? serverProblem.difficulty,
+          notes: sent.notes ?? serverProblem.notes,
+        }
       } else {
-        // Third PUT: untick -> return incomplete again
-        req.reply({
-          statusCode: 200,
-          body: { problem: problemAfterUncheck },
-        })
+        // Untick later
+        serverProblem = {
+          ...serverProblem,
+          complete: false,
+        }
       }
+
+      req.reply({ statusCode: 200, body: { problem: serverProblem } })
     }).as("putProblem")
 
     cy.mount(<Challenge title="Sample Challenge" content={<div>Challenge body</div>} id={tag} section={section} />)
-
     cy.wait("@getProblem")
   })
 
   const headerSel = () => cy.get(`#${tag} > div`).first()
 
+  it("clicking the tickbox opens the modal", () => {
+    // modal should not be present initially
+    cy.get('[data-cy="challenge-edit-modal"]').should("not.exist")
+
+    // click the complete toggle
+    cy.get('[data-cy="challenge-complete-toggle"]').click()
+
+    // modal should appear
+    cy.get('[data-cy="challenge-edit-modal"]').should("be.visible")
+  })
+
+  it("save button exists in the modal", () => {
+    cy.get('[data-cy="challenge-complete-toggle"]').click()
+    cy.get('[data-cy="challenge-save"]').should("exist").and("have.attr", "type", "submit")
+  })
+
+  it("opens the modal with 'mark as complete' ticked", () => {
+    // modal not present initially
+    cy.get('[data-cy="challenge-edit-modal"]').should("not.exist")
+
+    // click the complete toggle -> triggers FIRST PUT (complete: true)
+    cy.get('[data-cy="challenge-complete-toggle"]').click()
+
+    // ensure the first PUT indeed sent complete: true
+    cy.wait("@putProblem").its("request.body.problem.complete").should("eq", true)
+
+    // modal should now be visible
+    cy.get('[data-cy="challenge-edit-modal"]').should("be.visible")
+
+    // the checkbox inside the modal should be ticked
+    cy.get('[data-cy="field-complete"] input[type="checkbox"], input[name="complete"]')
+      .should("exist")
+      .and("be.checked")
+    cy.wait(400) // the reason for this is that if there is a GET and the RHF form resets the completion status then this catches this breaking
+    cy.get('[data-cy="field-complete"] input[type="checkbox"], input[name="complete"]')
+      .should("exist")
+      .and("be.checked")
+  })
+
+  it("edit button opens the modal with previous values filled", () => {
+    // ensure the existing problem (from GET intercept) is loaded
+    // and we're currently incomplete
+    headerSel().should("not.have.class", "bg-green-600")
+
+    // open the modal via the edit button
+    cy.get('[data-cy="challenge-edit-open"]').click()
+
+    // modal visible
+    cy.get('[data-cy="challenge-edit-modal"]').should("be.visible")
+
+    // fields should be pre-filled from problemInitial
+    cy.get('[data-cy="field-complete"] input[type="checkbox"], input[name="complete"]').should("not.be.checked")
+    cy.get('[data-cy="field-solution"], textarea[name="solution"]').should("have.value", "")
+    cy.get('[data-cy="field-notes"], textarea[name="notes"]').should("have.value", "")
+  })
+
+  it("edit button does not change completion state", () => {
+    headerSel().should("not.have.class", "bg-green-600")
+    cy.get('[data-cy="challenge-edit-open"]').click()
+    cy.get('[data-cy="challenge-edit-modal"]').should("be.visible")
+    headerSel().should("not.have.class", "bg-green-600") // still incomplete
+  })
+
+  it("modal closes when dismiss button is clicked", () => {
+    cy.get('[data-cy="challenge-complete-toggle"]').click()
+    cy.get('[data-cy="challenge-edit-modal"]').should("be.visible")
+
+    // close with the modal's X (flowbite adds a button in the header)
+    cy.get('[data-cy="challenge-edit-modal"] button[aria-label="Close"]').click()
+
+    cy.get('[data-cy="challenge-edit-modal"]').should("not.exist")
+  })
+
+  it("slider can change via direct input", () => {
+    cy.get('[data-cy="challenge-edit-open"]').click()
+    cy.get('[data-cy="challenge-edit-modal"]').should("be.visible")
+    cy.get('input[name="difficulty"]').should("have.value", "5")
+
+    cy.get('input[name="difficulty"]').invoke("val", 8).trigger("input")
+
+    cy.get('input[name="difficulty"]')
+      .invoke("val")
+      .then((val) => {
+        expect(Number(val)).to.be.greaterThan(5)
+      })
+
+    cy.get('[data-cy="challenge-save"]').click()
+    cy.wait("@putProblem").its("request.body.problem.difficulty").should("be.greaterThan", 5)
+  })
+
+  it("slider can change via keyboard", () => {
+    cy.get('[data-cy="challenge-edit-open"]').click()
+    cy.get('[data-cy="challenge-edit-modal"]').should("be.visible")
+    cy.get('input[name="difficulty"]').should("have.value", "5")
+
+    cy.get('input[name="difficulty"]').focus().realPress(["ArrowRight", "ArrowRight"])
+    cy.get('input[name="difficulty"]').trigger("change")
+
+    cy.get('input[name="difficulty"]')
+      .invoke("val")
+      .then((val) => {
+        expect(Number(val)).to.be.greaterThan(5)
+      })
+
+    cy.get('[data-cy="challenge-save"]').click()
+    cy.wait("@putProblem").its("request.body.problem.difficulty").should("be.greaterThan", 5)
+  })
+
+  // Sort of e2e esque test, testing full functionality:
   it("marks complete -> opens modal -> saves -> header green -> unticks", () => {
     // Initially not complete
     headerSel().should("not.have.class", "bg-green-600")
@@ -130,8 +239,8 @@ describe("<Challenge /> submit modal", () => {
     // Modal visible
     cy.get('[data-cy="challenge-edit-modal"]').should("be.visible")
 
-    // *** TEST-ONLY FIX ***
     // Ensure the modal form also has complete=true before we save
+    cy.wait(100)
     cy.get('[data-cy="field-complete"] input[type="checkbox"], input[name="complete"]').check({ force: true }) // idempotent: checks if not already checked
 
     // Fill fields
@@ -157,6 +266,7 @@ describe("<Challenge /> submit modal", () => {
 
     // 3) Untick — THIRD PUT (complete false)
     cy.get('[data-cy="challenge-complete-toggle"]').click()
+    cy.wait(100)
     cy.wait("@putProblem").its("request.body.problem.complete").should("eq", false)
     headerSel().should("not.have.class", "bg-green-600")
   })

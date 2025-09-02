@@ -2,7 +2,7 @@
   "extends": "../tsconfig.json",
   "include": ["./**/*.ts", "./**/*.tsx", "../cypress.d.ts", "support/component.tsx"],
   "compilerOptions": {
-    "types": ["cypress", "@percy/cypress", "node"],
+    "types": ["cypress", "@percy/cypress", "node", "cypress-real-events"],
     "lib": ["es2015", "dom"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
