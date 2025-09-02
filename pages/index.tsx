@@ -2,6 +2,7 @@ import type { NextPage, GetStaticProps } from "next"
 import React from "react"
 import prisma from "lib/prisma"
 import Layout from "components/Layout"
+import { signIn } from "next-auth/react"
 import { makeSerializable } from "lib/utils"
 import { Material, getMaterial, removeMarkdown } from "lib/material"
 import { basePath } from "lib/basePath"
@@ -21,7 +22,9 @@ type HomeProps = {
 
 const Home: NextPage<HomeProps> = ({ material, events, pageInfo }) => {
   const intro = pageInfo.frontpage.intro
-
+  const handleSignin = () => {
+    signIn()
+  }
   const linkClassName = "text-blue-500 hover:underline"
   return (
     <Layout material={material} pageInfo={pageInfo} pageTitle={pageInfo.title}>
@@ -30,7 +33,11 @@ const Home: NextPage<HomeProps> = ({ material, events, pageInfo }) => {
         <Card className="scroll" style={{ maxHeight: "82vh", overflowY: "auto" }}>
           <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Course Events</h2>
           <p className="font-normal text-gray-700 dark:text-gray-400">
-            Login to request a place on an upcoming course, or to select an active course.
+            <Button onClick={handleSignin} size="xs" fill="currentColor" className="inline-block align-middle">
+              Login
+            </Button>
+            &nbsp; to enrol on an upcoming course, to select an active course, or to view your current
+            courses.
           </p>
           <EventsView material={material} events={events} />
         </Card>
