@@ -36,8 +36,7 @@ const Home: NextPage<HomeProps> = ({ material, events, pageInfo }) => {
             <Button onClick={handleSignin} size="xs" fill="currentColor" className="inline-block align-middle">
               Login
             </Button>
-            &nbsp; to enrol on an upcoming course, to select an active course, or to view your current
-            courses.
+            &nbsp; to enrol on an upcoming course, to select an active course, or to view your current courses.
           </p>
           <EventsView material={material} events={events} />
         </Card>
