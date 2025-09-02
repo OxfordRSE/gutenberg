@@ -129,6 +129,7 @@ jobs:
             --exclude "shinyapps.io" \
             --exclude "essential_maths/essential_maths/" \
             --exclude "sitepoint.com" \
+            --exclude "sillevl.gitbooks.io"
           ; true)
           echo "$OUTPUT"
 
