@@ -23,6 +23,7 @@ const UserEventProblems: React.FC<Props> = ({ userProblems, event, material }) =
   const [open, setOpen] = useState(false)
   const [selectedTitle, setSelectedTitle] = useState<string>("")
   const [selectedProblem, setSelectedProblem] = useState<ProblemForm | null>(null)
+  const [selectedUrl, setSelectedUrl] = useState<string>("")
 
   const { width } = useWindowSize()
 
@@ -88,7 +89,7 @@ const UserEventProblems: React.FC<Props> = ({ userProblems, event, material }) =
     return rows
   }, [sectionsFlat, MAX_COLS_PER_ROW])
 
-  const openModalFor = (p: Problem, title: string) => {
+  const openModalFor = (p: Problem, title: string, url: string) => {
     setSelectedProblem({
       tag: p.tag,
       section: p.section,
@@ -98,12 +99,14 @@ const UserEventProblems: React.FC<Props> = ({ userProblems, event, material }) =
       notes: p.notes ?? "",
     })
     setSelectedTitle(title)
+    setSelectedUrl(url)
     setOpen(true)
   }
 
+  const cleanIdString = (id: string) => id.replace(/_/g, " ").replace(/-/g, " ").toLowerCase()
+
   return (
     <>
-      {/* horizontal scroll as a safety net for extreme cases */}
       <div className="overflow-x-auto">
         <Table className="text-sm">
           <Table.Body className="divide-y">
@@ -122,7 +125,7 @@ const UserEventProblems: React.FC<Props> = ({ userProblems, event, material }) =
                   ))}
                 </Table.Row>
 
-                {/* problems row */}
+                {/* problems */}
                 <Table.Row>
                   {chunk.sections.flatMap((s) =>
                     s.problems.map((problemTag) => {
@@ -130,7 +133,7 @@ const UserEventProblems: React.FC<Props> = ({ userProblems, event, material }) =
                         (up) =>
                           up.tag === problemTag && up.section.includes(s.sectionId) && up.section.includes(s.theme)
                       )
-
+                      const displayTitle = `${cleanIdString(s.sectionId)} - ${cleanIdString(problemTag)}`
                       if (p && p.complete) {
                         const tooltipText = `${problemTag} — difficulty: ${p.difficulty}  notes: ${p.notes || "—"}`
                         return (
@@ -139,7 +142,7 @@ const UserEventProblems: React.FC<Props> = ({ userProblems, event, material }) =
                               <button
                                 type="button"
                                 className={BTN}
-                                onClick={() => openModalFor(p, problemTag)}
+                                onClick={() => openModalFor(p, displayTitle, `${s.url}#${problemTag}`)}
                                 aria-label={`View submission for ${problemTag}`}
                               >
                                 <span className={HIT} role="img" aria-hidden>
@@ -175,7 +178,8 @@ const UserEventProblems: React.FC<Props> = ({ userProblems, event, material }) =
           show={open}
           onClose={() => setOpen(false)}
           values={selectedProblem}
-          title={`Challenge Submission — ${selectedTitle}`}
+          title={`${selectedTitle}`}
+          url={selectedUrl}
         />
       )}
     </>

@@ -3,12 +3,14 @@ import { Modal, Button } from "flowbite-react"
 import Stack from "components/ui/Stack"
 import { ProblemForm } from "lib/types"
 import Chip from "@mui/material/Chip"
+import { url } from "inspector/promises"
 
 interface ProblemViewModalProps {
   show: boolean
   onClose: () => void
   values: ProblemForm
   title?: string
+  url?: string
 }
 
 const Field: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
@@ -20,13 +22,27 @@ const Field: React.FC<{ label: string; children: React.ReactNode }> = ({ label, 
   </div>
 )
 
-const ProblemViewModal: React.FC<ProblemViewModalProps> = ({ show, onClose, values, title = "View Challenge" }) => {
+const ProblemViewModal: React.FC<ProblemViewModalProps> = ({
+  show,
+  onClose,
+  values,
+  title = "View Challenge",
+  url,
+}) => {
   const { complete, solution, difficulty, notes } = values
   const difficultyVal = typeof difficulty === "number" ? difficulty : parseInt(String(difficulty) || "0", 10)
 
   return (
     <Modal show={show} size="3xl" dismissible={true} onClose={onClose}>
-      <Modal.Header>{title}</Modal.Header>
+      <Modal.Header>
+        {url ? (
+          <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+            {title}
+          </a>
+        ) : (
+          title
+        )}
+      </Modal.Header>
       <Modal.Body>
         <div className="space-y-6 px-6 pb-4 sm:pb-6 lg:px-8 xl:pb-8">
           <Stack spacing={4}>

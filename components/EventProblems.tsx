@@ -85,7 +85,6 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
         <Table.Body className="divide-y">
           {event.EventGroup.filter((g) => g.EventItem.length > 0).map((group) => (
             <React.Fragment key={group.id}>
-              {/* Group header row spans all columns */}
               <Table.Row>
                 <Table.Cell colSpan={1 + students.length} className="font-semibold">
                   {group.name}
@@ -156,7 +155,7 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
           show={open}
           onClose={() => setOpen(false)}
           values={selectedProblem}
-          title={`Problem Submission — ${selectedTitle}`}
+          title={`${selectedTitle}`}
         />
       )}
     </>

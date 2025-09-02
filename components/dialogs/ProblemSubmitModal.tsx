@@ -25,32 +25,28 @@ const ProblemSubmitModal: React.FC<ProblemSubmitModalProps> = ({ show, onClose, 
   }, [defaultValues, reset])
 
   return (
-    <Modal show={show} size="3xl" dismissible={true} onClose={onClose}>
-      <Modal.Header>Edit Challenge</Modal.Header>
-      <Modal.Body>
-        <div className="space-y-6 px-6 pb-4 sm:pb-6 lg:px-8 xl:pb-8">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Stack spacing={4}>
-              <p className="text-sm text-gray-900 dark:text-slate-400">
-                Submitted data is <span className="font-bold">entirely optional</span> but allows us to improve this
-                course. All data is saved securely, is only available to course instructors, and can be deleted on
-                request.
-              </p>
-              <Checkbox name="complete" control={control} label="Mark as complete" />
-              <Textarea name="solution" control={control} label="Your solution" />
-              <Slider
-                name="difficulty"
-                control={control}
-                label="Difficulty (1-10) compared with surrounding challenges"
-                min={0}
-                max={10}
-              />
-              <Textarea name="notes" control={control} label="Feedback for course instructors" />
-              <Button type="submit">Save</Button>
-            </Stack>
+    <Modal show={show} size="3xl" dismissible onClose={onClose}>
+      <div data-cy="challenge-edit-modal">
+        <Modal.Header>Edit Challenge</Modal.Header>
+        <Modal.Body>
+          <form onSubmit={handleSubmit(onSubmit)} data-cy="challenge-edit-form">
+            <Checkbox name="complete" control={control} label="Mark as complete" data-cy="field-complete" />
+            <Textarea name="solution" control={control} label="Your solution" data-cy="field-solution" />
+            <Slider
+              name="difficulty"
+              control={control}
+              label="Difficulty (1-10) compared with surrounding challenges"
+              min={0}
+              max={10}
+              data-cy="field-difficulty"
+            />
+            <Textarea name="notes" control={control} label="Feedback for course instructors" data-cy="field-notes" />
+            <Button type="submit" data-cy="challenge-save">
+              Save
+            </Button>
           </form>
-        </div>
-      </Modal.Body>
+        </Modal.Body>
+      </div>
     </Modal>
   )
 }

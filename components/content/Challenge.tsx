@@ -94,9 +94,10 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
             <div className="flex items-center space-x-2 mr-2">
               <Tooltip content={isComplete ? "Mark as incomplete" : "Mark as complete"} placement="bottom">
                 <Button
+                  data-cy="challenge-complete-toggle"
                   className="bg-slate-50 dark:bg-slate-800"
                   size="xxs"
-                  pill={true}
+                  pill
                   onClick={() => handleClickComplete(isComplete)}
                 >
                   {isComplete ? (
@@ -109,9 +110,10 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
               {!noProblem && (
                 <Tooltip content={"Edit feedback"} placement="bottom">
                   <Button
+                    data-cy="challenge-edit-open"
                     className="mr-2 bg-slate-50 dark:bg-slate-800"
                     size="xxs"
-                    pill={true}
+                    pill
                     onClick={() => setShowModal(true)}
                   >
                     <MdEdit className="h-4 w-4 text-black dark:text-white" />
