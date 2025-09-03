@@ -23,18 +23,17 @@ function Checkbox<T extends FieldValues>({
         name={name}
         control={control}
         rules={rules}
-        render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => {
-          return (
-            <FlowbiteCheckbox
-              name={name}
-              id={name}
-              checked={value === undefined ? false : value}
-              onChange={onChange}
-              onBlur={onBlur}
-              {...checkboxFieldProps}
-            />
-          )
-        }}
+        render={({ field: { onChange, onBlur, value, ref }, fieldState: { error } }) => (
+          <FlowbiteCheckbox
+            id={name}
+            name={name}
+            ref={ref}
+            checked={!!value}
+            onChange={(e) => onChange(e.target.checked)}
+            onBlur={onBlur}
+            {...checkboxFieldProps}
+          />
+        )}
       />
       <Label className="ml-2" htmlFor={name}>
         {label}

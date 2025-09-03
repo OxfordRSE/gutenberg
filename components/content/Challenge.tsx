@@ -1,17 +1,14 @@
-import React, { useEffect, useRef, useState, useMemo } from "react"
-import { useForm, Controller } from "react-hook-form"
-import { useSession, signIn, signOut } from "next-auth/react"
+import React, { useEffect, useMemo, useState } from "react"
+import { useForm } from "react-hook-form"
+import { useSession } from "next-auth/react"
 import { basePath } from "lib/basePath"
-import { Tooltip, Button, Label, Modal, Select, TextInput } from "flowbite-react"
+import { Tooltip, Button } from "flowbite-react"
 import { MdEdit, MdOutlineCheckBoxOutlineBlank, MdOutlineCheckBox } from "react-icons/md"
 import { ProblemUpdate } from "lib/types"
-import Checkbox from "components/forms/Checkbox"
-import Textarea from "components/forms/Textarea"
-import Slider from "components/forms/Slider"
-import Stack from "components/ui/Stack"
 import useProblem from "lib/hooks/useProblem"
 import putProblem from "lib/actions/putProblem"
 import { useSWRConfig } from "swr"
+import ProblemSubmitModal from "components/dialogs/ProblemSubmitModal"
 
 interface ChallengeProps {
   content: React.ReactNode
@@ -39,34 +36,49 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
     }),
     [id, section]
   )
-  const { control, handleSubmit, reset, setValue } = useForm<ProblemUpdate>({ defaultValues: defaultProblem })
-  const problemApi = (problem: ProblemUpdate) => {
-    if (typeof problem.difficulty === "string") {
-      problem.difficulty = parseInt(problem.difficulty)
+
+  const { reset } = useForm<ProblemUpdate>({ defaultValues: defaultProblem })
+
+  const problemApi = async (p: ProblemUpdate) => {
+    const payload: ProblemUpdate = {
+      ...p,
+      difficulty: typeof p.difficulty === "string" ? parseInt(p.difficulty, 10) : p.difficulty,
+      complete: !!p.complete,
     }
-    putProblem(section, id, problem).then((data) => {
-      if (data.problem) {
-        mutate(data.problem)
-        mutateGlobal((key: string) => key.startsWith(`${basePath}/api/event/`) && key.endsWith(`/problems`))
-      }
-    })
+    const data = await putProblem(section, id, payload)
+    if (data.problem) {
+      mutate(data.problem)
+      mutateGlobal((key: string) => key.startsWith(`${basePath}/api/event/`) && key.endsWith(`/problems`))
+    }
+    return data
   }
 
-  const onSubmit = (problem: ProblemUpdate) => {
-    problemApi(problem)
+  const onSubmit = (p: ProblemUpdate) => {
+    const payload: ProblemUpdate = {
+      ...p,
+      complete: !!p.complete,
+      difficulty: typeof p.difficulty === "string" ? parseInt(p.difficulty, 10) : p.difficulty,
+    }
+    problemApi(payload)
     setShowModal(false)
   }
 
-  const handleClickComplete = (complete: boolean) => {
+  const handleClickComplete = async (complete: boolean) => {
     const newComplete = !complete
+    let base: ProblemUpdate
+
     if (noProblem) {
-      problemApi({ ...defaultProblem, complete: newComplete })
+      base = { ...defaultProblem, complete: newComplete }
     } else {
-      problemApi({ ...problem, complete: newComplete })
+      base = { ...(problem as ProblemUpdate), complete: newComplete }
     }
-    //@ts-ignore
-    setValue("complete", newComplete)
-    setShowModal(newComplete)
+
+    await problemApi(base)
+
+    // only open modal when marking complete
+    if (newComplete) {
+      setShowModal(true)
+    }
   }
 
   useEffect(() => {
@@ -88,6 +100,9 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
     isComplete = problem.complete
   }
 
+  // IMPORTANT: force-remount the modal's RHF instance when the completion state (or id) changes
+  const modalKey = `${id}-${isComplete ? "1" : "0"}`
+
   return (
     <div id={id} className="border border-gray-200 rounded-lg bg-slate-50 dark:bg-slate-800 dark:border-gray-700 mb-4">
       <div className={`flex items-center justify-between rounded-t-lg ${headerColor} pl-1 `}>
@@ -97,9 +112,10 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
             <div className="flex items-center space-x-2 mr-2">
               <Tooltip content={isComplete ? "Mark as incomplete" : "Mark as complete"} placement="bottom">
                 <Button
+                  data-cy="challenge-complete-toggle"
                   className="bg-slate-50 dark:bg-slate-800"
                   size="xxs"
-                  pill={true}
+                  pill
                   onClick={() => handleClickComplete(isComplete)}
                 >
                   {isComplete ? (
@@ -112,9 +128,10 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
               {!noProblem && (
                 <Tooltip content={"Edit feedback"} placement="bottom">
                   <Button
+                    data-cy="challenge-edit-open"
                     className="mr-2 bg-slate-50 dark:bg-slate-800"
                     size="xxs"
-                    pill={true}
+                    pill
                     onClick={() => setShowModal(true)}
                   >
                     <MdEdit className="h-4 w-4 text-black dark:text-white" />
@@ -122,33 +139,12 @@ const Challenge: React.FC<ChallengeProps> = ({ content, title, id, section }) =>
                 </Tooltip>
               )}
             </div>
-            <Modal show={showModal} size="3xl" dismissible={true} onClose={() => setShowModal(false)}>
-              <Modal.Header>Edit Challenge</Modal.Header>
-              <Modal.Body>
-                <div className="space-y-6 px-6 pb-4 sm:pb-6 lg:px-8 xl:pb-8">
-                  <form onSubmit={handleSubmit(onSubmit)}>
-                    <Stack spacing={4}>
-                      <p className="text-sm text-gray-900 dark:text-slate-400">
-                        Submitted data is <span className="font-bold">entirely optional</span> but allows us to improve
-                        this course. All data is saved securely, is only available to course instructors, and can be
-                        deleted on request.
-                      </p>
-                      <Checkbox name={"complete"} control={control} label="Mark as complete" />
-                      <Textarea name={"solution"} control={control} label="Your solution" />
-                      <Slider
-                        name={"difficulty"}
-                        control={control}
-                        label="Difficulty (1-10) compared with surrounding challenges"
-                        min={0}
-                        max={10}
-                      />
-                      <Textarea name={"notes"} control={control} label="Feedback for course instructors" />
-                      <Button type="submit">Save</Button>
-                    </Stack>
-                  </form>
-                </div>
-              </Modal.Body>
-            </Modal>
+            <ProblemSubmitModal
+              show={showModal}
+              onClose={() => setShowModal(false)}
+              defaultValues={(problem && typeof problem !== "string" ? problem : defaultProblem) as ProblemUpdate}
+              onSubmit={onSubmit}
+            />
           </>
         )}
       </div>

@@ -9,9 +9,20 @@ type Props<T extends FieldValues> = {
   rules?: Object
   min: number
   max: number
+  step?: number
+  "data-cy"?: string
 }
 
-function Slider<T extends FieldValues>({ label, name, control, rules, min, max }: Props<T>): React.ReactElement {
+function Slider<T extends FieldValues>({
+  label,
+  name,
+  control,
+  rules,
+  min,
+  max,
+  step = 1,
+  ...rest
+}: Props<T>): React.ReactElement {
   return (
     <div>
       <div className="mb-0 block">
@@ -22,17 +33,25 @@ function Slider<T extends FieldValues>({ label, name, control, rules, min, max }
         control={control}
         rules={rules}
         render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => {
+          const handle = (e: React.ChangeEvent<HTMLInputElement>) => {
+            const v = Number(e.target.value)
+            onChange(v)
+          }
           return (
             <input
-              className="w-full h-2 bg-gray-500 rounded-lg appearance-none cursor-pointer dark:bg-gray-500"
               id={name}
+              name={name}
               type="range"
               min={min}
               max={max}
-              onChange={onChange}
+              step={step}
+              value={Number(value ?? min)}
+              onChange={handle}
+              onInput={handle}
               onBlur={onBlur}
-              value={value}
-            ></input>
+              className="w-full h-2 bg-gray-500 rounded-lg appearance-none cursor-pointer dark:bg-gray-500"
+              {...rest}
+            />
           )
         }}
       />
