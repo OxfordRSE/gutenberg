@@ -2973,15 +2973,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/cypress@npm:^10.0.3":
-  version: 10.0.3
-  resolution: "@testing-library/cypress@npm:10.0.3"
+"@testing-library/cypress@npm:^10.1.0":
+  version: 10.1.0
+  resolution: "@testing-library/cypress@npm:10.1.0"
   dependencies:
     "@babel/runtime": ^7.14.6
     "@testing-library/dom": ^10.1.0
   peerDependencies:
-    cypress: ^12.0.0 || ^13.0.0 || ^14.0.0
-  checksum: fb1c1fa35a4fb41f2da719a040b5e20e2841474fe015be2382307c0f9fc352ec251e778118b935e95b5fca96ac6211282478c9bd7077769d774bbaa974e5a0e1
+    cypress: ^12.0.0 || ^13.0.0 || ^14.0.0 || ^15.0.0
+  checksum: 0a5a433fff11c35244d87f2a1d5974d5ef4478212a94245062b4dce5459bc367b26faa9f436cf11f2cb956927658b9849506735a93f64247fffc8690fc603fcb
   languageName: node
   linkType: hard
 
@@ -6890,7 +6890,7 @@ __metadata:
     "@tailwindcss/forms": ^0.5.3
     "@tailwindcss/line-clamp": ^0.4.2
     "@tailwindcss/typography": ^0.5.8
-    "@testing-library/cypress": ^10.0.3
+    "@testing-library/cypress": ^10.1.0
     "@types/dompurify": ^2.3.4
     "@types/js-yaml": ^4.0.0
     "@types/marked": ^4.0.7

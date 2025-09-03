@@ -3,7 +3,7 @@ import * as fs from "fs"
 import * as yaml from "js-yaml"
 
 const yamlTemplate = process.env.YAML_TEMPLATE || "config/oxford.yaml"
-const baseMaterialDir = process.env.MATERIAL_DIR as string
+const baseMaterialDir = process.env.MATERIAL_DIR || ".material"
 
 export async function initRepos() {
   if (!fs.existsSync(baseMaterialDir)) {

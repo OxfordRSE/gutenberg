@@ -23,7 +23,7 @@ export type SectionObj = {
   }
 }
 
-const materialDir = process.env.MATERIAL_DIR as string
+const materialDir = (process.env.MATERIAL_DIR as string) || ".material"
 
 export async function materialToJson() {
   let sections = await parsePages()

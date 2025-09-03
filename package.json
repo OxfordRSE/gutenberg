@@ -93,7 +93,7 @@
     "@panva/hkdf": "^1.1.1",
     "@parcel/core": "^2.13.2",
     "@parcel/types": "^2.13.2",
-    "@testing-library/cypress": "^10.0.3",
+    "@testing-library/cypress": "^10.1.0",
     "@types/node": "^22.10.1",
     "@types/react": "^19.0.3",
     "@types/react-dom": "19.0.2",
