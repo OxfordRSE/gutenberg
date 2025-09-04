@@ -1,14 +1,34 @@
 import { CronJob } from "cron"
 import { refreshMaterial } from "../lib/search/manageMaterial"
 
-var fetchMaterial = new CronJob(
-  // This cron job runs every day at 00:00
-  // It first pulls the latest changes from the material repo then it sections the material for search
-  // If the material has changed, it will call openai to update the search vectors and save a new material.json file
-  "0 0 * * *",
-  function () {
-    refreshMaterial()
+let running = false
+
+const job = new CronJob({
+  cronTime: "0 0 * * *", // every day at 00:00
+  start: true,
+  runOnInit: true,
+  onTick: async () => {
+    if (running) {
+      console.log("[cron] Skipping run — previous refresh still in progress")
+      return
+    }
+    running = true
+    console.log(`[cron] Starting refresh at ${new Date().toISOString()}`)
+    try {
+      await refreshMaterial()
+      console.log(`[cron] Refresh completed at ${new Date().toISOString()}`)
+    } catch (err) {
+      console.error("[cron] Refresh failed:", err)
+    } finally {
+      running = false
+      console.log(`[cron] Next run scheduled at ${job.nextDate().toString()}`)
+    }
   },
-  null,
-  true
-)
+})
+
+setInterval(
+  () => {
+    console.log(`[cron] Heartbeat: next run at ${job.nextDate().toString()}`)
+  },
+  6 * 60 * 60 * 1000
+) // every 6h report status
