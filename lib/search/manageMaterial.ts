@@ -1,6 +1,7 @@
 import { materialToJson } from "./splitMarkdown"
 import { jsonToIndex } from "./vectorDb"
 import fs from "fs"
+import path from "path"
 import { SectionObj, jsonToSections } from "./splitMarkdown"
 import { countIndex } from "./vectorDb"
 import { initRepos } from "../../scripts/pullMaterial"
@@ -24,30 +25,35 @@ export async function refreshMaterial() {
   })
 }
 
+const MATERIAL_JSON_PATH =
+  process.env.NODE_ENV === "production" ? "/tmp/material.json" : path.resolve(process.cwd(), "material.json")
+
 export async function hasMaterialChanged(sections: SectionObj[]) {
   let oldSections: SectionObj[] = []
-  // check if the number of vectors in the db is not the same as the number of sections parsed
+
   const vectorsInDb = await countIndex()
   if (vectorsInDb !== sections.length) {
     console.log("material has changed")
     return true
   }
-  // check if previous material.json exists and if it does, check if the number of sections is the same
-  if (fs.existsSync("material.json")) {
-    oldSections = jsonToSections("material.json")
+
+  // read the previous snapshot from the hardcoded path
+  if (fs.existsSync(MATERIAL_JSON_PATH)) {
+    oldSections = jsonToSections(MATERIAL_JSON_PATH)
   }
+
   if (sections.length !== oldSections.length) {
     console.log("material has changed")
     return true
   }
-  // if the prev material exists AND the number of sections is the same, check if the text is the same
+
   for (let i = 0; i < sections.length; i++) {
     if (sections[i].payload.text !== oldSections[i].payload.text) {
       console.log("material has changed")
       return true
     }
   }
-  // if the text is all the same then do material has not changes
+
   console.log("material has not changed")
   return false
 }

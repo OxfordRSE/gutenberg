@@ -1,11 +1,10 @@
 import { v4 as uuid } from "uuid"
 import fs from "fs"
+import path from "path"
 import fsPromises from "fs/promises"
 import fm from "front-matter"
 import { getDocsList, readPageMarkdown } from "./readMarkdown"
 import { createSectionVector } from "./createVectors"
-import { title } from "process"
-import { theme } from "flowbite-react"
 import { hasMaterialChanged } from "./manageMaterial"
 
 export type SectionObj = {
@@ -25,16 +24,28 @@ export type SectionObj = {
 
 const materialDir = (process.env.MATERIAL_DIR as string) || ".material"
 
+const MATERIAL_JSON_PATH =
+  process.env.NODE_ENV === "production" ? "/tmp/material.json" : path.resolve(process.cwd(), "material.json")
+
 export async function materialToJson() {
   let sections = await parsePages()
   const replace = await hasMaterialChanged(sections)
   if (replace) {
     sections = await createSectionVector(sections)
     const json = await sectionsToJson(sections)
-    fs.writeFileSync("material.json", json)
-  } else {
+
+    // ensure dir exists (works for /tmp too) and write
+    await fsPromises.mkdir(path.dirname(MATERIAL_JSON_PATH), { recursive: true })
+    await fsPromises.writeFile(MATERIAL_JSON_PATH, json, "utf8")
+
+    console.log("[material] wrote", MATERIAL_JSON_PATH)
   }
   return sections
+}
+
+export function jsonToSections(file: string = MATERIAL_JSON_PATH) {
+  const json = fs.readFileSync(file, "utf8")
+  return JSON.parse(json)
 }
 
 export async function parsePages() {
@@ -219,10 +230,4 @@ function createSection(
 async function sectionsToJson(sections: SectionObj[] | SectionObj) {
   const json = JSON.stringify(sections)
   return json
-}
-
-export function jsonToSections(file: string) {
-  const json = fs.readFileSync(file, "utf8")
-  const sections = JSON.parse(json)
-  return sections
 }
