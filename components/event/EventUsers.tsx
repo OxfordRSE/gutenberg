@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import { Event } from "lib/types"
 import useSWR, { Fetcher } from "swr"
-import {  Card } from "flowbite-react"
+import { Card } from "flowbite-react"
 import Avatar from "@mui/material/Avatar"
 import { basePath } from "lib/basePath"
 import { useFieldArray, useForm } from "react-hook-form"

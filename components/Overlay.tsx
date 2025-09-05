@@ -1,4 +1,3 @@
-
 import { Course, Material, Section, Theme } from "lib/material"
 import { EventFull } from "lib/types"
 import { NextPage } from "next"
