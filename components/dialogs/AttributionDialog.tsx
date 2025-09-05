@@ -1,7 +1,6 @@
 import { Modal } from "flowbite-react"
 import { Attribution } from "lib/material"
 import React, { useEffect } from "react"
-import { useEdges } from "reactflow"
 import Image from "next/image"
 
 interface LicenseProps {

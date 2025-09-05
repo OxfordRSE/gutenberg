@@ -2,13 +2,10 @@ import { Material } from "lib/material"
 
 import { Problem } from "@prisma/client"
 import { EventFull as Event, UserOnEvent } from "lib/types"
-import UserEventProblems from "components/UserEventProblems"
+import UserEventProblems from "components/event/UserEventProblems"
 import { PageTemplate } from "lib/pageTemplate"
 import { useAtom } from "jotai"
-import deleteUserOnEventModal, {
-  deleteUserOnEventModalState,
-  deleteUserOnEventIdState,
-} from "components/dialogs/deleteUserOnEventModal"
+import { deleteUserOnEventModalState, deleteUserOnEventIdState } from "components/dialogs/deleteUserOnEventModal"
 import { Button } from "flowbite-react"
 import Stack from "components/ui/Stack"
 import { Tooltip } from "@mui/material"

@@ -11,10 +11,10 @@ import useActiveEvent from "lib/hooks/useActiveEvents"
 import { postEvent } from "lib/actions/postEvent"
 import { MdContentCopy, MdDelete } from "react-icons/md"
 import { useAtom } from "jotai"
-import { deleteEventModalState, deleteEventIdState } from "components/deleteEventModal"
-import { duplicateEventModalState, duplicateEventIdState } from "components/DuplicateEventModal"
+import { deleteEventModalState, deleteEventIdState } from "components/dialogs/deleteEventModal"
+import { duplicateEventModalState, duplicateEventIdState } from "components/dialogs/DuplicateEventModal"
 import { Tooltip } from "@mui/material"
-import Stack from "./ui/Stack"
+import Stack from "components/ui/Stack"
 
 type EventsProps = {
   material: Material

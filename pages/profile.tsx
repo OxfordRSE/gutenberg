@@ -9,7 +9,7 @@ import { EventFull as Event, UserOnEvent } from "lib/types"
 import useProfile from "lib/hooks/useProfile"
 import useUserEvents from "lib/hooks/useUserEvents"
 import { PageTemplate } from "lib/pageTemplate"
-import ProfileEventView from "components/ProfileEventView"
+import ProfileEventView from "components/event/ProfileEventView"
 
 type EventProps = {
   material: Material

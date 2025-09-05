@@ -1,4 +1,3 @@
-import { Course, Section, Theme } from "lib/material"
 import Link from "next/link"
 import React, { memo } from "react"
 import { Handle, Position, Node } from "reactflow"

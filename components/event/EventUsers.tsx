@@ -1,15 +1,11 @@
 import React, { useEffect } from "react"
-import { HiArrowNarrowRight } from "react-icons/hi"
-import { Material } from "lib/material"
-import { EventFull, Event, Problem } from "lib/types"
+import { Event } from "lib/types"
 import useSWR, { Fetcher } from "swr"
-import Title from "components/ui/Title"
-import { Button, Card, Timeline } from "flowbite-react"
+import {  Card } from "flowbite-react"
 import Avatar from "@mui/material/Avatar"
-import { ListGroup } from "flowbite-react"
 import { basePath } from "lib/basePath"
 import { useFieldArray, useForm } from "react-hook-form"
-import SelectField from "./forms/SelectField"
+import SelectField from "../forms/SelectField"
 import { UsersWithUserOnEvents } from "pages/api/event/[eventId]/users"
 
 type Props = {

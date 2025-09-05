@@ -1,10 +1,7 @@
-import { Button, Label, TextInput } from "flowbite-react"
-import { BiSearch } from "react-icons/bi"
 import React, { useEffect, useState, useRef } from "react"
 import searchQuery from "lib/actions/searchMaterial"
-import { SearchResult } from "lib/search/vectorDb"
 import { useAtom } from "jotai"
-import { searchQueryState, searchResultsState } from "components/SearchDialog"
+import { searchQueryState, searchResultsState } from "components/dialogs/SearchDialog"
 
 function SearchBar() {
   const ref = useRef<HTMLDivElement>(null)

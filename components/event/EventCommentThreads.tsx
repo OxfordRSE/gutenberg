@@ -21,8 +21,8 @@ import {
   Tooltip,
 } from "@mui/material"
 import LinkIcon from "@mui/icons-material/Link"
-import Stack from "./ui/Stack"
-import Thread from "./content/Thread"
+import Stack from "../ui/Stack"
+import Thread from "../content/Thread"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import ExpandLessIcon from "@mui/icons-material/ExpandLess"
 import { CommentThread } from "pages/api/commentThread/[commentThreadId]"

@@ -1,15 +1,10 @@
 import React from "react"
-import { HiArrowNarrowRight } from "react-icons/hi"
 import { Material } from "lib/material"
 import { EventFull, Event, Problem } from "lib/types"
 import useSWR, { Fetcher } from "swr"
-import Title from "components/ui/Title"
-import { Button, Timeline } from "flowbite-react"
-import { ListGroup } from "flowbite-react"
+import { Timeline } from "flowbite-react"
 import { basePath } from "lib/basePath"
-import { MdClose } from "react-icons/md"
-import Link from "next/link"
-import EventItemView from "./EventItemView"
+import EventItemView from "components/sidebar/EventItemView"
 
 type EventsProps = {
   material: Material

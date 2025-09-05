@@ -1,18 +1,14 @@
 import React from "react"
 import { HiArrowNarrowRight } from "react-icons/hi"
-import { Material } from "lib/material"
 import { EventFull, Event } from "lib/types"
-import Title from "components/ui/Title"
-import { basePath } from "lib/basePath"
 import { useSession } from "next-auth/react"
-import EnrolDialog from "components/EnrolDialog"
-import useSWR, { Fetcher } from "swr"
+import EnrolDialog from "components/dialogs/EnrolDialog"
+import { Fetcher } from "swr"
 import { UserOnEvent } from "@prisma/client"
 import { Button } from "flowbite-react"
 import { useUserOnEvent } from "lib/hooks/useUserOnEvent"
 import useActiveEvent from "lib/hooks/useActiveEvents"
 import useEvent from "lib/hooks/useEvent"
-import { verify } from "crypto"
 
 type EventActionsProps = {
   event: Event
