@@ -1,7 +1,7 @@
 import React from "react"
 import { useState, useEffect } from "react"
 import { Button, Modal } from "flowbite-react"
-import Stack from "./ui/Stack"
+import Stack from "../ui/Stack"
 import { atom, useAtom } from "jotai"
 import useEvent from "lib/hooks/useEvent"
 import { deleteEvent } from "lib/actions/deleteEvent"

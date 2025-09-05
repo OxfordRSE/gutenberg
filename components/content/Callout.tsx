@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react"
+import React from "react"
 
 interface CalloutProps {
   content: React.ReactNode

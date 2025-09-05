@@ -3,7 +3,6 @@ import { Modal, Button } from "flowbite-react"
 import Stack from "components/ui/Stack"
 import { ProblemForm } from "lib/types"
 import Chip from "@mui/material/Chip"
-import { url } from "inspector/promises"
 
 interface ProblemViewModalProps {
   show: boolean

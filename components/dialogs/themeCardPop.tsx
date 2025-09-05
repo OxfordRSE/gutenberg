@@ -1,5 +1,5 @@
-import ThemeCards from "components/ThemeCards"
-import react, { useEffect, useState } from "react"
+import ThemeCards from "components/navdiagram/ThemeCards"
+import React, { useEffect, useState } from "react"
 import { createPortal } from "react-dom"
 import { Material, Excludes } from "lib/material"
 

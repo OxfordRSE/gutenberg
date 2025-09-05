@@ -1,18 +1,17 @@
 import { EventStatus, UserOnEvent } from "@prisma/client"
-import { Button, Modal, Toast, TextInput } from "flowbite-react"
+import { Button, Modal, Toast } from "flowbite-react"
 import { Event } from "lib/types"
 import { useSession } from "next-auth/react"
 import { useUserOnEvent } from "lib/hooks/useUserOnEvent"
 import React from "react"
-import Content from "./content/Content"
+import Content from "components/content/Content"
 import { HiCheckCircle, HiMail, HiX } from "react-icons/hi"
 import postUserOnEvent from "lib/actions/postUserOnEvent"
 import putUserOnEvent from "lib/actions/putUserOnEvent"
 import useEvent from "lib/hooks/useEvent"
 import { useForm } from "react-hook-form"
-import Stack from "./ui/Stack"
-import TextField from "./forms/Textfield"
-import { delay } from "cypress/types/bluebird"
+import Stack from "components/ui/Stack"
+import TextField from "components/forms/Textfield"
 
 type Props = {
   event: Event

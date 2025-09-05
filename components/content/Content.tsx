@@ -3,7 +3,6 @@ import ReactMarkdown, { ExtraProps, Components } from "react-markdown"
 import { Prism, SyntaxHighlighterProps } from "react-syntax-highlighter"
 import CopyToClipboard from "components/ui/CopyToClipboard"
 import { FaClipboard } from "react-icons/fa"
-import path from "path"
 
 import { lucario as codeStyle } from "react-syntax-highlighter/dist/cjs/styles/prism"
 
@@ -17,7 +16,7 @@ import "katex/dist/katex.min.css" // `rehype-katex` does not import the CSS for 
 
 import Challenge from "./Challenge"
 import Solution from "./Solution"
-import Callout from "../Callout"
+import Callout from "./Callout"
 import { Course, Section, Theme } from "lib/material"
 import Paragraph from "./Paragraph"
 import Heading from "./Heading"

@@ -2,7 +2,6 @@ import Link from "next/link"
 import React, { memo } from "react"
 import { Handle, Position } from "reactflow"
 import { NodeData } from "./NavDiagram"
-import { basePath } from "lib/basePath"
 
 type NodeProps = {
   data: NodeData

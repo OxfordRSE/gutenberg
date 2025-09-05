@@ -1,4 +1,4 @@
-import EventCommentThreads from "components/EventCommentThreads"
+import EventCommentThreads from "components/event/EventCommentThreads"
 import { Material } from "lib/material"
 import { EventFull } from "lib/types"
 import { CommentThread } from "pages/api/commentThread/[commentThreadId]"
