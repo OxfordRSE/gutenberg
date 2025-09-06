@@ -29,7 +29,7 @@ import SubTitle from "components/ui/SubTitle"
 import EventCommentThreads from "components/event/EventCommentThreads"
 import { PageTemplate, pageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
-import EventActions from "components/eventtimeline/EventActions"
+import EventActions from "components/timeline/EventActions"
 
 type EventProps = {
   material: Material
