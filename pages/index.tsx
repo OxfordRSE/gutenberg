@@ -11,6 +11,7 @@ import { Button, Card } from "flowbite-react"
 import EventsView from "components/timeline/EventsView"
 import { pageTemplate, PageTemplate } from "lib/pageTemplate"
 import { Markdown } from "components/content/Content"
+import { useSession } from "next-auth/react"
 import revalidateTimeout from "lib/revalidateTimeout"
 import Title from "components/ui/Title"
 
@@ -22,6 +23,7 @@ type HomeProps = {
 
 const Home: NextPage<HomeProps> = ({ material, events, pageInfo }) => {
   const intro = pageInfo.frontpage.intro
+  const { data: session } = useSession()
   const handleSignin = () => {
     signIn()
   }
@@ -32,12 +34,14 @@ const Home: NextPage<HomeProps> = ({ material, events, pageInfo }) => {
       <div className="px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32  grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
         <Card className="scroll" style={{ maxHeight: "82vh", overflowY: "auto" }}>
           <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Course Events</h2>
-          <p className="font-normal text-gray-700 dark:text-gray-400">
-            <Button onClick={handleSignin} size="xs" fill="currentColor" className="inline-block align-middle">
-              Login
-            </Button>
-            &nbsp; to enrol on an upcoming course, to select an active course, or to view your current courses.
-          </p>
+          {!session && (
+            <p className="font-normal text-gray-700 dark:text-gray-400">
+              <Button onClick={handleSignin} size="xs" fill="currentColor" className="inline-block align-middle">
+                Login
+              </Button>
+              &nbsp; to enrol on an upcoming course, to select an active course, or to view your current courses.
+            </p>
+          )}
           <EventsView material={material} events={events} />
         </Card>
         <Card className="z-60">
