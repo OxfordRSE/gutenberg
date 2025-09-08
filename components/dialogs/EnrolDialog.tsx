@@ -3,7 +3,7 @@ import { Button, Modal, Toast } from "flowbite-react"
 import { Event } from "lib/types"
 import { useSession } from "next-auth/react"
 import { useUserOnEvent } from "lib/hooks/useUserOnEvent"
-import React from "react"
+import React, { useState } from "react"
 import Content from "components/content/Content"
 import { HiCheckCircle, HiMail, HiX } from "react-icons/hi"
 import postUserOnEvent from "lib/actions/postUserOnEvent"
@@ -25,10 +25,10 @@ interface Enrol {
 
 const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol }) => {
   const { control, handleSubmit, reset } = useForm<Enrol>()
-  const [error, setError] = React.useState<string | undefined>(undefined)
-  const [enrolError, setEnrolError] = React.useState<string | undefined>(undefined)
-  const [keySuccess, setKeySuccess] = React.useState<string | undefined>(undefined)
-  const [success, setSuccess] = React.useState<string | null>(null)
+  const [error, setError] = useState<string | undefined>(undefined)
+  const [enrolError, setEnrolError] = useState<string | undefined>(undefined)
+  const [keySuccess, setKeySuccess] = useState<string | undefined>(undefined)
+  const [success, setSuccess] = useState<string | null>(null)
   const session = useSession()
   const { userOnEvent } = useUserOnEvent(event.id)
   const { event: eventData, error: eventError, isLoading: eventIsLoading, mutate: mutateEvent } = useEvent(event.id)
