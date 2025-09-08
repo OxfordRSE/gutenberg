@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useRef } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { Material } from "lib/material"
 import { Event } from "lib/types"
 import { Button, Timeline } from "flowbite-react"
@@ -30,8 +30,9 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
   const [query, setQuery] = useState("")
   const [debouncedQuery, setDebouncedQuery] = useState("")
 
-  const [oldEvents, setOldEvents] = useState(0)
-  const [newEvents, setNewEvents] = useState(0)
+  // user-controlled override for hidden-older count; null means "use derived"
+  const [userOldEvents, setUserOldEvents] = useState<number | null>(null)
+
   const [activeEvent] = useActiveEvent()
   const [showDeleteEventModal, setShowDeleteEventModal] = useAtom(deleteEventModalState)
   const [deleteEventId, setDeleteEventId] = useAtom(deleteEventIdState)
@@ -39,10 +40,9 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
   const [duplicateEventId, setDuplicateEventId] = useAtom(duplicateEventIdState)
   const { events: currentEvents, mutate } = useEvents()
   const { userProfile } = useProfile()
-
-  const initializedRef = useRef(false)
-
   const isAdmin = userProfile?.admin
+
+  // Normalize + sort base list
   const baseEvents = useMemo(() => {
     const source = currentEvents ?? events
     const normalized = source.map((e) => ({
@@ -67,39 +67,32 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
     })
   }, [baseEvents, debouncedQuery, activeEvent?.id])
 
-  // Recompute counts from *filtered* with 2-month cutoff
+  // Are we actively filtering?
+  const isFiltering = useMemo(() => debouncedQuery.trim().length > 0, [debouncedQuery])
+
+  const cutOffDate = useMemo(() => {
+    const d = new Date()
+    d.setMonth(d.getMonth() - 2)
+    return d
+  }, [])
+
+  // Derive counts every time the filtered list changes
+  const { olderCount, newerCount } = useMemo(() => {
+    const older = filteredEvents.filter((e) => e.start < cutOffDate).length
+    return { olderCount: older, newerCount: filteredEvents.length - older }
+  }, [filteredEvents, cutOffDate])
+
+  // Effective hidden-older count:
+  // - while filtering: show all (0 hidden)
+  // - otherwise: use user override if any, else derived olderCount
+  const effectiveOldEvents = isFiltering ? 0 : (userOldEvents ?? olderCount)
+  const toolbarOld = isFiltering ? 0 : effectiveOldEvents
+  const toolbarNew = isFiltering ? filteredEvents.length : newerCount
+
+  // Hydration guard for date formatting, prevent dom mismatch
   useEffect(() => {
     setShowDateTime(true)
-    const cutOffDate = new Date()
-    cutOffDate.setMonth(cutOffDate.getMonth() - 2)
-
-    const olderCount = filteredEvents.filter((e) => e.start < cutOffDate).length
-    const newerCount = filteredEvents.length - olderCount
-
-    setNewEvents(newerCount)
-
-    if (!initializedRef.current) {
-      // On first run, hide all older by default (original behavior)
-      setOldEvents(olderCount)
-      initializedRef.current = true
-    } else {
-      // On subsequent runs (e.g., query changes), clamp within bounds
-      setOldEvents((prev) => Math.min(prev, olderCount))
-    }
-  }, [filteredEvents])
-
-  // Recompute counts based on *filtered* list with a 2-month cutoff
-  useEffect(() => {
-    setShowDateTime(true)
-    const cutOffDate = new Date()
-    cutOffDate.setMonth(cutOffDate.getMonth() - 2)
-
-    const olderCount = filteredEvents.filter((e) => e.start < cutOffDate).length
-    const newerCount = filteredEvents.length - olderCount
-
-    setNewEvents(newerCount)
-    setOldEvents((prev) => Math.min(prev, olderCount)) // keep within bounds after filter changes
-  }, [filteredEvents])
+  }, [])
 
   const getFormattedDate = (date: Date) =>
     showDateTime ? date.toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) : date.toUTCString()
@@ -118,19 +111,29 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
     setDuplicateEventId(eventId)
   }
 
+  // Paging helpers: no-op during filtering
   const loadMoreEvents = () => {
-    setOldEvents(Math.max(oldEvents - 3, 0))
+    if (isFiltering) return
+    setUserOldEvents((prev) => {
+      const base = prev ?? olderCount
+      return Math.max(base - 3, 0)
+    })
   }
 
   const hideMoreEvents = () => {
-    setOldEvents(Math.min(oldEvents + 3, events.length - newEvents))
+    if (isFiltering) return
+    setUserOldEvents((prev) => {
+      const base = prev ?? olderCount
+      const maxHideable = Math.max(0, filteredEvents.length - newerCount)
+      return Math.min(base + 3, maxHideable)
+    })
   }
 
   return (
     <>
       <EventsToolbar
-        oldEvents={oldEvents}
-        newEvents={newEvents}
+        oldEvents={toolbarOld}
+        newEvents={toolbarNew}
         filteredLength={filteredEvents.length}
         query={query}
         onQueryChange={setQuery}
@@ -146,7 +149,7 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
 
         {/* Render the filtered list */}
         {filteredEvents.map((event, idx) => {
-          if (idx - oldEvents >= 0 || event.id === activeEvent?.id) {
+          if (idx - effectiveOldEvents >= 0 || event.id === activeEvent?.id) {
             return (
               <Timeline.Item key={event.id}>
                 <Timeline.Point />
