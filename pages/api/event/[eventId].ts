@@ -25,55 +25,47 @@ export type Data = {
 
 const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   const session = await getServerSession(req, res, authOptions)
-  if (!session) {
-    res.status(401).json({ error: "Unauthorized" })
-    return
-  }
+  if (!session) return res.status(401).json({ error: "Unauthorized" })
 
   const userEmail = session.user?.email || undefined
-
-  const currentUser = await prisma.user.findUnique({
-    where: { email: userEmail },
-  })
-
-  const isAdmin = currentUser?.admin
-
-  const eventId = req.query.eventId as string
+  const currentUser = await prisma.user.findUnique({ where: { email: userEmail } })
+  const isAdmin = !!currentUser?.admin
+  const eventId = parseInt(req.query.eventId as string, 10)
 
   if (req.method === "GET") {
     const event = await prisma.event.findUnique({
-      where: { id: parseInt(eventId) },
+      where: { id: eventId },
       include: {
         EventGroup: { include: { EventItem: true }, orderBy: { start: "asc" } },
         UserOnEvent: { include: { user: true } },
       },
     })
 
-    if (!event) {
-      res.status(404).json({ error: "Event not found" })
-      return
+    if (!event) return res.status(404).json({ error: "Event not found" })
+    // REDACT KEYS for non-admins
+    if (!isAdmin) {
+      delete (event as any).enrolKey
+      delete (event as any).instructorKey
     }
 
-    const isInstructor = event?.UserOnEvent?.some(
-      (userOnEvent) => userOnEvent?.user?.email === userEmail && userOnEvent?.status === "INSTRUCTOR"
-    )
-    const isStudent = event?.UserOnEvent?.some(
-      (userOnEvent) => userOnEvent?.user?.email === userEmail && userOnEvent?.status === "STUDENT"
-    )
+    const isInstructor = event.UserOnEvent.some((u) => u.user?.email === userEmail && u.status === "INSTRUCTOR")
+    const isStudent = event.UserOnEvent.some((u) => u.user?.email === userEmail && u.status === "STUDENT")
+
+    if (!isAdmin && !isInstructor && !isStudent) {
+      return res.status(401).json({ error: "Unauthorized" })
+    }
 
     if (isStudent) {
       // remove all userOnEvent that are not the current user
-      const userOnEvent = event.UserOnEvent.filter((userOnEvent) => userOnEvent?.user?.email === userEmail)
-      event.UserOnEvent = userOnEvent
+      event.UserOnEvent = event.UserOnEvent.filter((u) => u.user?.email === userEmail)
     }
 
-    if (!isAdmin && !isInstructor && !isStudent) {
-      res.status(401).json({ error: "Unauthorized" })
-      return
-    }
+    return res.status(200).json({ event })
+  }
 
-    res.status(200).json({ event })
-  } else if (req.method === "PUT") {
+  if (req.method === "PUT") {
+    if (!isAdmin) return res.status(401).json({ error: "Unauthorized" })
+
     const { name, enrol, content, enrolKey, instructorKey, start, end, summary, hidden } = req.body.event
     const eventGroupData: EventGroup[] = req.body.event.EventGroup
 
@@ -83,7 +75,7 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     }
 
     await prisma.event.update({
-      where: { id: parseInt(eventId) },
+      where: { id: eventId },
       data: {
         name,
         summary,
@@ -102,7 +94,7 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
         await prisma.userOnEvent.updateMany({
           where: {
             userEmail: user.userEmail,
-            eventId: parseInt(eventId),
+            eventId: eventId,
           },
           data: {
             status: user.status,
@@ -112,7 +104,7 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     }
 
     const existingGroups = await prisma.eventGroup.findMany({
-      where: { eventId: parseInt(eventId) },
+      where: { eventId: eventId },
       select: { id: true },
     })
     const existingGroupIds = new Set(existingGroups.map((g) => g.id))
@@ -151,7 +143,7 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
             location: group.location,
             start: group.start,
             end: group.end,
-            event: { connect: { id: parseInt(eventId) } },
+            event: { connect: { id: eventId } },
           },
         })
       }
@@ -178,7 +170,7 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     }
     // Fetch the updated event with all groups and items
     const event = await prisma.event.findUnique({
-      where: { id: parseInt(eventId) },
+      where: { id: eventId },
       include: {
         EventGroup: { include: { EventItem: true }, orderBy: { start: "asc" } },
         UserOnEvent: { include: { user: true } },
@@ -191,15 +183,14 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     }
 
     res.status(200).json({ event })
-  } else if (req.method === "DELETE") {
-    if (!isAdmin) {
-      res.status(401).json({ error: "Unauthorized" })
-      return
-    }
+  }
+
+  if (req.method === "DELETE") {
+    if (!isAdmin) return res.status(401).json({ error: "Unauthorized" })
     // delete the event
     const deletedEvent = prisma.event
       .delete({
-        where: { id: parseInt(eventId) },
+        where: { id: eventId },
         include: { EventGroup: { include: { EventItem: true } }, UserOnEvent: { include: { user: true } } },
       })
       .then((deletedEvent) => {
