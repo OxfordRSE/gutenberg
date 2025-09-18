@@ -24,7 +24,7 @@ describe("non admin landing page", () => {
     cy.get('[data-cy*="delete-event"]').should("not.exist")
   })
 
-  it.only("Can Filter Events", () => {
+  it("Can Filter Events", () => {
     cy.get('[data-cy="show-events-search"]').should("be.visible").click()
     cy.get('[data-cy="search-input"]').click().type("No events")
     cy.contains("No events match your filter").should("be.visible")
