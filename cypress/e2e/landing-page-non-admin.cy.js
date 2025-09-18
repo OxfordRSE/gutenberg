@@ -12,7 +12,6 @@ describe("non admin landing page", () => {
   }
 
   beforeEach(() => {
-    cy.visit("/")
     cy.login(user)
     cy.visit("/")
   })
@@ -33,8 +32,8 @@ describe("non admin landing page", () => {
 
     // and we can actually search
     cy.contains("[older]").should("not.exist")
-    cy.get('[data-cy="search-input"]').click().type("[older]")
-    cy.contains("[older]").should("be.visible")
+    cy.get('[data-cy="search-input"]').click().type("older")
+    cy.contains("older").should("be.visible")
     cy.contains("revenge").should("not.exist")
   })
 

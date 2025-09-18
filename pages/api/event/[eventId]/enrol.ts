@@ -20,44 +20,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const eventId = parseInt(req.query.eventId as string, 10)
   const { enrolKey } = req.body as { enrolKey?: string }
 
-  // load keys server-side
   const event = await prisma.event.findUnique({
     where: { id: eventId },
     select: { id: true, enrolKey: true, instructorKey: true },
   })
   if (!event) return res.status(404).json({ error: "Event not found" })
 
-  // UonE exists?
-  const existing = await prisma.userOnEvent.findUnique({
+  // Require a key to be provided
+  if (!enrolKey || enrolKey.trim() === "") {
+    return res.status(400).json({ error: "Enrolment key is required" })
+  }
+
+  let nextStatus: EventStatus | null = null
+  if (enrolKey === event.enrolKey) nextStatus = EventStatus.STUDENT
+  else if (enrolKey === event.instructorKey) nextStatus = EventStatus.INSTRUCTOR
+  else return res.status(400).json({ error: "Invalid enrolment key" })
+
+  // Create or update the UserOnEvent record with the matched role
+  const updated: PublicUserOnEvent = await prisma.userOnEvent.upsert({
     where: { userEmail_eventId: { userEmail, eventId } },
+    update: { status: nextStatus },
+    create: { userEmail, eventId, status: nextStatus },
     select: userOnEventSelect,
   })
 
-  const base: PublicUserOnEvent =
-    existing ??
-    (await prisma.userOnEvent.create({
-      data: { userEmail, eventId, status: "REQUEST" },
-      select: userOnEventSelect,
-    }))
-
-  let nextStatus: EventStatus | null = null
-
-  if (enrolKey && enrolKey === event.enrolKey) nextStatus = EventStatus.STUDENT
-  else if (enrolKey && enrolKey === event.instructorKey) nextStatus = EventStatus.INSTRUCTOR
-  else if (enrolKey && enrolKey.trim() !== "") {
-    return res.status(400).json({ error: "Invalid enrolment key" })
-  }
-
-  const updated: PublicUserOnEvent =
-    nextStatus === null
-      ? base
-      : await prisma.userOnEvent.update({
-          where: { userEmail_eventId: { userEmail, eventId } },
-          data: { status: nextStatus },
-          select: userOnEventSelect,
-        })
-
-  // construct a stable synthetic id in place of the composite primary key
   const syntheticId = `${updated.userEmail}:${updated.eventId}`
 
   return res.status(200).json({
