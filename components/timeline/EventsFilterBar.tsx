@@ -95,6 +95,7 @@ const EventsFilterBar: React.FC<EventsFilterBarProps> = ({
           <IconButton
             size="small"
             onClick={handleToggle}
+            className="text-gray-900 dark:text-slate-300"
             aria-label={open ? "Hide event search" : "Show event search"}
             aria-expanded={open}
             sx={{
