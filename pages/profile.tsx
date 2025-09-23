@@ -10,14 +10,15 @@ import useProfile from "lib/hooks/useProfile"
 import useUserEvents from "lib/hooks/useUserEvents"
 import { PageTemplate } from "lib/pageTemplate"
 import ProfileEventView from "components/event/ProfileEventView"
+import { pageTemplate } from "lib/pageTemplate"
 
 type EventProps = {
   material: Material
   event: Event
-  pageInfo?: PageTemplate
+  pageInfo: PageTemplate
 }
 
-const Profile: NextPage<EventProps> = ({ material }) => {
+const Profile: NextPage<EventProps> = ({ material, pageInfo }) => {
   const { data: session } = useSession()
   const { userProfile, error: profileError, isLoading: profileLoading } = useProfile()
   let eventsWithProblems = undefined
@@ -45,7 +46,7 @@ const Profile: NextPage<EventProps> = ({ material }) => {
     return <div>Not logged in...</div>
   }
   return (
-    <Layout material={material}>
+    <Layout material={material} pageInfo={pageInfo}>
       <div className="max-w-sm text-gray-00 dark:text-gray-400 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-md flex p-6 mb-3 ml-2">
         <div className="avatar">
           <Image
@@ -89,11 +90,12 @@ const Profile: NextPage<EventProps> = ({ material }) => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   let material = await getMaterial()
+  let pageInfo = pageTemplate
 
   removeMarkdown(material, undefined)
 
   return {
-    props: makeSerializable({ material }),
+    props: makeSerializable({ material, pageInfo }),
   }
 }
 

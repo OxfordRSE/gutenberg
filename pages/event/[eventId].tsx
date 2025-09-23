@@ -35,7 +35,7 @@ import { load } from "js-yaml"
 type EventProps = {
   material: Material
   event: Event
-  pageInfo?: PageTemplate
+  pageInfo: PageTemplate
 }
 
 const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {

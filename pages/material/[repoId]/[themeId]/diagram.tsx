@@ -5,15 +5,17 @@ import { makeSerializable } from "lib/utils"
 import { Material, Theme, getMaterial, removeMarkdown } from "lib/material"
 import Content from "components/content/Content"
 import NavDiagram from "components/navdiagram/NavDiagram"
+import { pageTemplate, PageTemplate } from "lib/pageTemplate"
 
 type HomeProps = {
   material: Material
   theme: Theme
+  pageInfo: PageTemplate
 }
 
-const Home: NextPage<HomeProps> = ({ material, theme }) => {
+const Home: NextPage<HomeProps> = ({ material, theme, pageInfo }) => {
   return (
-    <Layout material={material}>
+    <Layout material={material} pageInfo={pageInfo}>
       <Content markdown={material.markdown} theme={theme} />
       <NavDiagram material={material} />
     </Layout>
@@ -40,6 +42,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  const pageInfo = pageTemplate
   const material = await getMaterial()
   let paths = []
   for (const theme of material.themes) {
@@ -52,6 +55,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths,
     fallback: false,
+    pageInfo,
   }
 }
 

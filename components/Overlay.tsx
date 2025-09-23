@@ -7,14 +7,15 @@ import AttributionDialog from "./dialogs/AttributionDialog"
 import Sidebar from "./sidebar/Sidebar"
 import { SearchDialog, searchQueryState } from "components/dialogs/SearchDialog"
 import { useAtom } from "jotai"
-import { DeleteEventModal, deleteEventModalState } from "components/dialogs/deleteEventModal"
+import { DeleteEventModal, deleteEventModalState } from "components/dialogs/DeleteEventModal"
 import { DuplicateEventModal, duplicateEventModalState } from "components/dialogs/DuplicateEventModal"
 import { LinkedSection, SectionLink } from "./ui/LinkedSection"
 import { Stack } from "@mui/material"
 import useWindowSize from "lib/hooks/useWindowSize"
-import DeleteUserOnEventModal, { deleteUserOnEventModalState } from "./dialogs/deleteUserOnEventModal"
+import DeleteUserOnEventModal, { deleteUserOnEventModalState } from "./dialogs/DeleteUserOnEventModal"
 import TableOfContents from "./content/TableOfContents"
 import { useSession } from "next-auth/react"
+import type { PageTemplate } from "lib/pageTemplate"
 
 interface Props {
   material: Material
@@ -27,6 +28,7 @@ interface Props {
   sidebarOpen: boolean
   setSidebarOpen: (open: boolean) => void
   sectionLinks?: SectionLink[]
+  pageInfo: PageTemplate
 }
 
 const Overlay: NextPage<Props> = ({
@@ -40,6 +42,7 @@ const Overlay: NextPage<Props> = ({
   sidebarOpen,
   setSidebarOpen,
   sectionLinks,
+  pageInfo,
 }: Props) => {
   const [showSearch, setShowSearch] = useAtom(searchQueryState)
   const [showTopButtons, setShowTopButtons] = useState(false)
@@ -128,7 +131,13 @@ const Overlay: NextPage<Props> = ({
         <DeleteEventModal onClose={closeDeleteEvent} />
         <DeleteUserOnEventModal onClose={closeDeleteUserOnEvent} />
         <DuplicateEventModal onClose={closeDuplicateEvent} />
-        <Sidebar material={material} activeEvent={activeEvent} sidebarOpen={sidebarOpen} handleClose={handleClose} />
+        <Sidebar
+          material={material}
+          activeEvent={activeEvent}
+          sidebarOpen={sidebarOpen}
+          handleClose={handleClose}
+          pageInfo={pageInfo}
+        />
       </div>
     </div>
   )
