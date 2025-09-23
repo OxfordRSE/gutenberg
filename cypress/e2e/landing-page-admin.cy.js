@@ -12,7 +12,6 @@ describe("admin landing page", () => {
   }
 
   beforeEach(() => {
-    cy.visit("/")
     cy.login(user)
     cy.visit("/")
   })
@@ -39,8 +38,7 @@ describe("admin landing page", () => {
 
   it("Admin Can Enrol With Key", () => {
     cy.get('[data-cy="load-more-events"]').click()
-    cy.get('[data-cy="event-enrol-1"]').should("be.visible")
-    cy.get('[data-cy="event-enrol-1"]').click()
+    cy.get('[data-cy="event-enrol-1"]').should("be.visible").click()
     cy.get('[data-cy="key-enrol-1"]').should("be.visible")
     cy.get("#enrolKey").type("testEnrol")
     cy.get('[data-cy="key-enrol-1"]').click()
@@ -83,7 +81,7 @@ describe("admin landing page", () => {
     cy.request("GET", "/api/event").its("body").its("events").as("oldres")
     cy.contains("Create new Event").click()
 
-    cy.wait(1000).request("GET", "/api/event").its("body").its("events").as("newres")
+    cy.wait(1500).request("GET", "/api/event").its("body").its("events").as("newres")
 
     cy.get("@oldres").then((oldres) => {
       cy.get("@newres").then((newres) => {
