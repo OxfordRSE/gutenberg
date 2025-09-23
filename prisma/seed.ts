@@ -200,7 +200,6 @@ async function main() {
     where: { id: 2 },
     update: {},
     create: {
-      id: 2,
       name: "older Introduction to C++ [older]",
       summary: "older Introduction to the C++ programming language",
       start: new Date(2020, 7, 1, 9, 30),
@@ -231,28 +230,28 @@ async function main() {
               EventItem: {
                 connectOrCreate: [
                   {
-                    where: { id: 1 },
+                    where: { id: 51 },
                     create: {
                       order: 1,
                       section: "technology_and_tooling.bash_shell.bash",
                     },
                   },
                   {
-                    where: { id: 2 },
+                    where: { id: 52 },
                     create: {
                       order: 2,
                       section: "technology_and_tooling.ide.cpp",
                     },
                   },
                   {
-                    where: { id: 3 },
+                    where: { id: 53 },
                     create: {
                       order: 3,
                       section: "software_architecture_and_design.procedural.types_cpp",
                     },
                   },
                   {
-                    where: { id: 4 },
+                    where: { id: 54 },
                     create: {
                       order: 4,
                       section: "software_architecture_and_design.procedural.functions_cpp",
@@ -283,7 +282,7 @@ async function main() {
               EventItem: {
                 connectOrCreate: [
                   {
-                    where: { id: 5 },
+                    where: { id: 55 },
                     create: {
                       order: 1,
                       section: "software_architecture_and_design.procedural.containers_cpp",
@@ -314,21 +313,21 @@ async function main() {
               EventItem: {
                 connectOrCreate: [
                   {
-                    where: { id: 6 },
+                    where: { id: 56 },
                     create: {
                       order: 1,
                       section: "software_architecture_and_design.functional.state_and_side_effects_cpp",
                     },
                   },
                   {
-                    where: { id: 7 },
+                    where: { id: 57 },
                     create: {
                       order: 2,
                       section: "software_architecture_and_design.functional.recursion_cpp",
                     },
                   },
                   {
-                    where: { id: 8 },
+                    where: { id: 58 },
                     create: {
                       order: 3,
                       section: "software_architecture_and_design.functional.higher_order_functions_cpp",
