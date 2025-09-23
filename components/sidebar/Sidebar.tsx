@@ -5,17 +5,19 @@ import EventSwitcher from "./EventSwitcher"
 import { Fetcher } from "swr"
 import EventView from "./EventView"
 import { MdKeyboardArrowLeft } from "react-icons/md"
+import type { PageTemplate } from "lib/pageTemplate"
 
 type SidebarProps = {
   material: Material
   activeEvent: EventFull | undefined
   sidebarOpen: boolean
   handleClose: () => void
+  pageInfo: PageTemplate
 }
 
 const fetcher: Fetcher<EventFull[], string> = (url) => fetch(url).then((r) => r.json())
 
-const MySidebar: React.FC<SidebarProps> = ({ material, activeEvent, sidebarOpen, handleClose }) => {
+const MySidebar: React.FC<SidebarProps> = ({ material, activeEvent, sidebarOpen, handleClose, pageInfo }) => {
   const sidebarRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -51,6 +53,10 @@ const MySidebar: React.FC<SidebarProps> = ({ material, activeEvent, sidebarOpen,
       {sidebarOpen && (
         <div className="pointer-events-auto fixed top-0 pl-2 h-screen overflow-x-hidden border top-15 left-0 text-gray-700 border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 w-96">
           <div id="sidebar" ref={sidebarRef} className="p-1 overflow-y-auto h-full">
+            <div className="flex items-center gap-3 px-3 py-4 border-b border-gray-200 dark:border-gray-700">
+              <img src={pageInfo.logo.src} alt={pageInfo.logo.alt} className="h-10 w-auto" />
+              <span className="text-xl font-bold text-gray-900 dark:text-gray-100">{pageInfo.title}</span>
+            </div>
             <EventSwitcher />
 
             {activeEvent ? (
@@ -63,7 +69,7 @@ const MySidebar: React.FC<SidebarProps> = ({ material, activeEvent, sidebarOpen,
               onClick={handleClose}
               aria-label="Close sidebar"
               data-cy="close-sidebar"
-              className="absolute top-1 right-0 z-50 text-gray-500 hover:text-gray-400 opacity-50 w-10 h-10"
+              className="absolute top-4 right-0 z-50 text-gray-500 hover:text-gray-400 opacity-50 w-10 h-10"
             >
               <MdKeyboardArrowLeft className="w-full h-full" />
             </button>

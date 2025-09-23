@@ -30,7 +30,10 @@ const Home: NextPage<HomeProps> = ({ material, events, pageInfo }) => {
   const linkClassName = "text-blue-500 hover:underline"
   return (
     <Layout material={material} pageInfo={pageInfo} pageTitle={pageInfo.title}>
-      <Title text={pageInfo?.title} className="text-3xl font-bold text-center p-3" style={{ marginBottom: "0px" }} />
+      <div className="flex items-center justify-center gap-3 p-3">
+        <img src={pageInfo.logo.src} alt={pageInfo.logo.alt} className="h-10 w-auto" />
+        <Title text={pageInfo.title} className="text-3xl font-bold text-center" style={{ marginBottom: "0px" }} />
+      </div>
       <div className="px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32  grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
         <Card className="scroll" style={{ maxHeight: "82vh", overflowY: "auto" }}>
           <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Course Events</h2>

@@ -26,7 +26,7 @@ type SectionComponentProps = {
   section: Section
   material: Material
   events: Event[]
-  pageInfo?: PageTemplate
+  pageInfo: PageTemplate
   repoUrl?: string
   excludes?: Excludes
 }

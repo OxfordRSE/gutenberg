@@ -4,13 +4,11 @@ import { getMaterial, Course, Theme, Material, removeMarkdown } from "lib/materi
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
 import Content from "components/content/Content"
-import NavDiagram from "components/navdiagram/NavDiagram"
 import Title from "components/ui/Title"
 import { Event } from "lib/types"
 import { PageTemplate, pageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
 import CourseGrid from "components/navdiagram/CourseGrid"
-import Stack from "components/ui/Stack"
 import LearningOutcomes from "components/content/LearningOutcomes"
 import Link from "next/link"
 import SubTitle from "components/ui/SubTitle"
@@ -20,7 +18,7 @@ type CourseComponentProps = {
   course: Course
   material: Material
   events: Event[]
-  pageInfo?: PageTemplate
+  pageInfo: PageTemplate
 }
 
 const CourseComponent: NextPage<CourseComponentProps> = ({

@@ -17,7 +17,7 @@ type ThemeComponentProps = {
   theme: Theme
   material: Material
   events: Event[]
-  pageInfo?: PageTemplate
+  pageInfo: PageTemplate
   excludes?: Excludes
 }
 
