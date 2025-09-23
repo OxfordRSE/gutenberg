@@ -32,7 +32,7 @@ describe("non admin landing page", () => {
     cy.contains("No events match your filter").should("not.exist")
 
     // and we can actually search
-    cy.contains("[older]").should("not.exist")
+    cy.contains("older").should("not.exist")
     cy.get('[data-cy="search-input"]').click().type("older")
     cy.wait(400)
     cy.contains("older").should("be.visible")

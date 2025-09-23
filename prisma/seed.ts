@@ -197,13 +197,14 @@ async function main() {
   })
 
   const event2 = await prisma.event.upsert({
-    where: { id: 1 },
+    where: { id: 2 },
     update: {},
     create: {
+      id: 2,
       name: "older Introduction to C++ [older]",
       summary: "older Introduction to the C++ programming language",
-      start: new Date(2024, 7, 1, 9, 30),
-      end: new Date(2024, 7, 2, 14, 0),
+      start: new Date(2020, 7, 1, 9, 30),
+      end: new Date(2020, 7, 2, 14, 0),
       enrolKey: "testEnrol",
       instructorKey: "testInstructor",
       hidden: false,
