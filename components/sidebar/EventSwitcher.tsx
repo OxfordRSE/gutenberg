@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import Link from "next/link"
 import { useMyEvents } from "lib/hooks/useMyEvents"
 import useActiveEvent from "lib/hooks/useActiveEvents"
 import { Select, MenuItem, FormControl, InputLabel, Typography, Box } from "@mui/material"
@@ -6,8 +7,13 @@ import { CheckCircle } from "@mui/icons-material"
 import { SelectChangeEvent } from "@mui/material"
 import { HiSwitchHorizontal } from "react-icons/hi"
 import { GoArrowRight } from "react-icons/go"
+import { PageTemplate } from "lib/pageTemplate"
 
-const EventSwitcher: React.FC = () => {
+interface EventSwitcherProps {
+  pageInfo: PageTemplate
+}
+
+const EventSwitcher: React.FC<EventSwitcherProps> = ({ pageInfo }) => {
   const [editMode, setEditMode] = useState(false)
   const [selectOpen, setSelectOpen] = useState(false)
   const { events, isLoading } = useMyEvents()
@@ -71,7 +77,7 @@ const EventSwitcher: React.FC = () => {
 
               return (
                 <MenuItem key={event.id} value={event.id}>
-                  <Box className="flex justify-between items-center w-full">
+                  <Box className="flex items-center w-full">
                     <Typography>
                       {event.name} — {date}
                     </Typography>
@@ -86,30 +92,33 @@ const EventSwitcher: React.FC = () => {
           </Select>
         </FormControl>
       ) : (
-        <Box className="flex items-center gap-2">
+        <Box className="flex items-center w-full">
+          {/* Left: swap/select button */}
           <button
             onClick={() => {
               setEditMode(true)
               setSelectOpen(true)
             }}
-            aria-label={activeEvent ? "Swap active event" : "Select active event"}
-            className="text-sm flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+            aria-label={activeEvent ? "Swap event" : "Select event"}
+            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
           >
             {activeEvent ? (
-              <>
-                <HiSwitchHorizontal className="w-4 h-4 mr-1" />
-                <span>Swap</span>
-              </>
+              <HiSwitchHorizontal className="w-5 h-5 flex-shrink-0" />
             ) : (
-              <>
-                <GoArrowRight className="w-4 h-4 mr-1" />
-                <span>Select</span>
-              </>
+              <GoArrowRight className="w-5 h-5 flex-shrink-0" />
             )}
+            <span className="flex flex-col text-xs text-left leading-tight">
+              <span>{activeEvent ? "Swap" : "Select"}</span>
+              <span>Event</span>
+            </span>
           </button>
-          <Typography variant="h6" className="truncate text-gray-800 dark:text-gray-400 text-light">
-            {activeEvent?.name ?? ""}
-          </Typography>
+          {/* Center: logo */}
+          <div className="flex-1 flex justify-center">
+            <Link href="/" className="hover:opacity-80">
+              <img src={pageInfo.logo.src} alt={pageInfo.logo.alt} className="h-10 w-auto" />
+            </Link>
+          </div>
+          <div className="w-[50px]" aria-hidden="true"></div> {/* Right: empty space to balance the layout */}
         </Box>
       )}
     </Box>
