@@ -1,7 +1,7 @@
-import { Button, Dropdown, Tooltip } from "flowbite-react"
+import { Dropdown, Tooltip } from "flowbite-react"
 import Avatar from "@mui/material/Avatar"
-import { Course, Material, Section, Theme, getExcludes, Excludes } from "lib/material"
-import { Event, EventFull } from "lib/types"
+import { Course, Material, Section, Theme, Excludes } from "lib/material"
+import { EventFull } from "lib/types"
 import { signIn, signOut, useSession } from "next-auth/react"
 import Link from "next/link"
 import React, { useState, useRef, useEffect } from "react"
@@ -418,7 +418,7 @@ const Navbar: React.FC<Props> = ({
           </li>
         )}
 
-        <li aria-label={session ? session.user?.name || "Account details" : "Sign in"}>
+        <li>
           <Dropdown
             label={
               <span className="inline-flex items-center text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white w-10 h-10">
@@ -427,9 +427,10 @@ const Navbar: React.FC<Props> = ({
                     src={session.user?.image ? session.user?.image : undefined}
                     sx={{ width: 32, height: 32 }}
                     data-cy={`avatar-${session.user?.email}`}
+                    aria-label={session.user?.name || "Account details"}
                   />
                 ) : (
-                  <Avatar sx={{ width: 32, height: 32 }} data-cy={`avatar-not-signed-in`} />
+                  <Avatar sx={{ width: 32, height: 32 }} data-cy={`avatar-not-signed-in`} aria-label="Sign in" />
                 )}
               </span>
             }
@@ -438,10 +439,8 @@ const Navbar: React.FC<Props> = ({
           >
             {session ? (
               <Dropdown.Header>
-                <Link href="/profile">
-                  <span className="block text-sm">{session.user?.name}</span>
-                  <span className="block truncate text-sm font-medium">{session.user?.email}</span>
-                </Link>
+                <span className="block text-sm">{session.user?.name}</span>
+                <span className="block truncate text-sm font-medium">{session.user?.email}</span>
               </Dropdown.Header>
             ) : (
               <Dropdown.Header>
@@ -452,7 +451,12 @@ const Navbar: React.FC<Props> = ({
             )}
 
             {session ? (
-              <Dropdown.Item onClick={handleSignout}>Sign out</Dropdown.Item>
+              <>
+                <Dropdown.Item as={Link} href="/profile">
+                  Profile
+                </Dropdown.Item>
+                <Dropdown.Item onClick={handleSignout}>Sign out</Dropdown.Item>
+              </>
             ) : (
               <Dropdown.Item onClick={handleSignin}>Sign in</Dropdown.Item>
             )}
