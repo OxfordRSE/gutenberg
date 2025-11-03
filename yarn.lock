@@ -6921,7 +6921,7 @@ __metadata:
     js-yaml: ^4.1.0
     marked: ^4.1.1
     next: 15.4.7
-    next-auth: ^4.24.11
+    next-auth: ^4.24.12
     next-plausible: 3.12.4
     next-themes: 0.4.4
     node-gyp: 10.2.0
@@ -9634,9 +9634,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next-auth@npm:^4.24.11":
-  version: 4.24.11
-  resolution: "next-auth@npm:4.24.11"
+"next-auth@npm:^4.24.12":
+  version: 4.24.12
+  resolution: "next-auth@npm:4.24.12"
   dependencies:
     "@babel/runtime": ^7.20.13
     "@panva/hkdf": ^1.0.2
@@ -9649,8 +9649,8 @@ __metadata:
     uuid: ^8.3.2
   peerDependencies:
     "@auth/core": 0.34.2
-    next: ^12.2.5 || ^13 || ^14 || ^15
-    nodemailer: ^6.6.5
+    next: ^12.2.5 || ^13 || ^14 || ^15 || ^16
+    nodemailer: ^7.0.7
     react: ^17.0.2 || ^18 || ^19
     react-dom: ^17.0.2 || ^18 || ^19
   peerDependenciesMeta:
@@ -9658,7 +9658,7 @@ __metadata:
       optional: true
     nodemailer:
       optional: true
-  checksum: f599366ac8c43b9973bd5fbb4e73cab3ad7f583dd5b2c54cf5c6b5219459117262b0a2012dc3234ef1240de9134a04854abbbccc8bca58fcc48aae45ef347bba
+  checksum: 50e8ddef4ee7ab2fdd071ac9ab4260f5a3ee83b8c63e402edca201d51c8dc118bd3ffe6c5c2f6a013867cd99c901eb4002a15bfbfa634c21db29de62f6af3a77
   languageName: node
   linkType: hard
 
