@@ -21,6 +21,7 @@ import { Course, Section, Theme } from "lib/material"
 import Paragraph from "./Paragraph"
 import Heading from "./Heading"
 import { reduceRepeatingPatterns, extractTextValues } from "lib/utils"
+import Link from "next/link"
 
 const SyntaxHighlighter = Prism as any as React.FC<SyntaxHighlighterProps>
 
@@ -229,7 +230,7 @@ const Content: React.FC<Props> = ({ markdown, theme, course, section }) => {
           h4: h(sectionStr, "h4"),
           a: ({ node, ...props }) => {
             const newHref = transformLink(props.href || "")
-            return <a {...props} href={newHref} />
+            return <Link {...props} href={newHref} />
           },
         }}
       >

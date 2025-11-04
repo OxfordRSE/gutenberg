@@ -5,6 +5,7 @@ import useSWR, { Fetcher } from "swr"
 import { Timeline } from "flowbite-react"
 import { basePath } from "lib/basePath"
 import EventItemView from "components/sidebar/EventItemView"
+import Link from "next/link"
 
 type EventsProps = {
   material: Material
@@ -34,12 +35,12 @@ const EventView: React.FC<EventsProps> = ({ material, event }) => {
 
   return (
     <div>
-      <a
+      <Link
         href={`${basePath}/event/${event.id}`}
         className="w-full text-2xl text-gray-800 dark:text-gray-300 font-bold hover:underline"
       >
         {event.name}
-      </a>
+      </Link>
       <p className="mb-3 text-lg font-normal text-gray-700 dark:text-gray-400">
         <span className="font-bold">Description:</span> {event.summary}
       </p>
@@ -52,12 +53,12 @@ const EventView: React.FC<EventsProps> = ({ material, event }) => {
                 {new Date(group.start).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}
               </Timeline.Time>
               <Timeline.Title>
-                <a
+                <Link
                   href={`${basePath}/event/${event.id}/${group.id}`}
                   className="font-bold text-gray-800 dark:text-gray-300 hover:underline"
                 >
                   {group.name}
-                </a>
+                </Link>
               </Timeline.Title>
               <Timeline.Body>
                 <div className="ml-5">
