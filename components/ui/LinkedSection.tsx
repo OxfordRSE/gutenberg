@@ -3,6 +3,7 @@ import Stack from "./Stack"
 import React, { SyntheticEvent, useRef } from "react"
 import { Tooltip } from "@mui/material"
 import useWindowSize from "lib/hooks/useWindowSize"
+import Link from "next/link"
 
 export type SectionLink = {
   theme?: String
@@ -56,27 +57,27 @@ export const LinkedSection = (sectionLink: SectionLink) => {
     if (sectionLink.direction === "prev") {
       return (
         <Tooltip title={tooltipTitle} enterDelay={400}>
-          <a
+          <Link
             href={`${sectionLink.url}`}
             className={`pointer-events-auto text-gray-600 hover:text-gray-500 opacity-50`}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
             <HiChevronLeft className="nav-chevron mt-3 h-10 w-6" style={{ color: iconColor }} />
-          </a>
+          </Link>
         </Tooltip>
       )
     } else if (sectionLink.direction === "next") {
       return (
         <Tooltip title={tooltipTitle} enterDelay={400}>
-          <a
+          <Link
             href={`${sectionLink.url}`}
             className={`pointer-events-auto text-gray-600 hover:text-gray-500 opacity-50`}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
             <HiChevronRight className="nav-chevron mt-3 h-10 w-6" style={{ color: iconColor }} />
-          </a>
+          </Link>
         </Tooltip>
       )
     }
@@ -94,7 +95,7 @@ export const LinkedSection = (sectionLink: SectionLink) => {
 
   return (
     <Tooltip title={tooltipTitle}>
-      <a href={`${sectionLink.url}`} className={`pointer-events-auto text-gray-600 hover:text-gray-500 opacity-50`}>
+      <Link href={`${sectionLink.url}`} className={`pointer-events-auto text-gray-600 hover:text-gray-500 opacity-50`}>
         <div
           className={`group rounded-md border-2 hover:border-4 hover:-mt-1 ${calcAnchorHeight()} ${borderColor}  w-[150px] text-sm`}
           onMouseEnter={handleMouseEnter}
@@ -119,7 +120,7 @@ export const LinkedSection = (sectionLink: SectionLink) => {
             </div>
           </Stack>
         </div>
-      </a>
+      </Link>
     </Tooltip>
   )
 }
