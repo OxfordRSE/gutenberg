@@ -6,8 +6,7 @@ import { useUserOnEvent } from "lib/hooks/useUserOnEvent"
 import React, { useState } from "react"
 import Content from "components/content/Content"
 import { HiCheckCircle, HiMail, HiX } from "react-icons/hi"
-import postUserOnEvent from "lib/actions/postUserOnEvent"
-import putUserOnEvent from "lib/actions/putUserOnEvent"
+import enrolWithKey from "lib/actions/enrolWithKey"
 import useEvent from "lib/hooks/useEvent"
 import { useForm } from "react-hook-form"
 import Stack from "components/ui/Stack"
@@ -42,23 +41,15 @@ const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol }) => {
     return null
   }
 
-  const checkKey = (enrolKey: string) => {
-    if (enrolKey === event.enrolKey) {
-      return "STUDENT"
-    } else if (enrolKey === event.instructorKey) {
-      return "INSTRUCTOR"
-    }
-    return null
-  }
-
   const onClick = () => {
-    postUserOnEvent(event)
+    // request enrolment without a key
+    enrolWithKey(event.id)
       .then((data) => {
-        if ("userOnEvent" in data) {
+        if (data.userOnEvent) {
           onEnrol(data.userOnEvent)
           setSuccess("success")
           setError(undefined)
-        } else if ("error" in data) {
+        } else if (data.error) {
           setError(data.error)
           setSuccess(null)
         }
@@ -69,37 +60,21 @@ const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol }) => {
       })
   }
 
-  const enrolWithKey = async (data: Enrol) => {
-    const status = checkKey(data.enrolKey)
-    if (status === null) {
-      setEnrolError("error")
-    } else {
-      postUserOnEvent(event).then((data) => {
-        if ("userOnEvent" in data) {
-          let newUser = data.userOnEvent
-          if (newUser) {
-            if (status === "STUDENT") {
-              newUser.status = EventStatus.STUDENT
-            } else if (status === "INSTRUCTOR") {
-              newUser.status = EventStatus.INSTRUCTOR
-            }
-            if (event) {
-              putUserOnEvent(event.id, newUser).then(() => {
-                setKeySuccess("success")
-                setTimeout(() => {
-                  onEnrol(newUser)
-                  setSuccess("success")
-                  setEnrolError(undefined)
-                }, 2000)
-              })
-            }
-          }
-        } else if ("error" in data) {
-          setError(data.error)
-          setSuccess(null)
+  const submitWithKey = (form: Enrol) => {
+    setEnrolError(undefined)
+    enrolWithKey(event.id, form.enrolKey)
+      .then((data) => {
+        if (data.userOnEvent) {
+          setKeySuccess("success")
+          setTimeout(() => {
+            onEnrol(data.userOnEvent)
+            setSuccess("success")
+          }, 1000)
+        } else if (data.error) {
+          setEnrolError("error")
         }
       })
-    }
+      .catch((err) => setEnrolError(err.message))
   }
 
   return (
@@ -110,7 +85,7 @@ const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol }) => {
           <Stack>
             <Content markdown={event.enrol} />
             <p>You should have received an enrolment key from the course organiser.</p>
-            <form onSubmit={handleSubmit(enrolWithKey)}>
+            <form onSubmit={handleSubmit(submitWithKey)}>
               <Stack direction="row" spacing={2} className="justify-center flex-row">
                 <TextField
                   data-cy={`key-enrol-input-${event.id}`}
