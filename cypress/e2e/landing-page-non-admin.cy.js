@@ -12,7 +12,6 @@ describe("non admin landing page", () => {
   }
 
   beforeEach(() => {
-    cy.visit("/")
     cy.login(user)
     cy.visit("/")
   })
@@ -22,6 +21,22 @@ describe("non admin landing page", () => {
   })
   it("Delete event button does not exist", () => {
     cy.get('[data-cy*="delete-event"]').should("not.exist")
+  })
+
+  it("Can Filter Events", () => {
+    cy.get('[data-cy="show-events-search"]').should("be.visible").click()
+    cy.wait(400)
+    cy.get('[data-cy="search-input"]').click().type("No events")
+    cy.contains("No events match your filter").should("be.visible")
+    cy.get('[data-cy="search-input"]').clear()
+    cy.contains("No events match your filter").should("not.exist")
+
+    // and we can actually search
+    cy.contains("older").should("not.exist")
+    cy.get('[data-cy="search-input"]').click().type("older")
+    cy.wait(400)
+    cy.contains("older").should("be.visible")
+    cy.contains("revenge").should("not.exist")
   })
 
   it("Can Not Enrol WithOut Key", () => {

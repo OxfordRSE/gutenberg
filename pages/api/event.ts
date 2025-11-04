@@ -49,6 +49,11 @@ const Events = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
       const events: Event[] = await prisma.event.findMany({
         where: { hidden: false },
       })
+      // REDACT KEYS for non-admins
+      events.forEach((event) => {
+        delete (event as any).enrolKey
+        delete (event as any).instructorKey
+      })
       res.status(200).json({ events: events })
     }
   } else {
