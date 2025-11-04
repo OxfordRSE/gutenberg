@@ -1,9 +1,9 @@
 import React from "react"
 import { Material } from "lib/material"
-import { EventFull, Event, Problem } from "lib/types"
+import { Problem } from "lib/types"
 import { basePath } from "lib/basePath"
 import { EventItem } from "@prisma/client"
-import { useSession } from "next-auth/react"
+import Link from "next/link"
 
 type EventItemProps = {
   material: Material
@@ -61,9 +61,9 @@ const EventItemView: React.FC<EventItemProps> = ({ material, item, problems }) =
   return (
     <li key={key} className={`${isCompleted ? "text-green-500" : "text-inherit"} ml-${indent}`}>
       {completedLabel}{" "}
-      <a href={url} className={`hover:underline`}>
+      <Link href={url} className={`hover:underline`}>
         {name}
-      </a>
+      </Link>
     </li>
   )
 }
