@@ -6934,15 +6934,18 @@ __metadata:
     react-dom: 19.0.0
     react-hook-form: ^7.54.2
     react-icons: ^5.4.0
-    react-markdown: ^9.0.3
     react-string-replace: ^1.1.1
     react-syntax-highlighter: ^15.6.1
     reactflow: ^11.11.4
     rehype-katex: ^7.0.1
-    remark-directive: ^3.0.0
+    rehype-parse: ^9.0.1
+    rehype-react: ^8.0.0
+    rehype-stringify: ^10.0.1
+    remark-directive: ^4.0.0
     remark-directive-rehype: ^0.4.2
-    remark-gfm: ^4.0.0
+    remark-gfm: ^4.0.1
     remark-math: ^6.0.0
+    remark-rehype: ^11.1.2
     sentence-similarity: ^3.1.0
     simple-git: ^3.0.0
     start-server-and-test: ^2.0.0
@@ -7122,6 +7125,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"hast-util-to-html@npm:^9.0.0":
+  version: 9.0.5
+  resolution: "hast-util-to-html@npm:9.0.5"
+  dependencies:
+    "@types/hast": ^3.0.0
+    "@types/unist": ^3.0.0
+    ccount: ^2.0.0
+    comma-separated-tokens: ^2.0.0
+    hast-util-whitespace: ^3.0.0
+    html-void-elements: ^3.0.0
+    mdast-util-to-hast: ^13.0.0
+    property-information: ^7.0.0
+    space-separated-tokens: ^2.0.0
+    stringify-entities: ^4.0.0
+    zwitch: ^2.0.4
+  checksum: 1ebd013ad340cf646ea944100427917747f69543800e79b2186521dc29c205b4fe75d8062f3eddedf6d66f6180ca06fe127b9e53ff15a8f3579e36637ca43e16
+  languageName: node
+  linkType: hard
+
 "hast-util-to-jsx-runtime@npm:^2.0.0":
   version: 2.3.2
   resolution: "hast-util-to-jsx-runtime@npm:2.3.2"
@@ -7256,10 +7278,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-url-attributes@npm:^3.0.0":
-  version: 3.0.1
-  resolution: "html-url-attributes@npm:3.0.1"
-  checksum: 1ecbf9cae0c438d2802386710177b7bbf7e30cc61327e9f125eb32fca7302cd1e3ab45c441859cb1e7646109be322fc1163592ad4dfde9b14d09416d101a6573
+"html-void-elements@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "html-void-elements@npm:3.0.0"
+  checksum: 59be397525465a7489028afa064c55763d9cccd1d7d9f630cca47137317f0e897a9ca26cef7e745e7cff1abc44260cfa407742b243a54261dfacd42230e94fce
   languageName: node
   linkType: hard
 
@@ -8664,18 +8686,19 @@ __metadata:
   linkType: hard
 
 "mdast-util-directive@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "mdast-util-directive@npm:3.0.0"
+  version: 3.1.0
+  resolution: "mdast-util-directive@npm:3.1.0"
   dependencies:
     "@types/mdast": ^4.0.0
     "@types/unist": ^3.0.0
+    ccount: ^2.0.0
     devlop: ^1.0.0
     mdast-util-from-markdown: ^2.0.0
     mdast-util-to-markdown: ^2.0.0
     parse-entities: ^4.0.0
     stringify-entities: ^4.0.0
     unist-util-visit-parents: ^6.0.0
-  checksum: 593afdc4f39f99bb198f3774bf4648cb546cb99a055e40c82262a7faab10926d2529a725d0d3945300ed0a1f07c6c84215a3f76b899a89b3f410ec7375bbab17
+  checksum: 9c4592cb719bbf4c9e6c7761fa9d378bb7c72fbb1b60b6ef2ee74b8a7592df2f47e625e1b3c4d5d419e94d5ca8d6c8dcc474938323e324b15362583d3f63723f
   languageName: node
   linkType: hard
 
@@ -8725,15 +8748,15 @@ __metadata:
   linkType: hard
 
 "mdast-util-gfm-footnote@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "mdast-util-gfm-footnote@npm:2.0.0"
+  version: 2.1.0
+  resolution: "mdast-util-gfm-footnote@npm:2.1.0"
   dependencies:
     "@types/mdast": ^4.0.0
     devlop: ^1.1.0
     mdast-util-from-markdown: ^2.0.0
     mdast-util-to-markdown: ^2.0.0
     micromark-util-normalize-identifier: ^2.0.0
-  checksum: 45d26b40e7a093712e023105791129d76e164e2168d5268e113298a22de30c018162683fb7893cdc04ab246dac0087eed708b2a136d1d18ed2b32b3e0cae4a79
+  checksum: a23c5531d63b254b46cbcb063b5731f56ccc9d1f038a17fa66d3994255868604a2b963f24e0f5b16dd3374743622afafcfe0c98cf90548d485bdc426ba77c618
   languageName: node
   linkType: hard
 
@@ -8774,8 +8797,8 @@ __metadata:
   linkType: hard
 
 "mdast-util-gfm@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "mdast-util-gfm@npm:3.0.0"
+  version: 3.1.0
+  resolution: "mdast-util-gfm@npm:3.1.0"
   dependencies:
     mdast-util-from-markdown: ^2.0.0
     mdast-util-gfm-autolink-literal: ^2.0.0
@@ -8784,7 +8807,7 @@ __metadata:
     mdast-util-gfm-table: ^2.0.0
     mdast-util-gfm-task-list-item: ^2.0.0
     mdast-util-to-markdown: ^2.0.0
-  checksum: 62039d2f682ae3821ea1c999454863d31faf94d67eb9b746589c7e136076d7fb35fabc67e02f025c7c26fd7919331a0ee1aabfae24f565d9a6a9ebab3371c626
+  checksum: ecdadc0b46608d03eea53366cfee8c9441ddacc49fe4e12934eff8fea06f9377d2679d9d9e43177295c09c8d7def5f48d739f99b0f6144a0e228a77f5a1c76bc
   languageName: node
   linkType: hard
 
@@ -8952,9 +8975,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"micromark-extension-directive@npm:^3.0.0":
-  version: 3.0.2
-  resolution: "micromark-extension-directive@npm:3.0.2"
+"micromark-extension-directive@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "micromark-extension-directive@npm:4.0.0"
   dependencies:
     devlop: ^1.0.0
     micromark-factory-space: ^2.0.0
@@ -8963,7 +8986,7 @@ __metadata:
     micromark-util-symbol: ^2.0.0
     micromark-util-types: ^2.0.0
     parse-entities: ^4.0.0
-  checksum: 572c9e4625bc6a37146f6c905cbc8b507f171c07ad0a6d991d6ee22bbde4620826b89303f80e71c30c7903e5fa0661e1f08fb14e69b5273b33afbd87276c8a53
+  checksum: c58ee727c4b87647508977e3af186e6efbdd8453ae0a72322779f8dea768ba7e4983804843ff66f81e32efd56a971f7256fb5bda4c401542145b4f0a1ad16396
   languageName: node
   linkType: hard
 
@@ -9010,15 +9033,15 @@ __metadata:
   linkType: hard
 
 "micromark-extension-gfm-table@npm:^2.0.0":
-  version: 2.1.0
-  resolution: "micromark-extension-gfm-table@npm:2.1.0"
+  version: 2.1.1
+  resolution: "micromark-extension-gfm-table@npm:2.1.1"
   dependencies:
     devlop: ^1.0.0
     micromark-factory-space: ^2.0.0
     micromark-util-character: ^2.0.0
     micromark-util-symbol: ^2.0.0
     micromark-util-types: ^2.0.0
-  checksum: 249d695f5f8bd222a0d8a774ec78ea2a2d624cb50a4d008092a54aa87dad1f9d540e151d29696cf849eb1cee380113c4df722aebb3b425a214832a2de5dea1d7
+  checksum: 16a59c8c2381c8418d9cf36c605abb0b66cfebaad07e09c4c9b113298d13e0c517b652885529fcb74d149afec3f6e8ab065fd27a900073d5ec0a1d8f0c51b593
   languageName: node
   linkType: hard
 
@@ -10662,6 +10685,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"property-information@npm:^7.0.0":
+  version: 7.1.0
+  resolution: "property-information@npm:7.1.0"
+  checksum: 3875161d204bac89d75181f6d3ebc3ecaeb2699b4e2ecfcf5452201d7cdd275168c6742d7ff8cec5ab0c342fae72369ac705e1f8e9680a9acd911692e80dfb88
+  languageName: node
+  linkType: hard
+
 "proxy-from-env@npm:1.0.0":
   version: 1.0.0
   resolution: "proxy-from-env@npm:1.0.0"
@@ -10918,27 +10948,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-markdown@npm:^9.0.3":
-  version: 9.0.3
-  resolution: "react-markdown@npm:9.0.3"
-  dependencies:
-    "@types/hast": ^3.0.0
-    devlop: ^1.0.0
-    hast-util-to-jsx-runtime: ^2.0.0
-    html-url-attributes: ^3.0.0
-    mdast-util-to-hast: ^13.0.0
-    remark-parse: ^11.0.0
-    remark-rehype: ^11.0.0
-    unified: ^11.0.0
-    unist-util-visit: ^5.0.0
-    vfile: ^6.0.0
-  peerDependencies:
-    "@types/react": ">=18"
-    react: ">=18"
-  checksum: 7ebb01b295f7c9acddcd305308a8531c58c582c24fb8d6a4897f16b21ba0bd7e9e20ddae4a9024767e910310d22db0003489b61478cdb491a3d802343cf3a931
-  languageName: node
-  linkType: hard
-
 "react-refresh@npm:>=0.9 <=0.14":
   version: 0.14.2
   resolution: "react-refresh@npm:0.14.2"
@@ -11122,6 +11131,39 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rehype-parse@npm:^9.0.1":
+  version: 9.0.1
+  resolution: "rehype-parse@npm:9.0.1"
+  dependencies:
+    "@types/hast": ^3.0.0
+    hast-util-from-html: ^2.0.0
+    unified: ^11.0.0
+  checksum: 3175c8d352ca2c8bddb4749fa1bd21336cab27b06165f6db77678e944479ac4fdee729ced8956bf303ba8ff01a7e8d0666e8123980cfbce28a7b4527b2167717
+  languageName: node
+  linkType: hard
+
+"rehype-react@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "rehype-react@npm:8.0.0"
+  dependencies:
+    "@types/hast": ^3.0.0
+    hast-util-to-jsx-runtime: ^2.0.0
+    unified: ^11.0.0
+  checksum: dc5dfbaff4ba029a466e01729c63431cab4efa8937b811c9a2d25889d6e91839cff08592a11edff622ace2c08bfb0a564210ae5e27e21e22049cbbed77c02822
+  languageName: node
+  linkType: hard
+
+"rehype-stringify@npm:^10.0.1":
+  version: 10.0.1
+  resolution: "rehype-stringify@npm:10.0.1"
+  dependencies:
+    "@types/hast": ^3.0.0
+    hast-util-to-html: ^9.0.0
+    unified: ^11.0.0
+  checksum: 239d1ca75d6dcf4bb863202697ceb000ad746f9c0e99c5df3e49397bb09af73adaa6b934a2c852c9bd5e8ab80ca1e35c51a4b2c565999599576c691ad06c149d
+  languageName: node
+  linkType: hard
+
 "remark-directive-rehype@npm:^0.4.2":
   version: 0.4.2
   resolution: "remark-directive-rehype@npm:0.4.2"
@@ -11132,21 +11174,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-directive@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "remark-directive@npm:3.0.0"
+"remark-directive@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "remark-directive@npm:4.0.0"
   dependencies:
     "@types/mdast": ^4.0.0
     mdast-util-directive: ^3.0.0
-    micromark-extension-directive: ^3.0.0
+    micromark-extension-directive: ^4.0.0
     unified: ^11.0.0
-  checksum: 744d12bbe924bd0492a2481cbaf9250aa6622c0d2cc090bb7bc39975e355c8a46ae13cc4793204ada39f0af64c953f6b730a55420a50375e0f74a5dd5d201089
+  checksum: 1782340a6c38f41eb606cb71a06fcbc2704afed9017c3c341ce3eaa93a3f3d738fab612479e3fd0795245c04b9fec8bebe253896a72c0447808b097a53d906e4
   languageName: node
   linkType: hard
 
-"remark-gfm@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "remark-gfm@npm:4.0.0"
+"remark-gfm@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "remark-gfm@npm:4.0.1"
   dependencies:
     "@types/mdast": ^4.0.0
     mdast-util-gfm: ^3.0.0
@@ -11154,7 +11196,7 @@ __metadata:
     remark-parse: ^11.0.0
     remark-stringify: ^11.0.0
     unified: ^11.0.0
-  checksum: 84bea84e388061fbbb697b4b666089f5c328aa04d19dc544c229b607446bc10902e46b67b9594415a1017bbbd7c811c1f0c30d36682c6d1a6718b66a1558261b
+  checksum: b278f51c4496f15ad868b72bf2eb2066c23a0892b5885544d3a4c233c964d44e51a0efe22d3fb33db4fbac92aefd51bb33453b8e73077b041a12b8269a02c17d
   languageName: node
   linkType: hard
 
@@ -11182,16 +11224,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-rehype@npm:^11.0.0":
-  version: 11.1.1
-  resolution: "remark-rehype@npm:11.1.1"
+"remark-rehype@npm:^11.1.2":
+  version: 11.1.2
+  resolution: "remark-rehype@npm:11.1.2"
   dependencies:
     "@types/hast": ^3.0.0
     "@types/mdast": ^4.0.0
     mdast-util-to-hast: ^13.0.0
     unified: ^11.0.0
     vfile: ^6.0.0
-  checksum: e199dff098ae6a560e13dd1778dec9c61440f979cc931c4ca4dcde0d58e51c0723243a901c1842379b189083cf4d74f224f57833738095ffa9535179d7cf3f01
+  checksum: 6eab55cb3464ec01d8e002cc9fe02ae57f48162899693fd53b5ba553ac8699dae7b55fce9df7131a5981313b19b495d6fbfa98a9d6bd243e7485591364d9b5b3
   languageName: node
   linkType: hard
 
@@ -13366,7 +13408,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zwitch@npm:^2.0.0":
+"zwitch@npm:^2.0.0, zwitch@npm:^2.0.4":
   version: 2.0.4
   resolution: "zwitch@npm:2.0.4"
   checksum: f22ec5fc2d5f02c423c93d35cdfa83573a3a3bd98c66b927c368ea4d0e7252a500df2a90a6b45522be536a96a73404393c958e945fdba95e6832c200791702b6

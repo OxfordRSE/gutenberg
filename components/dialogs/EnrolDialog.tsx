@@ -1,16 +1,16 @@
-import { EventStatus, UserOnEvent } from "@prisma/client"
+import { UserOnEvent } from "@prisma/client"
 import { Button, Modal, Toast } from "flowbite-react"
 import { Event } from "lib/types"
 import { useSession } from "next-auth/react"
 import { useUserOnEvent } from "lib/hooks/useUserOnEvent"
 import React, { useState } from "react"
-import Content from "components/content/Content"
 import { HiCheckCircle, HiMail, HiX } from "react-icons/hi"
 import enrolWithKey from "lib/actions/enrolWithKey"
 import useEvent from "lib/hooks/useEvent"
 import { useForm } from "react-hook-form"
 import Stack from "components/ui/Stack"
 import TextField from "components/forms/Textfield"
+import { html2React, material2Html } from "lib/markdown"
 
 type Props = {
   event: Event
@@ -77,13 +77,17 @@ const EnrolDialog: React.FC<Props> = ({ event, show, onEnrol }) => {
       .catch((err) => setEnrolError(err.message))
   }
 
+  const dialogContent = html2React({
+    html: material2Html(event.enrol),
+  })
+
   return (
     <>
       <Modal dismissible={true} show={show} onClose={onClose}>
         <Modal.Header>{event.name}</Modal.Header>
         <Modal.Body>
           <Stack>
-            <Content markdown={event.enrol} />
+            {dialogContent}
             <p>You should have received an enrolment key from the course organiser.</p>
             <form onSubmit={handleSubmit(submitWithKey)}>
               <Stack direction="row" spacing={2} className="justify-center flex-row">

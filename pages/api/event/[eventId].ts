@@ -5,10 +5,11 @@ import prisma from "lib/prisma"
 import type { NextApiRequest, NextApiResponse } from "next"
 import { Prisma } from "@prisma/client"
 import { Event } from "cypress/types/jquery"
+import { markdown2Html } from "lib/markdown"
 
 export type Event = Prisma.EventGetPayload<{
   include: { EventGroup: { include: { EventItem: true } }; UserOnEvent: { include: { user: true } } }
-}>
+}> & { html?: string }
 
 export type UserOnEvent = Prisma.UserOnEventGetPayload<{
   include: { user: true }
@@ -33,7 +34,7 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
   const eventId = parseInt(req.query.eventId as string, 10)
 
   if (req.method === "GET") {
-    const event = await prisma.event.findUnique({
+    const event: Event | null = await prisma.event.findUnique({
       where: { id: eventId },
       include: {
         EventGroup: { include: { EventItem: true }, orderBy: { start: "asc" } },
@@ -58,6 +59,12 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     if (isStudent) {
       // remove all userOnEvent that are not the current user
       event.UserOnEvent = event.UserOnEvent.filter((u) => u.user?.email === userEmail)
+    }
+
+    if (event.content) {
+      event.html = markdown2Html({
+        markdown: event.content,
+      })
     }
 
     return res.status(200).json({ event })
@@ -169,7 +176,7 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
       }
     }
     // Fetch the updated event with all groups and items
-    const event = await prisma.event.findUnique({
+    const event: Event | null = await prisma.event.findUnique({
       where: { id: eventId },
       include: {
         EventGroup: { include: { EventItem: true }, orderBy: { start: "asc" } },
@@ -180,6 +187,12 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     if (!event) {
       res.status(404).json({ error: "Problem updating event, could not get from the database" })
       return
+    }
+
+    if (event.content) {
+      event.html = markdown2Html({
+        markdown: event.content,
+      })
     }
 
     res.status(200).json({ event })

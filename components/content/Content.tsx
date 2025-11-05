@@ -1,5 +1,5 @@
-import React, { JSX, ReactNode, useRef } from "react"
-import ReactMarkdown, { ExtraProps, Components } from "react-markdown"
+import { FC, JSX, useCallback, useMemo } from "react"
+import { PluggableList } from "unified"
 import { Prism, SyntaxHighlighterProps } from "react-syntax-highlighter"
 import CopyToClipboard from "components/ui/CopyToClipboard"
 import { FaClipboard } from "react-icons/fa"
@@ -18,17 +18,22 @@ import Challenge from "./Challenge"
 import Solution from "./Solution"
 import Callout from "./Callout"
 import { Course, Section, Theme } from "lib/material"
+import { html2React, markdown2Html, material2Html, replaceBaseUrl } from "lib/markdown"
 import Paragraph from "./Paragraph"
 import Heading from "./Heading"
 import { reduceRepeatingPatterns, extractTextValues } from "lib/utils"
 import Link from "next/link"
 
-const SyntaxHighlighter = Prism as any as React.FC<SyntaxHighlighterProps>
+const SyntaxHighlighter = Prism as any as FC<SyntaxHighlighterProps>
 
-type ReactMarkdownProps = React.JSX.IntrinsicElements["p"] & ExtraProps
-type HeadingProps = React.JSX.IntrinsicElements["h2"] & ExtraProps
-type CodeProps = React.JSX.IntrinsicElements["code"] & ExtraProps
-type ListProps = React.JSX.IntrinsicElements["li"] & ExtraProps
+type ExtraProps = {
+  node?: Element
+}
+
+type ReactMarkdownProps = JSX.IntrinsicElements["p"] & ExtraProps
+type HeadingProps = JSX.IntrinsicElements["h2"] & ExtraProps
+type CodeProps = JSX.IntrinsicElements["code"] & ExtraProps
+type ListProps = JSX.IntrinsicElements["li"] & ExtraProps
 
 function reactMarkdownRemarkDirective() {
   return (tree: any) => {
@@ -73,12 +78,13 @@ const list = (sectionStr: string) => {
 }
 
 const h = (sectionStr: string, tag: string) => {
-  function h({ node, children, ...props }: HeadingProps) {
+  return function h({ node, children }: HeadingProps) {
     // so we can have ids that match the anchor links
-    const spanId = reduceRepeatingPatterns(extractTextValues(node)).replace(/ /g, "-").replace(/:/g, "")
+    const spanId = node
+      ? reduceRepeatingPatterns(extractTextValues(node)).replace(/ /g, "-").replace(/:/g, "")
+      : undefined
     return <Heading content={children} section={sectionStr} tag={tag} spanId={spanId} />
   }
-  return h
 }
 
 function solution({ node, children, ...props }: ReactMarkdownProps) {
@@ -105,7 +111,7 @@ const challenge = (sectionStr: string) => {
   return challenge
 }
 
-function code({ node, className, children, ...props }: CodeProps): React.JSX.Element {
+function code({ node, className, children, ...props }: CodeProps): JSX.Element {
   const match = /language-(\w+)/.exec(className || "")
   const code = String(children).replace(/\n$/, "")
   const isBlockCode = Boolean(className && /language-(\w+)/.test(className))
@@ -157,101 +163,108 @@ function code({ node, className, children, ...props }: CodeProps): React.JSX.Ele
 }
 
 type Props = {
-  markdown: string
   theme?: Theme
   course?: Course
   section?: Section
+  html: string
 }
 
-const Content: React.FC<Props> = ({ markdown, theme, course, section }) => {
+const Content: FC<Props> = ({ html, theme, course, section }) => {
   const sectionStr = `${theme ? theme.repo + "." : ""}${theme ? theme.id + "." : ""}${course ? course.id + "." : ""}${
     section ? section.id : ""
   }`
 
-  function replaceBaseUrl(markdown: string): string {
-    const baseUrl = `${process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}/material/${theme?.repo}`
-    return markdown.replace(/\{\{\s*base_url\s*\}\}/g, baseUrl)
-  }
+  const transformLink = useCallback(
+    (href: string): string => {
+      if (!href) return href
+      if (href.startsWith("#")) return href // anchor link — don't rewrite
 
-  const transformLink = (href: string): string => {
-    if (!href) return href
-    if (href.startsWith("#")) return href // anchor link — don't rewrite
-
-    const cleanedHref = href.replace(/\.md$/i, "")
-    // if we are in /diagram we need to do one less level
-    //Internal relative links
-    if (!cleanedHref.includes(".") && !cleanedHref.includes("/")) {
-      return href
-    }
-
-    if (cleanedHref.startsWith("./")) {
-      const linkedPage = cleanedHref.slice(2)
-
+      const cleanedHref = href.replace(/\.md$/i, "")
       // if we are in /diagram we need to do one less level
-      if (section) return `/material/${theme?.repo}/${theme?.id}/${course?.id}/${linkedPage}`
-      if (course) return `/material/${theme?.repo}/${theme?.id}/${linkedPage}`
-      if (theme) return `/material/${theme?.repo}/${linkedPage}`
-    }
+      //Internal relative links
+      if (!cleanedHref.includes(".") && !cleanedHref.includes("/")) {
+        return href
+      }
 
-    if (cleanedHref.startsWith("../")) {
-      const linkedPage = cleanedHref.slice(3)
-      if (section) return `/material/${theme?.repo}/${theme?.id}/${linkedPage}`
-      if (course) return `/material/${theme?.repo}/${linkedPage}`
-      return cleanedHref
-    }
+      if (cleanedHref.startsWith("./")) {
+        const linkedPage = cleanedHref.slice(2)
 
-    //External links
-    if (isLikelyExternal(cleanedHref)) {
-      return cleanedHref.startsWith("http") ? href : `https://${href}`
-    }
+        // if we are in /diagram we need to do one less level
+        if (section) return `/material/${theme?.repo}/${theme?.id}/${course?.id}/${linkedPage}`
+        if (course) return `/material/${theme?.repo}/${theme?.id}/${linkedPage}`
+        if (theme) return `/material/${theme?.repo}/${linkedPage}`
+      }
 
-    //Internal absolute
-    const absolutePath = cleanedHref.replace(/^\/+/, "")
-    return `/material/${theme?.repo}/${absolutePath}`
-  }
+      if (cleanedHref.startsWith("../")) {
+        const linkedPage = cleanedHref.slice(3)
+        if (section) return `/material/${theme?.repo}/${theme?.id}/${linkedPage}`
+        if (course) return `/material/${theme?.repo}/${linkedPage}`
+        return cleanedHref
+      }
 
-  markdown = replaceBaseUrl(markdown) // we look for {{ base_url }} and replace it with a domain/material/${theme.repo}
+      //External links
+      if (isLikelyExternal(cleanedHref)) {
+        return cleanedHref.startsWith("http") ? href : `https://${href}`
+      }
+
+      //Internal absolute
+      const absolutePath = cleanedHref.replace(/^\/+/, "")
+      return `/material/${theme?.repo}/${absolutePath}`
+    },
+    [theme, course, section]
+  )
+
+  // we look for {{ base_url }} and replace it with a domain/material/${theme.repo}
+  html = theme?.repo ? replaceBaseUrl(html, theme.repo) : html
+
+  const components = useMemo(
+    () => ({
+      solution,
+      callout,
+      challenge: challenge(sectionStr),
+      code,
+      p: p(sectionStr),
+      li: list(sectionStr),
+      h2: h(sectionStr, "h2"),
+      h3: h(sectionStr, "h3"),
+      h4: h(sectionStr, "h4"),
+      a: ({ node, ...props }: JSX.IntrinsicElements["a"] & ExtraProps) => {
+        const newHref = transformLink(props.href || "")
+        return <Link {...props} href={newHref} />
+      },
+    }),
+    [sectionStr, transformLink]
+  )
+  const rehypePlugins = [rehypeKatex]
 
   return (
     <div className="mx-auto prose prose-base max-w-2xl prose-slate dark:prose-invert prose-pre:bg-[#263E52] px-5">
-      <ReactMarkdown
-        remarkPlugins={[directive, reactMarkdownRemarkDirective, remarkMath, remarkGfm]}
-        rehypePlugins={[rehypeKatex]}
-        components={{
-          // @ts-expect-error
-          solution,
-          callout,
-          challenge: challenge(sectionStr),
-          code,
-          p: p(sectionStr),
-          li: list(sectionStr),
-          h2: h(sectionStr, "h2"),
-          h3: h(sectionStr, "h3"),
-          h4: h(sectionStr, "h4"),
-          a: ({ node, ...props }) => {
-            const newHref = transformLink(props.href || "")
-            return <Link {...props} href={newHref} />
-          },
-        }}
-      >
-        {markdown}
-      </ReactMarkdown>
+      {html2React({ html, rehypePlugins, components })}
     </div>
   )
 }
 
-export const Markdown: React.FC<Props> = ({ markdown }) => {
+const defaultComponents = {
+  code,
+}
+
+type MarkdownProps = {
+  markdown: string
+  components?: Record<string, FC<any>>
+  remarkPlugins?: PluggableList
+  rehypePlugins?: PluggableList
+}
+
+export const Markdown: FC<MarkdownProps> = ({
+  markdown,
+  components = defaultComponents,
+  remarkPlugins = [directive, reactMarkdownRemarkDirective, remarkMath, remarkGfm],
+  rehypePlugins = [rehypeKatex],
+}) => {
+  const html = markdown2Html({ markdown, remarkPlugins })
   return (
     <div className="mx-auto prose prose-base max-w-2xl prose-slate dark:prose-invert prose-pre:bg-[#263E52] prose-pre:p-0">
-      <ReactMarkdown
-        remarkPlugins={[directive, reactMarkdownRemarkDirective, remarkMath, remarkGfm]}
-        rehypePlugins={[rehypeKatex]}
-        components={{
-          code,
-        }}
-      >
-        {markdown}
-      </ReactMarkdown>
+      {html2React({ html, rehypePlugins, components })}
     </div>
   )
 }

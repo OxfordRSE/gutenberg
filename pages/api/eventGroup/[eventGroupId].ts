@@ -4,10 +4,11 @@ import prisma from "lib/prisma"
 
 import type { NextApiRequest, NextApiResponse } from "next"
 import { Prisma } from "@prisma/client"
+import { markdown2Html } from "lib/markdown"
 
 export type EventGroup = Prisma.EventGroupGetPayload<{
   include: { EventItem: true }
-}>
+}> & { html?: string }
 
 export type EventItem = Prisma.EventItemGetPayload<{}>
 
@@ -44,7 +45,7 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
 
     const hasAccess = isAdmin || isInstructorStudent
 
-    const eventGroup = await prisma.eventGroup.findUnique({
+    const eventGroup: EventGroup | null = await prisma.eventGroup.findUnique({
       where: { id: parseInt(eventGroupId) },
       include: { EventItem: true },
     })
@@ -52,6 +53,12 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     if (!eventGroup) {
       res.status(404).json({ error: "EventGroup not found" })
       return
+    }
+
+    if (eventGroup.content) {
+      eventGroup.html = markdown2Html({
+        markdown: eventGroup.content,
+      })
     }
 
     if (!hasAccess) {
@@ -75,7 +82,7 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
         eventItem.order = parseInt(eventItem.order)
       }
     })
-    const updatedEventGroup = await prisma.eventGroup.update({
+    const updatedEventGroup: EventGroup | null = await prisma.eventGroup.update({
       where: { id: parseInt(eventGroupId) },
       data: {
         name,
@@ -96,6 +103,13 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
       res.status(404).json({ error: "Problem updating eventGroup, could not get from dbase" })
       return
     }
+
+    if (updatedEventGroup.content) {
+      updatedEventGroup.html = markdown2Html({
+        markdown: updatedEventGroup.content,
+      })
+    }
+
     res.status(200).json({ eventGroup: updatedEventGroup })
   } else if (req.method === "DELETE") {
     if (!isAdmin) {

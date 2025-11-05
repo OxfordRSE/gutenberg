@@ -27,6 +27,7 @@ interface Props {
   sidebarOpen: boolean
   setSidebarOpen: (open: boolean) => void
   sectionLinks?: SectionLink[]
+  html?: string
 }
 
 const Overlay: NextPage<Props> = ({
@@ -40,6 +41,7 @@ const Overlay: NextPage<Props> = ({
   sidebarOpen,
   setSidebarOpen,
   sectionLinks,
+  html,
 }: Props) => {
   const [showSearch, setShowSearch] = useAtom(searchQueryState)
   const [showTopButtons, setShowTopButtons] = useState(false)
@@ -121,7 +123,7 @@ const Overlay: NextPage<Props> = ({
                 .filter((link) => link.direction === "next")
                 .map((link) => <LinkedSection key={link.url} {...link} />)}
           </Stack>
-          {section && <TableOfContents markdown={section.markdown} tocTitle={sectionTitle} />}
+          {section && <TableOfContents tocTitle={sectionTitle} html={html} />}
         </>
         <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />
         <SearchDialog onClose={closeSearch} />
