@@ -36,7 +36,7 @@ export type PageTemplate = {
   footer: string
 }
 
-function loadPagetemplate(): PageTemplate | undefined {
+export function loadPageTemplate(): PageTemplate | undefined {
   try {
     const siteConfig = loadConfig()
     return siteConfig?.template as PageTemplate
@@ -44,5 +44,3 @@ function loadPagetemplate(): PageTemplate | undefined {
     console.error(e)
   }
 }
-
-export const pageTemplate: PageTemplate | undefined = loadPagetemplate()
