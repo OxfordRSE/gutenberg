@@ -1,10 +1,10 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
 import prisma from "lib/prisma"
 import { getMaterial, Theme, Material, removeMarkdown, getExcludes, Excludes } from "lib/material"
+import { material2Html } from "lib/markdown"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
 import Content from "components/content/Content"
-import NavDiagram from "components/navdiagram/NavDiagram"
 import Title from "components/ui/Title"
 import SubTitle from "components/ui/SubTitle"
 import { Event } from "lib/types"
@@ -19,18 +19,19 @@ type ThemeComponentProps = {
   events: Event[]
   pageInfo?: PageTemplate
   excludes?: Excludes
+  html: string
 }
 
-const ThemeComponent: NextPage<ThemeComponentProps> = ({ theme, material, events, pageInfo, excludes }) => {
+const ThemeComponent: NextPage<ThemeComponentProps> = ({ theme, material, events, pageInfo, excludes, html }) => {
   const pageTitle = pageInfo?.title ? `${theme.name}: ${pageInfo.title}` : theme.name
   return (
-    <Layout material={material} theme={theme} pageInfo={pageInfo} pageTitle={pageTitle}>
+    <Layout material={material} theme={theme} pageInfo={pageInfo} pageTitle={pageTitle} html={html}>
       <Title text={theme.name} style={{ marginBottom: "0px" }} />
       <Link className="text-blue-500 italic" href={`/material/${theme.repo}/${theme.id}/diagram`}>
         <SubTitle text="View Theme Diagram" />
       </Link>
       <ThemeGrid theme={theme} />
-      <Content markdown={theme.markdown} theme={theme} />
+      <Content html={html} theme={theme} />
     </Layout>
   )
 }
@@ -63,11 +64,11 @@ export const getStaticProps: GetStaticProps = async (context) => {
   if (!theme) {
     return { notFound: true }
   }
-
-  removeMarkdown(material, theme)
+  const html = material2Html(theme.markdown)
+  removeMarkdown(material)
 
   return {
-    props: makeSerializable({ material, theme, events, pageInfo, excludes }),
+    props: makeSerializable({ material, theme, events, pageInfo, excludes, html }),
     revalidate: revalidateTimeout,
   }
 }

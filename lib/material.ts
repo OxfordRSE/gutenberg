@@ -111,7 +111,7 @@ export const eventItemSplit = (
   return sectionSplit(eventItem.section, material)
 }
 
-export function removeMarkdown(material: Material, except: Material | Theme | Course | Section | undefined) {
+export function removeMarkdown(material: Material, except?: Material | Theme | Course | Section) {
   if (except === undefined || except.type !== "Material") {
     material.markdown = ""
   }

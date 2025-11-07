@@ -3,18 +3,20 @@ import prisma from "lib/prisma"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
 import { Material, Theme, getMaterial, removeMarkdown } from "lib/material"
+import { material2Html } from "lib/markdown"
 import Content from "components/content/Content"
 import NavDiagram from "components/navdiagram/NavDiagram"
 
 type HomeProps = {
   material: Material
   theme: Theme
+  html: string
 }
 
-const Home: NextPage<HomeProps> = ({ material, theme }) => {
+const Home: NextPage<HomeProps> = ({ material, theme, html }) => {
   return (
-    <Layout material={material}>
-      <Content markdown={material.markdown} theme={theme} />
+    <Layout material={material} html={html}>
+      <Content html={html} theme={theme} />
       <NavDiagram material={material} />
     </Layout>
   )
@@ -29,12 +31,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
       return []
     })
   let material = await getMaterial()
-  removeMarkdown(material, material)
+  const html = material2Html(material.markdown)
+  removeMarkdown(material)
 
   return {
     props: {
       material: makeSerializable(material),
       events: makeSerializable(events),
+      html: makeSerializable(html),
     },
   }
 }

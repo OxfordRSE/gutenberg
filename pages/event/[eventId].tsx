@@ -30,14 +30,16 @@ import EventCommentThreads from "components/event/EventCommentThreads"
 import { PageTemplate, pageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
 import EventActions from "components/timeline/EventActions"
+import { markdown2Html } from "lib/markdown"
 
 type EventProps = {
   material: Material
   event: Event
   pageInfo?: PageTemplate
+  html: string
 }
 
-const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
+const Event: NextPage<EventProps> = ({ material, event, pageInfo, html }) => {
   // don't show date/time until the page is loaded (due to rehydration issues)
   const [showDateTime, setShowDateTime] = useState(false)
   useEffect(() => {
@@ -51,6 +53,7 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
   const { data: session } = useSession()
   const { userProfile, error: profileError, isLoading: profileLoading } = useProfile()
   const { control, handleSubmit, reset, setValue } = useForm<EventWithUsers>({ defaultValues: eventData })
+  const eventHtml = eventData?.html || html
 
   const {
     fields: eventGroups,
@@ -120,7 +123,7 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
             : ""
         }
       />
-      <Content markdown={eventData ? eventData.content : event.content} />
+      <Content html={eventHtml} />
       {(isInstructor || isAdmin) && eventData && (
         <>
           <Title text="Unresolved Threads" />
@@ -234,13 +237,16 @@ export const getStaticProps: GetStaticProps = async (context) => {
   if (!event) {
     return { notFound: true }
   }
+  const html = markdown2Html({
+    markdown: event.content,
+  })
 
   let material = await getMaterial()
 
   removeMarkdown(material, undefined)
 
   return {
-    props: makeSerializable({ event, material, pageInfo }),
+    props: makeSerializable({ event, material, pageInfo, html }),
     revalidate: revalidateTimeout,
   }
 }

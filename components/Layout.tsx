@@ -31,6 +31,7 @@ type Props = {
   pageTitle?: string
   repoUrl?: string
   excludes?: Excludes
+  html?: string
 }
 
 const Layout: React.FC<Props> = ({
@@ -43,6 +44,7 @@ const Layout: React.FC<Props> = ({
   pageTitle,
   repoUrl,
   excludes,
+  html,
 }) => {
   const [activeEvent, setActiveEvent] = useActiveEvent()
   const { data: session } = useSession()
@@ -87,6 +89,7 @@ const Layout: React.FC<Props> = ({
               showAttribution={showAttribution}
               setShowAttribution={setShowAttribution}
               sectionLinks={sectionLinks}
+              html={html}
             />
             <PlausibleProvider
               domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN ?? ""}

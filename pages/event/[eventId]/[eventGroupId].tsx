@@ -43,12 +43,14 @@ import {
 import { CSS } from "@dnd-kit/utilities"
 import { PageTemplate, pageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
+import { markdown2Html } from "lib/markdown"
 
 type EventGroupProps = {
   material: Material
   event: Event
   eventGroupId: number
   pageInfo?: PageTemplate
+  html: string
 }
 
 const generateId = () => Math.random().toString(36).substr(2, 9)
@@ -68,7 +70,7 @@ const SortableItem = ({ id = "", children }: { id?: string; children: React.Reac
   )
 }
 
-const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroupId, pageInfo }) => {
+const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroupId, pageInfo, html }) => {
   const [showDateTime, setShowDateTime] = useState(false)
   const [selectedOptions, setSelectedOptions] = useState<Option[]>([])
   const [inputValue, setInputValue] = useState<string>("")
@@ -86,6 +88,7 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
   const { userProfile, error: profileError, isLoading: profileLoading } = useProfile()
   const isAdmin = userProfile?.admin
   const { control, handleSubmit, reset } = useForm<EventGroup>({ defaultValues: eventGroup })
+  const eventGroupHtml = eventGroup?.html || html
 
   useEffect(() => {
     if (eventGroup) {
@@ -203,7 +206,7 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
         }
       />
       <SubTitle text={`Location: ${eventGroup.location}`} />
-      <Content markdown={eventGroup.content} />
+      <Content html={eventGroupHtml} />
       <SubTitle text="Material" />
       <ul className="text-center">
         {eventGroup.EventItem.map((item, index) => {
@@ -339,16 +342,20 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const eventId = parseInt(context?.params?.eventId as string)
   const eventGroupId = parseInt(context?.params?.eventGroupId as string)
   const event = await prisma.event.findUnique({ where: { id: eventId } })
+  const eventGroup = await prisma.eventGroup.findUnique({ where: { id: eventGroupId } })
   if (!event) {
     return { notFound: true }
   }
+  const html = markdown2Html({
+    markdown: eventGroup ? eventGroup.content : "",
+  })
 
   let material = await getMaterial()
 
   removeMarkdown(material, undefined)
 
   return {
-    props: makeSerializable({ event, material, eventGroupId, pageInfo }),
+    props: makeSerializable({ event, material, eventGroupId, pageInfo, html }),
     revalidate: revalidateTimeout,
   }
 }

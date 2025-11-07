@@ -1,20 +1,104 @@
-import React, { useEffect, useState } from "react"
-import ReactMarkdown, { ExtraProps } from "react-markdown"
+import { Children, JSX, FC, useEffect, useState } from "react"
 import { useHeadingObserver } from "lib/hooks/useHeadingObserver"
 import useWindowSize from "lib/hooks/useWindowSize"
 import { Toc } from "@mui/icons-material"
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft"
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight"
+import { html2React, markdown2Html } from "lib/markdown"
 
-interface TableOfContentsProps {
-  markdown: any
-  tocTitle: string
+type HeadingProps = JSX.IntrinsicElements["h2"] & {
+  node?: Element
 }
 
-type HeadingProps = React.JSX.IntrinsicElements["h2"] & ExtraProps
-
-const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }: TableOfContentsProps) => {
+const HeadingRenderer: FC<HeadingProps> = ({ children }) => {
   const { activeId } = useHeadingObserver()
+  const [href, setHref] = useState("")
+
+  if (typeof children === "object") {
+    let headingContent = ""
+    Children.forEach(children, (child) => {
+      if (typeof child === "string") {
+        headingContent += child
+      }
+      if (
+        child &&
+        typeof child === "object" &&
+        "props" in child &&
+        child.props &&
+        typeof child.props === "object" &&
+        "children" in child.props
+      ) {
+        headingContent += child.props.children
+      }
+    })
+    children = headingContent
+  }
+  children = String(children).replace(/#/g, "").replace(/`/g, "")
+
+  useEffect(() => {
+    const headingContent = String(children)?.replaceAll(" ", "-").replace(/`/g, "")
+    if (typeof window !== "undefined") {
+      setHref((window.location.href.split("#")[0] + "#" + headingContent).replaceAll(" ", "-"))
+    }
+  }, [children])
+  let headingContent = String(children)?.replaceAll(" ", "-").replaceAll(":", "")
+
+  return (
+    <li
+      key={headingContent}
+      className={
+        activeId === headingContent
+          ? "transition-all border-l-2 border-purple-600 dark:bg-gray-800 bg-slate-400 pl-2 py-1 text-sm list-none bg-transparent"
+          : "transition-all border-l-2 pl-2 py-1 text-sm list-none bg-transparent"
+      }
+    >
+      <a
+        className={
+          activeId === headingContent
+            ? "font-bold dark:text-slate-200 hover:text-purple-600 dark:hover:text-purple-600"
+            : "font-normal dark:text-slate-200 hover:text-purple-600 dark:hover:text-purple-600"
+        }
+        href={href}
+        onClick={(e) => {
+          e.preventDefault()
+          const targetElement = document.getElementById(headingContent)
+          if (targetElement) {
+            targetElement.scrollIntoView({ behavior: "smooth", block: "start" })
+          }
+        }}
+      >
+        {children}
+      </a>
+    </li>
+  )
+}
+
+const markdownComponents = {
+  challenge: () => null,
+  callout: () => null,
+  solution: () => null,
+  h1: () => null,
+  h2: HeadingRenderer,
+  h3: () => null,
+  h4: () => null,
+  h5: () => null,
+  h6: () => null,
+  hr: () => null,
+  p: () => null,
+  ul: () => null,
+  ol: () => null,
+  table: () => null,
+  blockquote: () => null,
+  code: () => null,
+  pre: () => null,
+}
+
+interface TableOfContentsProps {
+  tocTitle: string
+  html?: string
+}
+
+const TableOfContents: FC<TableOfContentsProps> = ({ tocTitle, html = "" }: TableOfContentsProps) => {
   const windowSize = useWindowSize()
   const isSmallScreen = (windowSize?.width ?? 1024) < 1024
   const [collapsed, setCollapsed] = useState(isSmallScreen)
@@ -45,68 +129,6 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }:
     } else {
       maxHeightClass = "max-h-96"
     }
-  }
-
-  const HeadingRenderer = ({ children }: HeadingProps) => {
-    const [href, setHref] = useState("")
-
-    if (typeof children === "object") {
-      let headingContent = ""
-      React.Children.forEach(children, (child) => {
-        if (typeof child === "string") {
-          headingContent += child
-        }
-        if (
-          child &&
-          typeof child === "object" &&
-          "props" in child &&
-          child.props &&
-          typeof child.props === "object" &&
-          "children" in child.props
-        ) {
-          headingContent += child.props.children
-        }
-      })
-      children = headingContent
-    }
-    children = String(children).replace(/#/g, "").replace(/`/g, "")
-
-    useEffect(() => {
-      const headingContent = String(children)?.replaceAll(" ", "-").replace(/`/g, "")
-      if (typeof window !== "undefined") {
-        setHref((window.location.href.split("#")[0] + "#" + headingContent).replaceAll(" ", "-"))
-      }
-    }, [children])
-    let headingContent = String(children)?.replaceAll(" ", "-").replaceAll(":", "")
-
-    return (
-      <li
-        key={headingContent}
-        className={
-          activeId === headingContent
-            ? "transition-all border-l-2 border-purple-600 dark:bg-gray-800 bg-slate-400 pl-2 py-1 text-sm list-none bg-transparent"
-            : "transition-all border-l-2 pl-2 py-1 text-sm list-none bg-transparent"
-        }
-      >
-        <a
-          className={
-            activeId === headingContent
-              ? "font-bold dark:text-slate-200 hover:text-purple-600 dark:hover:text-purple-600"
-              : "font-normal dark:text-slate-200 hover:text-purple-600 dark:hover:text-purple-600"
-          }
-          href={href}
-          onClick={(e) => {
-            e.preventDefault()
-            const targetElement = document.getElementById(headingContent)
-            if (targetElement) {
-              targetElement.scrollIntoView({ behavior: "smooth", block: "start" })
-            }
-          }}
-        >
-          {children}
-        </a>
-      </li>
-    )
   }
 
   return (
@@ -171,25 +193,12 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown, tocTitle }:
           <nav
             className={`${maxHeightClass} mt-8 overflow-y-auto font-bold pointer-events-auto bg-transparent ${marginTopClass}`}
           >
-            <ReactMarkdown
-              components={{
-                h1: () => null,
-                h2: HeadingRenderer,
-                h3: () => null,
-                h4: () => null,
-                h5: () => null,
-                h6: () => null,
-                hr: () => null,
-                p: () => null,
-                ul: () => null,
-                ol: () => null,
-                table: () => null,
-                blockquote: () => null,
-                code: () => null,
-              }}
-            >
-              {markdown || ""}
-            </ReactMarkdown>
+            <ul>
+              {html2React({
+                html,
+                components: markdownComponents,
+              })}
+            </ul>
           </nav>
         )}
       </div>

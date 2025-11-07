@@ -11,6 +11,7 @@ import {
   getExcludes,
   Excludes,
 } from "lib/material"
+import { material2Html } from "lib/markdown"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
 import Content from "components/content/Content"
@@ -28,6 +29,7 @@ type SectionComponentProps = {
   events: Event[]
   pageInfo?: PageTemplate
   repoUrl?: string
+  html: string
   excludes?: Excludes
 }
 
@@ -39,9 +41,11 @@ const SectionComponent: NextPage<SectionComponentProps> = ({
   material,
   pageInfo,
   repoUrl,
+  html,
   excludes,
 }: SectionComponentProps) => {
   const pageTitle = pageInfo?.title ? `${section.name}: ${pageInfo.title}` : section.name
+
   return (
     <Layout
       theme={theme}
@@ -52,10 +56,11 @@ const SectionComponent: NextPage<SectionComponentProps> = ({
       pageTitle={pageTitle}
       repoUrl={repoUrl}
       excludes={excludes}
+      html={html}
     >
       <Title text={section.name} />
       <LearningOutcomes learningOutcomes={section.learningOutcomes} />
-      <Content markdown={section.markdown} theme={theme} course={course} section={section} />
+      <Content html={html} theme={theme} course={course} section={section} />
     </Layout>
   )
 }
@@ -120,9 +125,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
   if (!section) {
     return { notFound: true }
   }
+  const html = material2Html(section.markdown)
   removeMarkdown(material, section)
   return {
-    props: makeSerializable({ theme, course, section, events, material, pageInfo, repoUrl }),
+    props: makeSerializable({ theme, course, section, events, material, pageInfo, repoUrl, html }),
     revalidate: revalidateTimeout,
   }
 }

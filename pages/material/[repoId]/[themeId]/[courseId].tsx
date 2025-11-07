@@ -1,16 +1,15 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
 import prisma from "lib/prisma"
 import { getMaterial, Course, Theme, Material, removeMarkdown } from "lib/material"
+import { material2Html } from "lib/markdown"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
 import Content from "components/content/Content"
-import NavDiagram from "components/navdiagram/NavDiagram"
 import Title from "components/ui/Title"
 import { Event } from "lib/types"
 import { PageTemplate, pageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
 import CourseGrid from "components/navdiagram/CourseGrid"
-import Stack from "components/ui/Stack"
 import LearningOutcomes from "components/content/LearningOutcomes"
 import Link from "next/link"
 import SubTitle from "components/ui/SubTitle"
@@ -21,6 +20,7 @@ type CourseComponentProps = {
   material: Material
   events: Event[]
   pageInfo?: PageTemplate
+  html: string
 }
 
 const CourseComponent: NextPage<CourseComponentProps> = ({
@@ -29,17 +29,18 @@ const CourseComponent: NextPage<CourseComponentProps> = ({
   material,
   events,
   pageInfo,
+  html,
 }: CourseComponentProps) => {
   const pageTitle = pageInfo?.title ? `${course.name}: ${pageInfo.title}` : course.name
   return (
-    <Layout theme={theme} course={course} material={material} pageInfo={pageInfo} pageTitle={pageTitle}>
+    <Layout theme={theme} course={course} material={material} pageInfo={pageInfo} pageTitle={pageTitle} html={html}>
       <Title text={course.name} style={{ marginBottom: "0px" }} />
       <Link className="text-blue-500 italic" href={`/material/${theme.repo}/${theme.id}/${course.id}/diagram`}>
         <SubTitle text="View Course Diagram" />
       </Link>
       <LearningOutcomes learningOutcomes={course.learningOutcomes} />
       <CourseGrid course={course} theme={theme} />
-      <Content markdown={course.markdown} theme={theme} course={course} />
+      <Content html={html} theme={theme} course={course} />
     </Layout>
   )
 }
@@ -86,9 +87,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
   if (!course) {
     return { notFound: true }
   }
-  removeMarkdown(material, course)
+  const html = material2Html(course.markdown)
+  removeMarkdown(material)
   return {
-    props: makeSerializable({ theme, course, material, events, pageInfo }),
+    props: makeSerializable({ theme, course, material, events, pageInfo, html }),
     revalidate: revalidateTimeout,
   }
 }
