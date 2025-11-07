@@ -1,5 +1,5 @@
-import fs from "fs"
-import fsPromises from "fs/promises"
+import { symlink } from "fs"
+import { readFile } from "fs/promises"
 import fm, { FrontMatterResult } from "front-matter"
 import { basePath } from "./basePath"
 import { EventItem } from "@prisma/client"
@@ -79,7 +79,7 @@ async function loadMaterial(path: string): Promise<MaterialContent> {
       return material
     }
   }
-  const buffer = await fsPromises.readFile(path, { encoding: "utf8" })
+  const buffer = await readFile(path, { encoding: "utf8" })
   const material = fm(buffer)
   materialCache.set(path, material)
   return material
@@ -191,7 +191,7 @@ export async function getMaterial(no_markdown = false): Promise<Material> {
     const dir = `${materialDir}/${repo}`
     const rel_dir = `../${materialDir}`
     const public_dir = `public/material`
-    fs.symlink(rel_dir, public_dir, "dir", (err) => {
+    symlink(rel_dir, public_dir, "dir", (err) => {
       if (!err) {
         console.log("\nSymlink created\n")
       }
