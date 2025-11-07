@@ -6,10 +6,12 @@ import { Toc } from "@mui/icons-material"
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft"
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight"
 
-type HeadingProps = JSX.IntrinsicElements["h2"] & ExtraProps
+type HeadingProps = JSX.IntrinsicElements["h2"] &
+  ExtraProps & {
+    activeId?: string | null
+  }
 
-const HeadingRenderer: FC<HeadingProps> = ({ children }) => {
-  const { activeId } = useHeadingObserver()
+const HeadingRenderer: FC<HeadingProps> = ({ activeId, children }) => {
   const [href, setHref] = useState("")
 
   if (typeof children === "object") {
@@ -93,6 +95,9 @@ interface TableOfContentsProps {
 }
 
 const TableOfContents: FC<TableOfContentsProps> = ({ markdown, tocTitle }: TableOfContentsProps) => {
+  const { activeId } = useHeadingObserver()
+  // override h2 to add the active heading ID.
+  markdownComponents.h2 = ({ children }: HeadingProps) => HeadingRenderer({ activeId, children })
   const windowSize = useWindowSize()
   const isSmallScreen = (windowSize?.width ?? 1024) < 1024
   const [collapsed, setCollapsed] = useState(isSmallScreen)
