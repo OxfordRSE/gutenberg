@@ -1,7 +1,29 @@
-import * as fs from "fs"
-import * as yaml from "js-yaml"
+import { readFileSync } from "fs"
+import { load } from "js-yaml"
 
 const yamlTemplate = process.env.YAML_TEMPLATE || "config/oxford.yaml"
+
+export type SiteConfig = {
+  template: PageTemplate,
+  material: Record<string, {
+    path: string
+    url: string
+    exclude?: {
+      sections?: string[]
+      themes?: string[]
+      courses?: string[]
+    }
+  }>
+}
+
+export function loadConfig(): SiteConfig | undefined {
+  try {
+    const fileContents = readFileSync(yamlTemplate, "utf8")
+    return load(fileContents) as SiteConfig
+  } catch (e) {
+    console.error(e)
+  }
+}
 
 export type PageTemplate = {
   title: string
@@ -11,13 +33,13 @@ export type PageTemplate = {
   footer: string
 }
 
-export const pageTemplate: PageTemplate | undefined = (() => {
+function loadPagetemplate(): PageTemplate | undefined {
   try {
-    const fileContents = fs.readFileSync(yamlTemplate, "utf8")
-    // @ts-expect-error
-    const data = yaml.load(fileContents).template as PageTemplate
-    return data
+    const siteConfig = loadConfig()
+    return siteConfig?.template as PageTemplate
   } catch (e) {
     console.error(e)
   }
-})()
+}
+
+export const pageTemplate: PageTemplate | undefined = loadPagetemplate()

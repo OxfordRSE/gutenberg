@@ -1,9 +1,9 @@
 import fs from "fs"
 import fsPromises from "fs/promises"
-import fm from "front-matter"
+import fm, { FrontMatterResult } from "front-matter"
 import { basePath } from "./basePath"
 import { EventItem } from "@prisma/client"
-import * as yaml from "js-yaml"
+import { loadConfig } from "./pageTemplate"
 
 export type Attribution = {
   citation: string
@@ -66,6 +66,23 @@ export type Material = {
   themeNames?: {}
   courseNames?: {}
   sectionNames?: {}
+}
+
+type MaterialContent = FrontMatterResult<unknown>
+
+const materialCache = new Map<string, MaterialContent>()
+
+async function loadMaterial(path: string): Promise<MaterialContent> {
+  if (materialCache.has(path)) {
+    const material = materialCache.get(path)
+    if (material) {
+      return material
+    }
+  }
+  const buffer = await fsPromises.readFile(path, { encoding: "utf8" })
+  const material = fm(buffer)
+  materialCache.set(path, material)
+  return material
 }
 
 export const sectionSplit = (
@@ -139,34 +156,35 @@ export function removeMarkdown(material: Material, except: Material | Theme | Co
 const materialDir = `${process.env.MATERIAL_DIR}`
 
 function getrepos() {
-  const fileContents = fs.readFileSync("config/oxford.yaml")
-  // @ts-expect-error
-  const repos = yaml.load(fileContents).material
-  return repos
+  const siteConfig = loadConfig()
+  return siteConfig?.material
 }
 
 export function getExcludes(repo: string): Excludes {
   const repos = getrepos()
+  if (!repos) return { sections: [], themes: [], courses: [] }
   const key = Object.keys(repos).find((key) => repos[key].path === repo)
-  const repoConfig = repos[key]
-  const excludeSections = repoConfig.exclude?.sections ?? []
-  const excludeThemes = repoConfig.exclude?.themes ?? []
-  const excludeCourses = repoConfig.exclude?.courses ?? []
+  const repoConfig = key ? repos[key] : undefined
+  const excludeSections = repoConfig?.exclude?.sections ?? []
+  const excludeThemes = repoConfig?.exclude?.themes ?? []
+  const excludeCourses = repoConfig?.exclude?.courses ?? []
   return { sections: excludeSections, themes: excludeThemes, courses: excludeCourses }
 }
 
 export function getRepoUrl(repo: string): string {
   const repos = getrepos()
+  if (!repos) return ""
   const key = Object.keys(repos).find((key) => repos[key].path === repo)
-  const repoConfig = repos[key]
-  return repoConfig.url
+  const repoConfig = key ? repos[key] : undefined
+  return repoConfig?.url ?? ""
 }
 
 export async function getMaterial(no_markdown = false): Promise<Material> {
   const repos = getrepos()
+  if (!repos) {
+    return { name: "", markdown: "", themes: [], type: "Material" }
+  }
   let allThemes: Theme[] = []
-  let allSections: Section[] = []
-  let allCourses: Course[] = []
 
   for (const key of Object.keys(repos)) {
     const repo = repos[key].path
@@ -178,12 +196,8 @@ export async function getMaterial(no_markdown = false): Promise<Material> {
         console.log("\nSymlink created\n")
       }
     })
-    const buffer = await fsPromises.readFile(`${dir}/index.md`, { encoding: "utf8" })
-    const material = fm(buffer)
+    const material = await loadMaterial(`${dir}/index.md`)
 
-    // @ts-expect-error
-    const name = material.attributes.name as string
-    const markdown = no_markdown ? "" : (material.body as string)
     // @ts-expect-error
     const themesId = material.attributes.themes as [string]
 
@@ -202,8 +216,7 @@ export async function getMaterial(no_markdown = false): Promise<Material> {
 
 export async function getTheme(repo: string, theme: string, no_markdown = false): Promise<Theme> {
   const dir = `${materialDir}/${repo}/${theme}`
-  const themeBuffer = await fsPromises.readFile(`${dir}/index.md`, { encoding: "utf8" })
-  const themeObject = fm(themeBuffer)
+  const themeObject = await loadMaterial(`${dir}/index.md`)
   // @ts-expect-error
   const name = themeObject.attributes.name as string
   // @ts-expect-error
@@ -216,15 +229,14 @@ export async function getTheme(repo: string, theme: string, no_markdown = false)
   const excludeCourses = getExcludes(repo).courses
   const excludeThemes = getExcludes(repo).themes
   courses = courses.filter((course) => !excludeCourses.includes(course.id))
-  courses = courses.filter((course) => !excludeThemes.includes(id))
+  courses = courses.filter(() => !excludeThemes.includes(id))
   const type = "Theme"
   return { repo, id, name, markdown, courses, type, summary }
 }
 
 export async function getCourse(repo: string, theme: string, course: string, no_markdown = false): Promise<Course> {
   const dir = `${materialDir}/${repo}/${theme}/${course}`
-  const courseBuffer = await fsPromises.readFile(`${dir}/index.md`, { encoding: "utf8" })
-  const courseObject = fm(courseBuffer)
+  const courseObject = await loadMaterial(`${dir}/index.md`)
   // @ts-expect-error
   const name = courseObject.attributes.name as string
   // @ts-expect-error
@@ -272,8 +284,7 @@ export async function getSection(
 ): Promise<Section> {
   const id = file.replace(/\.[^/.]+$/, "")
   const dir = `${materialDir}/${repo}/${theme}/${course}`
-  const sectionBuffer = await fsPromises.readFile(`${dir}/${file}`, { encoding: "utf8" })
-  const sectionObject = fm(sectionBuffer)
+  const sectionObject = await loadMaterial(`${dir}/${file}`)
   // @ts-expect-error
   const dependsOn = (sectionObject.attributes.dependsOn as string[]) || []
   // @ts-expect-error
