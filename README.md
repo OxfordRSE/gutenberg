@@ -57,7 +57,7 @@ so you'll be guaranteed to have working versions of each dependency.
 Gutenberg separates its source material from its rendering engine by design.
 This means you need to copy some source material before you have anything to display!
 
-The HPC materials are already listed as a source via the `NEXT_PUBLIC_MATERIAL_URL` variable in the `.env` file.
+The HPC materials are already listed as a source under `material` in the configuration yaml file in the `config` directory.
 
 To download those materials, so we have something to work with, run `yarn pullmat` and they will be cloned into
 a local `.materials` directory.
