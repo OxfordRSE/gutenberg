@@ -20,10 +20,6 @@ Since these "public" variables are available in the frontend, they should not co
 `YAML_TEMPLATE`
 : This is the path to the YAML template file. This should be laid out as described [in the template configuration page]({{ "/config/template" | relative_url }}).
 
-`NEXT_PUBLIC_MATERIAL_URL`
-: Default: `https://github.com/UNIVERSE-HPC/course-material`
-: This is the URL where the course material is hosted.
-
 `NEXT_PUBLIC_BASEPATH`
 : Default: `""`
 : This is the base path for the application.
