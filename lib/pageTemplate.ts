@@ -4,16 +4,19 @@ import { load } from "js-yaml"
 const yamlTemplate = process.env.YAML_TEMPLATE || "config/oxford.yaml"
 
 export type SiteConfig = {
-  template: PageTemplate,
-  material: Record<string, {
-    path: string
-    url: string
-    exclude?: {
-      sections?: string[]
-      themes?: string[]
-      courses?: string[]
+  template: PageTemplate
+  material: Record<
+    string,
+    {
+      path: string
+      url: string
+      exclude?: {
+        sections?: string[]
+        themes?: string[]
+        courses?: string[]
+      }
     }
-  }>
+  >
 }
 
 export function loadConfig(): SiteConfig | undefined {
