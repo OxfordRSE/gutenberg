@@ -1,9 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState, startTransition } from "react"
 
-import similarity from "wink-nlp/utilities/similarity"
-
-import winkNLP, { Bow } from "wink-nlp"
-import model from "wink-eng-lite-web-model"
+import { stringSimilarity } from "string-similarity-js"
 import Thread from "./Thread"
 import Popover from "./Popover"
 import useCommentThreads from "lib/hooks/useCommentThreads"
@@ -13,13 +10,21 @@ import { Comment } from "pages/api/comment/[commentId]"
 import { CommentThread, CommentThreadPost } from "pages/api/commentThread"
 import { useSession } from "next-auth/react"
 
-const nlp = winkNLP(model)
-const its = nlp.its
-const as = nlp.as
-
 interface ParagraphProps {
   content: React.ReactNode
   section: string
+}
+
+function getSimilarThreads(
+  contentText: string,
+  commentThreads: CommentThread[] | undefined = [],
+  section: string
+): CommentThread[] | undefined {
+  return commentThreads
+    .filter((thread) => section === thread.section)
+    .filter((thread) => {
+      return stringSimilarity(contentText, thread.textRef) > 0.9
+    })
 }
 
 const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
@@ -44,25 +49,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
 
   const { similarThreads, contentText } = useMemo(() => {
     const normalizedText = textForMatching.trim()
-    if (!normalizedText || !commentThreads) return { similarThreads: [], contentText: textForMatching }
-
-    const contentTokens = nlp
-      .readDoc(normalizedText)
-      .tokens()
-      .filter((t) => t.out(its.type) === "word" && !t.out(its.stopWordFlag))
-    const contentBow = contentTokens.out(its.value, as.bow) as Bow
-
-    const similarThreads = commentThreads
-      ?.filter((thread) => section === thread.section)
-      .filter((thread) => thread.textRef && thread.textRef.trim().length > 0)
-      .filter((thread) => {
-        const threadTokens = nlp
-          .readDoc(thread.textRef)
-          .tokens()
-          .filter((t) => t.out(its.type) === "word" && !t.out(its.stopWordFlag))
-        const threadBow = threadTokens.out(its.value, as.bow) as Bow
-        return similarity.bow.cosine(contentBow, threadBow) > 0.9
-      })
+    const similarThreads = getSimilarThreads(normalizedText, commentThreads, section)
     return { similarThreads, contentText: textForMatching }
   }, [textForMatching, commentThreads, section])
 
