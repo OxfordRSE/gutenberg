@@ -10,14 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      - name: Enable corepack
+        shell: bash
+        run: corepack enable
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-          cache: 'yarn'
-      - name: Enable corepack
-        shell: bash
-        run: corepack enable
+          cache: "yarn"
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
