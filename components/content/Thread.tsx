@@ -1,7 +1,6 @@
-import { Button, ButtonProps, Card, Checkbox, Dropdown, Label, Spinner, Tooltip } from "flowbite-react"
+import { Button, Dropdown, Tooltip } from "flowbite-react"
 import Avatar from "@mui/material/Avatar"
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { Markdown } from "./Content"
+import React, { ReactNode, Ref, useEffect, useMemo, useRef, useState } from "react"
 import { CommentThread, Comment } from "pages/api/commentThread"
 import { BiCommentCheck, BiCommentDetail, BiDotsVerticalRounded, BiReply } from "react-icons/bi"
 import { MdDelete } from "react-icons/md"
@@ -9,28 +8,25 @@ import { IoClose } from "react-icons/io5"
 
 import postComment from "lib/actions/postComment"
 import useCommentThread from "lib/hooks/useCommentThread"
-import deleteComment from "lib/actions/deleteComment"
 import deleteCommentThread from "lib/actions/deleteThread"
-import { putComment } from "lib/actions/putComment"
 import putCommentThread from "lib/actions/putCommentThread"
 import useActiveEvent from "lib/hooks/useActiveEvents"
 import useEvent from "lib/hooks/useEvent"
 import useProfile from "lib/hooks/useProfile"
-import { createPortal } from "react-dom"
 import Stack from "components/ui/Stack"
 
 import { GoIssueClosed } from "react-icons/go"
 import { ImEye, ImEyeBlocked } from "react-icons/im"
 import useUser from "lib/hooks/useUser"
-import { useSession } from "next-auth/react"
 import CommentView from "./Comment"
 import { Provider } from "jotai"
 
 interface TinyButtonProps {
-  children: React.ReactNode
+  children: ReactNode
   onClick?: () => void
   dataCy?: string
   disabled?: boolean
+  ref?: Ref<HTMLButtonElement>
 }
 
 export const TinyButton = ({ children, ...props }: TinyButtonProps) => {
@@ -101,6 +97,7 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAn
 
   const popupRef = useRef<HTMLDivElement | null>(null) // Reference for the popup element (the comment thread)
   const triggerRef = useRef<HTMLDivElement | null>(null) // Reference for the trigger (Thread component) in paragraph
+  const buttonRef = useRef<HTMLButtonElement | null>(null) // Reference for the button that opens the thread
 
   const [popupPosition, setPopupPosition] = useState(
     initialAnchor || { top: 0, left: 0 } // Use initialAnchor if provided
@@ -178,6 +175,7 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAn
 
   const handleClose = () => {
     setActive(false)
+    buttonRef.current?.focus()
   }
 
   const handleReply = () => {
@@ -213,11 +211,13 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAn
   const renderPopup = () => {
     if (!active) return null
 
-    return createPortal(
+    return (
       <div
+        role="dialog"
+        aria-label="Comments"
         ref={popupRef}
         className="absolute w-[355px] border border-gray-200 rounded-lg bg-slate-50 dark:bg-slate-900 dark:border-gray-700 z-50"
-        style={{ top: `${popupPosition.top}px`, left: `${popupPosition.left}px` }} // Apply calculated position
+        style={{ top: "0", left: "40px" }}
         data-cy={`Thread:${threadId}:Main`}
       >
         <div className="absolute -top-1 left-0 not-prose">
@@ -248,7 +248,7 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAn
         <div className={`flex items-center justify-between rounded-t-lg`}>
           <h3 className="w-full mx-2 my-0 text-base text-slate-100 dark:text-slate-900">{}</h3>
           <Stack direction="row-reverse">
-            <TinyButton onClick={() => setActive(false)} dataCy={`Thread:${threadId}:CloseButton`}>
+            <TinyButton onClick={handleClose} dataCy={`Thread:${threadId}:CloseButton`} aria-label="Close comments">
               <IoClose />
             </TinyButton>
             {!isPlaceholder && (
@@ -260,6 +260,7 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAn
                 )}
                 label={undefined}
                 className="not-prose"
+                aria-label="Thread options"
               >
                 <Dropdown.Item
                   className="hover:bg-gray-400"
@@ -313,8 +314,12 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAn
         {!isPlaceholder && (
           <Stack direction="row-reverse">
             {canResolve && (
-              <Tooltip content="Mark as Resolved" placement="top">
-                <TinyButton onClick={handleResolved} dataCy={`Thread:${threadId}:Resolved`}>
+              <Tooltip content="Mark as resolved" placement="top">
+                <TinyButton
+                  onClick={handleResolved}
+                  dataCy={`Thread:${threadId}:Resolved`}
+                  aria-label="Mark as resolved"
+                >
                   {commentThread?.resolved ? (
                     <GoIssueClosed className="h-4 w-4 text-green dark:text-green-600" />
                   ) : (
@@ -324,23 +329,31 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAn
               </Tooltip>
             )}
             {!threadEditing && (
-              <Tooltip content="Reply in Thread" placement="top">
-                <TinyButton onClick={handleReply}>
+              <Tooltip content="Reply in thread" placement="top">
+                <TinyButton
+                  onClick={handleReply}
+                  aria-label="Reply in thread"
+                  dataCy={`Thread:${threadId}:ReplyButton`}
+                >
                   <BiReply className="h-4 w-4" data-cy={`Thread:${threadId}:Reply`} />
                 </TinyButton>
               </Tooltip>
             )}
           </Stack>
         )}
-      </div>,
-      document.body // Render the popup in the body
+      </div>
     )
   }
 
   return (
     <div className="relative" id={`comment-thread-${threadId}`}>
       <div className="flex justify-end opacity-50 md:opacity-100 xl:justify-start" ref={triggerRef}>
-        <TinyButton onClick={handleOpen} dataCy={`Thread:${threadId}:OpenCloseButton`}>
+        <TinyButton
+          ref={buttonRef}
+          onClick={handleOpen}
+          dataCy={`Thread:${threadId}:OpenCloseButton`}
+          aria-label="Read comments"
+        >
           {commentThread?.resolved ? (
             <BiCommentCheck className="text-green dark:text-green-600" />
           ) : (
@@ -348,7 +361,7 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAn
           )}
         </TinyButton>
       </div>
-      {renderPopup()} {/* Render the popup using a portal */}
+      {renderPopup()}
     </div>
   )
 }
