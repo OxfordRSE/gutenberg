@@ -171,6 +171,10 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAn
   const handleOpen = () => {
     calculatePosition()
     setActive(!active)
+    setTimeout(() => {
+      // Wait for one render cycle then focus the dialog.
+      popupRef.current?.focus()
+    },0)
   }
 
   const handleClose = () => {
@@ -219,6 +223,7 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAn
         className="absolute w-[355px] border border-gray-200 rounded-lg bg-slate-50 dark:bg-slate-900 dark:border-gray-700 z-50"
         style={{ top: "0", left: "40px" }}
         data-cy={`Thread:${threadId}:Main`}
+        tabIndex={-1}
       >
         <div className="absolute -top-1 left-0 not-prose">
           <Tooltip
