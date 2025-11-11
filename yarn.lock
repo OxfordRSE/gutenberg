@@ -3523,13 +3523,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/marked@npm:^4.3.2":
-  version: 4.3.2
-  resolution: "@types/marked@npm:4.3.2"
-  checksum: c1107079d6c368dd60a668a41aa2101d006cad404b6eb4af6723d419dc869b278928fb769825f11d0d311a8cf437428992729c8a47253b6a3894a6326b1ee4d9
-  languageName: node
-  linkType: hard
-
 "@types/mdast@npm:^4.0.0":
   version: 4.0.4
   resolution: "@types/mdast@npm:4.0.4"
@@ -7111,7 +7104,6 @@ __metadata:
     "@testing-library/cypress": ^10.1.0
     "@types/dompurify": ^3.2.0
     "@types/js-yaml": ^4.0.9
-    "@types/marked": ^4.3.2
     "@types/node": ^22.19.0
     "@types/react": ^19.2.2
     "@types/react-copy-to-clipboard": ^5.0.7
@@ -7137,7 +7129,6 @@ __metadata:
     jose: ^4.15.9
     jotai: ^2.15.1
     js-yaml: ^4.1.0
-    marked: ^4.3.0
     next: 15.5.6
     next-auth: ^4.24.13
     next-plausible: 3.12.5
@@ -8777,15 +8768,6 @@ __metadata:
   version: 3.0.4
   resolution: "markdown-table@npm:3.0.4"
   checksum: bc24b177cbb3ef170cb38c9f191476aa63f7236ebc8980317c5e91b5bf98c8fb471cf46d8920478c5e770d7f4337326f6b5b3efbf0687c2044fd332d7a64dfcb
-  languageName: node
-  linkType: hard
-
-"marked@npm:^4.3.0":
-  version: 4.3.0
-  resolution: "marked@npm:4.3.0"
-  bin:
-    marked: bin/marked.js
-  checksum: 0db6817893952c3ec710eb9ceafb8468bf5ae38cb0f92b7b083baa13d70b19774674be04db5b817681fa7c5c6a088f61300815e4dd75a59696f4716ad69f6260
   languageName: node
   linkType: hard
 
