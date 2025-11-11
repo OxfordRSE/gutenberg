@@ -1,9 +1,5 @@
-import React, { useMemo, useRef, useState } from "react"
+import React, { useRef, useState } from "react"
 
-import similarity from "wink-nlp/utilities/similarity"
-
-import winkNLP, { Bow } from "wink-nlp"
-import model from "wink-eng-lite-web-model"
 import Thread from "./Thread"
 import Popover from "./Popover"
 import useCommentThreads from "lib/hooks/useCommentThreads"
@@ -12,20 +8,29 @@ import useActiveEvent from "lib/hooks/useActiveEvents"
 import { Comment } from "pages/api/comment/[commentId]"
 import { CommentThread, CommentThreadPost } from "pages/api/commentThread"
 import { useSession } from "next-auth/react"
-
-const nlp = winkNLP(model)
-const its = nlp.its
-const as = nlp.as
+import { stringSimilarity } from "string-similarity-js"
 
 interface ParagraphProps {
   content: React.ReactNode
   section: string
 }
 
+function getSimilarThreads(
+  contentText: string,
+  commentThreads: CommentThread[] | undefined = [],
+  section: string
+): CommentThread[] | undefined {
+  return commentThreads
+    .filter((thread) => section === thread.section)
+    .filter((thread) => {
+      return stringSimilarity(contentText, thread.textRef) > 0.9
+    })
+}
+
 const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
   const ref = useRef<HTMLDivElement>(null)
   const [activeEvent, setActiveEvent] = useActiveEvent()
-  const { commentThreads, error, isLoading, mutate } = useCommentThreads(activeEvent?.id)
+  const { commentThreads, mutate } = useCommentThreads(activeEvent?.id)
   const [activeThreadId, setActiveThreadId] = useState<number | undefined>(undefined)
   const [tempThread, setTempThread] = useState<{
     thread: CommentThread
@@ -34,31 +39,14 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
   const [tempActive, setTempActive] = useState<boolean>(false)
   const email = useSession().data?.user?.email
 
-  const { similarThreads, contentText } = useMemo(() => {
-    let contentText = ""
-    if (typeof content === "string") {
-      contentText = content
-    } else if (Array.isArray(content)) {
-      contentText = content.filter((c) => typeof c === "string").join("")
-    }
-    const contentTokens = nlp
-      .readDoc(contentText)
-      .tokens()
-      .filter((t) => t.out(its.type) === "word" && !t.out(its.stopWordFlag))
-    const contentBow = contentTokens.out(its.value, as.bow) as Bow
+  let contentText = ""
+  if (typeof content === "string") {
+    contentText = content
+  } else if (Array.isArray(content)) {
+    contentText = content.filter((c) => typeof c === "string").join("")
+  }
 
-    const similarThreads = commentThreads
-      ?.filter((thread) => section === thread.section)
-      .filter((thread) => {
-        const threadTokens = nlp
-          .readDoc(thread.textRef)
-          .tokens()
-          .filter((t) => t.out(its.type) === "word" && !t.out(its.stopWordFlag))
-        const threadBow = threadTokens.out(its.value, as.bow) as Bow
-        return similarity.bow.cosine(contentBow, threadBow) > 0.9
-      })
-    return { similarThreads, contentText }
-  }, [content, commentThreads, section])
+  const similarThreads = getSimilarThreads(contentText, commentThreads, section)
 
   const handleCreateThread = (text: string) => {
     if (!activeEvent) return
