@@ -27,9 +27,10 @@ import SelectField from "components/forms/SelectField"
 import Checkbox from "components/forms/Checkbox"
 import SubTitle from "components/ui/SubTitle"
 import EventCommentThreads from "components/event/EventCommentThreads"
-import { PageTemplate, pageTemplate } from "lib/pageTemplate"
+import { PageTemplate, loadPageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
 import EventActions from "components/timeline/EventActions"
+import { load } from "js-yaml"
 
 type EventProps = {
   material: Material
@@ -228,7 +229,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const pageInfo = pageTemplate
+  const pageInfo = loadPageTemplate()
   const eventId = parseInt(context?.params?.eventId as string)
   const event = await prisma.event.findUnique({ where: { id: eventId } })
   if (!event) {

@@ -16,7 +16,7 @@ import { makeSerializable } from "lib/utils"
 import Content from "components/content/Content"
 import Title from "components/ui/Title"
 import { Event } from "lib/types"
-import { PageTemplate, pageTemplate } from "lib/pageTemplate"
+import { PageTemplate, loadPageTemplate } from "lib/pageTemplate"
 import LearningOutcomes from "components/content/LearningOutcomes"
 import revalidateTimeout from "lib/revalidateTimeout"
 
@@ -84,7 +84,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const pageInfo = pageTemplate
+  const pageInfo = loadPageTemplate()
   const repoId = context?.params?.repoId
   const excludes = getExcludes(repoId as string)
   const repoUrl = getRepoUrl(repoId as string)

@@ -9,7 +9,7 @@ import { basePath } from "lib/basePath"
 import { Event } from "lib/types"
 import { Button, Card } from "flowbite-react"
 import EventsView from "components/timeline/EventsView"
-import { pageTemplate, PageTemplate } from "lib/pageTemplate"
+import { loadPageTemplate, PageTemplate } from "lib/pageTemplate"
 import { Markdown } from "components/content/Content"
 import { useSession } from "next-auth/react"
 import revalidateTimeout from "lib/revalidateTimeout"
@@ -69,7 +69,7 @@ const Home: NextPage<HomeProps> = ({ material, events, pageInfo }) => {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const pageInfo = pageTemplate
+  const pageInfo = loadPageTemplate()
 
   const events = await prisma.event
     .findMany({
