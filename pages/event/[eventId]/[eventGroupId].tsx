@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react"
 import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
 import prisma from "lib/prisma"
-import { getMaterial, Theme, Material, removeMarkdown, eventItemSplit } from "lib/material"
+import { getMaterial, Material, removeMarkdown, eventItemSplit } from "lib/material"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
 import Content from "components/content/Content"
-import NavDiagram from "components/navdiagram/NavDiagram"
 import Title from "components/ui/Title"
 import SubTitle from "components/ui/SubTitle"
 import { Event } from "lib/types"
@@ -41,7 +40,7 @@ import {
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { PageTemplate, pageTemplate } from "lib/pageTemplate"
+import { loadPageTemplate, PageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
 
 type EventGroupProps = {
@@ -335,7 +334,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const pageInfo = pageTemplate
+  const pageInfo = loadPageTemplate()
   const eventId = parseInt(context?.params?.eventId as string)
   const eventGroupId = parseInt(context?.params?.eventGroupId as string)
   const event = await prisma.event.findUnique({ where: { id: eventId } })
