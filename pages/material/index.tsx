@@ -4,7 +4,7 @@ import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
 import { Material, getMaterial, removeMarkdown, getExcludes } from "lib/material"
 import { EventFull as Event } from "lib/types"
-import { PageTemplate, pageTemplate } from "lib/pageTemplate"
+import { PageTemplate, loadPageTemplate } from "lib/pageTemplate"
 import ThemeCards from "components/navdiagram/ThemeCards"
 import revalidateTimeout from "lib/revalidateTimeout"
 import Title from "components/ui/Title"
@@ -31,7 +31,7 @@ const Home: NextPage<HomeProps> = ({ material, events, pageInfo }) => {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const pageInfo = pageTemplate
+  const pageInfo = loadPageTemplate()
   const events = await prisma.event
     .findMany({
       where: { hidden: false },

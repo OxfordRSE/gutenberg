@@ -4,11 +4,10 @@ import { getMaterial, Theme, Material, removeMarkdown, getExcludes, Excludes } f
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
 import Content from "components/content/Content"
-import NavDiagram from "components/navdiagram/NavDiagram"
 import Title from "components/ui/Title"
 import SubTitle from "components/ui/SubTitle"
 import { Event } from "lib/types"
-import { PageTemplate, pageTemplate } from "lib/pageTemplate"
+import { PageTemplate, loadPageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
 import Link from "next/link"
 import ThemeGrid from "components/navdiagram/ThemeGrid"
@@ -44,7 +43,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const pageInfo = pageTemplate
+  const pageInfo = loadPageTemplate()
   const events = await prisma.event
     .findMany({
       where: { hidden: false },

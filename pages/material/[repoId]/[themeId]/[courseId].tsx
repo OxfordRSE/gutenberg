@@ -6,7 +6,7 @@ import { makeSerializable } from "lib/utils"
 import Content from "components/content/Content"
 import Title from "components/ui/Title"
 import { Event } from "lib/types"
-import { PageTemplate, pageTemplate } from "lib/pageTemplate"
+import { PageTemplate, loadPageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
 import CourseGrid from "components/navdiagram/CourseGrid"
 import LearningOutcomes from "components/content/LearningOutcomes"
@@ -59,7 +59,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const pageInfo = pageTemplate
+  const pageInfo = loadPageTemplate()
   const events = await prisma.event
     .findMany({
       where: { hidden: false },
