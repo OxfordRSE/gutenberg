@@ -53,7 +53,6 @@ interface ThreadProps {
   setActive: (active: boolean) => void
   onDelete: () => void
   finaliseThread: (thread: CommentThread, comment: Comment) => void
-  initialAnchor?: { top: number; left: number }
 }
 
 function useResolveThread(thread: number | CommentThread) {
@@ -82,7 +81,7 @@ function useResolveThread(thread: number | CommentThread) {
   return { commentThread, threadId, commentThreadIsLoading, isLoading, isPlaceholder, mutate }
 }
 
-const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAnchor }: ThreadProps) => {
+const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadProps) => {
   const { commentThread, threadId, commentThreadIsLoading, isLoading, isPlaceholder, mutate } = useResolveThread(thread)
   const { user, isLoading: userIsLoading, error: userError } = useUser(commentThread?.createdByEmail)
   const { userProfile, isLoading: profileLoading, error: profileError } = useProfile()
@@ -99,24 +98,21 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAn
   const triggerRef = useRef<HTMLDivElement | null>(null) // Reference for the trigger (Thread component) in paragraph
   const buttonRef = useRef<HTMLButtonElement | null>(null) // Reference for the button that opens the thread
 
-  const [popupPosition, setPopupPosition] = useState(
-    initialAnchor || { top: 0, left: 0 } // Use initialAnchor if provided
-  )
+  const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 })
 
   const calculatePosition = () => {
     if (triggerRef.current) {
-      const rect = triggerRef.current.getBoundingClientRect()
       const popupWidth = 355
       const viewportWidth = window.innerWidth
 
-      let leftPosition = rect.left + 35
+      let leftPosition = 40
       if (leftPosition + popupWidth > viewportWidth) {
         // If the popup overflows the viewport, adjust to the left
-        leftPosition = rect.left - popupWidth - 10
+        leftPosition = 0 - popupWidth - 15
       }
 
       setPopupPosition({
-        top: rect.top + window.scrollY,
+        top: 0,
         left: leftPosition,
       })
     }
@@ -174,7 +170,7 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAn
     setTimeout(() => {
       // Wait for one render cycle then focus the dialog.
       popupRef.current?.focus()
-    },0)
+    }, 0)
   }
 
   const handleClose = () => {
@@ -221,7 +217,7 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread, initialAn
         aria-label="Comments"
         ref={popupRef}
         className="absolute w-[355px] border border-gray-200 rounded-lg bg-slate-50 dark:bg-slate-900 dark:border-gray-700 z-50"
-        style={{ top: "0", left: "40px" }}
+        style={{ top: `${popupPosition.top}px`, left: `${popupPosition.left}px` }}
         data-cy={`Thread:${threadId}:Main`}
         tabIndex={-1}
       >
