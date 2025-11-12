@@ -1,6 +1,6 @@
 import { Button, Dropdown, Tooltip } from "flowbite-react"
 import Avatar from "@mui/material/Avatar"
-import React, { ReactNode, Ref, useEffect, useMemo, useRef, useState } from "react"
+import { ReactNode, Ref, useCallback, useMemo, useRef, useState } from "react"
 import { CommentThread, Comment } from "pages/api/commentThread"
 import { BiCommentCheck, BiCommentDetail, BiDotsVerticalRounded, BiReply } from "react-icons/bi"
 import { MdDelete } from "react-icons/md"
@@ -94,35 +94,31 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadP
     mutate: mutateEvent,
   } = useEvent(activeEvent?.id)
 
-  const popupRef = useRef<HTMLDivElement | null>(null) // Reference for the popup element (the comment thread)
+  const popupRef = useRef<HTMLDialogElement | null>(null) // Reference for the popup element (the comment thread)
   const triggerRef = useRef<HTMLDivElement | null>(null) // Reference for the trigger (Thread component) in paragraph
   const buttonRef = useRef<HTMLButtonElement | null>(null) // Reference for the button that opens the thread
 
-  const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 })
+  const popupPosition = { top: 0, left: 0 }
 
-  const calculatePosition = () => {
-    if (triggerRef.current) {
-      const popupWidth = 355
-      const viewportWidth = window.innerWidth
+  // calculate popup position based on viewport width
+  const popupWidth = 355
+  const viewportWidth = window.innerWidth
 
-      let leftPosition = 40
-      if (leftPosition + popupWidth > viewportWidth) {
-        // If the popup overflows the viewport, adjust to the left
-        leftPosition = 0 - popupWidth - 15
-      }
-
-      setPopupPosition({
-        top: 0,
-        left: leftPosition,
-      })
-    }
+  let leftPosition = 40
+  if (leftPosition + popupWidth > viewportWidth) {
+    // If the popup overflows the viewport, adjust to the left
+    leftPosition = 0 - popupWidth - 15
   }
 
-  useEffect(() => {
-    if (active) {
-      calculatePosition()
-    }
-  }, [active]) // Recalculate popup position when the thread is opened
+  popupPosition.left = leftPosition
+
+  const handleOpen = useCallback(() => {
+    setActive(true)
+    setTimeout(() => {
+      // Wait for one render cycle then focus the dialog.
+      popupRef.current?.focus()
+    }, 0)
+  }, [])
 
   const sortedComments = useMemo(() => {
     if (!commentThread) return []
@@ -162,15 +158,6 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadP
   const deleteComment = (comment: Comment) => {
     if (!commentThread) return
     mutate({ ...commentThread, Comment: commentThread.Comment.filter((c) => c.id !== comment.id) })
-  }
-
-  const handleOpen = () => {
-    calculatePosition()
-    setActive(!active)
-    setTimeout(() => {
-      // Wait for one render cycle then focus the dialog.
-      popupRef.current?.focus()
-    }, 0)
   }
 
   const handleClose = () => {
@@ -215,17 +202,18 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadP
   }
 
   const renderPopup = () => {
-    if (!active) return null
-
     return (
-      <div
-        role="dialog"
+      <dialog
         aria-label="Comments"
+        open={active}
         ref={popupRef}
         className="absolute w-[355px] border border-gray-200 rounded-lg bg-slate-50 dark:bg-slate-900 dark:border-gray-700 z-50"
-        style={{ top: `${popupPosition.top}px`, left: `${popupPosition.left}px` }}
+        style={{
+          margin: 0,
+          top: `${popupPosition.top}px`,
+          left: `${popupPosition.left}px`,
+        }}
         data-cy={`Thread:${threadId}:Main`}
-        tabIndex={-1}
         onKeyDown={handleDialogKeyDown}
       >
         <div className="absolute -top-1 left-0 not-prose">
@@ -349,7 +337,7 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadP
             )}
           </Stack>
         )}
-      </div>
+      </dialog>
     )
   }
 

@@ -127,7 +127,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
       const newThreads = commentThreads ? [...commentThreads, thread] : [thread]
       mutate(newThreads)
       setTempThread(null)
-      setActiveThreadId(thread.id)
+      setActiveThreadId(undefined) // close the active thread popup
     })
   }
 
