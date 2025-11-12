@@ -349,6 +349,8 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadP
           onClick={handleOpen}
           dataCy={`Thread:${threadId}:OpenCloseButton`}
           aria-label="Read comments"
+          aria-haspopup="dialog"
+          aria-expanded={active.toString()}
         >
           {commentThread?.resolved ? (
             <BiCommentCheck className="text-green dark:text-green-600" />
