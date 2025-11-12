@@ -178,6 +178,12 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadP
     buttonRef.current?.focus()
   }
 
+  const handleDialogKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      handleClose()
+    }
+  }
+
   const handleReply = () => {
     if (!commentThread || isPlaceholder) return
     postComment(threadId).then((comment: Comment) => {
@@ -220,6 +226,7 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadP
         style={{ top: `${popupPosition.top}px`, left: `${popupPosition.left}px` }}
         data-cy={`Thread:${threadId}:Main`}
         tabIndex={-1}
+        onKeyDown={handleDialogKeyDown}
       >
         <div className="absolute -top-1 left-0 not-prose">
           <Tooltip
