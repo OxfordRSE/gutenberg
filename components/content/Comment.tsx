@@ -87,12 +87,12 @@ const CommentView = ({
             <Textarea control={control} name="markdown" />
             <Stack direction="row-reverse">
               {!isPlaceholder && (
-                <TinyButton onClick={handleSubmit(onSubmit)} disabled={!watchMarkdown}>
+                <TinyButton aria-label="Save" onClick={handleSubmit(onSubmit)} disabled={!watchMarkdown}>
                   <MdSave data-cy={`Comment:${comment.id}:Save`} />
                 </TinyButton>
               )}
               {isPlaceholder && saveComment && (
-                <TinyButton onClick={handleSubmit(onSubmitPlaceholder)} disabled={!watchMarkdown}>
+                <TinyButton aria-label="Save" onClick={handleSubmit(onSubmitPlaceholder)} disabled={!watchMarkdown}>
                   <MdSave data-cy={`Comment:${comment.id}:Save`} />
                 </TinyButton>
               )}
@@ -126,12 +126,12 @@ const CommentView = ({
                 {!isPlaceholder && (
                   <>
                     <Tooltip content="Edit comment">
-                      <TinyButton onClick={onEdit} dataCy={`Comment:${comment.id}:Edit`}>
+                      <TinyButton aria-label="Edit" onClick={onEdit} dataCy={`Comment:${comment.id}:Edit`}>
                         <MdEdit />
                       </TinyButton>
                     </Tooltip>
                     <Tooltip content="Delete comment">
-                      <TinyButton onClick={onDelete} dataCy={`Comment:${comment.id}:Delete`}>
+                      <TinyButton aria-label="Delete" onClick={onDelete} dataCy={`Comment:${comment.id}:Delete`}>
                         <MdDelete />
                       </TinyButton>
                     </Tooltip>
