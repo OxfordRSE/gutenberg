@@ -64,6 +64,9 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
 
     const textRefStart = contentText.indexOf(text)
     const textRefEnd = textRefStart + text.length
+
+    if (!text || textRefStart === -1) return
+
     const buttonRect = ref?.current?.getBoundingClientRect()
     const newThread: CommentThread = createEmptyThread(
       activeEvent.id,
@@ -140,40 +143,36 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
   }
 
   return (
-    <>
-      <div data-cy="paragraph" ref={ref} className="relative pb-2">
-        <div className="m-0 pb-0">{content}</div>
-        {activeEvent && (
-          <div className={`absolute top-0 right-0 md:-right-6 xl:-right-[420px]`}>
-            <div className={`w-[420px]`}>
-              {similarThreads?.map((thread) => (
-                <Thread
-                  key={thread.id}
-                  thread={thread.id}
-                  active={activeThreadId === thread.id}
-                  setActive={(active: boolean) =>
-                    active ? setActiveThreadId(thread.id) : setActiveThreadId(undefined)
-                  }
-                  finaliseThread={finaliseThread}
-                  onDelete={() => handleDeleteThread(thread)}
-                />
-              ))}
-              {tempThread && (
-                <Thread
-                  key={tempThread.thread.id}
-                  thread={tempThread.thread}
-                  active={tempActive}
-                  setActive={setTempActive}
-                  finaliseThread={finaliseThread}
-                  onDelete={() => handleDeleteThread(tempThread.thread)}
-                />
-              )}
-            </div>
+    <div data-cy="paragraph" ref={ref} className="relative pb-2">
+      <div className="m-0 pb-0">{content}</div>
+      {activeEvent && (
+        <div className={`absolute top-0 right-0 md:-right-6 xl:-right-[420px]`}>
+          <div className={`w-[420px]`}>
+            {similarThreads?.map((thread) => (
+              <Thread
+                key={thread.id}
+                thread={thread.id}
+                active={activeThreadId === thread.id}
+                setActive={(active: boolean) => (active ? setActiveThreadId(thread.id) : setActiveThreadId(undefined))}
+                finaliseThread={finaliseThread}
+                onDelete={() => handleDeleteThread(thread)}
+              />
+            ))}
+            {tempThread && (
+              <Thread
+                key={tempThread.thread.id}
+                thread={tempThread.thread}
+                active={tempActive}
+                setActive={setTempActive}
+                finaliseThread={finaliseThread}
+                onDelete={() => handleDeleteThread(tempThread.thread)}
+              />
+            )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
       {activeEvent && <Popover target={ref?.current || undefined} onCreate={handleCreateThread} />}
-    </>
+    </div>
   )
 }
 
