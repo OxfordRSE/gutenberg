@@ -54,7 +54,7 @@
     "isomorphic-dompurify": "^2.16.0",
     "isomorphic-git": "^1.35.0",
     "jotai": "^2.15.1",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^4.1.1",
     "next": "15.5.6",
     "next-auth": "^4.24.13",
     "next-plausible": "3.12.5",
