@@ -4,6 +4,7 @@ import FacebookProvider from "next-auth/providers/facebook"
 import GithubProvider from "next-auth/providers/github"
 import TwitterProvider from "next-auth/providers/twitter"
 import Auth0Provider from "next-auth/providers/auth0"
+import AzureADProvider from "next-auth/providers/azure-ad"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import prisma from "lib/prisma"
 // import AppleProvider from "next-auth/providers/apple"
@@ -40,6 +41,16 @@ export const authOptions: NextAuthOptions = {
     GithubProvider({
       clientId: process.env.GITHUB_ID ? process.env.GITHUB_ID : "clientId",
       clientSecret: process.env.GITHUB_SECRET ? process.env.GITHUB_SECRET : "clientSecret",
+      allowDangerousEmailAccountLinking: true, // NOTE(ADW): Github accounts verify emails so we can allow account linking
+      // otherwise users with email shared between oxford sso and github will get ambiguous errors
+    }),
+    AzureADProvider({
+      clientId: process.env.AZURE_CLIENT_ID ?? "",
+      clientSecret: process.env.AZURE_CLIENT_SECRET ?? "",
+      tenantId: process.env.AZURE_TENANT_ID ?? "common",
+      name: "Oxford SSO",
+      allowDangerousEmailAccountLinking: true, // NOTE(ADW): Oxford SSO accounts verify emails so we can allow account linking
+      // otherwise users with email shared between oxford sso and github will get ambiguous errors
     }),
     /*
     GoogleProvider({
@@ -63,6 +74,13 @@ export const authOptions: NextAuthOptions = {
     colorScheme: "light",
   },
   callbacks: {
+    async signIn({ user, account, profile, email }) {
+      // Remove ext_expires_in before it gets saved to database
+      if (account) {
+        delete (account as any).ext_expires_in
+      }
+      return true
+    },
     async jwt({ token }) {
       token.userRole = "admin"
       return token
