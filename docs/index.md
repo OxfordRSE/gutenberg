@@ -4,6 +4,10 @@ This is the documentation for `Gutenberg`.
 
 [About](/about.md)
 
+## Authentication
+
+See the new [Authentication](config/authentication) page for configuring OAuth providers and secrets.
+
 ## Quick Start
 
 To get `Gutenberg` running follow our quick start guide to deploying and configuring the app.
