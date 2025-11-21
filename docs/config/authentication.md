@@ -25,7 +25,7 @@ authentication:
         hover: "#1b1f23"
         icon: github
     azure-ad:
-      enabled: true      # Enable Oxford SSO
+      enabled: true # Enable Oxford SSO
       name: Oxford SSO
       button:
         color: "#002147"

@@ -6,14 +6,13 @@
 authentication:
   providers:
     github:
-      # enabled: false   # Uncomment to disable GitHub sign-in
+      # enabled: false   # set enabled false to disable GitHub sign-in
       name: GitHub
       button:
         color: "#24292e"
         hover: "#1b1f23"
         icon: github
     azure-ad:
-      # enabled: true    # Uncomment to enable Oxford SSO
       enabled: true
       name: Oxford SSO
       button:
