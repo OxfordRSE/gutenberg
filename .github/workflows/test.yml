@@ -130,6 +130,9 @@ jobs:
             --exclude "essential_maths/essential_maths/" \
             --exclude "sitepoint.com" \
             --exclude "gitbooks.io" \
+            --exclude "docs.python.org" \
+            --exclude "mpich.org" \
+            --exclude "medium.com" \
           ; true)
           echo "$OUTPUT"
 
