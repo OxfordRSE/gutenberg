@@ -38,10 +38,13 @@ jobs:
     env:
       MATERIAL_DIR: ".material"
       NEXT_PUBLIC_BASEPATH: ""
-      NEXTAUTH_URL: http://localhost:3002/gutenberg/api/auth
+      NEXTAUTH_URL: http://localhost:3000/api/auth
       NEXTAUTH_SECRET: "secret here"
-      GITHUB_SECRET: "github_secret"
-      GITHUB_ID: "github_id"
+      GITHUB_ID: "placeholder_github_client_id"
+      GITHUB_SECRET: "placeholder_github_client_secret"
+      AZURE_CLIENT_ID: "placeholder_azure_client_id"
+      AZURE_CLIENT_SECRET: "placeholder_azure_client_secret"
+      AZURE_TENANT_ID: "placeholder_azure_tenant_id"
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/gutenberg
     steps:
       - name: Checkout

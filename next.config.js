@@ -9,6 +9,11 @@ import plausibleHost from "./lib/plausibleHost.js"
 const nextConfig = {
   reactStrictMode: true,
   trailingSlash: false,
+  logging: {
+    fetches: {
+      fullUrl: false,
+    },
+  },
   images: {
     remotePatterns: [
       {

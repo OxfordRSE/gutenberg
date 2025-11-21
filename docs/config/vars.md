@@ -26,7 +26,7 @@ Since these "public" variables are available in the frontend, they should not co
 
 `NEXTAUTH_URL`
 : This is the URL for the Gutenberg NextAuth authentication API, this will be your baseurl followed by "/api/auth" e.g. `localhost:3000/api/auth` for local development deployments.
-This must also match your settings on the github OAuth pages.
+This must also match your callback urls set on your oauth providers (e.g. github).
 
 `NEXTAUTH_SECRET`
 : This is the secret key used by NextAuth for encryption and signing.
@@ -36,6 +36,19 @@ This must also match your settings on the github OAuth pages.
 
 `GITHUB_SECRET`
 : This is the secret key for GitHub authentication, set this up in the GitHub developer settings.
+
+## Additional OAuth Providers
+
+### Azure AD (e.g. Oxford SSO)
+
+`AZURE_CLIENT_ID`
+: This is the client ID for the Azure AD application. Get this from your Azure portal under App registrations.
+
+`AZURE_CLIENT_SECRET`
+: This is the client secret for the Azure AD application. Get this from your Azure portal under App registrations.
+
+`AZURE_TENANT_ID`
+: This is the tenant ID for the Azure AD application, specific to your organization (e.g. for Oxford SSO).
 
 ## Search
 
@@ -48,7 +61,7 @@ The following variables are used for the search functionality, you need both an 
 : This is your API key for OpenAI.
 
 `QDRANT_DB_URL`
-: This is the database URL for the Qdrant database.
+: This is the database URL for the Qdrant vector database.
 
 `QDRANT_COLLECTION_NAME`
 : Default: `gutenberg`
