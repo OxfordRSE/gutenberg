@@ -7128,7 +7128,6 @@ __metadata:
     isomorphic-git: ^1.35.0
     jose: ^4.15.9
     jotai: ^2.15.1
-    js-yaml: ^4.1.1
     next: 15.5.6
     next-auth: ^4.24.13
     next-plausible: 3.12.5
@@ -8182,17 +8181,6 @@ __metadata:
   linkType: hard
 
 "js-yaml@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "js-yaml@npm:4.1.0"
-  dependencies:
-    argparse: ^2.0.1
-  bin:
-    js-yaml: bin/js-yaml.js
-  checksum: c7830dfd456c3ef2c6e355cc5a92e6700ceafa1d14bba54497b34a99f0376cecbb3e9ac14d3e5849b426d5a5140709a66237a8c991c675431271c4ce5504151a
-  languageName: node
-  linkType: hard
-
-"js-yaml@npm:^4.1.1":
   version: 4.1.1
   resolution: "js-yaml@npm:4.1.1"
   dependencies:
