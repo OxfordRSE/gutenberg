@@ -178,12 +178,9 @@ const Content: React.FC<Props> = ({ markdown, theme, course, section }) => {
     if (href.startsWith("#")) return href // anchor link — don't rewrite
 
     const cleanedHref = href.replace(/\.md$/i, "")
-    // if we are in /diagram we need to do one less level
-    //Internal relative links
-    if (!cleanedHref.includes(".") && !cleanedHref.includes("/")) {
-      return href
-    }
 
+    // Check for relative links BEFORE external links to avoid false positives
+    // Relative links starting with ./
     if (cleanedHref.startsWith("./")) {
       const linkedPage = cleanedHref.slice(2)
 
@@ -193,21 +190,46 @@ const Content: React.FC<Props> = ({ markdown, theme, course, section }) => {
       if (theme) return `/material/${theme?.repo}/${linkedPage}`
     }
 
+    // Relative links starting with ../
     if (cleanedHref.startsWith("../")) {
       const linkedPage = cleanedHref.slice(3)
+      // From a section, ../ goes up to the course level, then the linked page is within the theme
       if (section) return `/material/${theme?.repo}/${theme?.id}/${linkedPage}`
+      // From a course, ../ goes up to the theme level, then the linked page is within the repo
       if (course) return `/material/${theme?.repo}/${linkedPage}`
+      // From a theme, ../ goes up to the repo level
+      if (theme) return `/material/${linkedPage}`
       return cleanedHref
     }
 
-    //External links
+    //External links - check after relative links
     if (isLikelyExternal(cleanedHref)) {
       return cleanedHref.startsWith("http") ? href : `https://${href}`
     }
 
-    //Internal absolute
-    const absolutePath = cleanedHref.replace(/^\/+/, "")
-    return `/material/${theme?.repo}/${absolutePath}`
+    // Bare links without ./ or ../ prefix (sibling sections in same course)
+    // These are relative to the current course directory
+    if (!cleanedHref.includes("/") && !cleanedHref.startsWith("http")) {
+      // Treat as sibling section within the same course
+      if (section && course && theme) {
+        return `/material/${theme.repo}/${theme.id}/${course.id}/${cleanedHref}`
+      }
+      if (course && theme) {
+        return `/material/${theme.repo}/${theme.id}/${cleanedHref}`
+      }
+      if (theme) {
+        return `/material/${theme.repo}/${cleanedHref}`
+      }
+    }
+
+    //Internal absolute paths starting with /
+    if (cleanedHref.startsWith("/")) {
+      const absolutePath = cleanedHref.replace(/^\/+/, "")
+      return `/material/${theme?.repo}/${absolutePath}`
+    }
+
+    // Fallback for other cases - treat as absolute path
+    return `/material/${theme?.repo}/${cleanedHref}`
   }
 
   markdown = replaceBaseUrl(markdown) // we look for {{ base_url }} and replace it with a domain/material/${theme.repo}
