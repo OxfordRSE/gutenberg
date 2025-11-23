@@ -1,7 +1,6 @@
 ---
 Title: Docker & Compose
 permalink: /development/docker
-
 ---
 
 Gutenberg supports Docker workflows for both production deployment and active local development.:
@@ -51,7 +50,7 @@ Characteristics:
 
 In `docker-compose.yml` you can change build args:
 
-- `YAML_TEMPLATE` – switch to another  config file.
+- `YAML_TEMPLATE` – switch to another config file.
 - `MATERIAL_METHOD` – defaults to pulling fresh material; set to `copy` if you intend to bake a locally checked out material folder at build time.
 
 If you want iterative editing of material or code, switch to the dev workflow below instead of repeatedly rebuilding this image.
