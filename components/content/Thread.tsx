@@ -73,7 +73,7 @@ function useResolveThread(thread: number | CommentThread) {
 
 const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadProps) => {
   const { commentThread, threadId, commentThreadIsLoading, isPlaceholder, mutate } = useResolveThread(thread)
-  const { isLoading: userIsLoading } = useUser(commentThread?.createdByEmail)
+  const { user: createdByUser, isLoading: userIsLoading } = useUser(commentThread?.createdByEmail)
   const { userProfile, isLoading: profileLoading } = useProfile()
   const [activeEvent] = useActiveEvent()
 
@@ -133,6 +133,7 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadP
         canEdit={canEdit}
         canResolve={canResolve}
         commentThread={commentThread}
+        createdByUser={createdByUser}
         finaliseThread={finaliseThread}
         handleClose={handleClose}
         isPlaceholder={isPlaceholder}

@@ -10,12 +10,12 @@ import { IoClose } from "react-icons/io5"
 import { MdDelete } from "react-icons/md"
 
 import { CommentThread, Comment } from "pages/api/commentThread"
+import { User } from "pages/api/user/[email]"
 import postComment from "lib/actions/postComment"
 import deleteCommentThread from "lib/actions/deleteThread"
 import putCommentThread from "lib/actions/putCommentThread"
 import CommentView from "./Comment"
 import { TinyButton } from "./Thread"
-import useUser from "lib/hooks/useUser"
 
 interface ThreadDialogProps {
   active: boolean
@@ -23,6 +23,7 @@ interface ThreadDialogProps {
   canEdit: boolean
   canResolve: boolean
   commentThread: CommentThread
+  createdByUser?: Partial<User>
   finaliseThread: (thread: CommentThread, comment: Comment) => void
   handleClose: () => void
   isPlaceholder: boolean
@@ -37,6 +38,7 @@ const ThreadDialog: FC<ThreadDialogProps> = ({
   canEdit,
   canResolve,
   commentThread,
+  createdByUser,
   finaliseThread,
   handleClose,
   isPlaceholder,
@@ -45,7 +47,6 @@ const ThreadDialog: FC<ThreadDialogProps> = ({
   ref,
 }) => {
   const [threadEditing, setThreadEditing] = useState(false)
-  const { user } = useUser(commentThread?.createdByEmail)
 
   const threadId = commentThread.id
 
@@ -157,7 +158,7 @@ const ThreadDialog: FC<ThreadDialogProps> = ({
         <Tooltip
           content={
             <>
-              <span className="block text-sm">{user?.name}</span>
+              <span className="block text-sm">{createdByUser?.name}</span>
               <span className="block truncate text-sm font-medium">{commentThread?.createdByEmail}</span>
               <span className="block text-sm">
                 {commentThread?.created
@@ -168,7 +169,11 @@ const ThreadDialog: FC<ThreadDialogProps> = ({
           }
         >
           <Stack direction="row" spacing={2} className="justify-center">
-            <Avatar sx={{ width: 32, height: 32 }} src={user?.image || undefined} alt={user?.name || "Sign in"} />
+            <Avatar
+              sx={{ width: 32, height: 32 }}
+              src={createdByUser?.image || undefined}
+              alt={createdByUser?.name || "Sign in"}
+            />
             {commentThread?.resolved === true && (
               <GoIssueClosed
                 className="h-6 w-6 font-bold text-green dark:text-green-600"
