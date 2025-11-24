@@ -268,5 +268,94 @@ describe("Paragraph", () => {
       cy.get('[data-cy="new-comment-button"]').click()
       cy.get('[data-cy="new-comment-form"]').should("be.visible")
     })
+
+    describe("Accessibility", () => {
+      it("opens thread via keyboard and focuses the dialog", () => {
+        const mountParagraph = () => {
+          cy.mount(
+            <div className="mt-4 pt-4">
+              <div className="mt-4 pt-4">
+                <Paragraph section={"test-comment"} content={"paragraph test comment"} />
+              </div>
+            </div>
+          )
+        }
+        mountParagraph()
+        // Focus the button directly for testing
+        cy.get('[data-cy="Thread:1:OpenCloseButton"] button').focus()
+        cy.focused().should("have.attr", "aria-expanded", "false")
+        cy.realPress("Enter")
+        cy.wait(100)
+        cy.get('[data-cy="Thread:1:Main"]').should("have.attr", "open")
+        cy.focused().should("have.attr", "data-cy", "Thread:1:Main")
+        cy.get('[data-cy="Thread:1:OpenCloseButton"] button').should("have.attr", "aria-expanded", "true")
+      })
+
+      it("keeps dialog controls in the focus order then restores focus on close", () => {
+        const mountParagraph = () => {
+          cy.mount(
+            <div className="mt-4 pt-4">
+              <div className="mt-4 pt-4">
+                <Paragraph section={"test-comment"} content={"paragraph test comment"} />
+              </div>
+            </div>
+          )
+        }
+        mountParagraph()
+        // Open the dialog
+        cy.get('[data-cy="Thread:1:OpenCloseButton"] button').click()
+        cy.wait(100)
+        // Focus should be on the dialog
+        cy.focused().should("have.attr", "data-cy", "Thread:1:Main")
+        // Tab through dialog controls
+        cy.realPress("Tab")
+        cy.focused().should("exist")
+        // Close dialog with Escape
+        cy.realPress("Escape")
+        cy.wait(100)
+        // Focus should return to the button
+        cy.get('[data-cy="Thread:1:OpenCloseButton"] button').should("have.focus")
+      })
+
+      it("has proper ARIA attributes on the open/close button", () => {
+        const mountParagraph = () => {
+          cy.mount(
+            <div className="mt-4 pt-4">
+              <div className="mt-4 pt-4">
+                <Paragraph section={"test-comment"} content={"paragraph test comment"} />
+              </div>
+            </div>
+          )
+        }
+        mountParagraph()
+        cy.get('[data-cy="Thread:1:OpenCloseButton"] button')
+          .should("have.attr", "aria-label", "Read comments")
+          .and("have.attr", "aria-haspopup", "dialog")
+          .and("have.attr", "aria-expanded", "false")
+      })
+
+      it("updates aria-expanded when dialog opens and closes", () => {
+        const mountParagraph = () => {
+          cy.mount(
+            <div className="mt-4 pt-4">
+              <div className="mt-4 pt-4">
+                <Paragraph section={"test-comment"} content={"paragraph test comment"} />
+              </div>
+            </div>
+          )
+        }
+        mountParagraph()
+        // Initially closed
+        cy.get('[data-cy="Thread:1:OpenCloseButton"] button').should("have.attr", "aria-expanded", "false")
+        // Open dialog
+        cy.get('[data-cy="Thread:1:OpenCloseButton"] button').click()
+        cy.wait(100)
+        cy.get('[data-cy="Thread:1:OpenCloseButton"] button').should("have.attr", "aria-expanded", "true")
+        // Close dialog
+        cy.get('[data-cy="Thread:1:CloseButton"]').click()
+        cy.wait(100)
+        cy.get('[data-cy="Thread:1:OpenCloseButton"] button').should("have.attr", "aria-expanded", "false")
+      })
+    })
   })
 })

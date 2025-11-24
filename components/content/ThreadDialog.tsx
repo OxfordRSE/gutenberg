@@ -2,7 +2,7 @@ import { Stack } from "@mui/system"
 import Avatar from "@mui/material/Avatar"
 import { Tooltip, Dropdown } from "flowbite-react"
 import { Provider } from "jotai"
-import { FC, Ref, useMemo, useRef, useState } from "react"
+import { FC, Ref, useEffect, useMemo, useState } from "react"
 import { BiDotsVerticalRounded, BiReply } from "react-icons/bi"
 import { GoIssueClosed } from "react-icons/go"
 import { ImEyeBlocked, ImEye } from "react-icons/im"
@@ -95,6 +95,20 @@ const ThreadDialog: FC<ThreadDialogProps> = ({
     }
   }
 
+  useEffect(() => {
+    if (!active) return
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault()
+        handleClose()
+      }
+    }
+
+    window.addEventListener("keydown", handleEscape)
+    return () => window.removeEventListener("keydown", handleEscape)
+  }, [active, handleClose])
+
   const handleReply = () => {
     if (!commentThread || isPlaceholder) return
     postComment(threadId).then((comment: Comment) => {
@@ -130,6 +144,7 @@ const ThreadDialog: FC<ThreadDialogProps> = ({
       open={active}
       ref={ref}
       className="absolute w-[355px] border border-gray-200 rounded-lg bg-slate-50 dark:bg-slate-900 dark:border-gray-700 z-50"
+      tabIndex={-1}
       style={{
         margin: 0,
         top: `${popupPosition.top}px`,
