@@ -83,7 +83,7 @@ describe("CommentThread component", () => {
       cy.intercept(`/api/commentThread/${threadId}`, { commentThread: thread }).as("initialThread")
       cy.intercept(`/api/user/${createdByEmail}`, { user: createdByUser }).as("createdByUser")
       cy.intercept(`/api/user/${currentUserEmail}`, { user: currentUser }).as("currentUser")
-      cy.stub(localStorage, "getItem").returns("1")
+      cy.window().then((win) => win.localStorage.setItem("activeEvent", "1"))
       cy.intercept(`/api/event/1`, { event }).as("event")
 
       const setActiveSpy = cy.spy().as("setActive")
@@ -234,7 +234,7 @@ describe("CommentThread component", () => {
       cy.intercept(`/api/commentThread/${threadId}`, { commentThread: thread }).as("thread")
       cy.intercept(`/api/user/${currentUserEmail}`, { user: currentUser }).as("currentUser")
       cy.intercept("DELETE", `/api/comment/1`, { comment: thread.Comment[0] }).as("comment1")
-      cy.stub(localStorage, "getItem").returns("1")
+      cy.window().then((win) => win.localStorage.setItem("activeEvent", "1"))
       cy.intercept(`/api/event/1`, { event }).as("event")
       const setActiveSpy = cy.spy().as("setActive")
       const onDeleteSpy = cy.spy().as("onDelete")
@@ -362,7 +362,7 @@ describe("CommentThread component", () => {
     beforeEach(() => {
       cy.intercept(`/api/commentThread/${threadId}`, { commentThread: thread }).as("thread")
       cy.intercept(`/api/user/${currentUserEmail}`, { user: currentUser }).as("currentUser")
-      cy.stub(localStorage, "getItem").returns("1")
+      cy.window().then((win) => win.localStorage.setItem("activeEvent", "1"))
       cy.intercept(`/api/event/1`, { event }).as("event")
       const setActiveSpy = cy.spy().as("setActive")
       const onDeleteSpy = cy.spy().as("onDelete")
@@ -395,6 +395,92 @@ describe("CommentThread component", () => {
       cy.get('[data-cy="Thread:1:Delete"]').should("be.visible")
       cy.get('[data-cy="Thread:1:Delete"]').click()
       cy.get("@onDelete").should("be.called")
+    })
+
+    describe("Accessibility", () => {
+      const ThreadWithState = () => {
+        const [active, setActive] = React.useState(true)
+        return (
+          <Thread
+            thread={threadId}
+            active={active}
+            setActive={setActive}
+            onDelete={() => {}}
+            finaliseThread={() => {}}
+          />
+        )
+      }
+
+      beforeEach(() => {
+        cy.intercept(`/api/commentThread/${threadId}`, { commentThread: thread }).as("threadForA11y")
+        cy.intercept(`/api/user/${createdByEmail}`, { user: createdByUser }).as("createdByUserForA11y")
+        cy.intercept(`/api/user/${currentUserEmail}`, { user: currentUser }).as("currentUserForA11y")
+        // Set activeEvent directly to avoid repeated stubbing of localStorage.getItem
+        cy.window().then((win) => win.localStorage.setItem("activeEvent", "1"))
+        cy.intercept(`/api/event/1`, { event }).as("eventForA11y")
+
+        const now = new Date()
+        const tenMinutesFromNow = new Date()
+        tenMinutesFromNow.setTime(now.getTime() + 10 * 60 * 1000)
+
+        cy.mount(<ThreadWithState />, { session: { expires: tenMinutesFromNow, user: currentUser } })
+      })
+
+      it("open/close button has proper ARIA attributes", () => {
+        cy.get('[data-cy="Thread:1:OpenCloseButton"] button')
+          .should("have.attr", "aria-label", "Read comments")
+          .and("have.attr", "aria-haspopup", "dialog")
+          .and("have.attr", "aria-expanded")
+      })
+
+      it("toggles aria-expanded on open and close", () => {
+        cy.get('[data-cy="Thread:1:OpenCloseButton"] button').should("have.attr", "aria-expanded", "true")
+        cy.get('[data-cy="Thread:1:CloseButton"]').click()
+        cy.wait(100)
+        cy.get('[data-cy="Thread:1:OpenCloseButton"] button').should("have.attr", "aria-expanded", "false")
+        cy.get('[data-cy="Thread:1:OpenCloseButton"] button').click()
+        cy.wait(100)
+        cy.get('[data-cy="Thread:1:OpenCloseButton"] button').should("have.attr", "aria-expanded", "true")
+      })
+
+      it("restores focus to button when dialog closes", () => {
+        // Close and reopen to test focus restoration
+        cy.get('[data-cy="Thread:1:CloseButton"]').click()
+        cy.wait(100)
+        cy.get('[data-cy="Thread:1:OpenCloseButton"] button').click()
+        cy.wait(100)
+        cy.get('[data-cy="Thread:1:CloseButton"]').click()
+        cy.wait(100)
+        cy.get('[data-cy="Thread:1:OpenCloseButton"] button').should("have.focus")
+      })
+
+      it("focuses dialog when opened via keyboard", () => {
+        cy.get('[data-cy="Thread:1:CloseButton"]').click()
+        cy.wait(100)
+        cy.get('[data-cy="Thread:1:OpenCloseButton"] button').focus()
+        cy.realPress("Enter")
+        cy.wait(150)
+        cy.focused().should("have.attr", "data-cy", "Thread:1:Main")
+      })
+
+      it("dialog has proper role and can be dismissed with Escape", () => {
+        cy.get('[data-cy="Thread:1:Main"]').should("have.prop", "tagName", "DIALOG").and("have.prop", "open", true)
+        // Focus the dialog and send Escape via type() so the onKeyDown handler fires.
+        cy.get('[data-cy="Thread:1:Main"]').focus().type("{esc}")
+        cy.wait(75)
+        cy.get('[data-cy="Thread:1:Main"]').should("have.prop", "open", false)
+        cy.get('[data-cy="Thread:1:OpenCloseButton"] button').should("have.focus")
+      })
+
+      it("dialog receives focus when opened", () => {
+        // Close dialog first
+        cy.get('[data-cy="Thread:1:CloseButton"]').click()
+        cy.wait(100)
+        // Reopen and check focus
+        cy.get('[data-cy="Thread:1:OpenCloseButton"] button').click()
+        cy.wait(150)
+        cy.focused().should("have.attr", "data-cy", "Thread:1:Main")
+      })
     })
   })
 })
