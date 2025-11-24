@@ -1,0 +1,21 @@
+##
+# Provider enablement:
+# - GitHub is enabled by default unless you set `enabled: false` below.
+# - All other providers are disabled unless you set `enabled: true`.
+#
+authentication:
+  providers:
+    github:
+      # enabled: false   # set enabled false to disable GitHub sign-in
+      name: GitHub
+      button:
+        color: "#24292e"
+        hover: "#1b1f23"
+        icon: github
+    azure-ad:
+      enabled: true
+      name: Oxford SSO
+      button:
+        color: "#002147"
+        hover: "#001a38"
+        icon: shield

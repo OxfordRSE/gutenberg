@@ -38,21 +38,24 @@ jobs:
     env:
       MATERIAL_DIR: ".material"
       NEXT_PUBLIC_BASEPATH: ""
-      NEXTAUTH_URL: http://localhost:3002/gutenberg/api/auth
+      NEXTAUTH_URL: http://localhost:3000/api/auth
       NEXTAUTH_SECRET: "secret here"
-      GITHUB_SECRET: "github_secret"
-      GITHUB_ID: "github_id"
+      GITHUB_ID: "placeholder_github_client_id"
+      GITHUB_SECRET: "placeholder_github_client_secret"
+      AZURE_CLIENT_ID: "placeholder_azure_client_id"
+      AZURE_CLIENT_SECRET: "placeholder_azure_client_secret"
+      AZURE_TENANT_ID: "placeholder_azure_tenant_id"
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/gutenberg
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Enable corepack
         shell: bash
         run: corepack enable
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: "22"
+          node-version-file: .nvmrc
           cache: ${{ env.MANAGER }}
       - name: Restore cache
         uses: actions/cache@v4
@@ -92,14 +95,14 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Enable corepack
         shell: bash
         run: corepack enable
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: "22"
+          node-version-file: .nvmrc
           cache: ${{ env.MANAGER }}
 
       - name: Install broken-link-checker
@@ -130,6 +133,9 @@ jobs:
             --exclude "essential_maths/essential_maths/" \
             --exclude "sitepoint.com" \
             --exclude "gitbooks.io" \
+            --exclude "docs.python.org" \
+            --exclude "mpich.org" \
+            --exclude "medium.com" \
           ; true)
           echo "$OUTPUT"
 
@@ -164,7 +170,7 @@ jobs:
   docker-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: docker compose build
         run: docker compose -f docker-compose.yml build
       - name: docker compose up
@@ -180,15 +186,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-and-test
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
+      - uses: actions/checkout@v5
       - name: Enable corepack
         shell: bash
         run: corepack enable
-      - uses: actions/setup-python@v5
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: "yarn"
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Checkout course material
