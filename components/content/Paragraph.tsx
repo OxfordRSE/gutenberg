@@ -29,7 +29,6 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
   const [activeThreadId, setActiveThreadId] = useState<number | undefined>(undefined)
   const [tempThread, setTempThread] = useState<{
     thread: CommentThread
-    initialAnchor?: { top: number; left: number }
   } | null>(null)
   const [tempActive, setTempActive] = useState<boolean>(false)
   const email = useSession().data?.user?.email
@@ -76,7 +75,6 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
     )
     setTempThread({
       thread: newThread,
-      initialAnchor: buttonRect ? { top: buttonRect.top + window.scrollY, left: buttonRect.left + 355 } : undefined,
     })
     setTempActive(true)
   }
@@ -129,7 +127,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
       const newThreads = commentThreads ? [...commentThreads, thread] : [thread]
       mutate(newThreads)
       setTempThread(null)
-      setActiveThreadId(thread.id)
+      setActiveThreadId(undefined) // close the active thread popup
     })
   }
 
@@ -168,7 +166,6 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
                   setActive={setTempActive}
                   finaliseThread={finaliseThread}
                   onDelete={() => handleDeleteThread(tempThread.thread)}
-                  initialAnchor={tempThread.initialAnchor}
                 />
               )}
             </div>
