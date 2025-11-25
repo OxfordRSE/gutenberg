@@ -7,6 +7,7 @@ import { withPlausibleProxy } from "next-plausible"
 import plausibleHost from "./lib/plausibleHost.js"
 
 const nextConfig = {
+  output: "standalone",
   reactStrictMode: true,
   trailingSlash: false,
   logging: {
