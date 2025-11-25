@@ -32,4 +32,14 @@ describe("event page admin", () => {
     cy.contains("button", "Edit").click()
     cy.get('[data-cy="textfield-name"]').should("be.visible")
   })
+
+  it("loads edit tab from hash", () => {
+    cy.wait(500) // wait for initial load to finish
+    cy.visit("/event/1#edit")
+    cy.get('[data-cy="textfield-name"]').should("be.visible")
+    cy.location("hash").should("eq", "#edit")
+    cy.contains("button", "Event").click()
+    cy.get('[data-cy="textfield-name"]').should("not.be.visible")
+    cy.location("hash").should("eq", "")
+  })
 })
