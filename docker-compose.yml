@@ -10,12 +10,13 @@ services:
       - NGINX_HOST=localhost
       - NGINX_PORT=8080
       - NGINX_PROXY_PASS=http://gutenberg:3000
+    restart: always
     depends_on:
       gutenberg:
         condition: service_started
 
   db:
-    image: postgres
+    image: postgres:17
     restart: always
     shm_size: 128mb
     environment:
