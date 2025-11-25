@@ -5,7 +5,7 @@ ARG MATERIAL_METHOD=copy
 
 # Define the Python version to use
 ARG PYTHON_VERSION=3.12.3-slim
-ARG NODE_VERSION=jod-alpine
+ARG NODE_VERSION=krypton-alpine
 
 ####
 # MATERIAL OPTION: PULL
@@ -78,7 +78,7 @@ COPY prisma ./prisma
 RUN corepack enable && yarn install --immutable
 COPY . .
 
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Add `ARG` instructions below if you need `NEXT_PUBLIC_` variables
 # then put the value on your fly.toml or github secrets
@@ -90,17 +90,23 @@ ENV NEXT_TELEMETRY_DISABLED 1
 # so we'll use dotenv to load the .env.local file
 RUN npm install -g dotenv-cli
 ARG DATABASE_URL
-ENV DATABASE_URL ${DATABASE_URL}
+ENV DATABASE_URL=${DATABASE_URL}
 ARG NEXT_PUBLIC_PLAUSIBLE_DOMAIN
-ENV NEXT_PUBLIC_PLAUSIBLE_DOMAIN ${NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
+ENV NEXT_PUBLIC_PLAUSIBLE_DOMAIN=${NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
 ARG NEXT_PUBLIC_PLAUSIBLE_HOST
-ENV NEXT_PUBLIC_PLAUSIBLE_HOST ${NEXT_PUBLIC_PLAUSIBLE_HOST}
+ENV NEXT_PUBLIC_PLAUSIBLE_HOST=${NEXT_PUBLIC_PLAUSIBLE_HOST}
 
 # Copy the course material into this container for the build
 ARG MATERIAL_DIR=.material
 COPY --from=material /app/${MATERIAL_DIR} /app/${MATERIAL_DIR}
 
 RUN yarn build
+
+# Prepare standalone output
+# Next.js standalone puts everything in .next/standalone/ already organized
+RUN cp -r .next/standalone /app/standalone && \
+    cp -r .next/static /app/standalone/.next/static && \
+    cp -r public /app/standalone/public
 
 # If using npm comment out above and use below instead
 # RUN npm run build
@@ -115,9 +121,38 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
-COPY --from=builder --chown=nextjs:nextjs /app ./
-COPY ./prisma /app/prisma
+
+# Install prisma globally for migrations (can't just copy - complex dependency structure)
+RUN npm install -g prisma@6.19.0
+
+# Enable corepack for yarn
 RUN corepack enable
+
+# Install minimal dependencies needed for cron job
+# tsx for TypeScript execution, dotenv-cli for env vars, plus cron job dependencies
+RUN npm install -g tsx@4.20.6 dotenv-cli@7.4.4 && \
+    npm install simple-git@3.30.0 js-yaml@4.1.1 cron@2.4.4
+
+# Copy the complete standalone output (includes .next, public, server.js, etc)
+COPY --from=builder --chown=nextjs:nextjs /app/standalone ./
+
+# Copy material directory
+ARG MATERIAL_DIR=.material
+COPY --from=builder --chown=nextjs:nextjs /app/${MATERIAL_DIR} ./${MATERIAL_DIR}
+
+# Copy prisma directory for migrations
+COPY --from=builder --chown=nextjs:nextjs /app/prisma ./prisma
+
+# Copy scripts and lib for cron job
+COPY --from=builder --chown=nextjs:nextjs /app/scripts ./scripts
+COPY --from=builder --chown=nextjs:nextjs /app/lib ./lib
+
+# Copy config folder and env files needed for cron
+COPY --from=builder --chown=nextjs:nextjs /app/config ./config
+COPY --from=builder --chown=nextjs:nextjs /app/.env* ./
+
+# Copy entrypoint script
+COPY --from=builder --chown=nextjs:nextjs /app/entrypoint.sh ./entrypoint.sh
 
 USER nextjs
 

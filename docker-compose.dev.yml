@@ -4,7 +4,7 @@ x-vol-args: &args
 
 services:
   db:
-    image: postgres
+    image: postgres:17
     restart: always
     shm_size: 128mb
     environment:
