@@ -8,6 +8,7 @@ import { SelectChangeEvent } from "@mui/material"
 import { HiSwitchHorizontal } from "react-icons/hi"
 import { GoArrowRight } from "react-icons/go"
 import { PageTemplate } from "lib/pageTemplate"
+import Image from "next/image"
 
 interface EventSwitcherProps {
   pageInfo: PageTemplate
@@ -115,7 +116,7 @@ const EventSwitcher: React.FC<EventSwitcherProps> = ({ pageInfo }) => {
           {/* Center: logo */}
           <div className="flex-1 flex justify-center">
             <Link href="/" className="hover:opacity-80">
-              <img src={pageInfo.logo.src} alt={pageInfo.logo.alt} className="h-8 w-auto" />
+              <Image src={pageInfo.logo.src} alt={pageInfo.logo.alt} className="h-8 w-auto" />
             </Link>
           </div>
           <div className="w-[50px]" aria-hidden="true"></div> {/* Right: empty space to balance the layout */}

@@ -8,9 +8,8 @@ import { Problem } from "@prisma/client"
 import { EventFull as Event, UserOnEvent } from "lib/types"
 import useProfile from "lib/hooks/useProfile"
 import useUserEvents from "lib/hooks/useUserEvents"
-import { PageTemplate } from "lib/pageTemplate"
+import { loadPageTemplate, PageTemplate } from "lib/pageTemplate"
 import ProfileEventView from "components/event/ProfileEventView"
-import { pageTemplate } from "lib/pageTemplate"
 
 type EventProps = {
   material: Material
@@ -90,7 +89,7 @@ const Profile: NextPage<EventProps> = ({ material, pageInfo }) => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   let material = await getMaterial()
-  let pageInfo = pageTemplate
+  let pageInfo = loadPageTemplate()
 
   removeMarkdown(material, undefined)
 

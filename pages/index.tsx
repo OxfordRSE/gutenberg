@@ -14,6 +14,7 @@ import { Markdown } from "components/content/Content"
 import { useSession } from "next-auth/react"
 import revalidateTimeout from "lib/revalidateTimeout"
 import Title from "components/ui/Title"
+import Image from "next/image"
 
 type HomeProps = {
   material: Material
@@ -31,7 +32,7 @@ const Home: NextPage<HomeProps> = ({ material, events, pageInfo }) => {
   return (
     <Layout material={material} pageInfo={pageInfo} pageTitle={pageInfo.title}>
       <div className="flex items-center justify-center gap-3 p-3">
-        <img src={pageInfo.logo.src} alt={pageInfo.logo.alt} className="h-10 w-auto" />
+        <Image src={pageInfo.logo.src} alt={pageInfo.logo.alt} className="h-10 w-auto" />
         <Title text={pageInfo.title} className="text-3xl font-bold text-center" style={{ marginBottom: "0px" }} />
       </div>
       <div className="px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32  grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">

@@ -6,7 +6,7 @@ import { Material, getMaterial, removeMarkdown } from "lib/material"
 import Content from "components/content/Content"
 import NavDiagram from "components/navdiagram/NavDiagram"
 import { EventFull as Event } from "lib/types"
-import { pageTemplate, PageTemplate } from "lib/pageTemplate"
+import { loadPageTemplate, PageTemplate } from "lib/pageTemplate"
 
 type HomeProps = {
   material: Material
@@ -24,7 +24,7 @@ const Home: NextPage<HomeProps> = ({ material, events, pageInfo }) => {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const pageInfo = pageTemplate
+  const pageInfo = loadPageTemplate()
   const events = await prisma.event
     .findMany({
       where: { hidden: false },
