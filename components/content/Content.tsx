@@ -1,6 +1,6 @@
 import React, { JSX, ReactNode, useRef } from "react"
 import ReactMarkdown, { ExtraProps, Components } from "react-markdown"
-import { Prism as SyntaxHighlighter, SyntaxHighlighterProps } from "react-syntax-highlighter"
+import { Prism, SyntaxHighlighterProps } from "react-syntax-highlighter"
 import CopyToClipboard from "components/ui/CopyToClipboard"
 import { FaClipboard } from "react-icons/fa"
 
@@ -23,11 +23,7 @@ import Heading from "./Heading"
 import { reduceRepeatingPatterns, extractTextValues } from "lib/utils"
 import Link from "next/link"
 
-import tomlPatched from "lib/toml-patch"
-import { refractor } from "refractor"
-
-// Register TOML with refractor (used by react-syntax-highlighter)
-tomlPatched(refractor)
+const SyntaxHighlighter = Prism as any as React.FC<SyntaxHighlighterProps>
 
 type ReactMarkdownProps = React.JSX.IntrinsicElements["p"] & ExtraProps
 type HeadingProps = React.JSX.IntrinsicElements["h2"] & ExtraProps
