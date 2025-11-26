@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react"
+import React, { useMemo, useRef, useState, startTransition } from "react"
 
 import similarity from "wink-nlp/utilities/similarity"
 
@@ -65,9 +65,6 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
     const textRefStart = contentText.indexOf(text)
     const textRefEnd = textRefStart + text.length
 
-    if (!text || textRefStart === -1) return
-
-    const buttonRect = ref?.current?.getBoundingClientRect()
     const newThread: CommentThread = createEmptyThread(
       activeEvent.id,
       section,
