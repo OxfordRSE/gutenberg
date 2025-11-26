@@ -115,7 +115,7 @@ const EventSwitcher: React.FC<EventSwitcherProps> = ({ pageInfo }) => {
           {/* Center: logo */}
           <div className="flex-1 flex justify-center">
             <Link href="/" className="hover:opacity-80">
-              <img src={pageInfo.logo.src} alt={pageInfo.logo.alt} className="h-10 w-auto" />
+              <img src={pageInfo.logo.src} alt={pageInfo.logo.alt} className="h-8 w-auto" />
             </Link>
           </div>
           <div className="w-[50px]" aria-hidden="true"></div> {/* Right: empty space to balance the layout */}
