@@ -269,6 +269,34 @@ describe("Paragraph", () => {
       cy.get('[data-cy="new-comment-form"]').should("be.visible")
     })
 
+    it("new comment button on special chars", () => {
+      cy.mount(
+        <div className="mt-4 pt-4">
+          <div className="mt-4 pt-4">
+            <Paragraph section={"test"} content={"P()`a()`r`a`)))g`r`a`p`h` `t`(e`s`t`"} />
+          </div>
+        </div>
+      )
+      cy.get('[data-cy="new-comment-button"]').should("not.exist")
+      cy.get('[data-cy="paragraph"]')
+        .trigger("mousedown", { which: 1, x: 10, y: 10 })
+        .wait(100)
+        .then(($el) => {
+          const el = $el[0]
+          const document = el.ownerDocument
+          const range = document.createRange()
+          range.selectNodeContents(el)
+          document.getSelection()?.removeAllRanges()
+          document.getSelection()?.addRange(range)
+        })
+        .trigger("mouseup", { which: 1, x: 70, y: 10 })
+      cy.document().trigger("selectionchange")
+      cy.get('[data-cy="new-comment-button"]').should("be.visible")
+      cy.get('[data-cy="new-comment-form"]').should("not.exist")
+      cy.get('[data-cy="new-comment-button"]').click()
+      cy.get('[data-cy="new-comment-form"]').should("be.visible")
+    })
+
     describe("Accessibility", () => {
       it("opens thread via keyboard and focuses the dialog", () => {
         const mountParagraph = () => {

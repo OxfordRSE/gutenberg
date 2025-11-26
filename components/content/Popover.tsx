@@ -1,41 +1,46 @@
-import exp from "constants"
 import { Button } from "flowbite-react"
-import useActiveEvent from "lib/hooks/useActiveEvents"
-import { CommentThread } from "pages/api/commentThread"
-import React from "react"
-import { createPortal } from "react-dom"
+import { CSSProperties, useEffect, useRef } from "react"
 import { BiCommentAdd } from "react-icons/bi"
 import { useTextSelection } from "use-text-selection"
 
-interface PortalProps {
-  children: React.ReactNode
-}
-
-const Portal = ({ children }: PortalProps) => {
-  return createPortal(children, document.body)
+// TODO: move this into a stylesheet.
+const popoverStyle: CSSProperties = {
+  position: "absolute",
+  background: "transparent",
+  inset: "unset",
 }
 
 const Popover = ({ target, onCreate }: { target?: HTMLElement; onCreate: (text: string) => void }) => {
-  const { isCollapsed, clientRect, textContent } = useTextSelection(target)
+  const { clientRect, textContent } = useTextSelection(target)
+  const popoverRef = useRef<HTMLDivElement>(null)
 
-  if (clientRect == undefined || isCollapsed) return null
+  useEffect(() => {
+    if (textContent) {
+      popoverRef.current?.showPopover()
+    } else {
+      popoverRef.current?.hidePopover()
+    }
+  }, [textContent])
+
+  const onClick = () => {
+    if (textContent) {
+      onCreate(textContent)
+    }
+    popoverRef.current?.hidePopover()
+  }
+
+  if (popoverRef.current) {
+    popoverRef.current.style.left = clientRect ? `${clientRect.left + clientRect.width / 2 - 25}px` : "0"
+    popoverRef.current.style.top = clientRect ? `${clientRect.top - 50 + window.scrollY}px` : "0"
+  }
 
   return (
-    <Portal>
-      <Button
-        data-cy="new-comment-button"
-        style={{
-          left: clientRect.x + clientRect.width / 2 - 25,
-          top: clientRect.y - 50 + window.scrollY,
-          position: "absolute",
-        }}
-        size="xs"
-        onClick={() => textContent && onCreate(textContent)}
-      >
+    <div popover="manual" ref={popoverRef} style={popoverStyle} className="z-50">
+      <Button data-cy="new-comment-button" size="xs" onClick={onClick}>
         <BiCommentAdd className="h-5 w-5 mr-1" />
         Comment
       </Button>
-    </Portal>
+    </div>
   )
 }
 
