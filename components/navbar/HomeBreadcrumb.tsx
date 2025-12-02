@@ -1,5 +1,4 @@
 import Link from "next/link"
-import Image from "next/image"
 import type { PageTemplate } from "lib/pageTemplate"
 
 export function HomeBreadcrumb({ pageInfo }: { pageInfo?: PageTemplate }) {
@@ -12,7 +11,8 @@ export function HomeBreadcrumb({ pageInfo }: { pageInfo?: PageTemplate }) {
         className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
         aria-label="Home"
       >
-        <Image src={pageInfo.logo.src} alt="Home" className="w-8 h-8 mr-2" />
+        {/* Using img instead of next/image due to unknown aspect ratio */}
+        <img src={pageInfo.logo.src} alt="Home" className="w-8 h-8 mr-2" />
       </Link>
     )
   }
