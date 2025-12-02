@@ -18,6 +18,7 @@ import Drawer from "@mui/material/Drawer"
 import CloseIcon from "@mui/icons-material/Close"
 import Box from "@mui/material/Box"
 import useWindowSize from "lib/hooks/useWindowSize"
+import Image from "next/image"
 
 interface Props {
   material: Material
@@ -129,171 +130,178 @@ const Navbar: React.FC<Props> = ({
     <div className="z-10 flex p-2 mx-2 mt-2 mb-4 text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 justify-between">
       {/* {windowSize.width} */}
       {(windowSize.width ?? 1024) >= 1024 ? (
-        <nav className="w-full inline-flex" aria-label="Breadcrumb">
-          <ol className="z-10 list-none inline-flex items-center space-x-1 md:space-x-3">
-            {isLoggedIn && (
-              <>
-                <HiCalendar
-                  role="button"
-                  tabIndex={0}
-                  aria-label="Toggle Sidebar"
-                  data-cy="toggle-sidebar"
-                  onClick={handleToggle}
-                  onKeyDown={(e) => e.key === "Enter" && handleToggle()}
-                  className="cursor-pointer text-gray-500 hover:text-gray-400 w-10 h-10"
-                />
-                <div className="h-full border-r border-gray-500"></div>
-              </>
-            )}
-            <li className="inline-flex items-center">
-              <Link
-                href="/"
-                className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-              >
-                <svg
-                  className="w-4 h-4 mr-2"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
+        <>
+          <div className="flex items-center gap-2 pr-4 border-r border-gray-300 dark:border-gray-600">
+            <Image src="/ox_rse.svg" alt="Logo" width={32} height={32} />
+            <span className="text-xl font-semibold text-gray-800 dark:text-gray-200 mr-8">Gutenberg</span>
+          </div>
+
+          <nav className="w-full inline-flex ml-4" aria-label="Breadcrumb">
+            <ol className="z-10 list-none inline-flex items-center space-x-1 md:space-x-3">
+              {isLoggedIn && (
+                <>
+                  <HiCalendar
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Toggle Sidebar"
+                    data-cy="toggle-sidebar"
+                    onClick={handleToggle}
+                    onKeyDown={(e) => e.key === "Enter" && handleToggle()}
+                    className="cursor-pointer text-gray-500 hover:text-gray-400 w-10 h-10"
+                  />
+                  <div className="h-full border-r border-gray-500"></div>
+                </>
+              )}
+              <li className="inline-flex items-center">
+                <Link
+                  href="/"
+                  className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
                 >
-                  <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
-                </svg>
-                Home
-              </Link>
-            </li>
-            {theme && (
-              <li ref={ref1} onMouseEnter={() => handleIsHovered("theme")} onMouseLeave={handleIsNotHovered}>
-                <div className="flex items-center">
                   <svg
-                    className="w-6 h-6 text-gray-400"
+                    className="w-4 h-4 mr-2"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
                   >
-                    <path
-                      className={showNavDiagram && itemHovered === "theme" ? "expanded" : "collapsed"}
-                      style={{ transformOrigin: "50% 50%" }}
-                      fillRule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                    ></path>
+                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
                   </svg>
-                  <Link
-                    href={`/material`}
-                    className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white"
-                  >
-                    Material
-                  </Link>
-                  {showNavDiagram && itemHovered === "theme" && (
-                    <ThemeCardsPopover
-                      material={material}
-                      excludes={excludes}
-                      onMouseEnter={handlePopoverHovered}
-                      onMouseLeave={handlePopoverNotHovered}
-                      target={ref1?.current || undefined}
-                    />
-                  )}
-                </div>
+                  Home
+                </Link>
               </li>
-            )}
-            {theme && (
-              <li ref={ref2} onMouseEnter={() => handleIsHovered("course")} onMouseLeave={handleIsNotHovered}>
-                <div className="flex items-center">
-                  <svg
-                    className="w-6 h-6 text-gray-400"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      className={showNavDiagram && itemHovered === "course" ? "expanded" : "collapsed"}
-                      style={{ transformOrigin: "50% 50%" }}
-                      fillRule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                    ></path>
-                  </svg>
-                  <Link
-                    aria-current={!course ? "page" : undefined}
-                    href={`/material/${theme.repo}/${theme.id}`}
-                    className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white"
-                  >
-                    {theme.name}
-                  </Link>
-                  {showNavDiagram && itemHovered === "course" && (
-                    <NavDiagramPopover
-                      material={material}
-                      theme={theme}
-                      excludes={excludes}
-                      target={ref2?.current || undefined}
-                      onMouseEnter={handlePopoverHovered}
-                      onMouseLeave={handlePopoverNotHovered}
-                    />
-                  )}
-                </div>
-              </li>
-            )}{" "}
-            {theme && course && (
-              <li ref={ref3} onMouseEnter={() => handleIsHovered("section")} onMouseLeave={handleIsNotHovered}>
-                <div className="flex items-center">
-                  <svg
-                    className="w-6 h-6 text-gray-400"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      className={showNavDiagram && itemHovered === "section" ? "expanded" : "collapsed"}
-                      style={{ transformOrigin: "50% 50%" }}
-                      fillRule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                    ></path>
-                  </svg>
-                  <Link
-                    aria-current={!section ? "page" : undefined}
-                    href={`/material/${theme.repo}/${theme.id}/${course.id}`}
-                    className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white"
-                  >
-                    {course.name}
-                  </Link>
-                  {showNavDiagram && itemHovered === "section" && (
-                    <NavDiagramPopover
-                      material={material}
-                      theme={theme}
-                      course={course}
-                      excludes={excludes}
-                      target={ref3?.current || undefined}
-                      onMouseEnter={handlePopoverHovered}
-                      onMouseLeave={handlePopoverNotHovered}
-                    />
-                  )}
-                </div>
-              </li>
-            )}{" "}
-            {section && (
-              <li aria-current="page">
-                <div className="flex items-center">
-                  <svg
-                    className="w-6 h-6 text-gray-400"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                    ></path>
-                  </svg>
-                  <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">
-                    {section.name}
-                  </span>
-                </div>
-              </li>
-            )}
-          </ol>
-        </nav>
+              {theme && (
+                <li ref={ref1} onMouseEnter={() => handleIsHovered("theme")} onMouseLeave={handleIsNotHovered}>
+                  <div className="flex items-center">
+                    <svg
+                      className="w-6 h-6 text-gray-400"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        className={showNavDiagram && itemHovered === "theme" ? "expanded" : "collapsed"}
+                        style={{ transformOrigin: "50% 50%" }}
+                        fillRule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clipRule="evenodd"
+                      ></path>
+                    </svg>
+                    <Link
+                      href={`/material`}
+                      className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white"
+                    >
+                      Material
+                    </Link>
+                    {showNavDiagram && itemHovered === "theme" && (
+                      <ThemeCardsPopover
+                        material={material}
+                        excludes={excludes}
+                        onMouseEnter={handlePopoverHovered}
+                        onMouseLeave={handlePopoverNotHovered}
+                        target={ref1?.current || undefined}
+                      />
+                    )}
+                  </div>
+                </li>
+              )}
+              {theme && (
+                <li ref={ref2} onMouseEnter={() => handleIsHovered("course")} onMouseLeave={handleIsNotHovered}>
+                  <div className="flex items-center">
+                    <svg
+                      className="w-6 h-6 text-gray-400"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        className={showNavDiagram && itemHovered === "course" ? "expanded" : "collapsed"}
+                        style={{ transformOrigin: "50% 50%" }}
+                        fillRule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clipRule="evenodd"
+                      ></path>
+                    </svg>
+                    <Link
+                      aria-current={!course ? "page" : undefined}
+                      href={`/material/${theme.repo}/${theme.id}`}
+                      className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white"
+                    >
+                      {theme.name}
+                    </Link>
+                    {showNavDiagram && itemHovered === "course" && (
+                      <NavDiagramPopover
+                        material={material}
+                        theme={theme}
+                        excludes={excludes}
+                        target={ref2?.current || undefined}
+                        onMouseEnter={handlePopoverHovered}
+                        onMouseLeave={handlePopoverNotHovered}
+                      />
+                    )}
+                  </div>
+                </li>
+              )}{" "}
+              {theme && course && (
+                <li ref={ref3} onMouseEnter={() => handleIsHovered("section")} onMouseLeave={handleIsNotHovered}>
+                  <div className="flex items-center">
+                    <svg
+                      className="w-6 h-6 text-gray-400"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        className={showNavDiagram && itemHovered === "section" ? "expanded" : "collapsed"}
+                        style={{ transformOrigin: "50% 50%" }}
+                        fillRule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clipRule="evenodd"
+                      ></path>
+                    </svg>
+                    <Link
+                      aria-current={!section ? "page" : undefined}
+                      href={`/material/${theme.repo}/${theme.id}/${course.id}`}
+                      className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white"
+                    >
+                      {course.name}
+                    </Link>
+                    {showNavDiagram && itemHovered === "section" && (
+                      <NavDiagramPopover
+                        material={material}
+                        theme={theme}
+                        course={course}
+                        excludes={excludes}
+                        target={ref3?.current || undefined}
+                        onMouseEnter={handlePopoverHovered}
+                        onMouseLeave={handlePopoverNotHovered}
+                      />
+                    )}
+                  </div>
+                </li>
+              )}{" "}
+              {section && (
+                <li aria-current="page">
+                  <div className="flex items-center">
+                    <svg
+                      className="w-6 h-6 text-gray-400"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clipRule="evenodd"
+                      ></path>
+                    </svg>
+                    <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">
+                      {section.name}
+                    </span>
+                  </div>
+                </li>
+              )}
+            </ol>
+          </nav>
+        </>
       ) : (
         <div>
           <IconButton
@@ -314,9 +322,17 @@ const Navbar: React.FC<Props> = ({
             open={drawerOpen}
           >
             <Box sx={{ width: 250 }}>
-              <IconButton onClick={() => toggleDrawer(false)} sx={{ p: 2 }}>
-                <CloseIcon className="stroke-slate-400 fill-slate-400" />
-              </IconButton>
+              <div className="flex items-center gap-2 p-4 border-b border-gray-300 dark:border-gray-700 sticky top-0 bg-gray-50 dark:bg-gray-800 z-10">
+                <Image src="/ox_rse.svg" alt="Logo" width={28} height={28} />
+                <span className="text-lg font-semibold text-gray-800 dark:text-gray-200">Gutenberg</span>
+
+                <div className="ml-auto">
+                  <IconButton onClick={() => toggleDrawer(false)} sx={{ p: 1 }}>
+                    <CloseIcon className="stroke-slate-400 fill-slate-400" sx={{ fontSize: 20 }} />
+                  </IconButton>
+                </div>
+              </div>
+
               <ol className="p-5 flex flex-col gap-3">
                 <li className="inline-flex items-center">
                   <Link

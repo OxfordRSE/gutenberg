@@ -15,7 +15,7 @@ type SidebarProps = {
 
 const fetcher: Fetcher<EventFull[], string> = (url) => fetch(url).then((r) => r.json())
 
-const MySidebar: React.FC<SidebarProps> = ({ material, activeEvent, sidebarOpen, handleClose }) => {
+const Sidebar: React.FC<SidebarProps> = ({ material, activeEvent, sidebarOpen, handleClose }) => {
   const sidebarRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -74,4 +74,4 @@ const MySidebar: React.FC<SidebarProps> = ({ material, activeEvent, sidebarOpen,
   )
 }
 
-export default MySidebar
+export default Sidebar
