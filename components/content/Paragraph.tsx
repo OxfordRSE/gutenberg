@@ -104,7 +104,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
       id: -1,
       eventId: eventId,
       section: section,
-      textRef: text,
+      textRef: contentText,
       textRefStart: textRefStart,
       textRefEnd: textRefEnd,
       Comment: [comment],
