@@ -35,7 +35,14 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
   const email = useSession().data?.user?.email
 
   const { similarThreads, contentText } = useMemo(() => {
-    const contentText = contentRef.current?.innerText || ""
+    // Extract text from content prop for initial render and similarity matching
+    let contentText = ""
+    if (typeof content === "string") {
+      contentText = content
+    } else if (Array.isArray(content)) {
+      contentText = content.filter((c) => typeof c === "string").join("")
+    }
+
     const contentTokens = nlp
       .readDoc(contentText)
       .tokens()
@@ -58,9 +65,10 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
   const handleCreateThread = (text: string) => {
     if (!activeEvent) return
 
-    const textRefStart = contentText.indexOf(text)
+    // Use innerText from ref to handle text selections spanning DOM nodes (e.g., <li> elements)
+    const domText = contentRef.current?.innerText || contentText
+    const textRefStart = domText.indexOf(text)
     const textRefEnd = textRefStart + text.length
-    console.log({ text, contentText,textRefStart, textRefEnd })
 
     const newThread: CommentThread = createEmptyThread(
       activeEvent.id,
@@ -96,7 +104,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
       id: -1,
       eventId: eventId,
       section: section,
-      textRef: contentText,
+      textRef: text,
       textRefStart: textRefStart,
       textRefEnd: textRefEnd,
       Comment: [comment],
@@ -138,7 +146,9 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
 
   return (
     <div data-cy="paragraph" ref={ref} className="relative pb-2">
-      <div ref={contentRef} className="m-0 pb-0">{content}</div>
+      <div ref={contentRef} className="m-0 pb-0">
+        {content}
+      </div>
       {activeEvent && (
         <div className={`absolute top-0 right-0 md:-right-6 xl:-right-[420px]`}>
           <div className={`w-[420px]`}>
