@@ -35,7 +35,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
   const email = useSession().data?.user?.email
 
   const { similarThreads, contentText } = useMemo(() => {
-    // Extract text from content prop for initial render and similarity matching
+    // Extract text from content prop
     let contentText = ""
     if (typeof content === "string") {
       contentText = content
@@ -43,8 +43,11 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
       contentText = content.filter((c) => typeof c === "string").join("")
     }
 
+    // Use innerText when contentText is empty (e.g., for list items with links)
+    const textForMatching = contentText || (typeof window !== "undefined" ? contentRef.current?.innerText : "") || ""
+
     const contentTokens = nlp
-      .readDoc(contentText)
+      .readDoc(textForMatching)
       .tokens()
       .filter((t) => t.out(its.type) === "word" && !t.out(its.stopWordFlag))
     const contentBow = contentTokens.out(its.value, as.bow) as Bow
@@ -100,11 +103,13 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
       created: new Date(),
       createdByEmail: email,
     }
+    // Use innerText when contentText is empty (e.g., for list items with links)
+    const fullText = contentText || contentRef.current?.innerText || ""
     const thread: CommentThread = {
       id: -1,
       eventId: eventId,
       section: section,
-      textRef: contentText,
+      textRef: fullText,
       textRefStart: textRefStart,
       textRefEnd: textRefEnd,
       Comment: [comment],
