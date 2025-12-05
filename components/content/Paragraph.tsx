@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState, startTransition } from "react"
+import React, { useMemo, useRef, useState, startTransition, useLayoutEffect } from "react"
 
 import { stringSimilarity } from "string-similarity-js"
 import Thread from "./Thread"
@@ -15,6 +15,7 @@ interface ParagraphProps {
   section: string
 }
 
+const normalize = (s: string) => s.replace(/\s+/g, " ").trim()
 function getSimilarThreads(
   contentText: string,
   commentThreads: CommentThread[] | undefined = [],
@@ -23,7 +24,7 @@ function getSimilarThreads(
   return commentThreads
     .filter((thread) => section === thread.section)
     .filter((thread) => {
-      return stringSimilarity(contentText, thread.textRef) > 0.9
+      return stringSimilarity(normalize(contentText), normalize(thread.textRef)) > 0.9
     })
 }
 
@@ -40,7 +41,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
   const [textForMatching, setTextForMatching] = useState<string>("")
   const email = useSession().data?.user?.email
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setTextForMatching(getRenderedText())
   }, [content])
 
@@ -48,10 +49,10 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
   const getRenderedText = () => contentRef.current?.innerText || ""
 
   const { similarThreads, contentText } = useMemo(() => {
-    const normalizedText = textForMatching.trim()
-    const similarThreads = getSimilarThreads(normalizedText, commentThreads, section)
-    return { similarThreads, contentText: textForMatching }
-  }, [textForMatching, commentThreads, section])
+    const contentText = getRenderedText()
+    const similarThreads = getSimilarThreads(contentText, commentThreads, section)
+    return { similarThreads, contentText }
+  }, [commentThreads, section, textForMatching])
 
   const handleCreateThread = (text: string) => {
     if (!activeEvent) return
@@ -91,7 +92,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
       created: new Date(),
       createdByEmail: email,
     }
-    // Use innerText when contentText is empty (e.g., for list items with links)
+    // Use innerText to get the rendered plaintext
     const fullText = getRenderedText()
     const thread: CommentThread = {
       id: -1,
