@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState, startTransition } from "react"
+import React, { useEffect, useMemo, useRef, useState, startTransition } from "react"
 
 import similarity from "wink-nlp/utilities/similarity"
 
@@ -24,6 +24,7 @@ interface ParagraphProps {
 
 const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
   const ref = useRef<HTMLDivElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
   const [activeEvent, setActiveEvent] = useActiveEvent()
   const { commentThreads, error, isLoading, mutate } = useCommentThreads(activeEvent?.id)
   const [activeThreadId, setActiveThreadId] = useState<number | undefined>(undefined)
@@ -31,23 +32,29 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
     thread: CommentThread
   } | null>(null)
   const [tempActive, setTempActive] = useState<boolean>(false)
+  const [textForMatching, setTextForMatching] = useState<string>("")
   const email = useSession().data?.user?.email
 
+  useEffect(() => {
+    setTextForMatching(getRenderedText())
+  }, [content])
+
+  // This stupid function is just to make it clearer that we are reusing the same logic for both comment thread creation and matching
+  const getRenderedText = () => contentRef.current?.innerText || ""
+
   const { similarThreads, contentText } = useMemo(() => {
-    let contentText = ""
-    if (typeof content === "string") {
-      contentText = content
-    } else if (Array.isArray(content)) {
-      contentText = content.filter((c) => typeof c === "string").join("")
-    }
+    const normalizedText = textForMatching.trim()
+    if (!normalizedText || !commentThreads) return { similarThreads: [], contentText: textForMatching }
+
     const contentTokens = nlp
-      .readDoc(contentText)
+      .readDoc(normalizedText)
       .tokens()
       .filter((t) => t.out(its.type) === "word" && !t.out(its.stopWordFlag))
     const contentBow = contentTokens.out(its.value, as.bow) as Bow
 
     const similarThreads = commentThreads
       ?.filter((thread) => section === thread.section)
+      .filter((thread) => thread.textRef && thread.textRef.trim().length > 0)
       .filter((thread) => {
         const threadTokens = nlp
           .readDoc(thread.textRef)
@@ -56,13 +63,15 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
         const threadBow = threadTokens.out(its.value, as.bow) as Bow
         return similarity.bow.cosine(contentBow, threadBow) > 0.9
       })
-    return { similarThreads, contentText }
-  }, [content, commentThreads, section])
+    return { similarThreads, contentText: textForMatching }
+  }, [textForMatching, commentThreads, section])
 
   const handleCreateThread = (text: string) => {
     if (!activeEvent) return
 
-    const textRefStart = contentText.indexOf(text)
+    // Use innerText from ref to handle text selections spanning DOM nodes (e.g., <li> elements)
+    const domText = getRenderedText()
+    const textRefStart = domText.indexOf(text)
     const textRefEnd = textRefStart + text.length
 
     const newThread: CommentThread = createEmptyThread(
@@ -95,11 +104,13 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
       created: new Date(),
       createdByEmail: email,
     }
+    // Use innerText when contentText is empty (e.g., for list items with links)
+    const fullText = getRenderedText()
     const thread: CommentThread = {
       id: -1,
       eventId: eventId,
       section: section,
-      textRef: contentText,
+      textRef: fullText,
       textRefStart: textRefStart,
       textRefEnd: textRefEnd,
       Comment: [comment],
@@ -141,7 +152,9 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
 
   return (
     <div data-cy="paragraph" ref={ref} className="relative pb-2">
-      <div className="m-0 pb-0">{content}</div>
+      <div ref={contentRef} className="m-0 pb-0">
+        {content}
+      </div>
       {activeEvent && (
         <div className={`absolute top-0 right-0 md:-right-6 xl:-right-[420px]`}>
           <div className={`w-[420px]`}>
