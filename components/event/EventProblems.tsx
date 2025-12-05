@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import Link from "next/link"
 import { Course, Material, Section, Theme, eventItemSplit } from "lib/material"
 import { EventFull, Event, Problem } from "lib/types"
 import { Table } from "flowbite-react"
@@ -102,7 +103,7 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
                     <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800" key={rowKey}>
                       {/* Problem title cell */}
                       <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white p-1 m-0">
-                        {url ? <a href={`${url}#${problemTag}`}>{problemTag}</a> : <span>{problemTag}</span>}
+                        {url ? <Link href={`${url}#${problemTag}`}>{problemTag}</Link> : <span>{problemTag}</span>}
                       </Table.Cell>
 
                       {/* Status cells per student */}
