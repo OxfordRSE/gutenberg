@@ -10,14 +10,16 @@ import { HiAtSymbol, HiCalendar, HiSearchCircle } from "react-icons/hi"
 import { searchQueryState } from "components/dialogs/SearchDialog"
 import { useAtom } from "jotai"
 import { enableSearch } from "lib/search/enableSearch"
-import NavDiagramPopover from "./dialogs/navDiagramPop"
-import ThemeCardsPopover from "./dialogs/themeCardPop"
+import NavDiagramPopover from "./NavDiagramPopover"
+import ThemeCardsPopover from "./ThemeCardsPopover"
 import { Divider, IconButton } from "@mui/material"
 import MenuIcon from "@mui/icons-material/Menu"
 import Drawer from "@mui/material/Drawer"
 import CloseIcon from "@mui/icons-material/Close"
 import Box from "@mui/material/Box"
 import useWindowSize from "lib/hooks/useWindowSize"
+import type { PageTemplate } from "lib/pageTemplate"
+import { HomeBreadcrumb } from "components/navbar/HomeBreadcrumb"
 
 interface Props {
   material: Material
@@ -31,6 +33,7 @@ interface Props {
   showAttribution: boolean
   repoUrl?: string
   excludes?: Excludes
+  pageInfo?: PageTemplate
 }
 
 const Navbar: React.FC<Props> = ({
@@ -45,6 +48,7 @@ const Navbar: React.FC<Props> = ({
   showAttribution,
   repoUrl,
   excludes,
+  pageInfo,
 }) => {
   const [showSearch, setShowSearch] = useAtom(searchQueryState)
   const [showNavDiagram, setShowNavDiagram] = useState(false)
@@ -146,20 +150,7 @@ const Navbar: React.FC<Props> = ({
               </>
             )}
             <li className="inline-flex items-center">
-              <Link
-                href="/"
-                className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-              >
-                <svg
-                  className="w-4 h-4 mr-2"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
-                </svg>
-                Home
-              </Link>
+              <HomeBreadcrumb pageInfo={pageInfo} />
             </li>
             {theme && (
               <li ref={ref1} onMouseEnter={() => handleIsHovered("theme")} onMouseLeave={handleIsNotHovered}>
@@ -319,20 +310,7 @@ const Navbar: React.FC<Props> = ({
               </IconButton>
               <ol className="p-5 flex flex-col gap-3">
                 <li className="inline-flex items-center">
-                  <Link
-                    href="/"
-                    className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-                  >
-                    <svg
-                      className="w-4 h-4 mr-2"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
-                    </svg>
-                    Home
-                  </Link>
+                  <HomeBreadcrumb pageInfo={pageInfo} />
                 </li>
                 {theme && (
                   <ol>
