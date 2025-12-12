@@ -14,7 +14,7 @@ import Link from "next/link"
 type HomeProps = {
   material: Material
   events: Event[]
-  pageInfo?: PageTemplate
+  pageInfo: PageTemplate
 }
 
 const Home: NextPage<HomeProps> = ({ material, events, pageInfo }) => {
