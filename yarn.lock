@@ -3474,10 +3474,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/js-yaml@npm:^4.0.9":
-  version: 4.0.9
-  resolution: "@types/js-yaml@npm:4.0.9"
-  checksum: e5e5e49b5789a29fdb1f7d204f82de11cb9e8f6cb24ab064c616da5d6e1b3ccfbf95aa5d1498a9fbd3b9e745564e69b4a20b6c530b5a8bbb2d4eb830cda9bc69
+"@types/js-yaml@npm:^3.12.10":
+  version: 3.12.10
+  resolution: "@types/js-yaml@npm:3.12.10"
+  checksum: 5b5bc63d368f9499fe29ac61a51a802d7ce984599772e421a8dd29cc70ff0dd48149391ca1a56305a71b8707fda6fc50ba5b97412d9c1c4470f547f3a1fcf2bc
   languageName: node
   linkType: hard
 
@@ -7068,7 +7068,7 @@ __metadata:
     "@tailwindcss/typography": ^0.5.19
     "@testing-library/cypress": ^10.1.0
     "@types/dompurify": ^3.2.0
-    "@types/js-yaml": ^4.0.9
+    "@types/js-yaml": ^3.12.10
     "@types/node": ^22.19.0
     "@types/react": ^19.2.3
     "@types/react-copy-to-clipboard": ^5.0.7
@@ -7093,7 +7093,7 @@ __metadata:
     isomorphic-git: ^1.35.0
     jose: ^4.15.9
     jotai: ^2.15.1
-    js-yaml: ^4.1.1
+    js-yaml: ^3.14.2
     next: 15.5.9
     next-auth: ^4.24.13
     next-plausible: 3.12.5
