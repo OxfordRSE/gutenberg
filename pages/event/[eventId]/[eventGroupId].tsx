@@ -42,6 +42,7 @@ import {
 import { CSS } from "@dnd-kit/utilities"
 import { loadPageTemplate, PageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
+import { HiArrowNarrowRight, HiArrowNarrowLeft } from "react-icons/hi"
 
 type EventGroupProps = {
   material: Material
@@ -201,21 +202,37 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
         </Button>
         <div className="flex gap-2">
           {prevGroup ? (
-            <Button href={`/event/${event.id}/${prevGroup.id}`} size="sm" color="gray" className="rounded">
-              Prev
+            <Button
+              href={`/event/${event.id}/${prevGroup.id}`}
+              size="sm"
+              className="rounded inline-flex items-center gap-2 [&>span]:items-center"
+            >
+              <HiArrowNarrowLeft className="h-4 w-4" />
+              <span>Prev</span>
             </Button>
           ) : (
-            <Button disabled size="sm" color="gray" className="rounded">
-              Prev
+            <Button className="rounded inline-flex items-center gap-2 [&>span]:items-center" disabled size="sm">
+              <HiArrowNarrowLeft className="block h-4 w-4" />
+              <span className="ml-2 leading-none">Prev</span>
             </Button>
           )}
           {nextGroup ? (
-            <Button href={`/event/${event.id}/${nextGroup.id}`} size="sm" color="gray" className="rounded">
-              Next
+            <Button
+              href={`/event/${event.id}/${nextGroup.id}`}
+              size="sm"
+              className="rounded inline-flex items-center gap-2 [&>span]:items-center"
+            >
+              <span>Next</span> <HiArrowNarrowRight className="block h-4 w-4" />
             </Button>
           ) : (
-            <Button disabled size="sm" color="gray" className="rounded">
-              Next
+            <Button
+              disabled
+              size="sm"
+              color="gray"
+              className="rounded inline-flex items-center gap-2 [&>span]:items-center"
+            >
+              <HiArrowNarrowRight className="block h-4 w-4" />
+              <span>Next</span>
             </Button>
           )}
         </div>
