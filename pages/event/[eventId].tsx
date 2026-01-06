@@ -30,7 +30,7 @@ import EventViewPane from "components/event/EventViewPane"
 type EventProps = {
   material: Material
   event: Event
-  pageInfo?: PageTemplate
+  pageInfo: PageTemplate
 }
 
 const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {

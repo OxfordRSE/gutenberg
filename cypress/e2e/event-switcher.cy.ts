@@ -90,16 +90,17 @@ describe("EventSwitcher @ /", () => {
     cy.get('ul[role="listbox"]').should("not.exist")
   }
 
-  const expectActiveName = (name: string) => {
-    // assert against any descendant text inside the section (handles MUI Typography wrapping)
-    cy.contains('section[aria-label="Active event selection"] *', name).should("be.visible")
+  const expectLogoVisible = () => {
+    cy.get('section[aria-label="Active event selection"] img[alt]').should("be.visible")
+  }
+
+  const expectButtonText = (text: "Select" | "Swap") => {
+    cy.get('section[aria-label="Active event selection"] button').should("contain.text", text)
   }
 
   it("starts with no active event selected", () => {
-    cy.get('section[aria-label="Active event selection"]')
-      .find("h6, [data-testid='event-name'], .MuiTypography-root")
-      .invoke("text")
-      .then((t) => expect(t.trim()).to.eq(""))
+    expectButtonText("Select")
+    expectLogoVisible()
     cy.window().then((win) => {
       expect(win.localStorage.getItem("activeEvent")).to.be.null
     })
@@ -110,7 +111,8 @@ describe("EventSwitcher @ /", () => {
     pickById(1) // Introduction to C++
     cy.wait("@getEventById")
 
-    expectActiveName("Introduction to")
+    expectButtonText("Swap")
+    expectLogoVisible()
     cy.window().then((win) => {
       expect(win.localStorage.getItem("activeEvent")).to.eq("1")
     })
@@ -121,7 +123,8 @@ describe("EventSwitcher @ /", () => {
     pickById(1)
     openSwitcher()
     pickById(2)
-    expectActiveName("Advanced Python")
+    expectButtonText("Swap")
+    expectLogoVisible()
     cy.window().then((win) => {
       expect(win.localStorage.getItem("activeEvent")).to.eq("2")
     })
@@ -133,10 +136,8 @@ describe("EventSwitcher @ /", () => {
     openSwitcher()
     pickNone()
 
-    cy.get('section[aria-label="Active event selection"]')
-      .find("h6, [data-testid='event-name'], .MuiTypography-root")
-      .invoke("text")
-      .then((t) => expect(t.trim()).to.eq(""))
+    expectButtonText("Select")
+    expectLogoVisible()
     cy.window().then((win) => {
       expect(win.localStorage.getItem("activeEvent")).to.be.null
     })

@@ -47,7 +47,7 @@ type EventGroupProps = {
   material: Material
   event: Event
   eventGroupId: number
-  pageInfo?: PageTemplate
+  pageInfo: PageTemplate
 }
 
 const generateId = () => Math.random().toString(36).substr(2, 9)
