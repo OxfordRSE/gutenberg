@@ -76,35 +76,47 @@ describe("admin landing page", () => {
 
   it("admin create/delete event", () => {
     cy.get('[data-cy="load-more-events"]').click()
-    cy.intercept("GET", "/api/auth/session").as("getSession")
-
     cy.request("GET", "/api/event").its("body").its("events").as("oldres")
     cy.contains("Create new Event").click()
 
-    cy.wait(1500).request("GET", "/api/event").its("body").its("events").as("newres")
-
-    cy.get("@oldres").then((oldres) => {
-      cy.get("@newres").then((newres) => {
-        // Verify that the second event response has one more item than the first one
-        expect(newres.length).to.eq(oldres.length + 1)
-        cy.wait(1000).then(() => {
-          let deleteId = 0
-          newres.map((item) => {
-            if (item.id > deleteId) {
-              deleteId = item.id
-            }
-          })
-          cy.get('[data-cy="delete-event-' + deleteId + '"]').click()
-          cy.get('[data-cy="confirm-event-delete"]').should("be.visible")
-          cy.wait(2100).get('[data-cy="confirm-event-delete"]').click()
-          cy.get('[data-cy="event-deleted-toast"]').should("be.visible")
-          cy.wait(500).request("GET", "/api/event/").its("body").its("events").as("afterdeleteres")
-          cy.get("@afterdeleteres").then((res) => {
-            // have deleted last added event
-            expect(res.length).to.eq(oldres.length)
-          })
-        })
+    cy.location("pathname", { timeout: 10000 })
+      .should((pathname) => {
+        expect(pathname).to.match(/\/event\/\d+$/)
       })
-    })
+      .then((pathname) => {
+        const match = /\/event\/(\d+)$/.exec(pathname)
+        expect(match).to.not.be.null
+        return Number(match?.[1])
+      })
+      .then((newEventId) => {
+        cy.location("hash").should("eq", "#edit")
+
+        cy.request("GET", "/api/event")
+          .its("body")
+          .its("events")
+          .then((events) => {
+            cy.get("@oldres").then((oldres) => {
+              expect(events.length).to.eq(oldres.length + 1)
+              expect(events.some((e) => e.id === newEventId)).to.be.true
+            })
+          })
+
+        cy.visit("/")
+        cy.get('[data-cy="load-more-events"]').click()
+        cy.get(`[data-cy="delete-event-${newEventId}"]`, { timeout: 10000 }).should("be.visible").click()
+
+        cy.get('[data-cy="confirm-event-delete"]').should("be.visible").click()
+
+        cy.get('[data-cy="event-deleted-toast"]').should("be.visible")
+        cy.request("GET", "/api/event")
+          .its("body")
+          .its("events")
+          .then((res) => {
+            cy.get("@oldres").then((oldres) => {
+              // have deleted last added event
+              expect(res.length).to.eq(oldres.length)
+            })
+          })
+      })
   })
 })

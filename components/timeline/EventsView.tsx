@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react"
+import router from "next/router"
 import { Material } from "lib/material"
 import { Event } from "lib/types"
 import { Button, Timeline } from "flowbite-react"
@@ -97,8 +98,13 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
   const getFormattedDate = (date: Date) =>
     showDateTime ? date.toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) : date.toUTCString()
 
-  const handleCreateEvent = () => {
-    postEvent().then((event) => mutate([...(currentEvents || []), event]))
+  const handleCreateEvent = async () => {
+    try {
+      const event = await postEvent()
+      router.push(`/event/${event.id}#edit`)
+    } catch (err) {
+      console.error("Failed to create event:", err)
+    }
   }
 
   const openDeleteEventModal = (eventId: number) => {

@@ -187,9 +187,9 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
 
   const eventGroupView = (
     <>
-      <a href={`/event/${event.id}`}>
+      <Link href={`/event/${event.id}`}>
         <Title text={event.name} />
-      </a>
+      </Link>
       <SubTitle text={eventGroup.name} />
       <SubTitle
         text={
