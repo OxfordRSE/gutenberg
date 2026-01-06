@@ -22,7 +22,7 @@ export async function initRepos() {
 // for each repo defined in the yaml, make a git repo and pull the material into basematerial
 function readRepos() {
   const fileContents = fs.readFileSync(yamlTemplate, "utf8")
-  // @ts-expect-error
+  // @ts-ignore-error
   const repos = yaml.load(fileContents).material
   return repos
 }
