@@ -1,7 +1,7 @@
 import { Button } from "flowbite-react"
 import { CSSProperties, useEffect, useRef } from "react"
 import { BiCommentAdd } from "react-icons/bi"
-import { useTextSelection } from "use-text-selection"
+import { useTextSelection } from "lib/hooks/useTextSelection"
 
 // TODO: move this into a stylesheet.
 const popoverStyle: CSSProperties = {
