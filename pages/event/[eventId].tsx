@@ -1,17 +1,14 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
 import prisma from "lib/prisma"
-import { getMaterial, Theme, Material, removeMarkdown } from "lib/material"
+import { getMaterial, Material, removeMarkdown } from "lib/material"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
-import Content from "components/content/Content"
-import NavDiagram from "components/navdiagram/NavDiagram"
 import Title from "components/ui/Title"
-import type { Event, EventFull } from "lib/types"
+import type { Event } from "lib/types"
 import { basePath } from "lib/basePath"
-import { Button, Card, Tabs } from "flowbite-react"
+import { Button, Tabs } from "flowbite-react"
 import Avatar from "@mui/material/Avatar"
-import EventProblems from "components/event/EventProblems"
-import { useForm, Controller, useFieldArray } from "react-hook-form"
+import { useForm, useFieldArray } from "react-hook-form"
 import { useSession } from "next-auth/react"
 import { MdEdit, MdPreview } from "react-icons/md"
 import Textfield from "components/forms/Textfield"
@@ -22,15 +19,13 @@ import useProfile from "lib/hooks/useProfile"
 import { Event as EventWithUsers } from "pages/api/event/[eventId]"
 import Stack from "components/ui/Stack"
 import { putEvent } from "lib/actions/putEvent"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import SelectField from "components/forms/SelectField"
 import Checkbox from "components/forms/Checkbox"
-import SubTitle from "components/ui/SubTitle"
-import EventCommentThreads from "components/event/EventCommentThreads"
 import { PageTemplate, loadPageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
-import EventActions from "components/timeline/EventActions"
 import { load } from "js-yaml"
+import EventViewPane from "components/event/EventViewPane"
 
 type EventProps = {
   material: Material
@@ -39,11 +34,8 @@ type EventProps = {
 }
 
 const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
-  // don't show date/time until the page is loaded (due to rehydration issues)
-  const [showDateTime, setShowDateTime] = useState(false)
-  useEffect(() => {
-    setShowDateTime(true)
-  }, [])
+  const [activeTabIndex, setActiveTabIndex] = useState(0)
+  const tabsRef = useRef<{ setActiveTab: (idx: number) => void } | null>(null)
 
   const { event: eventData, error: eventError, isLoading: eventIsLoading, mutate: mutateEvent } = useEvent(event.id)
   if (eventData) {
@@ -81,6 +73,30 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
     reset(eventData)
   }, [eventData, reset])
 
+  // keep tabs in sync with hash for deep links + browser navigation
+  useEffect(() => {
+    const syncFromHash = () => {
+      const hash = window.location.hash.replace("#", "")
+      const idx = hash === "edit" ? 1 : 0
+      setActiveTabIndex(idx)
+      tabsRef.current?.setActiveTab(idx)
+    }
+    syncFromHash()
+    window.addEventListener("hashchange", syncFromHash)
+    return () => window.removeEventListener("hashchange", syncFromHash)
+  }, [])
+
+  const handleTabChange = (idx: number) => {
+    setActiveTabIndex(idx)
+    if (typeof window === "undefined") return
+    const basePath = `${window.location.pathname}${window.location.search}`
+    const nextUrl = idx === 1 ? `${basePath}#edit` : basePath
+    if (window.location.href === `${window.location.origin}${nextUrl}`) return
+    // I am using pushState rather than next router cause i can reliably crash next router
+    // by clicking the same tab twice before it loads
+    window.history.pushState(null, "", nextUrl)
+  }
+
   if (eventIsLoading) return <div>loading...</div>
 
   const handleAddGroup = () => {
@@ -109,28 +125,13 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
   ]
 
   const eventView = (
-    <>
-      <EventActions event={event} verbose={true} />
-      <Title text={event.name} />
-      <SubTitle
-        text={
-          showDateTime
-            ? `${new Date(event.start).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })} - ${new Date(
-                event.end
-              ).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}`
-            : ""
-        }
-      />
-      <Content markdown={eventData ? eventData.content : event.content} />
-      {(isInstructor || isAdmin) && eventData && (
-        <>
-          <Title text="Unresolved Threads" />
-          <EventCommentThreads event={eventData} material={material} />
-          <Title text="Student Progress" />
-          <EventProblems event={eventData} material={material} />
-        </>
-      )}
-    </>
+    <EventViewPane
+      event={event}
+      eventWithRelations={eventData}
+      material={material}
+      isAdmin={!!isAdmin}
+      isInstructor={isInstructor}
+    />
   )
   const eventEditView = (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -201,11 +202,11 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
   return (
     <Layout material={material} pageInfo={pageInfo} pageTitle={pageTitle}>
       {eventData && isAdmin ? (
-        <Tabs.Group style="underline">
-          <Tabs.Item active icon={MdPreview} title="Event">
+        <Tabs.Group style="underline" ref={tabsRef} onActiveTabChange={handleTabChange}>
+          <Tabs.Item active={activeTabIndex === 0} icon={MdPreview} title="Event">
             {eventView}
           </Tabs.Item>
-          <Tabs.Item icon={MdEdit} title="Edit">
+          <Tabs.Item active={activeTabIndex === 1} icon={MdEdit} title="Edit">
             {eventEditView}
           </Tabs.Item>
         </Tabs.Group>
