@@ -47,6 +47,7 @@ type EventGroupProps = {
   material: Material
   event: Event
   eventGroupId: number
+  eventGroups: EventGroup[]
   pageInfo?: PageTemplate
 }
 
@@ -67,7 +68,7 @@ const SortableItem = ({ id = "", children }: { id?: string; children: React.Reac
   )
 }
 
-const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroupId, pageInfo }) => {
+const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroupId, eventGroups, pageInfo }) => {
   const [showDateTime, setShowDateTime] = useState(false)
   const [selectedOptions, setSelectedOptions] = useState<Option[]>([])
   const [inputValue, setInputValue] = useState<string>("")
@@ -185,11 +186,41 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
       </>
     )
 
+  // Compute prev/next event group based on start time ordering
+  const sortedGroups = [...eventGroups].sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
+  const currentIndex = sortedGroups.findIndex((g) => g.id === eventGroupId)
+  const prevGroup = currentIndex > 0 ? sortedGroups[currentIndex - 1] : undefined
+  const nextGroup =
+    currentIndex >= 0 && currentIndex < sortedGroups.length - 1 ? sortedGroups[currentIndex + 1] : undefined
+
   const eventGroupView = (
     <>
-      <a href={`/event/${event.id}`}>
-        <Title text={event.name} />
-      </a>
+      <div className="flex items-center justify-between mb-2">
+        <Button href={`/event/${event.id}`} size="sm" color="blue" className="rounded">
+          Back to Event
+        </Button>
+        <div className="flex gap-2">
+          {prevGroup ? (
+            <Button href={`/event/${event.id}/${prevGroup.id}`} size="sm" color="gray" className="rounded">
+              Prev
+            </Button>
+          ) : (
+            <Button disabled size="sm" color="gray" className="rounded">
+              Prev
+            </Button>
+          )}
+          {nextGroup ? (
+            <Button href={`/event/${event.id}/${nextGroup.id}`} size="sm" color="gray" className="rounded">
+              Next
+            </Button>
+          ) : (
+            <Button disabled size="sm" color="gray" className="rounded">
+              Next
+            </Button>
+          )}
+        </div>
+      </div>
+      <Title text={event.name} />
       <SubTitle text={eventGroup.name} />
       <SubTitle
         text={
@@ -346,8 +377,24 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   removeMarkdown(material, undefined)
 
+  // Fetch all groups for this event to enable prev/next navigation
+  const eventGroups = await prisma.eventGroup.findMany({
+    where: { eventId },
+    orderBy: { start: "asc" },
+    select: {
+      id: true,
+      name: true,
+      start: true,
+      end: true,
+      location: true,
+      summary: true,
+      content: true,
+      eventId: true,
+    },
+  })
+
   return {
-    props: makeSerializable({ event, material, eventGroupId, pageInfo }),
+    props: makeSerializable({ event, material, eventGroupId, eventGroups, pageInfo }),
     revalidate: revalidateTimeout,
   }
 }

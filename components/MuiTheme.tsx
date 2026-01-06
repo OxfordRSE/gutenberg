@@ -20,7 +20,7 @@ export const LightTheme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: "#f8fafc", // Similar to bg-slate-50
-          borderColor: "#e5e7eb", // border-gray-200
+          borderColor: "#d1d5db", // border-gray-300 for better contrast
           borderRadius: "8px", // rounded-lg
         },
       },
@@ -35,7 +35,7 @@ export const LightTheme = createTheme({
     MuiTableCell: {
       styleOverrides: {
         root: {
-          borderColor: "#e5e7eb", // border-gray-200 for light borders
+          borderColor: "#d1d5db", // border-gray-300 for better contrast
           padding: "6px 12px", // Reduce padding to align with Tailwind-style compactness
         },
         head: {
