@@ -42,11 +42,13 @@ import {
 import { CSS } from "@dnd-kit/utilities"
 import { loadPageTemplate, PageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
+import { HiArrowNarrowRight, HiArrowNarrowLeft } from "react-icons/hi"
 
 type EventGroupProps = {
   material: Material
   event: Event
   eventGroupId: number
+  eventGroups: EventGroup[]
   pageInfo: PageTemplate
 }
 
@@ -67,7 +69,7 @@ const SortableItem = ({ id = "", children }: { id?: string; children: React.Reac
   )
 }
 
-const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroupId, pageInfo }) => {
+const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroupId, eventGroups, pageInfo }) => {
   const [showDateTime, setShowDateTime] = useState(false)
   const [selectedOptions, setSelectedOptions] = useState<Option[]>([])
   const [inputValue, setInputValue] = useState<string>("")
@@ -185,8 +187,56 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
       </>
     )
 
+  // Compute prev/next event group based on start time ordering
+  const sortedGroups = [...eventGroups].sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
+  const currentIndex = sortedGroups.findIndex((g) => g.id === eventGroupId)
+  const prevGroup = currentIndex > 0 ? sortedGroups[currentIndex - 1] : undefined
+  const nextGroup =
+    currentIndex >= 0 && currentIndex < sortedGroups.length - 1 ? sortedGroups[currentIndex + 1] : undefined
+
   const eventGroupView = (
     <>
+      <div className="flex items-center justify-between mb-2">
+        <Button href={`/event/${event.id}`} size="sm" color="blue" className="rounded">
+          Back to Event
+        </Button>
+        <div className="flex gap-2">
+          {prevGroup ? (
+            <Button
+              href={`/event/${event.id}/${prevGroup.id}`}
+              size="sm"
+              className="rounded inline-flex items-center gap-2 [&>span]:items-center"
+            >
+              <HiArrowNarrowLeft className="h-4 w-4" />
+              <span>Prev</span>
+            </Button>
+          ) : (
+            <Button className="rounded inline-flex items-center gap-2 [&>span]:items-center" disabled size="sm">
+              <HiArrowNarrowLeft className="block h-4 w-4" />
+              <span className="ml-2 leading-none">Prev</span>
+            </Button>
+          )}
+          {nextGroup ? (
+            <Button
+              href={`/event/${event.id}/${nextGroup.id}`}
+              size="sm"
+              className="rounded inline-flex items-center gap-2 [&>span]:items-center"
+            >
+              <span>Next</span> <HiArrowNarrowRight className="block h-4 w-4" />
+            </Button>
+          ) : (
+            <Button
+              disabled
+              size="sm"
+              color="gray"
+              className="rounded inline-flex items-center gap-2 [&>span]:items-center"
+            >
+              <HiArrowNarrowRight className="block h-4 w-4" />
+              <span>Next</span>
+            </Button>
+          )}
+        </div>
+      </div>
       <Link href={`/event/${event.id}`}>
         <Title text={event.name} />
       </Link>
@@ -346,8 +396,24 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   removeMarkdown(material, undefined)
 
+  // Fetch all groups for this event to enable prev/next navigation
+  const eventGroups = await prisma.eventGroup.findMany({
+    where: { eventId },
+    orderBy: { start: "asc" },
+    select: {
+      id: true,
+      name: true,
+      start: true,
+      end: true,
+      location: true,
+      summary: true,
+      content: true,
+      eventId: true,
+    },
+  })
+
   return {
-    props: makeSerializable({ event, material, eventGroupId, pageInfo }),
+    props: makeSerializable({ event, material, eventGroupId, eventGroups, pageInfo }),
     revalidate: revalidateTimeout,
   }
 }
