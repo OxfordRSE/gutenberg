@@ -71,4 +71,3 @@ ul:has(li.mdli) {
   transform: rotate(90deg);
   transition: transform 0.3s ease;
 }
-
