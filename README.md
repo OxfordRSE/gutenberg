@@ -1,5 +1,6 @@
 # Gutenberg
 
+![Visits (30d)](<https://img.shields.io/badge/dynamic/json?label=Visits%20(30d)&url=https%3A%2F%2Fplausible-oxrse.fly.dev%2Fapi%2Fstats%2Ftrain.rse.ox.ac.uk%2Ftop-stats%2F%3Fperiod%3D30d&query=%24.top_stats%5B1%5D.value&color=green>)
 [![Build and Test](https://github.com/OxfordRSE/gutenberg/actions/workflows/test.yml/badge.svg)](https://github.com/OxfordRSE/gutenberg/actions/workflows/test.yml)
 
 Gutenberg is an open source research and teaching platform developed by the Oxford Research Software Engineering Group (OxRSE) at the University of Oxford as part of the [UNIVERSE-HPC project](https://www.universe-hpc.ac.uk/).

@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react"
+import router from "next/router"
 import { Material } from "lib/material"
 import { Event } from "lib/types"
 import { Button, Timeline } from "flowbite-react"
@@ -11,7 +12,7 @@ import useActiveEvent from "lib/hooks/useActiveEvents"
 import { postEvent } from "lib/actions/postEvent"
 import { MdContentCopy, MdDelete } from "react-icons/md"
 import { useAtom } from "jotai"
-import { deleteEventModalState, deleteEventIdState } from "components/dialogs/deleteEventModal"
+import { deleteEventModalState, deleteEventIdState } from "components/dialogs/DeleteEventModal"
 import { duplicateEventModalState, duplicateEventIdState } from "components/dialogs/DuplicateEventModal"
 import { Tooltip } from "@mui/material"
 import Stack from "components/ui/Stack"
@@ -97,8 +98,13 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
   const getFormattedDate = (date: Date) =>
     showDateTime ? date.toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) : date.toUTCString()
 
-  const handleCreateEvent = () => {
-    postEvent().then((event) => mutate([...(currentEvents || []), event]))
+  const handleCreateEvent = async () => {
+    try {
+      const event = await postEvent()
+      router.push(`/event/${event.id}#edit`)
+    } catch (err) {
+      console.error("Failed to create event:", err)
+    }
   }
 
   const openDeleteEventModal = (eventId: number) => {

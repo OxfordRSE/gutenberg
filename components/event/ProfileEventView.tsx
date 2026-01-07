@@ -5,10 +5,11 @@ import { EventFull as Event, UserOnEvent } from "lib/types"
 import UserEventProblems from "components/event/UserEventProblems"
 import { PageTemplate } from "lib/pageTemplate"
 import { useAtom } from "jotai"
-import { deleteUserOnEventModalState, deleteUserOnEventIdState } from "components/dialogs/deleteUserOnEventModal"
+import { deleteUserOnEventModalState, deleteUserOnEventIdState } from "components/dialogs/DeleteUserOnEventModal"
 import { Button } from "flowbite-react"
 import Stack from "components/ui/Stack"
 import { Tooltip } from "@mui/material"
+import Link from "next/link"
 
 type EventProps = {
   material: Material
@@ -29,7 +30,7 @@ const ProfileEventView: React.FC<EventProps> = ({ material, event, userProblems,
   return (
     <div className="mb-4">
       <Stack direction="row">
-        <a href={`/event/${event.id}`}>
+        <Link href={`/event/${event.id}`}>
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-200 pt-2">{event.name}</h3>
 
           <h2 className="text-m text-gray-700 pb-2">
@@ -38,7 +39,7 @@ const ProfileEventView: React.FC<EventProps> = ({ material, event, userProblems,
               timeStyle: "short",
             })} - ${new Date(event.end).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}`}
           </h2>
-        </a>
+        </Link>
         <Tooltip title="Unsubscribe from event">
           <Button
             className="text-xs mt-2"

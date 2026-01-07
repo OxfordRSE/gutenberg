@@ -49,7 +49,7 @@ type EventGroupProps = {
   event: Event
   eventGroupId: number
   eventGroups: EventGroup[]
-  pageInfo?: PageTemplate
+  pageInfo: PageTemplate
 }
 
 const generateId = () => Math.random().toString(36).substr(2, 9)
@@ -237,7 +237,9 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
           )}
         </div>
       </div>
-      <Title text={event.name} />
+      <Link href={`/event/${event.id}`}>
+        <Title text={event.name} />
+      </Link>
       <SubTitle text={eventGroup.name} />
       <SubTitle
         text={

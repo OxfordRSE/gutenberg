@@ -14,7 +14,7 @@ type CourseComponentProps = {
   course: Course
   material: Material
   events: Event[]
-  pageInfo?: PageTemplate
+  pageInfo: PageTemplate
 }
 
 const CourseComponent: NextPage<CourseComponentProps> = ({

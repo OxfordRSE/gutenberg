@@ -48,7 +48,7 @@ const ThreadDialog: FC<ThreadDialogProps> = ({
 }) => {
   const [threadEditing, setThreadEditing] = useState(false)
 
-  const threadId = commentThread.id
+  const threadId = commentThread?.id ?? null
 
   const popupPosition = { top: 0, left: 0 }
 

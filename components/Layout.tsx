@@ -8,7 +8,7 @@ import Footer from "./Footer"
 import Header from "./Header"
 import { Material, Excludes } from "lib/material"
 import Overlay from "./Overlay"
-import Navbar from "./Navbar"
+import Navbar from "./navbar/Navbar"
 import { useSidebarOpen } from "lib/hooks/useSidebarOpen"
 import useActiveEvent from "lib/hooks/useActiveEvents"
 import { Provider } from "jotai"
@@ -27,7 +27,7 @@ type Props = {
   course?: Course
   section?: Section
   children: ReactNode
-  pageInfo?: PageTemplate
+  pageInfo: PageTemplate
   pageTitle?: string
   repoUrl?: string
   excludes?: Excludes
@@ -73,6 +73,7 @@ const Layout: React.FC<Props> = ({
               setShowAttribution={setShowAttribution}
               repoUrl={repoUrl}
               excludes={excludes}
+              pageInfo={pageInfo}
             />
           </header>
           <main id="main">
@@ -87,6 +88,7 @@ const Layout: React.FC<Props> = ({
               showAttribution={showAttribution}
               setShowAttribution={setShowAttribution}
               sectionLinks={sectionLinks}
+              pageInfo={pageInfo}
             />
             <PlausibleProvider
               domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN ?? ""}
