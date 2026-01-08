@@ -371,6 +371,141 @@ async function main() {
       status: "INSTRUCTOR",
     },
   })
+
+  const course = await prisma.course.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      id: 1,
+      externalId: "course_intro_cpp",
+      name: "Intro to C++ (Self-paced)",
+      summary: "Self-paced version of the C++ introduction",
+      level: "beginner",
+      hidden: false,
+      prerequisites: [],
+      tags: ["cpp", "basics"],
+      outcomes: ["Basic syntax", "Functions", "Containers"],
+      CourseGroup: {
+        connectOrCreate: [
+          {
+            where: { id: 1 },
+            create: {
+              name: "Foundations",
+              summary: "Core language fundamentals",
+              order: 1,
+              CourseItem: {
+                connectOrCreate: [
+                  {
+                    where: { id: 1 },
+                    create: { order: 1, section: "technology_and_tooling.bash_shell.bash", course: { connect: { id: 1 } } },
+                  },
+                  {
+                    where: { id: 2 },
+                    create: { order: 2, section: "technology_and_tooling.ide.cpp", course: { connect: { id: 1 } } },
+                  },
+                ],
+              },
+            },
+          },
+          {
+            where: { id: 2 },
+            create: {
+              name: "Procedural C++",
+              summary: "Procedural programming concepts",
+              order: 2,
+              CourseItem: {
+                connectOrCreate: [
+                  {
+                    where: { id: 3 },
+                    create: {
+                      order: 1,
+                      section: "software_architecture_and_design.procedural.types_cpp",
+                      course: { connect: { id: 1 } },
+                    },
+                  },
+                  {
+                    where: { id: 4 },
+                    create: {
+                      order: 2,
+                      section: "software_architecture_and_design.procedural.functions_cpp",
+                      course: { connect: { id: 1 } },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      },
+      CourseItem: {
+        connectOrCreate: [
+          {
+            where: { id: 5 },
+            create: { order: 1, section: "software_architecture_and_design.procedural.containers_cpp" },
+          },
+        ],
+      },
+    },
+  })
+
+  const course2 = await prisma.course.upsert({
+    where: { id: 2 },
+    update: {},
+    create: {
+      id: 2,
+      externalId: "course_functional_cpp_bitesize",
+      name: "Functional C++ (Bitesize)",
+      summary: "Short path into functional programming",
+      level: "intermediate",
+      hidden: false,
+      prerequisites: ["Intro to C++ (Self-paced)"],
+      tags: ["cpp", "functional"],
+      outcomes: ["Understanding recursion", "Higher-order functions"],
+      CourseItem: {
+        connectOrCreate: [
+          {
+            where: { id: 6 },
+            create: { order: 1, section: "software_architecture_and_design.functional.recursion_cpp" },
+          },
+          {
+            where: { id: 7 },
+            create: { order: 2, section: "software_architecture_and_design.functional.higher_order_functions_cpp" },
+          },
+        ],
+      },
+    },
+  })
+
+  await prisma.userOnCourse.upsert({
+    where: { userEmail_courseId: { userEmail: userStudentOnCourse.email || "", courseId: course.id } },
+    update: {},
+    create: {
+      userEmail: userStudentOnCourse.email || "",
+      courseId: course.id,
+      status: "ENROLLED",
+    },
+  })
+
+  await prisma.userOnCourse.upsert({
+    where: { userEmail_courseId: { userEmail: userInstructorOnCourse.email || "", courseId: course.id } },
+    update: {},
+    create: {
+      userEmail: userInstructorOnCourse.email || "",
+      courseId: course.id,
+      status: "ENROLLED",
+    },
+  })
+
+  await prisma.userOnCourse.upsert({
+    where: { userEmail_courseId: { userEmail: userStudentOnCourse.email || "", courseId: course2.id } },
+    update: {},
+    create: {
+      userEmail: userStudentOnCourse.email || "",
+      courseId: course2.id,
+      status: "COMPLETED",
+      completedAt: new Date(),
+    },
+  })
 }
 
 main()

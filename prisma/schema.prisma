@@ -50,6 +50,7 @@ model User {
   sessions      Session[]
   Problem       Problem[]
   UserOnEvent   UserOnEvent[]
+  UserOnCourse  UserOnCourse[]
   CommentThread CommentThread[]
   Comment       Comment[]
 }
@@ -84,6 +85,12 @@ enum EventStatus {
   REJECTED
 }
 
+enum CourseStatus {
+  ENROLLED
+  COMPLETED
+  DROPPED
+}
+
 model UserOnEvent {
   user      User?       @relation(fields: [userEmail], references: [email])
   userEmail String // relation scalar field (used in the `@relation` attribute above)
@@ -92,6 +99,18 @@ model UserOnEvent {
   status    EventStatus @default(REQUEST)
 
   @@id([userEmail, eventId])
+}
+
+model UserOnCourse {
+  user      User?        @relation(fields: [userEmail], references: [email])
+  userEmail String
+  course    Course       @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  courseId  Int
+  status    CourseStatus @default(ENROLLED)
+  startedAt DateTime     @default(now())
+  completedAt DateTime?
+
+  @@id([userEmail, courseId])
 }
 
 model Event {
@@ -130,6 +149,44 @@ model EventItem {
   groupId Int
   order   Int        @default(0)
   section String     @default("")
+}
+
+
+model Course {
+  id            Int            @id @default(autoincrement())
+  externalId    String         @unique @default(cuid())
+  name          String         @default("")
+  summary       String         @default("")
+  level         String         @default("")
+  hidden        Boolean        @default(false)
+  prerequisites String[]       @default([])
+  tags          String[]       @default([])
+  outcomes      String[]       @default([])
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  CourseGroup   CourseGroup[]
+  CourseItem    CourseItem[]
+  UserOnCourse  UserOnCourse[]
+}
+
+model CourseGroup {
+  id       Int    @id @default(autoincrement())
+  name     String @default("")
+  summary  String @default("")
+  order    Int    @default(0)
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  courseId Int
+  CourseItem CourseItem[]
+}
+
+model CourseItem {
+  id       Int    @id @default(autoincrement())
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  courseId Int
+  group    CourseGroup? @relation(fields: [groupId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  groupId  Int?
+  order    Int    @default(0)
+  section  String @default("")
 }
 
 model CommentThread {
