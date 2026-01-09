@@ -2,14 +2,14 @@ import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
 import prisma from "lib/prisma"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
-import { Material, Theme, getMaterial, removeMarkdown } from "lib/material"
+import { Material, MaterialTheme, getMaterial, removeMarkdown } from "lib/material"
 import Content from "components/content/Content"
 import NavDiagram from "components/navdiagram/NavDiagram"
 import { loadPageTemplate, PageTemplate } from "lib/pageTemplate"
 
 type HomeProps = {
   material: Material
-  theme: Theme
+  theme: MaterialTheme
   pageInfo: PageTemplate
 }
 

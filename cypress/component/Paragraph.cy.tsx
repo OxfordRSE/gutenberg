@@ -1,5 +1,5 @@
 import Paragraph from "components/content/Paragraph"
-import { Section } from "lib/material"
+import { MaterialSection } from "lib/material"
 import { Event } from "pages/api/event/[eventId]"
 import { User } from "pages/api/user/[email]"
 import { CommentThread } from "pages/api/commentThread"
@@ -80,7 +80,7 @@ describe("Paragraph", () => {
       ],
     },
   ]
-  const section: Section = {
+  const section: MaterialSection = {
     id: "1",
     file: "test.md",
     course: "test course",

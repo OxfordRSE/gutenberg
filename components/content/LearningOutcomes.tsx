@@ -1,4 +1,4 @@
-import { Section } from "../../lib/material"
+import { MaterialSection } from "../../lib/material"
 import ListItem from "@mui/material/ListItem"
 import ListItemText from "@mui/material/ListItemText"
 import List from "@mui/material/List"
@@ -11,7 +11,11 @@ import ListItemIcon from "@mui/material/ListItemIcon"
 import React from "react"
 import { type Theme } from "@mui/system"
 
-export default function LearningOutcomes({ learningOutcomes }: { learningOutcomes: Section["learningOutcomes"] }) {
+export default function LearningOutcomes({
+  learningOutcomes,
+}: {
+  learningOutcomes: MaterialSection["learningOutcomes"]
+}) {
   const [open, setOpen] = React.useState(true)
   if (learningOutcomes.length === 0) return null
   return (
