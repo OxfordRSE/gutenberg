@@ -1,12 +1,12 @@
 import NavDiagram from "components/navdiagram/NavDiagram"
 import React, { useEffect, useState } from "react"
 import { createPortal } from "react-dom"
-import { Material, Theme, Course, Excludes } from "lib/material"
+import { Material, MaterialTheme, MaterialCourse, Excludes } from "lib/material"
 
 interface Props {
   material: Material
-  theme: Theme
-  course?: Course
+  theme: MaterialTheme
+  course?: MaterialCourse
   excludes?: Excludes
   target?: HTMLElement | null
   onMouseEnter: () => void

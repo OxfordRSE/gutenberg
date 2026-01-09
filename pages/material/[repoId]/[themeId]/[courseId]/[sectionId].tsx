@@ -2,10 +2,10 @@ import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
 import prisma from "lib/prisma"
 import {
   getMaterial,
-  Course,
-  Theme,
+  MaterialCourse,
+  MaterialTheme,
   Material,
-  Section,
+  MaterialSection,
   removeMarkdown,
   getRepoUrl,
   getExcludes,
@@ -21,9 +21,9 @@ import LearningOutcomes from "components/content/LearningOutcomes"
 import revalidateTimeout from "lib/revalidateTimeout"
 
 type SectionComponentProps = {
-  theme: Theme
-  course: Course
-  section: Section
+  theme: MaterialTheme
+  course: MaterialCourse
+  section: MaterialSection
   material: Material
   events: Event[]
   pageInfo: PageTemplate

@@ -17,7 +17,7 @@ import "katex/dist/katex.min.css" // `rehype-katex` does not import the CSS for 
 import Challenge from "./Challenge"
 import Solution from "./Solution"
 import Callout from "./Callout"
-import { Course, Section, Theme } from "lib/material"
+import { MaterialCourse, MaterialSection, MaterialTheme } from "lib/material"
 import Paragraph from "./Paragraph"
 import Heading from "./Heading"
 import { reduceRepeatingPatterns, extractTextValues } from "lib/utils"
@@ -158,9 +158,9 @@ function code({ node, className, children, ...props }: CodeProps): React.JSX.Ele
 
 type Props = {
   markdown: string
-  theme?: Theme
-  course?: Course
-  section?: Section
+  theme?: MaterialTheme
+  course?: MaterialCourse
+  section?: MaterialSection
 }
 
 const Content: React.FC<Props> = ({ markdown, theme, course, section }) => {

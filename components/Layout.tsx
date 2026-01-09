@@ -1,4 +1,4 @@
-import { Course, Section, Theme } from "lib/material"
+import { MaterialCourse, MaterialSection, MaterialTheme } from "lib/material"
 import Link from "next/link"
 
 import { useSession } from "next-auth/react"
@@ -23,9 +23,9 @@ import plausibleHost from "lib/plausibleHost"
 
 type Props = {
   material: Material
-  theme?: Theme
-  course?: Course
-  section?: Section
+  theme?: MaterialTheme
+  course?: MaterialCourse
+  section?: MaterialSection
   children: ReactNode
   pageInfo: PageTemplate
   pageTitle?: string

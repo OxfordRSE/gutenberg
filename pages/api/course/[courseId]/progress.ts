@@ -5,9 +5,7 @@ import { getMaterial, sectionSplit } from "lib/material"
 
 import type { NextApiRequest, NextApiResponse } from "next"
 
-export type Data =
-  | { total: number; completed: number; sections: string[] }
-  | { error: string }
+export type Data = { total: number; completed: number; sections: string[] } | { error: string }
 
 const progressHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   const session = await getServerSession(req, res, authOptions)
