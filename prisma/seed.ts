@@ -397,7 +397,11 @@ async function main() {
                 connectOrCreate: [
                   {
                     where: { id: 1 },
-                    create: { order: 1, section: "technology_and_tooling.bash_shell.bash", course: { connect: { id: 1 } } },
+                    create: {
+                      order: 1,
+                      section: "technology_and_tooling.bash_shell.bash",
+                      course: { connect: { id: 1 } },
+                    },
                   },
                   {
                     where: { id: 2 },

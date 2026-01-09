@@ -1,9 +1,9 @@
 import React from "react"
 import Link from "next/link"
 import { Grid, Paper, Typography, Box, Chip } from "@mui/material"
-import { Course, Theme } from "lib/material"
+import { MaterialCourse, MaterialTheme } from "lib/material"
 
-function CourseGrid({ course, theme }: { course: Course; theme: Theme }) {
+function CourseGrid({ course, theme }: { course: MaterialCourse; theme: MaterialTheme }) {
   const files = course.files
 
   const findSectionByName = (fileName: string) => {

@@ -5,11 +5,26 @@ import { CourseStatus, Prisma } from "@prisma/client"
 
 import type { NextApiRequest, NextApiResponse } from "next"
 
-const userOnCourseSelect = { courseId: true, userEmail: true, status: true, startedAt: true, completedAt: true } as const
+const userOnCourseSelect = {
+  courseId: true,
+  userEmail: true,
+  status: true,
+  startedAt: true,
+  completedAt: true,
+} as const
 type PublicUserOnCourse = Prisma.UserOnCourseGetPayload<{ select: typeof userOnCourseSelect }>
 
 type Data =
-  | { userOnCourse: { id: string; courseId: number; userEmail: string; status: CourseStatus; startedAt: Date; completedAt: Date | null } }
+  | {
+      userOnCourse: {
+        id: string
+        courseId: number
+        userEmail: string
+        status: CourseStatus
+        startedAt: Date
+        completedAt: Date | null
+      }
+    }
   | { error: string }
 
 const enrolHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {

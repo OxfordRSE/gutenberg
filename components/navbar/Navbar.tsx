@@ -1,6 +1,6 @@
 import { Dropdown, Tooltip } from "flowbite-react"
 import Avatar from "@mui/material/Avatar"
-import { Course, Material, Section, Theme, Excludes } from "lib/material"
+import { MaterialCourse, Material, MaterialSection, MaterialTheme, Excludes } from "lib/material"
 import { EventFull } from "lib/types"
 import { signIn, signOut, useSession } from "next-auth/react"
 import Link from "next/link"
@@ -23,9 +23,9 @@ import { HomeBreadcrumb } from "components/navbar/HomeBreadcrumb"
 
 interface Props {
   material: Material
-  theme?: Theme
-  course?: Course
-  section?: Section
+  theme?: MaterialTheme
+  course?: MaterialCourse
+  section?: MaterialSection
   activeEvent: EventFull | undefined
   setShowAttribution: (show: boolean) => void
   setSidebarOpen: (open: boolean) => void
