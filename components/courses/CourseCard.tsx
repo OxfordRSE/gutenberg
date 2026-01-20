@@ -2,6 +2,7 @@ import { Card, Badge } from "flowbite-react"
 import { Prisma } from "@prisma/client"
 import CourseLevelBadge from "./CourseLevelBadge"
 import Link from "next/link"
+import { getTagColor } from "lib/tagColors"
 
 type Course = Prisma.CourseGetPayload<{}>
 
@@ -25,11 +26,14 @@ const CourseCard: React.FC<Props> = ({ course }) => {
       </div>
       {course.tags.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-2">
-          {course.tags.map((tag) => (
-            <Badge key={tag} color="gray">
-              {tag}
-            </Badge>
-          ))}
+          {course.tags.map((tag) => {
+            const color = getTagColor(tag)
+            return (
+              <Badge key={tag} style={{ backgroundColor: color.background, color: color.text }}>
+                {tag}
+              </Badge>
+            )
+          })}
         </div>
       )}
       {course.outcomes.length > 0 && (

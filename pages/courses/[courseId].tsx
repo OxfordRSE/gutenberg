@@ -9,6 +9,7 @@ import { Prisma } from "@prisma/client"
 import Link from "next/link"
 import { Card, Badge } from "flowbite-react"
 import CourseLevelBadge from "components/courses/CourseLevelBadge"
+import { getTagColor } from "lib/tagColors"
 
 type CourseFull = Prisma.CourseGetPayload<{
   include: {
@@ -28,13 +29,25 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, pageInfo 
     <Layout material={material} pageInfo={pageInfo} pageTitle={`${course.name}: ${pageInfo.title}`}>
       <div className="px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32">
         <Title text={course.name || "Untitled course"} className="text-3xl font-bold" style={{ marginBottom: "0px" }} />
-        <div className="mt-2 flex flex-wrap items-center gap-2">
-          <CourseLevelBadge level={course.level} />
-          {course.tags.map((tag) => (
-            <Badge key={tag} color="gray">
-              {tag}
-            </Badge>
-          ))}
+        <div className="mt-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              Difficulty
+            </span>
+            <CourseLevelBadge level={course.level} />
+          </div>
+          {course.tags.length > 0 && (
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              {course.tags.map((tag) => {
+                const color = getTagColor(tag)
+                return (
+                  <Badge key={tag} style={{ backgroundColor: color.background, color: color.text }}>
+                    {tag}
+                  </Badge>
+                )
+              })}
+            </div>
+          )}
         </div>
         {course.summary && <p className="mt-4 text-gray-700 dark:text-gray-300 whitespace-pre-line">{course.summary}</p>}
         {course.outcomes.length > 0 && (

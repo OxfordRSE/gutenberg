@@ -15,8 +15,8 @@
           "summary": "Core language fundamentals",
           "order": 1,
           "items": [
-            { "order": 1, "section": "technology_and_tooling.bash_shell.bash" },
-            { "order": 2, "section": "technology_and_tooling.ide.cpp" }
+            { "order": 1, "section": "HPCu.technology_and_tooling.bash_shell.bash" },
+            { "order": 2, "section": "HPCu.technology_and_tooling.ide.cpp" }
           ]
         },
         {
@@ -24,12 +24,12 @@
           "summary": "Procedural programming concepts",
           "order": 2,
           "items": [
-            { "order": 1, "section": "software_architecture_and_design.procedural.types_cpp" },
-            { "order": 2, "section": "software_architecture_and_design.procedural.functions_cpp" }
+            { "order": 1, "section": "HPCu.software_architecture_and_design.procedural.types_cpp" },
+            { "order": 2, "section": "HPCu.software_architecture_and_design.procedural.functions_cpp" }
           ]
         }
       ],
-      "items": [{ "order": 1, "section": "software_architecture_and_design.procedural.containers_cpp" }]
+      "items": [{ "order": 1, "section": "HPCu.software_architecture_and_design.procedural.containers_cpp" }]
     },
     {
       "externalId": "course_functional_cpp_bitesize",
@@ -42,8 +42,8 @@
       "outcomes": ["Understanding recursion", "Higher-order functions"],
       "groups": [],
       "items": [
-        { "order": 1, "section": "software_architecture_and_design.functional.recursion_cpp" },
-        { "order": 2, "section": "software_architecture_and_design.functional.higher_order_functions_cpp" }
+        { "order": 1, "section": "HPCu.software_architecture_and_design.functional.recursion_cpp" },
+        { "order": 2, "section": "HPCu.software_architecture_and_design.functional.higher_order_functions_cpp" }
       ]
     },
     {
@@ -61,13 +61,13 @@
           "summary": "First steps with Python",
           "order": 1,
           "items": [
-            { "order": 1, "section": "technology_and_tooling.command_line.navigation" },
-            { "order": 2, "section": "software_architecture_and_design.procedural.types_cpp" }
+            { "order": 1, "section": "HPCu.technology_and_tooling.command_line.navigation" },
+            { "order": 2, "section": "HPCu.software_architecture_and_design.procedural.types_cpp" }
           ]
         }
       ],
       "items": [
-        { "order": 1, "section": "software_architecture_and_design.procedural.functions_cpp" }
+        { "order": 1, "section": "HPCu.software_architecture_and_design.procedural.functions_cpp" }
       ]
     },
     {
@@ -85,13 +85,13 @@
           "summary": "Command line and environment basics",
           "order": 1,
           "items": [
-            { "order": 1, "section": "technology_and_tooling.bash_shell.bash" },
-            { "order": 2, "section": "technology_and_tooling.ide.cpp" }
+            { "order": 1, "section": "HPCu.technology_and_tooling.bash_shell.bash" },
+            { "order": 2, "section": "HPCu.technology_and_tooling.ide.cpp" }
           ]
         }
       ],
       "items": [
-        { "order": 1, "section": "software_architecture_and_design.procedural.containers_cpp" }
+        { "order": 1, "section": "HPCu.software_architecture_and_design.procedural.containers_cpp" }
       ]
     },
     {
@@ -105,8 +105,8 @@
       "outcomes": ["Reason about trade-offs", "Structure modules", "Manage complexity"],
       "groups": [],
       "items": [
-        { "order": 1, "section": "software_architecture_and_design.procedural.types_cpp" },
-        { "order": 2, "section": "software_architecture_and_design.functional.state_and_side_effects_cpp" }
+        { "order": 1, "section": "HPCu.software_architecture_and_design.procedural.types_cpp" },
+        { "order": 2, "section": "HPCu.software_architecture_and_design.functional.state_and_side_effects_cpp" }
       ]
     },
     {
@@ -124,8 +124,8 @@
           "summary": "Core software design ideas applied to Python",
           "order": 1,
           "items": [
-            { "order": 1, "section": "software_architecture_and_design.procedural.types_cpp" },
-            { "order": 2, "section": "software_architecture_and_design.procedural.functions_cpp" }
+            { "order": 1, "section": "HPCu.software_architecture_and_design.procedural.types_cpp" },
+            { "order": 2, "section": "HPCu.software_architecture_and_design.procedural.functions_cpp" }
           ]
         },
         {
@@ -133,12 +133,12 @@
           "summary": "Functional patterns for clearer logic",
           "order": 2,
           "items": [
-            { "order": 1, "section": "software_architecture_and_design.functional.state_and_side_effects_cpp" }
+            { "order": 1, "section": "HPCu.software_architecture_and_design.functional.state_and_side_effects_cpp" }
           ]
         }
       ],
       "items": [
-        { "order": 1, "section": "software_architecture_and_design.procedural.containers_cpp" }
+        { "order": 1, "section": "HPCu.software_architecture_and_design.procedural.containers_cpp" }
       ]
     },
     {
