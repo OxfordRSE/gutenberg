@@ -12,6 +12,15 @@ async function main() {
       admin: true,
     },
   })
+  await prisma.user.upsert({
+    where: { email: "alasdair.wlsn@googlemail.com" },
+    update: { admin: true },
+    create: {
+      name: "Alasdair Wilson",
+      email: "alasdair.wlsn@googlemail.com",
+      admin: true,
+    },
+  })
   const userStudentOnCourse = await prisma.user.upsert({
     where: { email: "onCourse@localhost" },
     update: {},

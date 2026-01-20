@@ -1,6 +1,7 @@
 import { Card, Badge } from "flowbite-react"
 import { Prisma } from "@prisma/client"
 import CourseLevelBadge from "./CourseLevelBadge"
+import Link from "next/link"
 
 type Course = Prisma.CourseGetPayload<{}>
 
@@ -13,7 +14,9 @@ const CourseCard: React.FC<Props> = ({ course }) => {
     <Card>
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{course.name || "Untitled"}</h2>
+          <Link href={`/courses/${course.id}`} className="hover:underline">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{course.name || "Untitled"}</h2>
+          </Link>
           {course.summary && (
             <p className="mt-2 text-gray-700 dark:text-gray-300 whitespace-pre-line">{course.summary}</p>
           )}
