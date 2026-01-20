@@ -36,6 +36,18 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, pageInfo 
             </span>
             <CourseLevelBadge level={course.level} />
           </div>
+          {course.languages.length > 0 && (
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              {course.languages.map((language) => {
+                const color = getTagColor(language)
+                return (
+                  <Badge key={language} style={{ backgroundColor: color.background, color: color.text }}>
+                    {language}
+                  </Badge>
+                )
+              })}
+            </div>
+          )}
           {course.tags.length > 0 && (
             <div className="mt-2 flex flex-wrap items-center gap-2">
               {course.tags.map((tag) => {

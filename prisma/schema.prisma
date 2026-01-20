@@ -159,6 +159,7 @@ model Course {
   summary       String         @default("")
   level         String         @default("")
   hidden        Boolean        @default(false)
+  language      String[]       @default([])
   prerequisites String[]       @default([])
   tags          String[]       @default([])
   outcomes      String[]       @default([])

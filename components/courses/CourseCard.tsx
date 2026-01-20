@@ -36,6 +36,18 @@ const CourseCard: React.FC<Props> = ({ course }) => {
           })}
         </div>
       )}
+      {course.languages.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {course.languages.map((language) => {
+            const color = getTagColor(language)
+            return (
+              <Badge key={language} style={{ backgroundColor: color.background, color: color.text }}>
+                {language}
+              </Badge>
+            )
+          })}
+        </div>
+      )}
       {course.outcomes.length > 0 && (
         <div className="mt-3 text-sm text-gray-600 dark:text-gray-400">
           <span className="font-semibold text-gray-800 dark:text-gray-200">Outcomes:</span>{" "}
