@@ -14,6 +14,7 @@ import { HiRefresh } from "react-icons/hi"
 import useSWR, { Fetcher } from "swr"
 import type { Course } from "pages/api/course"
 import revalidateTimeout from "lib/revalidateTimeout"
+import { sortCourses } from "lib/courseSort"
 
 type CoursesProps = {
   material: Material
@@ -32,7 +33,7 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
   const { data, isLoading, mutate } = useSWR(`${basePath}/api/course`, coursesFetcher, {
     fallbackData: { courses: initialCourses },
   })
-  const courses = data?.courses ?? []
+  const courses = sortCourses(data?.courses ?? [])
 
   const handleSyncDefaults = async () => {
     setSyncError(null)
@@ -89,11 +90,10 @@ export const getStaticProps: GetStaticProps = async () => {
 
   const courses = await prisma.course.findMany({
     where: { hidden: false },
-    orderBy: { updatedAt: "desc" },
   })
 
   return {
-    props: makeSerializable({ material, courses, pageInfo }),
+    props: makeSerializable({ material, courses: sortCourses(courses), pageInfo }),
     revalidate: revalidateTimeout,
   }
 }

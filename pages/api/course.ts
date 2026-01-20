@@ -4,6 +4,7 @@ import prisma from "lib/prisma"
 
 import type { NextApiRequest, NextApiResponse } from "next"
 import { Prisma } from "@prisma/client"
+import { sortCourses } from "lib/courseSort"
 
 export type Course = Prisma.CourseGetPayload<{}>
 
@@ -56,7 +57,7 @@ const Courses = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     const courses = await prisma.course.findMany({
       where: isAdmin ? {} : { hidden: false },
     })
-    res.status(200).json({ courses })
+    res.status(200).json({ courses: sortCourses(courses) })
     return
   }
 
