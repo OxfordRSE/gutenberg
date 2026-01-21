@@ -62,6 +62,10 @@ const syncDefaultsHandler = async (req: NextApiRequest, res: NextApiResponse<Dat
   const raw = await readFile(defaultsPath, "utf8")
   const defaults: CourseDefaults = JSON.parse(raw)
 
+  await prisma.$executeRaw`SELECT setval(pg_get_serial_sequence('"Course"', 'id'), COALESCE((SELECT MAX(id) FROM "Course"), 1))`
+  await prisma.$executeRaw`SELECT setval(pg_get_serial_sequence('"CourseGroup"', 'id'), COALESCE((SELECT MAX(id) FROM "CourseGroup"), 1))`
+  await prisma.$executeRaw`SELECT setval(pg_get_serial_sequence('"CourseItem"', 'id'), COALESCE((SELECT MAX(id) FROM "CourseItem"), 1))`
+
   let synced = 0
   for (const course of defaults.courses ?? []) {
     const upserted = await prisma.course.upsert({

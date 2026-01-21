@@ -34,6 +34,8 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
     fallbackData: { courses: initialCourses },
   })
   const courses = sortCourses(data?.courses ?? [])
+  const visibleCourses = courses.filter((course) => !course.hidden)
+  const hiddenCourses = courses.filter((course) => course.hidden)
 
   const handleSyncDefaults = async () => {
     setSyncError(null)
@@ -71,12 +73,20 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
           <Card>
             <p className="text-gray-700 dark:text-gray-300">Loading courses…</p>
           </Card>
-        ) : courses.length === 0 ? (
+        ) : visibleCourses.length === 0 ? (
           <Card>
             <p className="text-gray-700 dark:text-gray-300">No courses are available yet.</p>
           </Card>
         ) : (
-          <CourseGrid courses={courses} />
+          <CourseGrid courses={visibleCourses} />
+        )}
+        {!profileLoading && userProfile?.admin && hiddenCourses.length > 0 && (
+          <div className="mt-8">
+            <Title text="Hidden Courses" className="text-2xl font-bold" style={{ marginBottom: "0px" }} />
+            <div className="mt-3">
+              <CourseGrid courses={hiddenCourses} />
+            </div>
+          </div>
         )}
       </div>
     </Layout>
