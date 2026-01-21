@@ -63,7 +63,9 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, pageInfo 
             </div>
           )}
         </div>
-        {course.summary && <p className="mt-4 text-gray-700 dark:text-gray-300 whitespace-pre-line">{course.summary}</p>}
+        {course.summary && (
+          <p className="mt-4 text-gray-700 dark:text-gray-300 whitespace-pre-line">{course.summary}</p>
+        )}
         {course.outcomes.length > 0 && (
           <div className="mt-4 text-sm text-gray-600 dark:text-gray-400">
             <span className="font-semibold text-gray-800 dark:text-gray-200">Outcomes:</span>{" "}
@@ -79,31 +81,29 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, pageInfo 
       </div>
       <div className="px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32 mt-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {course.CourseGroup
-            .sort((a, b) => a.order - b.order)
-            .map((group) => (
-              <Card key={group.id}>
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{group.name || "Untitled group"}</h2>
-                {group.summary && <p className="text-gray-700 dark:text-gray-300">{group.summary}</p>}
-                <ul className="mt-2 space-y-1">
-                  {group.CourseItem.sort((a, b) => a.order - b.order).map((item) => {
-                    const { section, course: matCourse, theme, url } = sectionSplit(item.section, material)
-                    const label = section?.name || matCourse?.name || theme?.name || item.section
-                    return (
-                      <li key={item.id} className="text-sm text-gray-700 dark:text-gray-300">
-                        {url ? (
-                          <Link href={url} className="hover:underline">
-                            {label}
-                          </Link>
-                        ) : (
-                          label
-                        )}
-                      </li>
-                    )
-                  })}
-                </ul>
-              </Card>
-            ))}
+          {course.CourseGroup.sort((a, b) => a.order - b.order).map((group) => (
+            <Card key={group.id}>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{group.name || "Untitled group"}</h2>
+              {group.summary && <p className="text-gray-700 dark:text-gray-300">{group.summary}</p>}
+              <ul className="mt-2 space-y-1">
+                {group.CourseItem.sort((a, b) => a.order - b.order).map((item) => {
+                  const { section, course: matCourse, theme, url } = sectionSplit(item.section, material)
+                  const label = section?.name || matCourse?.name || theme?.name || item.section
+                  return (
+                    <li key={item.id} className="text-sm text-gray-700 dark:text-gray-300">
+                      {url ? (
+                        <Link href={url} className="hover:underline">
+                          {label}
+                        </Link>
+                      ) : (
+                        label
+                      )}
+                    </li>
+                  )
+                })}
+              </ul>
+            </Card>
+          ))}
           {course.CourseItem.filter((item) => item.groupId == null).length > 0 && (
             <Card>
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Ungrouped</h2>
