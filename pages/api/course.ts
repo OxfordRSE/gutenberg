@@ -37,14 +37,14 @@ const Courses = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
       return
     }
 
-    const { name, summary, level, hidden, languages, prerequisites, tags, outcomes } = req.body
+    const { name, summary, level, hidden, language, prerequisites, tags, outcomes } = req.body
     const course = await prisma.course.create({
       data: {
         name,
         summary,
         level,
         hidden: !!hidden,
-        languages,
+        language,
         prerequisites,
         tags,
         outcomes,

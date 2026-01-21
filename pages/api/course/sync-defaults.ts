@@ -16,7 +16,7 @@ type CourseDefault = {
   summary?: string
   level?: string
   hidden?: boolean
-  languages?: string[]
+  language?: string[]
   prerequisites?: string[]
   tags?: string[]
   outcomes?: string[]
@@ -71,7 +71,7 @@ const syncDefaultsHandler = async (req: NextApiRequest, res: NextApiResponse<Dat
         summary: course.summary ?? "",
         level: course.level ?? "",
         hidden: !!course.hidden,
-        languages: course.languages ?? [],
+        language: course.language ?? [],
         prerequisites: course.prerequisites ?? [],
         tags: course.tags ?? [],
         outcomes: course.outcomes ?? [],
@@ -82,7 +82,7 @@ const syncDefaultsHandler = async (req: NextApiRequest, res: NextApiResponse<Dat
         summary: course.summary ?? "",
         level: course.level ?? "",
         hidden: !!course.hidden,
-        languages: course.languages ?? [],
+        language: course.language ?? [],
         prerequisites: course.prerequisites ?? [],
         tags: course.tags ?? [],
         outcomes: course.outcomes ?? [],
