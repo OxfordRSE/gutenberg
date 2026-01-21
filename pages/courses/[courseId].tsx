@@ -10,6 +10,8 @@ import Link from "next/link"
 import { Card, Badge } from "flowbite-react"
 import CourseLevelBadge from "components/courses/CourseLevelBadge"
 import { getTagColor } from "lib/tagColors"
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "pages/api/auth/[...nextauth]"
 
 type CourseFull = Prisma.CourseGetPayload<{
   include: {
@@ -136,6 +138,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const pageInfo = loadPageTemplate()
   const courseId = parseInt(context?.params?.courseId as string, 10)
 
+  const session = await getServerSession(context.req, context.res, authOptions)
+  const userEmail = session?.user?.email || undefined
+  const currentUser = userEmail ? await prisma.user.findUnique({ where: { email: userEmail } }) : null
+  const isAdmin = !!currentUser?.admin
+
   const course = await prisma.course.findUnique({
     where: { id: courseId },
     include: {
@@ -144,7 +151,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   })
 
-  if (!course || course.hidden) {
+  if (!course || (course.hidden && !isAdmin)) {
     return { notFound: true }
   }
 
