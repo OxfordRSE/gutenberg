@@ -46,8 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       })
     }
     nextStatus = EventStatus.REQUEST
-  }
-  else if (normalizedKey === event.enrolKey) nextStatus = EventStatus.STUDENT
+  } else if (normalizedKey === event.enrolKey) nextStatus = EventStatus.STUDENT
   else if (normalizedKey === event.instructorKey) nextStatus = EventStatus.INSTRUCTOR
   else return res.status(400).json({ error: "Invalid enrolment key" })
 
