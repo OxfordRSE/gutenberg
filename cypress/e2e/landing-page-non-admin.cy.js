@@ -77,4 +77,19 @@ describe("non admin landing page", () => {
     // Then we remove the user just in case we want to run this test again locally
     cy.request("DELETE", "/api/userOnEvent/1", userOnEvent)
   })
+
+  it("Can Request Enrolment Without Key", () => {
+    cy.get('[data-cy="load-more-events"]').click()
+    cy.get('[data-cy="event-enrol-1"]').should("be.visible")
+    cy.get('[data-cy="event-enrol-1"]').click()
+    cy.get('[data-cy="request-enrol-1"]').should("be.visible")
+    cy.get('[data-cy="request-enrol-1"]').click()
+    cy.contains("Enrollment request sent.").should("be.visible")
+    cy.request("GET", "/api/userOnEvent/1").then((response) => {
+      const uOnE = response.body.userOnEvent
+      expect(uOnE.status).to.equal("REQUEST")
+    })
+    // Then we remove the user just in case we want to run this test again locally
+    cy.request("DELETE", "/api/userOnEvent/1", userOnEvent)
+  })
 })

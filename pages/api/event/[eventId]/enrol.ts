@@ -26,14 +26,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   })
   if (!event) return res.status(404).json({ error: "Event not found" })
 
-  // Require a key to be provided
-  if (!enrolKey || enrolKey.trim() === "") {
-    return res.status(400).json({ error: "Enrolment key is required" })
-  }
+  const normalizedKey = enrolKey?.trim()
 
   let nextStatus: EventStatus | null = null
-  if (enrolKey === event.enrolKey) nextStatus = EventStatus.STUDENT
-  else if (enrolKey === event.instructorKey) nextStatus = EventStatus.INSTRUCTOR
+  if (!normalizedKey) {
+    const existing = await prisma.userOnEvent.findUnique({
+      where: { userEmail_eventId: { userEmail, eventId } },
+      select: userOnEventSelect,
+    })
+    if (existing) {
+      const syntheticId = `${existing.userEmail}:${existing.eventId}`
+      return res.status(200).json({
+        userOnEvent: {
+          id: syntheticId,
+          eventId: existing.eventId,
+          userEmail: existing.userEmail,
+          status: existing.status,
+        },
+      })
+    }
+    nextStatus = EventStatus.REQUEST
+  } else if (normalizedKey === event.enrolKey) nextStatus = EventStatus.STUDENT
+  else if (normalizedKey === event.instructorKey) nextStatus = EventStatus.INSTRUCTOR
   else return res.status(400).json({ error: "Invalid enrolment key" })
 
   // Create or update the UserOnEvent record with the matched role
