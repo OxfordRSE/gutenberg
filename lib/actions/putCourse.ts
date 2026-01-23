@@ -1,7 +1,15 @@
 import { basePath } from "lib/basePath"
-import { CourseFull, Data } from "pages/api/course/[courseId]"
+import { Prisma } from "@prisma/client"
+import { Data } from "pages/api/course/[courseId]"
 
-export const putCourse = async (course: CourseFull): Promise<Data> => {
+export type CourseUpdatePayload = Prisma.CourseGetPayload<{
+  include: {
+    CourseGroup: { include: { CourseItem: true } }
+    CourseItem: true
+  }
+}>
+
+export const putCourse = async (course: CourseUpdatePayload): Promise<Data> => {
   const apiPath = `${basePath}/api/course/${course.id}`
   const requestOptions = {
     method: "PUT",

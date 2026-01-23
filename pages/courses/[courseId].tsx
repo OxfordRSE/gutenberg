@@ -20,7 +20,7 @@ import Textarea from "components/forms/Textarea"
 import Checkbox from "components/forms/Checkbox"
 import SelectField from "components/forms/SelectField"
 import Stack from "components/ui/Stack"
-import { putCourse } from "lib/actions/putCourse"
+import { putCourse, CourseUpdatePayload } from "lib/actions/putCourse"
 import EventItemAdder from "components/forms/EventItemAdder"
 import type { Option } from "components/forms/SelectSectionField"
 import { MdEdit, MdPreview } from "react-icons/md"
@@ -86,7 +86,7 @@ const SortableItem = ({ id = "", children }: { id?: string; children: React.Reac
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
+    transition: transition ?? undefined,
   }
 
   return (
@@ -370,7 +370,7 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, pageInfo 
   }, [defaultValues, reset])
 
   const onSubmit = async (form: CourseForm) => {
-    const payload: CourseFull = {
+    const payload: CourseUpdatePayload = {
       ...courseData,
       name: form.name,
       summary: form.summary,
