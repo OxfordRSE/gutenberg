@@ -132,6 +132,9 @@ function courseToForm(course: CourseFull): CourseForm {
 }
 
 const CoursePreview = ({ material, course }: { material: Material; course: CourseFull }) => {
+  const languageCount = course.language?.length ?? 0
+  const languageLabel = languageCount === 1 ? "Language:" : "Languages:"
+
   return (
     <>
       <div className="px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32">
@@ -143,8 +146,9 @@ const CoursePreview = ({ material, course }: { material: Material; course: Cours
             </span>
             <CourseLevelBadge level={course.level} />
           </div>
-          {(course.language ?? []).length > 0 && (
-            <div className="mt-2 flex flex-wrap items-center gap-2">
+          {languageCount > 0 && (
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+              <span className="font-semibold text-gray-800 dark:text-gray-200">{languageLabel}</span>
               {(course.language ?? []).map((language) => {
                 const color = getTagColor(language)
                 return (

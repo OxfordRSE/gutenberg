@@ -8,7 +8,7 @@
       "hidden": false,
       "language": ["cpp"],
       "prerequisites": [],
-      "tags": ["cpp", "basics"],
+      "tags": ["basics"],
       "outcomes": ["Basic syntax", "Functions", "Containers"],
       "groups": [
         {
@@ -40,7 +40,7 @@
       "hidden": false,
       "language": ["cpp"],
       "prerequisites": ["Intro to C++ (Self-paced)"],
-      "tags": ["cpp", "functional"],
+      "tags": ["functional"],
       "outcomes": ["Understanding recursion", "Higher-order functions"],
       "groups": [],
       "items": [
@@ -56,7 +56,7 @@
       "hidden": false,
       "language": ["python"],
       "prerequisites": [],
-      "tags": ["python", "basics"],
+      "tags": ["basics"],
       "outcomes": ["Core syntax", "Functions", "Working with files"],
       "groups": [
         {
@@ -122,7 +122,7 @@
       "hidden": false,
       "language": ["python"],
       "prerequisites": ["Python Foundations"],
-      "tags": ["python", "architecture", "design"],
+      "tags": ["architecture", "design"],
       "outcomes": ["Structure Python projects", "Design modules", "Manage dependencies"],
       "groups": [
         {
@@ -155,7 +155,7 @@
       "hidden": false,
       "language": ["python"],
       "prerequisites": [],
-      "tags": ["python", "basics"],
+      "tags": ["basics"],
       "outcomes": ["Run Python", "Use variables", "Write functions", "Work with data"],
       "groups": [
         {
@@ -181,7 +181,7 @@
       "hidden": false,
       "language": ["python"],
       "prerequisites": ["Intro to Python"],
-      "tags": ["python", "workflow", "snakemake"],
+      "tags": ["workflow", "snakemake"],
       "outcomes": ["Define workflows", "Manage dependencies", "Scale runs"],
       "groups": [
         {
@@ -207,7 +207,7 @@
       "hidden": false,
       "language": ["python"],
       "prerequisites": ["Intro to Python"],
-      "tags": ["python", "packaging", "dependencies"],
+      "tags": ["packaging", "dependencies"],
       "outcomes": ["Create packages", "Use virtual envs", "Publish to PyPI"],
       "groups": [
         {
@@ -233,7 +233,7 @@
       "hidden": false,
       "language": ["python"],
       "prerequisites": ["Intro to Python"],
-      "tags": ["python", "linting", "style"],
+      "tags": ["linting", "style"],
       "outcomes": ["Apply style guides", "Use linters", "Spot common issues"],
       "groups": [],
       "items": [

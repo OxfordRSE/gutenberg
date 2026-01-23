@@ -11,6 +11,9 @@ type Props = {
 }
 
 const CourseCard: React.FC<Props> = ({ course }) => {
+  const languageCount = course.language?.length ?? 0
+  const languageLabel = languageCount === 1 ? "Language:" : "Languages:"
+
   return (
     <Card>
       <div className="flex items-start justify-between gap-3">
@@ -36,8 +39,9 @@ const CourseCard: React.FC<Props> = ({ course }) => {
           })}
         </div>
       )}
-      {(course.language ?? []).length > 0 && (
-        <div className="mt-3 flex flex-wrap gap-2">
+      {languageCount > 0 && (
+        <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+          <span className="font-semibold text-gray-800 dark:text-gray-200">{languageLabel}</span>
           {(course.language ?? []).map((language) => {
             const color = getTagColor(language)
             return (
