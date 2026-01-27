@@ -12,9 +12,9 @@ export type NodeData = {
   label: string
   width: number
   height: number
-  theme: Theme
-  course?: Course
-  section?: Section
+  theme: MaterialTheme
+  course?: MaterialCourse
+  section?: MaterialSection
   external: boolean
 }
 
@@ -28,7 +28,7 @@ const nodeTypes = {
 
 import ELK, { ElkNode } from "elkjs/lib/elk.bundled.js"
 const elk = new ELK()
-import { Course, Theme, Material, Section } from "lib/material"
+import { MaterialCourse, MaterialTheme, Material, MaterialSection } from "lib/material"
 import CourseComponent from "pages/material/[repoId]/[themeId]/[courseId]"
 import { ElkExtendedEdge } from "elkjs"
 
@@ -63,7 +63,7 @@ const layoutOptionsTheme = {
 const labels = [{ width: 200, height: 70 }]
 const labelsTheme = [{ width: 200, height: 90 }]
 
-function generate_section_edges(section: Section, excludes: Excludes) {
+function generate_section_edges(section: MaterialSection, excludes: Excludes) {
   const course = `${section.theme}.${section.course}`
   // only create edges for this course
   const edges: Edge[] = section.dependsOn
@@ -76,7 +76,7 @@ function generate_section_edges(section: Section, excludes: Excludes) {
   return edges
 }
 
-function generate_course_edges_elk(course: Course, excludes: Excludes) {
+function generate_course_edges_elk(course: MaterialCourse, excludes: Excludes) {
   let edges: ElkExtendedEdge[] = []
   const sections = course.sections.filter((section) => !excludes.sections.includes(section.file))
   for (const section of sections) {
@@ -97,7 +97,7 @@ function generate_course_edges_elk(course: Course, excludes: Excludes) {
   return edges
 }
 
-function generate_course_edges(course: Course, excludes: Excludes) {
+function generate_course_edges(course: MaterialCourse, excludes: Excludes) {
   if (excludes.courses.includes(course.id)) {
     return []
   }
@@ -112,7 +112,7 @@ function generate_course_edges(course: Course, excludes: Excludes) {
   return edges
 }
 
-function generate_course_nodes_elk(course: Course, excludes: Excludes) {
+function generate_course_nodes_elk(course: MaterialCourse, excludes: Excludes) {
   const sections = course.sections.filter((section) => !excludes.sections.includes(section.file.split(".")[0]))
   const nodes: ElkNode[] = sections.map((section) => ({
     id: `${section.theme}.${course.id}.${section.file}`,
@@ -125,7 +125,7 @@ function generate_course_nodes_elk(course: Course, excludes: Excludes) {
   return nodes
 }
 
-function generate_course_nodes(course: Course, theme: Theme, graph: ElkNode, excludes: Excludes) {
+function generate_course_nodes(course: MaterialCourse, theme: MaterialTheme, graph: ElkNode, excludes: Excludes) {
   const sections = course.sections.filter((section) => !excludes.sections.includes(section.file.split(".")[0]))
   let nodes: Node[] = sections.map((section, i) => ({
     id: `${section.theme}.${course.id}.${section.file}`,
@@ -154,14 +154,14 @@ function generate_course_nodes(course: Course, theme: Theme, graph: ElkNode, exc
   return nodes
 }
 
-function generate_theme_edges(theme: Theme, excludes: Excludes) {
+function generate_theme_edges(theme: MaterialTheme, excludes: Excludes) {
   const courses = theme.courses.filter((course) => !excludes.courses.includes(course.id))
   let edges: Edge[] = []
   edges = edges.concat(...courses.map((course) => generate_course_edges(course, excludes)))
   return edges
 }
 
-function generate_theme_edges_elk(theme: Theme, excludes: Excludes) {
+function generate_theme_edges_elk(theme: MaterialTheme, excludes: Excludes) {
   let edges: ElkExtendedEdge[] = []
   const courses = theme.courses.filter((course) => !excludes.courses.includes(course.id))
   for (const course of courses) {
@@ -182,7 +182,7 @@ function generate_theme_edges_elk(theme: Theme, excludes: Excludes) {
   return edges
 }
 
-function generate_theme_nodes_elk(theme: Theme, includeExternalDeps: boolean = false, excludes: Excludes) {
+function generate_theme_nodes_elk(theme: MaterialTheme, includeExternalDeps: boolean = false, excludes: Excludes) {
   if (excludes.themes.includes(theme.id)) {
     return undefined
   }
@@ -223,7 +223,7 @@ function generate_theme_nodes_elk(theme: Theme, includeExternalDeps: boolean = f
 
 function generate_theme_nodes(
   material: Material,
-  theme: Theme,
+  theme: MaterialTheme,
   graph: ElkNode,
   includeExternalDeps: boolean = false,
   excludes: Excludes
@@ -358,8 +358,8 @@ function generate_material_nodes_elk(
 
 interface NavDiagramProps {
   material: Material
-  theme?: Theme
-  course?: Course
+  theme?: MaterialTheme
+  course?: MaterialCourse
   excludes?: Excludes
   style?: React.CSSProperties
 }

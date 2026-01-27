@@ -1,9 +1,9 @@
 import React from "react"
 import Link from "next/link"
 import { Grid, Paper, Typography, Box, Divider } from "@mui/material"
-import { Theme } from "lib/material"
+import { MaterialTheme } from "lib/material"
 
-function ThemeGrid({ theme }: { theme: Theme }) {
+function ThemeGrid({ theme }: { theme: MaterialTheme }) {
   const repo = theme.repo
   const courses = theme.courses
 

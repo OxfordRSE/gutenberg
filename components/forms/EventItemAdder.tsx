@@ -34,7 +34,7 @@ function EventItemAdder({
         setSelectedOptions={setSelectedOptions}
         inputValue={inputValue}
         setInputValue={setInputValue}
-        className={className}
+        className={`flex-1 min-w-0 ${className ?? ""}`}
       />
       <Button onClick={handleAddClick} variant="contained" size="small" className="rounded">
         Add Sections
