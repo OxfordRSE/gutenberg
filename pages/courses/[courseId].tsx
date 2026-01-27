@@ -24,6 +24,7 @@ import { putCourse, CourseUpdatePayload } from "lib/actions/putCourse"
 import EventItemAdder from "components/forms/EventItemAdder"
 import type { Option } from "components/forms/SelectSectionField"
 import { MdEdit, MdPreview } from "react-icons/md"
+import { basePath } from "lib/basePath"
 import {
   DndContext,
   closestCenter,
@@ -78,7 +79,19 @@ type CourseForm = {
 type CourseDetailProps = {
   material: Material
   course: CourseFull
+  userOnCourse: PublicUserOnCourse | null
   pageInfo: PageTemplate
+}
+
+const userOnCourseSelect = {
+  courseId: true,
+  userEmail: true,
+  status: true,
+  startedAt: true,
+  completedAt: true,
+} as const
+type PublicUserOnCourse = Prisma.UserOnCourseGetPayload<{ select: typeof userOnCourseSelect }> & {
+  id: string
 }
 
 const SortableItem = ({ id = "", children }: { id?: string; children: React.ReactNode }) => {
@@ -131,14 +144,56 @@ function courseToForm(course: CourseFull): CourseForm {
   }
 }
 
-const CoursePreview = ({ material, course }: { material: Material; course: CourseFull }) => {
+const CoursePreview = ({
+  material,
+  course,
+  userOnCourse,
+  onEnrol,
+  onUnenrol,
+  isUpdatingEnrolment,
+  isLoggedIn,
+}: {
+  material: Material
+  course: CourseFull
+  userOnCourse: PublicUserOnCourse | null
+  onEnrol: () => void
+  onUnenrol: () => void
+  isUpdatingEnrolment: boolean
+  isLoggedIn: boolean
+}) => {
   const languageCount = course.language?.length ?? 0
   const languageLabel = languageCount === 1 ? "Language:" : "Languages:"
+  const statusLabel = userOnCourse?.status
+    ? userOnCourse.status.charAt(0) + userOnCourse.status.slice(1).toLowerCase()
+    : null
 
   return (
     <>
       <div className="px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32">
         <Title text={course.name || "Untitled course"} className="text-3xl font-bold" style={{ marginBottom: "0px" }} />
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="text-sm text-gray-600 dark:text-gray-400">
+            {isLoggedIn ? (
+              userOnCourse ? (
+                <span>Status: {statusLabel}</span>
+              ) : (
+                <span>Not enrolled</span>
+              )
+            ) : (
+              <span>Sign in to enrol</span>
+            )}
+          </div>
+          {isLoggedIn && (
+            <Button
+              size="sm"
+              color={userOnCourse?.status === "ENROLLED" ? "warning" : "info"}
+              onClick={userOnCourse?.status === "ENROLLED" ? onUnenrol : onEnrol}
+              disabled={isUpdatingEnrolment}
+            >
+              {userOnCourse?.status === "ENROLLED" ? "Unenrol" : "Enrol"}
+            </Button>
+          )}
+        </div>
         <div className="mt-2">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
@@ -160,7 +215,8 @@ const CoursePreview = ({ material, course }: { material: Material; course: Cours
             </div>
           )}
           {course.tags.length > 0 && (
-            <div className="mt-2 flex flex-wrap items-center gap-2">
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+              <span className="font-semibold text-gray-800 dark:text-gray-200">Tags:</span>
               {course.tags.map((tag) => {
                 const color = getTagColor(tag)
                 return (
@@ -316,9 +372,11 @@ const CourseGroupEditor = ({
   )
 }
 
-const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, pageInfo }) => {
+const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCourse, pageInfo }) => {
   const { userProfile } = useProfile()
   const [courseData, setCourseData] = useState(course)
+  const [userOnCourseState, setUserOnCourseState] = useState<PublicUserOnCourse | null>(userOnCourse)
+  const [isUpdatingEnrolment, setIsUpdatingEnrolment] = useState(false)
 
   const defaultValues = useMemo(() => courseToForm(courseData), [courseData])
   const { control, handleSubmit, reset, register } = useForm<CourseForm>({ defaultValues })
@@ -369,6 +427,32 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, pageInfo 
     reset(defaultValues)
   }, [defaultValues, reset])
 
+  const handleEnrol = async () => {
+    setIsUpdatingEnrolment(true)
+    try {
+      const res = await fetch(`${basePath}/api/course/${courseData.id}/enrol`, { method: "POST" })
+      const data = await res.json()
+      if ("userOnCourse" in data) {
+        setUserOnCourseState(data.userOnCourse)
+      }
+    } finally {
+      setIsUpdatingEnrolment(false)
+    }
+  }
+
+  const handleUnenrol = async () => {
+    setIsUpdatingEnrolment(true)
+    try {
+      const res = await fetch(`${basePath}/api/course/${courseData.id}/unenrol`, { method: "POST" })
+      const data = await res.json()
+      if ("userOnCourse" in data) {
+        setUserOnCourseState(data.userOnCourse)
+      }
+    } finally {
+      setIsUpdatingEnrolment(false)
+    }
+  }
+
   const onSubmit = async (form: CourseForm) => {
     const payload: CourseUpdatePayload = {
       ...courseData,
@@ -409,7 +493,15 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, pageInfo 
       {userProfile?.admin ? (
         <Tabs.Group style="underline">
           <Tabs.Item title="Course" active icon={MdPreview}>
-            <CoursePreview material={material} course={courseData} />
+            <CoursePreview
+              material={material}
+              course={courseData}
+              userOnCourse={userOnCourseState}
+              onEnrol={handleEnrol}
+              onUnenrol={handleUnenrol}
+              isUpdatingEnrolment={isUpdatingEnrolment}
+              isLoggedIn={!!userProfile}
+            />
           </Tabs.Item>
           <Tabs.Item title="Edit" icon={MdEdit}>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -473,7 +565,15 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, pageInfo 
           </Tabs.Item>
         </Tabs.Group>
       ) : (
-        <CoursePreview material={material} course={courseData} />
+        <CoursePreview
+          material={material}
+          course={courseData}
+          userOnCourse={userOnCourseState}
+          onEnrol={handleEnrol}
+          onUnenrol={handleUnenrol}
+          isUpdatingEnrolment={isUpdatingEnrolment}
+          isLoggedIn={!!userProfile}
+        />
       )}
     </Layout>
   )
@@ -500,11 +600,22 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { notFound: true }
   }
 
+  const userOnCourse = userEmail
+    ? await prisma.userOnCourse.findUnique({
+        where: { userEmail_courseId: { userEmail, courseId } },
+        select: userOnCourseSelect,
+      })
+    : null
+
+  const userOnCourseWithId = userOnCourse
+    ? { ...userOnCourse, id: `${userOnCourse.userEmail}:${userOnCourse.courseId}` }
+    : null
+
   let material = await getMaterial()
   removeMarkdown(material, material)
 
   return {
-    props: makeSerializable({ material, course, pageInfo }),
+    props: makeSerializable({ material, course, pageInfo, userOnCourse: userOnCourseWithId }),
   }
 }
 
