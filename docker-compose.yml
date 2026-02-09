@@ -22,6 +22,11 @@ services:
     environment:
       POSTGRES_PASSWORD: super-secret-password
       POSTGRES_USER: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
     ports:
       - "5432:5432"
     volumes:
@@ -42,7 +47,7 @@ services:
       - db
     depends_on:
       db:
-        condition: service_started
+        condition: service_healthy
     environment:
       DATABASE_URL: postgresql://postgres:super-secret-password@db:5432
 
