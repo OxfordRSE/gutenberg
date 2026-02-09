@@ -3,10 +3,7 @@ import CourseLevelBadge from "./CourseLevelBadge"
 import Link from "next/link"
 import { getTagColor } from "lib/tagColors"
 import type { Course } from "pages/api/course"
-import { useSession } from "next-auth/react"
-import { useEffect, useState } from "react"
-import { basePath } from "lib/basePath"
-import CourseEnrolment from "./CourseEnrolment"
+import { Button } from "flowbite-react"
 
 type Props = {
   course: Course
@@ -15,39 +12,6 @@ type Props = {
 const CourseCard: React.FC<Props> = ({ course }) => {
   const languageCount = course.language?.length ?? 0
   const languageLabel = languageCount === 1 ? "Language:" : "Languages:"
-  const { data: session } = useSession()
-  const initialUserOnCourse = course.UserOnCourse?.[0] ?? null
-  const [userOnCourse, setUserOnCourse] = useState(initialUserOnCourse)
-  const [isUpdating, setIsUpdating] = useState(false)
-  useEffect(() => {
-    setUserOnCourse(course.UserOnCourse?.[0] ?? null)
-  }, [course.UserOnCourse])
-
-  const handleEnrol = async () => {
-    setIsUpdating(true)
-    try {
-      const res = await fetch(`${basePath}/api/course/${course.id}/enrol`, { method: "POST" })
-      const data = await res.json()
-      if ("userOnCourse" in data) {
-        setUserOnCourse(data.userOnCourse)
-      }
-    } finally {
-      setIsUpdating(false)
-    }
-  }
-
-  const handleUnenrol = async () => {
-    setIsUpdating(true)
-    try {
-      const res = await fetch(`${basePath}/api/course/${course.id}/unenrol`, { method: "POST" })
-      const data = await res.json()
-      if ("userOnCourse" in data) {
-        setUserOnCourse(data.userOnCourse)
-      }
-    } finally {
-      setIsUpdating(false)
-    }
-  }
 
   return (
     <Card>
@@ -62,18 +26,9 @@ const CourseCard: React.FC<Props> = ({ course }) => {
         </div>
         <CourseLevelBadge level={course.level} />
       </div>
-      <CourseEnrolment
-        status={userOnCourse?.status ?? null}
-        isLoggedIn={!!session}
-        isUpdating={isUpdating}
-        onEnrol={handleEnrol}
-        onUnenrol={handleUnenrol}
-        size="xs"
-        className="mt-2"
-      />
-      {course.tags.length > 0 && (
-        <div className="mt-3 flex flex-wrap gap-2">
-          {course.tags.map((tag) => {
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        {course.tags.length > 0 &&
+          course.tags.map((tag) => {
             const color = getTagColor(tag)
             return (
               <Badge key={tag} style={{ backgroundColor: color.background, color: color.text }}>
@@ -81,8 +36,14 @@ const CourseCard: React.FC<Props> = ({ course }) => {
               </Badge>
             )
           })}
+        <div className="ml-auto">
+          <Link href={`/courses/${course.id}`}>
+            <Button size="xs" color="info">
+              View course
+            </Button>
+          </Link>
         </div>
-      )}
+      </div>
       {languageCount > 0 && (
         <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
           <span className="font-semibold text-gray-800 dark:text-gray-200">{languageLabel}</span>
