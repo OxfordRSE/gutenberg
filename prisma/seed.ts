@@ -393,7 +393,7 @@ async function main() {
       hidden: false,
       language: ["cpp"],
       prerequisites: [],
-    tags: ["basics"],
+      tags: ["basics"],
       outcomes: ["Basic syntax", "Functions", "Containers"],
       CourseGroup: {
         connectOrCreate: [
@@ -474,7 +474,7 @@ async function main() {
       hidden: false,
       language: ["cpp"],
       prerequisites: ["Intro to C++ (Self-paced)"],
-    tags: ["functional"],
+      tags: ["functional"],
       outcomes: ["Understanding recursion", "Higher-order functions"],
       CourseItem: {
         connectOrCreate: [
@@ -534,7 +534,7 @@ async function main() {
       hidden: true,
       language: ["python"],
       prerequisites: [],
-    tags: ["hidden"],
+      tags: ["hidden"],
       outcomes: ["Visibility testing"],
       CourseItem: {
         connectOrCreate: [
@@ -559,7 +559,7 @@ async function main() {
       hidden: false,
       language: ["python"],
       prerequisites: ["Intro to Python"],
-    tags: ["utilities"],
+      tags: ["utilities"],
       outcomes: ["Reusable scripts", "Cleaner CLI tooling"],
       CourseItem: {
         connectOrCreate: [
@@ -584,7 +584,7 @@ async function main() {
       hidden: false,
       language: ["cpp", "python"],
       prerequisites: ["Intro to C++ (Self-paced)", "Intro to Python"],
-    tags: ["interop"],
+      tags: ["interop"],
       outcomes: ["Interface layers", "Mixed-language design"],
       CourseItem: {
         connectOrCreate: [

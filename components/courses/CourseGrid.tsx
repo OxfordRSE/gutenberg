@@ -1,7 +1,5 @@
-import { Prisma } from "@prisma/client"
 import CourseCard from "./CourseCard"
-
-type Course = Prisma.CourseGetPayload<{}>
+import type { Course } from "pages/api/course"
 
 type Props = {
   courses: Course[]

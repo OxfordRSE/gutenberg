@@ -1,6 +1,5 @@
 import type { NextPage, GetStaticProps } from "next"
 import Layout from "components/Layout"
-import prisma from "lib/prisma"
 import { Material, getMaterial, removeMarkdown } from "lib/material"
 import { makeSerializable } from "lib/utils"
 import { PageTemplate, loadPageTemplate } from "lib/pageTemplate"
@@ -98,12 +97,19 @@ export const getStaticProps: GetStaticProps = async () => {
   let material = await getMaterial()
   removeMarkdown(material, material)
 
-  const courses = await prisma.course.findMany({
-    where: { hidden: false },
-  })
+  if (!process.env.DATABASE_URL) {
+    return {
+      props: makeSerializable({ material, courses: [], pageInfo }),
+      revalidate: revalidateTimeout,
+    }
+  }
+
+  const prisma = (await import("lib/prisma")).default
+  const courses = await prisma.course.findMany({ where: { hidden: false } })
+  const coursesWithUser = courses.map((course) => ({ ...course, UserOnCourse: [] }))
 
   return {
-    props: makeSerializable({ material, courses: sortCourses(courses), pageInfo }),
+    props: makeSerializable({ material, courses: sortCourses(coursesWithUser), pageInfo }),
     revalidate: revalidateTimeout,
   }
 }

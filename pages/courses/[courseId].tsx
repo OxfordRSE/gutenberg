@@ -25,6 +25,7 @@ import EventItemAdder from "components/forms/EventItemAdder"
 import type { Option } from "components/forms/SelectSectionField"
 import { MdEdit, MdPreview } from "react-icons/md"
 import { basePath } from "lib/basePath"
+import CourseEnrolment from "components/courses/CourseEnrolment"
 import {
   DndContext,
   closestCenter,
@@ -163,37 +164,20 @@ const CoursePreview = ({
 }) => {
   const languageCount = course.language?.length ?? 0
   const languageLabel = languageCount === 1 ? "Language:" : "Languages:"
-  const statusLabel = userOnCourse?.status
-    ? userOnCourse.status.charAt(0) + userOnCourse.status.slice(1).toLowerCase()
-    : null
 
   return (
     <>
       <div className="px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32">
         <Title text={course.name || "Untitled course"} className="text-3xl font-bold" style={{ marginBottom: "0px" }} />
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            {isLoggedIn ? (
-              userOnCourse ? (
-                <span>Status: {statusLabel}</span>
-              ) : (
-                <span>Not enrolled</span>
-              )
-            ) : (
-              <span>Sign in to enrol</span>
-            )}
-          </div>
-          {isLoggedIn && (
-            <Button
-              size="sm"
-              color={userOnCourse?.status === "ENROLLED" ? "warning" : "info"}
-              onClick={userOnCourse?.status === "ENROLLED" ? onUnenrol : onEnrol}
-              disabled={isUpdatingEnrolment}
-            >
-              {userOnCourse?.status === "ENROLLED" ? "Unenrol" : "Enrol"}
-            </Button>
-          )}
-        </div>
+        <CourseEnrolment
+          status={userOnCourse?.status ?? null}
+          isLoggedIn={isLoggedIn}
+          isUpdating={isUpdatingEnrolment}
+          onEnrol={onEnrol}
+          onUnenrol={onUnenrol}
+          size="sm"
+          className="mt-4"
+        />
         <div className="mt-2">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
@@ -228,7 +212,9 @@ const CoursePreview = ({
             </div>
           )}
         </div>
-        {course.summary && <p className="mt-4 text-gray-700 dark:text-gray-300 whitespace-pre-line">{course.summary}</p>}
+        {course.summary && (
+          <p className="mt-4 text-gray-700 dark:text-gray-300 whitespace-pre-line">{course.summary}</p>
+        )}
         {course.outcomes.length > 0 && (
           <div className="mt-4 text-sm text-gray-600 dark:text-gray-400">
             <span className="font-semibold text-gray-800 dark:text-gray-200">Outcomes:</span>{" "}
