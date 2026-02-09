@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import prisma from "lib/prisma"
 import Layout from "components/Layout"
-import { Material, getMaterial, removeMarkdown, sectionSplit } from "lib/material"
+import { Material, getMaterial, removeMarkdown } from "lib/material"
 import { makeSerializable } from "lib/utils"
 import { PageTemplate, loadPageTemplate } from "lib/pageTemplate"
 import Title from "components/ui/Title"
@@ -26,6 +26,7 @@ import type { Option } from "components/forms/SelectSectionField"
 import { MdEdit, MdPreview } from "react-icons/md"
 import { basePath } from "lib/basePath"
 import CourseEnrolment from "components/courses/CourseEnrolment"
+import CourseSectionLink from "components/courses/CourseSectionLink"
 import {
   DndContext,
   closestCenter,
@@ -235,21 +236,11 @@ const CoursePreview = ({
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{group.name || "Untitled group"}</h2>
               {group.summary && <p className="text-gray-700 dark:text-gray-300">{group.summary}</p>}
               <ul className="mt-2 space-y-1">
-                {group.CourseItem.sort((a, b) => a.order - b.order).map((item) => {
-                  const { section, course: matCourse, theme, url } = sectionSplit(item.section, material)
-                  const label = section?.name || matCourse?.name || theme?.name || item.section
-                  return (
-                    <li key={item.id} className="text-sm text-gray-700 dark:text-gray-300">
-                      {url ? (
-                        <Link href={url} className="hover:underline">
-                          {label}
-                        </Link>
-                      ) : (
-                        label
-                      )}
-                    </li>
-                  )
-                })}
+                {group.CourseItem.sort((a, b) => a.order - b.order).map((item) => (
+                  <li key={item.id} className="text-sm text-gray-700 dark:text-gray-300">
+                    <CourseSectionLink material={material} sectionRef={item.section} depth="course" />
+                  </li>
+                ))}
               </ul>
             </Card>
           ))}
