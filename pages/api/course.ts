@@ -41,18 +41,44 @@ const Courses = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
       return
     }
 
-    if (!req.body) {
-      const course = await prisma.course.create({
-        data: {},
+    // Seed inserts explicit Course IDs, which can leave the sequence behind and cause unique ID conflicts.
+    // If we hit P2002 on create, reset the Course ID sequence to the current max before retrying.
+    const resetCourseSequence = async () => {
+      await prisma.$executeRaw`
+        SELECT setval(
+          pg_get_serial_sequence('"Course"', 'id'),
+          COALESCE((SELECT MAX(id) FROM "Course"), 1),
+          true
+        );
+      `
+    }
+
+    const createCourse = async (data: Prisma.CourseCreateInput) => {
+      return prisma.course.create({
+        data,
         include: { UserOnCourse: { select: userOnCourseSelect } },
       })
-      res.status(201).json({ course })
-      return
+    }
+
+    if (!req.body) {
+      try {
+        const course = await createCourse({})
+        res.status(201).json({ course })
+        return
+      } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+          await resetCourseSequence()
+          const course = await createCourse({})
+          res.status(201).json({ course })
+          return
+        }
+        throw error
+      }
     }
 
     const { name, summary, level, hidden, language, prerequisites, tags, outcomes } = req.body
-    const course = await prisma.course.create({
-      data: {
+    try {
+      const course = await createCourse({
         name,
         summary,
         level,
@@ -61,11 +87,27 @@ const Courses = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
         prerequisites,
         tags,
         outcomes,
-      },
-      include: { UserOnCourse: { select: userOnCourseSelect } },
-    })
-    res.status(201).json({ course })
-    return
+      })
+      res.status(201).json({ course })
+      return
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+        await resetCourseSequence()
+        const course = await createCourse({
+          name,
+          summary,
+          level,
+          hidden: !!hidden,
+          language,
+          prerequisites,
+          tags,
+          outcomes,
+        })
+        res.status(201).json({ course })
+        return
+      }
+      throw error
+    }
   }
 
   if (req.method === "GET") {

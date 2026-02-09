@@ -1,5 +1,5 @@
 import type { NextPage, GetServerSideProps } from "next"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, useRef } from "react"
 import Link from "next/link"
 import prisma from "lib/prisma"
 import Layout from "components/Layout"
@@ -354,6 +354,8 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
   const [courseData, setCourseData] = useState(course)
   const [userOnCourseState, setUserOnCourseState] = useState<PublicUserOnCourse | null>(userOnCourse)
   const [isUpdatingEnrolment, setIsUpdatingEnrolment] = useState(false)
+  const tabsRef = useRef<{ setActiveTab: (idx: number) => void } | null>(null)
+  const [activeTabIndex, setActiveTabIndex] = useState(0)
 
   const defaultValues = useMemo(() => courseToForm(courseData), [courseData])
   const { control, handleSubmit, reset, register } = useForm<CourseForm>({ defaultValues })
@@ -403,6 +405,28 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
   useEffect(() => {
     reset(defaultValues)
   }, [defaultValues, reset])
+
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    const syncFromHash = () => {
+      const hash = window.location.hash.replace("#", "")
+      const idx = hash === "edit" ? 1 : 0
+      setActiveTabIndex(idx)
+      tabsRef.current?.setActiveTab(idx)
+    }
+    syncFromHash()
+    window.addEventListener("hashchange", syncFromHash)
+    return () => window.removeEventListener("hashchange", syncFromHash)
+  }, [])
+
+  const handleTabChange = (idx: number) => {
+    setActiveTabIndex(idx)
+    if (typeof window === "undefined") return
+    const basePath = `${window.location.pathname}${window.location.search}`
+    const nextUrl = idx === 1 ? `${basePath}#edit` : basePath
+    if (window.location.href === `${window.location.origin}${nextUrl}`) return
+    window.history.pushState(null, "", nextUrl)
+  }
 
   const handleEnrol = async () => {
     setIsUpdatingEnrolment(true)
@@ -468,8 +492,8 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
   return (
     <Layout material={material} pageInfo={pageInfo} pageTitle={`${courseData.name}: ${pageInfo.title}`}>
       {userProfile?.admin ? (
-        <Tabs.Group style="underline">
-          <Tabs.Item title="Course" active icon={MdPreview}>
+        <Tabs.Group style="underline" ref={tabsRef} onActiveTabChange={handleTabChange}>
+          <Tabs.Item title="Course" active={activeTabIndex === 0} icon={MdPreview}>
             <CoursePreview
               material={material}
               course={courseData}
@@ -480,7 +504,7 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
               isLoggedIn={!!userProfile}
             />
           </Tabs.Item>
-          <Tabs.Item title="Edit" icon={MdEdit}>
+          <Tabs.Item title="Edit" active={activeTabIndex === 1} icon={MdEdit}>
             <form onSubmit={handleSubmit(onSubmit)}>
               <Stack>
                 <Textfield label="Title" name="name" control={control} />
@@ -502,7 +526,7 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
                 <Textarea label="Outcomes (one per line)" name="outcomesText" control={control} />
                 <Textarea label="Prerequisites (one per line)" name="prerequisitesText" control={control} />
 
-                <Title text="Groups" />
+                <Title text="Material Groups" />
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   {groups.map((group, groupIndex) => (
                     <Stack key={group.fieldId}>

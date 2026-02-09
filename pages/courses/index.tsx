@@ -10,6 +10,7 @@ import useProfile from "lib/hooks/useProfile"
 import { useState } from "react"
 import { basePath } from "lib/basePath"
 import { HiRefresh } from "react-icons/hi"
+import Link from "next/link"
 import useSWR, { Fetcher } from "swr"
 import type { Course } from "pages/api/course"
 import revalidateTimeout from "lib/revalidateTimeout"
@@ -58,12 +59,19 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
       <div className="flex items-center justify-between gap-3 px-3 pt-3">
         <Title text="Courses" className="text-3xl font-bold text-center p-3" style={{ marginBottom: "0px" }} />
         {!profileLoading && userProfile?.admin && (
-          <Button size="sm" onClick={handleSyncDefaults} disabled={syncing}>
-            <span className="flex items-center gap-2">
-              <HiRefresh className={syncing ? "animate-spin" : ""} />
-              {syncing ? "Syncing…" : "Sync courses"}
-            </span>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Link href="/courses/add">
+              <Button size="sm" color="info">
+                Add course
+              </Button>
+            </Link>
+            <Button size="sm" onClick={handleSyncDefaults} disabled={syncing}>
+              <span className="flex items-center gap-2">
+                <HiRefresh className={syncing ? "animate-spin" : ""} />
+                {syncing ? "Syncing…" : "Sync courses"}
+              </span>
+            </Button>
+          </div>
         )}
       </div>
       <div className="px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32">
