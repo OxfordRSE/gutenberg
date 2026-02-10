@@ -26,7 +26,8 @@ const CourseEnrolment: React.FC<Props> = ({
   className,
 }) => {
   const statusLabel = status ? status.charAt(0) + status.slice(1).toLowerCase() : null
-  const showProgress = (status === "ENROLLED" || status === "COMPLETED") && (progressTotal ?? 0) > 0
+  const hasTrackableProblems = (progressTotal ?? 0) > 0
+  const showProgress = (status === "ENROLLED" || status === "COMPLETED") && hasTrackableProblems
   const completed = progressCompleted ?? 0
   const total = progressTotal ?? 0
 
@@ -35,7 +36,9 @@ const CourseEnrolment: React.FC<Props> = ({
       <div className="text-sm text-gray-600 dark:text-gray-400">
         {isLoggedIn ? (
           showProgress ? (
-            <CourseProgressBar completed={completed} total={total} className="min-w-[320px]" />
+            <CourseProgressBar completed={completed} total={total} className="w-full sm:min-w-[320px] sm:w-auto" />
+          ) : status === "ENROLLED" || status === "COMPLETED" ? (
+            <span>No trackable problems</span>
           ) : (
             <span>{status ? `Status: ${statusLabel}` : "Not enrolled"}</span>
           )

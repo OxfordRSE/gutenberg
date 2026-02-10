@@ -65,7 +65,11 @@ const CourseCard: React.FC<Props> = ({ course }) => {
           })}
         </div>
       )}
-      {hasProgress && <CourseProgressBar completed={completed} total={total} className="mt-3" />}
+      {hasProgress ? (
+        <CourseProgressBar completed={completed} total={total} className="mt-3" />
+      ) : showProgress ? (
+        <div className="mt-3 text-xs text-gray-600 dark:text-gray-400">No trackable problems</div>
+      ) : null}
       {course.outcomes.length > 0 && (
         <div className="mt-3 text-sm text-gray-600 dark:text-gray-400">
           <span className="font-semibold text-gray-800 dark:text-gray-200">Outcomes:</span> {course.outcomes.join(", ")}
