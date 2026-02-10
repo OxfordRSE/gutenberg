@@ -4,6 +4,8 @@ import Link from "next/link"
 import { getTagColor } from "lib/tagColors"
 import type { Course } from "pages/api/course"
 import { Button } from "flowbite-react"
+import useCourseProgress from "lib/hooks/useCourseProgress"
+import CourseProgressBar from "components/courses/CourseProgressBar"
 
 type Props = {
   course: Course
@@ -12,6 +14,12 @@ type Props = {
 const CourseCard: React.FC<Props> = ({ course }) => {
   const languageCount = course.language?.length ?? 0
   const languageLabel = languageCount === 1 ? "Language:" : "Languages:"
+  const enrolment = course.UserOnCourse?.[0]
+  const showProgress = enrolment?.status === "ENROLLED" || enrolment?.status === "COMPLETED"
+  const { progress } = useCourseProgress(showProgress ? course.id : undefined)
+  const total = progress?.total ?? 0
+  const completed = progress?.completed ?? 0
+  const hasProgress = showProgress && total > 0
 
   return (
     <Card>
@@ -57,6 +65,7 @@ const CourseCard: React.FC<Props> = ({ course }) => {
           })}
         </div>
       )}
+      {hasProgress && <CourseProgressBar completed={completed} total={total} className="mt-3" />}
       {course.outcomes.length > 0 && (
         <div className="mt-3 text-sm text-gray-600 dark:text-gray-400">
           <span className="font-semibold text-gray-800 dark:text-gray-200">Outcomes:</span> {course.outcomes.join(", ")}

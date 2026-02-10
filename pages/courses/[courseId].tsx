@@ -27,6 +27,7 @@ import { MdEdit, MdPreview } from "react-icons/md"
 import { basePath } from "lib/basePath"
 import CourseEnrolment from "components/courses/CourseEnrolment"
 import CourseSectionLink from "components/courses/CourseSectionLink"
+import useCourseProgress from "lib/hooks/useCourseProgress"
 import {
   DndContext,
   closestCenter,
@@ -154,6 +155,9 @@ const CoursePreview = ({
   onUnenrol,
   isUpdatingEnrolment,
   isLoggedIn,
+  sectionMap,
+  progressTotal,
+  progressCompleted,
 }: {
   material: Material
   course: CourseFull
@@ -162,6 +166,9 @@ const CoursePreview = ({
   onUnenrol: () => void
   isUpdatingEnrolment: boolean
   isLoggedIn: boolean
+  sectionMap: Map<string, { section: string; total: number; completed: number }>
+  progressTotal: number
+  progressCompleted: number
 }) => {
   const languageCount = course.language?.length ?? 0
   const languageLabel = languageCount === 1 ? "Language:" : "Languages:"
@@ -178,6 +185,8 @@ const CoursePreview = ({
           onUnenrol={onUnenrol}
           size="sm"
           className="mt-4"
+          progressTotal={progressTotal}
+          progressCompleted={progressCompleted}
         />
         <div className="mt-2">
           <div className="flex flex-wrap items-center gap-2">
@@ -231,19 +240,46 @@ const CoursePreview = ({
       </div>
       <div className="px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32 mt-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {course.CourseGroup.sort((a, b) => a.order - b.order).map((group) => (
-            <Card key={group.id}>
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{group.name || "Untitled group"}</h2>
-              {group.summary && <p className="text-gray-700 dark:text-gray-300">{group.summary}</p>}
-              <ul className="mt-2 space-y-1">
-                {group.CourseItem.sort((a, b) => a.order - b.order).map((item) => (
-                  <li key={item.id} className="text-sm text-gray-700 dark:text-gray-300">
-                    <CourseSectionLink material={material} sectionRef={item.section} depth="course" />
-                  </li>
-                ))}
-              </ul>
-            </Card>
-          ))}
+          {course.CourseGroup.sort((a, b) => a.order - b.order).map((group) => {
+            const groupItems = group.CourseItem.sort((a, b) => a.order - b.order)
+            const groupCompleted = groupItems.every((item) => {
+              const entry = sectionMap.get(item.section)
+              return entry ? entry.total > 0 && entry.completed >= entry.total : false
+            })
+
+            return (
+              <Card key={group.id} className={groupCompleted ? "border-emerald-400" : undefined}>
+                <h2
+                  className={`text-lg font-semibold ${
+                    groupCompleted ? "text-emerald-700 dark:text-emerald-300" : "text-gray-900 dark:text-white"
+                  }`}
+                >
+                  {groupCompleted ? "✓ " : ""}
+                  {group.name || "Untitled group"}
+                </h2>
+                {group.summary && <p className="text-gray-700 dark:text-gray-300">{group.summary}</p>}
+                <ul className="mt-2 space-y-1">
+                  {groupItems.map((item) => {
+                    const entry = sectionMap.get(item.section)
+                    const isComplete = entry ? entry.total > 0 && entry.completed >= entry.total : false
+                    return (
+                      <li
+                        key={item.id}
+                        className={`text-sm ${
+                          isComplete
+                            ? "text-emerald-700 dark:text-emerald-300"
+                            : "text-gray-700 dark:text-gray-300"
+                        }`}
+                      >
+                        {isComplete ? "✓ " : ""}
+                        <CourseSectionLink material={material} sectionRef={item.section} depth="course" />
+                      </li>
+                    )
+                  })}
+                </ul>
+              </Card>
+            )
+          })}
         </div>
       </div>
     </>
@@ -359,6 +395,14 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
 
   const defaultValues = useMemo(() => courseToForm(courseData), [courseData])
   const { control, handleSubmit, reset, register } = useForm<CourseForm>({ defaultValues })
+  const { progress } = useCourseProgress(userProfile ? courseData.id : undefined)
+  const sectionProgress = progress && "sections" in progress ? progress.sections : []
+  const sectionMap = useMemo(
+    () => new Map(sectionProgress.map((entry) => [entry.section, entry])),
+    [sectionProgress]
+  )
+  const totalProgress = progress && "total" in progress ? progress.total : 0
+  const completedProgress = progress && "completed" in progress ? progress.completed : 0
 
   const {
     fields: groups,
@@ -502,6 +546,9 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
               onUnenrol={handleUnenrol}
               isUpdatingEnrolment={isUpdatingEnrolment}
               isLoggedIn={!!userProfile}
+              sectionMap={sectionMap}
+              progressTotal={totalProgress}
+              progressCompleted={completedProgress}
             />
           </Tabs.Item>
           <Tabs.Item title="Edit" active={activeTabIndex === 1} icon={MdEdit}>
@@ -574,6 +621,9 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
           onUnenrol={handleUnenrol}
           isUpdatingEnrolment={isUpdatingEnrolment}
           isLoggedIn={!!userProfile}
+          sectionMap={sectionMap}
+          progressTotal={totalProgress}
+          progressCompleted={completedProgress}
         />
       )}
     </Layout>

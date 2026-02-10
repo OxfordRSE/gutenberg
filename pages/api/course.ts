@@ -115,12 +115,13 @@ const Courses = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     const userEmail = session?.user?.email || undefined
     const currentUser = userEmail ? await prisma.user.findUnique({ where: { email: userEmail } }) : null
     const isAdmin = currentUser?.admin
+    const userOnCourseFilter = userEmail ? { userEmail } : { userEmail: "__none__" }
 
     const courses = await prisma.course.findMany({
       where: isAdmin ? {} : { hidden: false },
       include: {
         UserOnCourse: {
-          where: userEmail ? { userEmail } : undefined,
+          where: userOnCourseFilter,
           select: userOnCourseSelect,
         },
       },
