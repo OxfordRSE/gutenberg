@@ -5,6 +5,7 @@ const normalizeTag = (tag: string) => tag.trim().toLowerCase()
 export const formatTagLabel = (tag: string): string => {
   const normalized = normalizeTag(tag)
   if (normalized === "cpp" || normalized === "c++") return "C++"
+  if (normalized === "python") return "Python"
   return tag
 }
 

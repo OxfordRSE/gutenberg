@@ -75,7 +75,7 @@ const CourseCard: React.FC<Props> = ({ course }) => {
             const color = getTagColor(language)
             return (
               <Badge key={language} style={{ backgroundColor: color.background, color: color.text }}>
-                {language}
+                {formatTagLabel(language)}
               </Badge>
             )
           })}
