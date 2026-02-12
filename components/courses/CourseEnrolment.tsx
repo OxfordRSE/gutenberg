@@ -10,6 +10,7 @@ type Props = {
   onUnenrol: () => void
   progressTotal?: number
   progressCompleted?: number
+  completedAt?: string | Date | null
   size?: "xs" | "sm"
   className?: string
 }
@@ -22,6 +23,7 @@ const CourseEnrolment: React.FC<Props> = ({
   onUnenrol,
   progressTotal,
   progressCompleted,
+  completedAt,
   size = "xs",
   className,
 }) => {
@@ -30,6 +32,10 @@ const CourseEnrolment: React.FC<Props> = ({
   const showProgress = (status === "ENROLLED" || status === "COMPLETED") && hasTrackableProblems
   const completed = progressCompleted ?? 0
   const total = progressTotal ?? 0
+  const completedDate =
+    status === "COMPLETED" && completedAt
+      ? new Date(completedAt).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
+      : null
 
   return (
     <div className={`flex flex-wrap items-center justify-between gap-3 ${className ?? ""}`}>
@@ -37,6 +43,8 @@ const CourseEnrolment: React.FC<Props> = ({
         {isLoggedIn ? (
           showProgress ? (
             <CourseProgressBar completed={completed} total={total} className="w-full sm:min-w-[320px] sm:w-auto" />
+          ) : completedDate ? (
+            <span className="font-medium text-emerald-600 dark:text-emerald-300">Completed on {completedDate}</span>
           ) : status === "ENROLLED" || status === "COMPLETED" ? (
             <span>No trackable problems</span>
           ) : (
@@ -49,7 +57,7 @@ const CourseEnrolment: React.FC<Props> = ({
       {isLoggedIn && (
         <Button
           size={size}
-          color={status === "ENROLLED" ? "warning" : "info"}
+          color={status === "ENROLLED" ? "gray" : "info"}
           onClick={status === "ENROLLED" ? onUnenrol : onEnrol}
           disabled={isUpdating}
         >

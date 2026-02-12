@@ -28,6 +28,7 @@ import { basePath } from "lib/basePath"
 import CourseEnrolment from "components/courses/CourseEnrolment"
 import CourseSectionLink from "components/courses/CourseSectionLink"
 import useCourseProgress from "lib/hooks/useCourseProgress"
+import { HiShieldCheck } from "react-icons/hi"
 import {
   DndContext,
   closestCenter,
@@ -153,6 +154,7 @@ const CoursePreview = ({
   userOnCourse,
   onEnrol,
   onUnenrol,
+  onComplete,
   isUpdatingEnrolment,
   isLoggedIn,
   sectionMap,
@@ -164,6 +166,7 @@ const CoursePreview = ({
   userOnCourse: PublicUserOnCourse | null
   onEnrol: () => void
   onUnenrol: () => void
+  onComplete: () => void
   isUpdatingEnrolment: boolean
   isLoggedIn: boolean
   sectionMap: Map<string, { section: string; total: number; completed: number }>
@@ -187,6 +190,7 @@ const CoursePreview = ({
           className="mt-4"
           progressTotal={progressTotal}
           progressCompleted={progressCompleted}
+          completedAt={userOnCourse?.completedAt ?? null}
         />
         <div className="mt-2">
           <div className="flex flex-wrap items-center gap-2">
@@ -248,14 +252,23 @@ const CoursePreview = ({
             })
 
             return (
-              <Card key={group.id} className={groupCompleted ? "border-emerald-400" : undefined}>
+              <Card
+                key={group.id}
+                className={
+                  groupCompleted
+                    ? "border-2 border-emerald-400 shadow-sm shadow-emerald-200/40 dark:border-emerald-500 dark:shadow-emerald-500/20"
+                    : undefined
+                }
+              >
                 <h2
                   className={`text-lg font-semibold ${
                     groupCompleted ? "text-emerald-700 dark:text-emerald-300" : "text-gray-900 dark:text-white"
                   }`}
                 >
-                  {groupCompleted ? "✓ " : ""}
-                  {group.name || "Untitled group"}
+                  <span className="inline-flex items-center gap-2">
+                    {group.name || "Untitled group"}
+                    {groupCompleted && <HiShieldCheck className="h-5 w-5 text-emerald-500" />}
+                  </span>
                 </h2>
                 {group.summary && <p className="text-gray-700 dark:text-gray-300">{group.summary}</p>}
                 <ul className="mt-2 space-y-1">
@@ -281,6 +294,13 @@ const CoursePreview = ({
             )
           })}
         </div>
+        {userOnCourse?.status === "ENROLLED" && isLoggedIn && (
+          <div className="mt-6 flex justify-end">
+            <Button size="sm" color="success" onClick={onComplete} disabled={isUpdatingEnrolment}>
+              Mark complete
+            </Button>
+          </div>
+        )}
       </div>
     </>
   )
@@ -498,6 +518,19 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
     }
   }
 
+  const handleComplete = async () => {
+    setIsUpdatingEnrolment(true)
+    try {
+      const res = await fetch(`${basePath}/api/course/${courseData.id}/complete`, { method: "POST" })
+      const data = await res.json()
+      if ("userOnCourse" in data) {
+        setUserOnCourseState(data.userOnCourse)
+      }
+    } finally {
+      setIsUpdatingEnrolment(false)
+    }
+  }
+
   const onSubmit = async (form: CourseForm) => {
     const payload: CourseUpdatePayload = {
       ...courseData,
@@ -544,6 +577,7 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
               userOnCourse={userOnCourseState}
               onEnrol={handleEnrol}
               onUnenrol={handleUnenrol}
+              onComplete={handleComplete}
               isUpdatingEnrolment={isUpdatingEnrolment}
               isLoggedIn={!!userProfile}
               sectionMap={sectionMap}
@@ -619,6 +653,7 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
           userOnCourse={userOnCourseState}
           onEnrol={handleEnrol}
           onUnenrol={handleUnenrol}
+          onComplete={handleComplete}
           isUpdatingEnrolment={isUpdatingEnrolment}
           isLoggedIn={!!userProfile}
           sectionMap={sectionMap}

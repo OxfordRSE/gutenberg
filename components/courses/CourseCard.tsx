@@ -6,6 +6,7 @@ import type { Course } from "pages/api/course"
 import { Button } from "flowbite-react"
 import useCourseProgress from "lib/hooks/useCourseProgress"
 import CourseProgressBar from "components/courses/CourseProgressBar"
+import { HiShieldCheck } from "react-icons/hi"
 
 type Props = {
   course: Course
@@ -15,18 +16,32 @@ const CourseCard: React.FC<Props> = ({ course }) => {
   const languageCount = course.language?.length ?? 0
   const languageLabel = languageCount === 1 ? "Language:" : "Languages:"
   const enrolment = course.UserOnCourse?.[0]
-  const showProgress = enrolment?.status === "ENROLLED" || enrolment?.status === "COMPLETED"
+  const isCompleted = enrolment?.status === "COMPLETED"
+  const showProgress = enrolment?.status === "ENROLLED" || isCompleted
   const { progress } = useCourseProgress(showProgress ? course.id : undefined)
   const total = progress?.total ?? 0
   const completed = progress?.completed ?? 0
   const hasProgress = showProgress && total > 0
+  const completedAt = enrolment?.completedAt ? new Date(enrolment.completedAt) : null
+  const completedLabel = completedAt
+    ? completedAt.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
+    : null
 
   return (
-    <Card>
+    <Card
+      className={
+        isCompleted
+          ? "border-2 border-emerald-400 shadow-sm shadow-emerald-200/40 dark:border-emerald-500 dark:shadow-emerald-500/20"
+          : undefined
+      }
+    >
       <div className="flex items-start justify-between gap-3">
         <div>
           <Link href={`/courses/${course.id}`} className="hover:underline">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{course.name || "Untitled"}</h2>
+            <h2 className="flex items-center gap-2 text-xl font-semibold text-gray-900 dark:text-white">
+              {course.name || "Untitled"}
+              {isCompleted && <HiShieldCheck className="h-5 w-5 text-emerald-500" />}
+            </h2>
           </Link>
           {course.summary && (
             <p className="mt-2 text-gray-700 dark:text-gray-300 whitespace-pre-line">{course.summary}</p>
@@ -65,7 +80,11 @@ const CourseCard: React.FC<Props> = ({ course }) => {
           })}
         </div>
       )}
-      {hasProgress ? (
+      {isCompleted && completedLabel ? (
+        <div className="mt-3 text-xs font-medium text-emerald-600 dark:text-emerald-300">
+          Completed on {completedLabel}
+        </div>
+      ) : hasProgress ? (
         <CourseProgressBar completed={completed} total={total} className="mt-3" />
       ) : showProgress ? (
         <div className="mt-3 text-xs text-gray-600 dark:text-gray-400">No trackable problems</div>

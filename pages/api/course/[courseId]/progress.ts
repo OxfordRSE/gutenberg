@@ -98,6 +98,19 @@ const progressHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) 
 
   const completed = sectionsProgress.reduce((sum, entry) => sum + entry.completed, 0)
 
+  if (total > 0 && completed >= total) {
+    const current = await prisma.userOnCourse.findUnique({
+      where: { userEmail_courseId: { userEmail, courseId } },
+      select: { status: true, completedAt: true },
+    })
+    if (current && current.status !== "COMPLETED") {
+      await prisma.userOnCourse.update({
+        where: { userEmail_courseId: { userEmail, courseId } },
+        data: { status: "COMPLETED", completedAt: current.completedAt ?? new Date() },
+      })
+    }
+  }
+
   res.status(200).json({ total, completed, sections: sectionsProgress })
 }
 
