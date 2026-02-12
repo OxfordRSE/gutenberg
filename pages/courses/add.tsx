@@ -18,6 +18,8 @@ import { loadPageTemplate, PageTemplate } from "lib/pageTemplate"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "pages/api/auth/[...nextauth]"
 import type { Data } from "pages/api/course"
+import { normalizeCourseJson, type CourseJsonInput } from "lib/courseJson"
+import { putCourse, CourseUpdatePayload } from "lib/actions/putCourse"
 
 type AddCourseProps = {
   material: Material
@@ -54,6 +56,9 @@ const AddCourse: NextPage<AddCourseProps> = ({ material, pageInfo }) => {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [jsonText, setJsonText] = useState("")
+  const [jsonError, setJsonError] = useState<string | null>(null)
+  const [isJsonSubmitting, setIsJsonSubmitting] = useState(false)
 
   const onSubmit = async (form: AddCourseForm) => {
     setError(null)
@@ -73,9 +78,11 @@ const AddCourse: NextPage<AddCourseProps> = ({ material, pageInfo }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       })
-      const data = (await res.json()) as Data
-      if (!res.ok || !data.course) {
-        throw new Error(data.error || "Failed to create course")
+      const isJson = res.headers.get("content-type")?.includes("application/json")
+      const data = (isJson ? await res.json() : null) as Data | null
+      if (!res.ok || !data?.course) {
+        const fallback = isJson ? data?.error : await res.text()
+        throw new Error(fallback || "Failed to create course")
       }
 
       await router.push(`/courses/${data.course.id}#edit`)
@@ -83,6 +90,79 @@ const AddCourse: NextPage<AddCourseProps> = ({ material, pageInfo }) => {
       setError(err instanceof Error ? err.message : "Failed to create course")
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  const onSubmitJson = async () => {
+    setJsonError(null)
+    setIsJsonSubmitting(true)
+    try {
+      if (!jsonText.trim()) {
+        throw new Error("Paste Course JSON first.")
+      }
+
+      let parsed: CourseJsonInput
+      try {
+        parsed = JSON.parse(jsonText) as CourseJsonInput
+      } catch {
+        throw new Error("JSON is invalid.")
+      }
+
+      const { base, groups, items } = normalizeCourseJson(parsed)
+      if (!base.name.trim()) {
+        throw new Error("JSON must include a course name.")
+      }
+
+      const res = await fetch(`${basePath}/api/course`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(base),
+      })
+      const isJson = res.headers.get("content-type")?.includes("application/json")
+      const data = (isJson ? await res.json() : null) as Data | null
+      if (!res.ok || !data?.course) {
+        const fallback = isJson ? data?.error : await res.text()
+        throw new Error(fallback || "Failed to create course")
+      }
+
+      let createdCourse = data.course
+      if (groups.length > 0 || items.length > 0) {
+        const payload: CourseUpdatePayload = {
+          ...createdCourse,
+          CourseGroup: groups.map((group, groupIndex) => ({
+            id: 0,
+            name: group.name,
+            summary: group.summary,
+            order: group.order ?? groupIndex + 1,
+            courseId: createdCourse.id,
+            CourseItem: group.items.map((item, itemIndex) => ({
+              id: 0,
+              order: item.order ?? itemIndex + 1,
+              section: item.section,
+              courseId: createdCourse.id,
+              groupId: null,
+            })),
+          })),
+          CourseItem: items.map((item, index) => ({
+            id: 0,
+            order: item.order ?? index + 1,
+            section: item.section,
+            courseId: createdCourse.id,
+            groupId: null,
+          })),
+        }
+
+        const updated = await putCourse(payload)
+        if ("course" in updated && updated.course) {
+          createdCourse = updated.course
+        }
+      }
+
+      await router.push(`/courses/${createdCourse.id}#edit`)
+    } catch (err) {
+      setJsonError(err instanceof Error ? err.message : "Failed to create course")
+    } finally {
+      setIsJsonSubmitting(false)
     }
   }
 
@@ -94,14 +174,25 @@ const AddCourse: NextPage<AddCourseProps> = ({ material, pageInfo }) => {
           {error && <div className="mb-3 text-sm text-red-600 dark:text-red-400">{error}</div>}
           <form onSubmit={handleSubmit(onSubmit)}>
             <Stack>
-              <Textfield label="Title" name="name" control={control} />
-              <Textarea label="Summary" name="summary" control={control} />
+              <Textfield
+                label="Title"
+                name="name"
+                control={control}
+                rules={{ required: "Courses require a name." }}
+              />
+              <Textarea
+                label="Summary"
+                name="summary"
+                control={control}
+                rules={{ required: "Courses require a summary." }}
+              />
               <SelectField
                 label="Level"
                 name="level"
                 control={control}
+                rules={{ required: "Courses require a level." }}
                 options={[
-                  { label: "", value: "" },
+                  { label: "Select course level…", value: "" },
                   { label: "Beginner", value: "beginner" },
                   { label: "Intermediate", value: "intermediate" },
                   { label: "Advanced", value: "advanced" },
@@ -117,6 +208,29 @@ const AddCourse: NextPage<AddCourseProps> = ({ material, pageInfo }) => {
               </div>
             </Stack>
           </form>
+        </Card>
+        <Card className="mt-6">
+          <div className="space-y-2">
+            <Title text="Import from JSON" />
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              Paste Course JSON (same shape as `courses.defaults.json`).
+            </p>
+          </div>
+          {jsonError && <div className="mb-3 mt-3 text-sm text-red-600 dark:text-red-400">{jsonError}</div>}
+          <div className="mt-3">
+            <label className="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Course JSON</label>
+            <textarea
+              className="min-h-[200px] w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+              value={jsonText}
+              onChange={(event) => setJsonText(event.target.value)}
+              placeholder={`{\n  "name": "Intro to C++ (Self-paced)",\n  "summary": "Self-paced version of the C++ introduction",\n  "level": "beginner",\n  "hidden": false,\n  "language": ["cpp"],\n  "tags": ["cpp", "basics"],\n  "groups": [\n    {\n      "name": "Foundations",\n      "summary": "Core language fundamentals",\n      "order": 1,\n      "items": [\n        "HPCu.technology_and_tooling.bash_shell.bash",\n        "HPCu.technology_and_tooling.ide.cpp"\n      ]\n    }\n  ]\n}`}
+            />
+          </div>
+          <div className="mt-4 flex justify-end">
+            <Button onClick={onSubmitJson} disabled={isJsonSubmitting}>
+              {isJsonSubmitting ? "Importing…" : "Create from JSON"}
+            </Button>
+          </div>
         </Card>
       </div>
     </Layout>

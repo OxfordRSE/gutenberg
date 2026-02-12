@@ -25,50 +25,137 @@ export type Data = {
 }
 
 const Courses = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
-  if (req.method === "POST") {
-    const session = await getServerSession(req, res, authOptions)
-    if (!session) {
-      res.status(401).json({ error: "Unauthorized" })
-      return
-    }
+  try {
+    if (req.method === "POST") {
+      const session = await getServerSession(req, res, authOptions)
+      if (!session) {
+        res.status(401).json({ error: "Unauthorized" })
+        return
+      }
 
-    const userEmail = session.user?.email || undefined
-    const currentUser = await prisma.user.findUnique({ where: { email: userEmail } })
-    const isAdmin = currentUser?.admin
+      const userEmail = session.user?.email || undefined
+      const currentUser = await prisma.user.findUnique({ where: { email: userEmail } })
+      const isAdmin = currentUser?.admin
 
-    if (!isAdmin) {
-      res.status(403).json({ error: "Forbidden" })
-      return
-    }
+      if (!isAdmin) {
+        res.status(403).json({ error: "Forbidden" })
+        return
+      }
 
-    // Seed inserts explicit Course IDs, which can leave the sequence behind and cause unique ID conflicts.
-    // If we hit P2002 on create, reset the Course ID sequence to the current max before retrying.
-    const resetCourseSequence = async () => {
-      await prisma.$executeRaw`
-        SELECT setval(
-          pg_get_serial_sequence('"Course"', 'id'),
-          COALESCE((SELECT MAX(id) FROM "Course"), 1),
-          true
-        );
-      `
-    }
+      // Seed inserts explicit Course IDs, which can leave the sequence behind and cause unique ID conflicts.
+      // If we hit P2002 on create, reset the Course ID sequence to the current max before retrying.
+      const resetCourseSequence = async () => {
+        await prisma.$executeRaw`
+          SELECT setval(
+            pg_get_serial_sequence('"Course"', 'id'),
+            COALESCE((SELECT MAX(id) FROM "Course"), 1),
+            true
+          );
+        `
+      }
 
-    const createCourse = async (data: Prisma.CourseCreateInput) => {
-      return prisma.course.create({
-        data,
-        include: { UserOnCourse: { select: userOnCourseSelect } },
-      })
-    }
+      const createCourse = async (data: Prisma.CourseCreateInput) => {
+        return prisma.course.create({
+          data,
+          include: { UserOnCourse: { select: userOnCourseSelect } },
+        })
+      }
 
-    if (!req.body) {
+      if (!req.body) {
+        try {
+          const course = await createCourse({})
+          res.status(201).json({ course })
+          return
+        } catch (error) {
+          if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+            await resetCourseSequence()
+            const course = await createCourse({})
+            res.status(201).json({ course })
+            return
+          }
+          throw error
+        }
+      }
+
+      const { externalId, name, summary, level, hidden, language, prerequisites, tags, outcomes } = req.body
+      const trimmedName = typeof name === "string" ? name.trim() : ""
+      const trimmedSummary = typeof summary === "string" ? summary.trim() : ""
+      const trimmedLevel = typeof level === "string" ? level.trim() : ""
+      if (!trimmedName) {
+        res.status(400).json({ error: "Courses require a name." })
+        return
+      }
+      if (!trimmedSummary) {
+        res.status(400).json({ error: "Courses require a summary." })
+        return
+      }
+      if (!trimmedLevel) {
+        res.status(400).json({ error: "Courses require a level." })
+        return
+      }
       try {
-        const course = await createCourse({})
+        const course =
+          externalId && typeof externalId === "string"
+            ? await prisma.course.upsert({
+                where: { externalId },
+                update: {
+                  name,
+                  summary,
+                  level,
+                  hidden: !!hidden,
+                  language,
+                  prerequisites,
+                  tags,
+                  outcomes,
+                },
+                create: {
+                  externalId,
+                  name,
+                  summary,
+                  level,
+                  hidden: !!hidden,
+                  language,
+                  prerequisites,
+                  tags,
+                  outcomes,
+                },
+                include: { UserOnCourse: { select: userOnCourseSelect } },
+              })
+            : await createCourse({
+                name,
+                summary,
+                level,
+                hidden: !!hidden,
+                language,
+                prerequisites,
+                tags,
+                outcomes,
+              })
         res.status(201).json({ course })
         return
       } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+          if (externalId && typeof externalId === "string") {
+            const course = await prisma.course.findUnique({
+              where: { externalId },
+              include: { UserOnCourse: { select: userOnCourseSelect } },
+            })
+            if (course) {
+              res.status(200).json({ course })
+              return
+            }
+          }
           await resetCourseSequence()
-          const course = await createCourse({})
+          const course = await createCourse({
+            name,
+            summary,
+            level,
+            hidden: !!hidden,
+            language,
+            prerequisites,
+            tags,
+            outcomes,
+          })
           res.status(201).json({ course })
           return
         }
@@ -76,69 +163,39 @@ const Courses = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
       }
     }
 
-    const { name, summary, level, hidden, language, prerequisites, tags, outcomes } = req.body
-    try {
-      const course = await createCourse({
-        name,
-        summary,
-        level,
-        hidden: !!hidden,
-        language,
-        prerequisites,
-        tags,
-        outcomes,
-      })
-      res.status(201).json({ course })
-      return
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
-        await resetCourseSequence()
-        const course = await createCourse({
-          name,
-          summary,
-          level,
-          hidden: !!hidden,
-          language,
-          prerequisites,
-          tags,
-          outcomes,
+    if (req.method === "GET") {
+      const session = await getServerSession(req, res, authOptions)
+      const userEmail = session?.user?.email || undefined
+      const currentUser = userEmail ? await prisma.user.findUnique({ where: { email: userEmail } }) : null
+      const isAdmin = currentUser?.admin
+
+      if (!userEmail) {
+        const courses = await prisma.course.findMany({
+          where: isAdmin ? {} : { hidden: false },
         })
-        res.status(201).json({ course })
+        const publicCourses = courses.map((course) => ({ ...course, UserOnCourse: [] }))
+        res.status(200).json({ courses: sortCourses(publicCourses) })
         return
       }
-      throw error
-    }
-  }
 
-  if (req.method === "GET") {
-    const session = await getServerSession(req, res, authOptions)
-    const userEmail = session?.user?.email || undefined
-    const currentUser = userEmail ? await prisma.user.findUnique({ where: { email: userEmail } }) : null
-    const isAdmin = currentUser?.admin
-
-    if (!userEmail) {
       const courses = await prisma.course.findMany({
         where: isAdmin ? {} : { hidden: false },
+        include: {
+          UserOnCourse: {
+            where: { userEmail },
+            select: userOnCourseSelect,
+          },
+        },
       })
-      const publicCourses = courses.map((course) => ({ ...course, UserOnCourse: [] }))
-      res.status(200).json({ courses: sortCourses(publicCourses) })
+      res.status(200).json({ courses: sortCourses(courses) })
       return
     }
 
-    const courses = await prisma.course.findMany({
-      where: isAdmin ? {} : { hidden: false },
-      include: {
-        UserOnCourse: {
-          where: { userEmail },
-          select: userOnCourseSelect,
-        },
-      },
-    })
-    res.status(200).json({ courses: sortCourses(courses) })
-    return
+    res.status(405).json({ error: "Method not allowed" })
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unexpected error"
+    res.status(500).json({ error: message })
   }
-
-  res.status(405).json({ error: "Method not allowed" })
 }
 
 export default Courses

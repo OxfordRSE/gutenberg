@@ -2,6 +2,7 @@ import React from "react"
 import Link from "next/link"
 import { Grid, Paper, Typography, Box, Chip } from "@mui/material"
 import { MaterialCourse, MaterialTheme } from "lib/material"
+import { formatTagLabel } from "lib/tagLabels"
 
 function CourseGrid({ course, theme }: { course: MaterialCourse; theme: MaterialTheme }) {
   const files = course.files
@@ -45,7 +46,7 @@ function CourseGrid({ course, theme }: { course: MaterialCourse; theme: Material
                   className="bg-slate-50 border-gray-200 text-black dark:bg-gray-800 dark:border-gray-700 dark:text-white p-2"
                   sx={{ borderRadius: "8px 8px 0 0", textAlign: "center" }}
                 >
-                  <Typography variant="h6">{commonTag.toUpperCase()}</Typography>
+                  <Typography variant="h6">{formatTagLabel(commonTag).toUpperCase()}</Typography>
                 </Box>
               )}
               <nav aria-label={commonTag || undefined}>
@@ -91,7 +92,7 @@ function CourseGrid({ course, theme }: { course: MaterialCourse; theme: Material
                                   return (
                                     <Chip
                                       key={tag}
-                                      label={tag}
+                                      label={formatTagLabel(tag)}
                                       size="small"
                                       sx={{ backgroundColor: tagColorMap[tag], fontSize: "0.75rem", height: "20px" }}
                                     />

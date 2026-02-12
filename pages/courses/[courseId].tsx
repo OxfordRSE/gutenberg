@@ -8,7 +8,7 @@ import { makeSerializable } from "lib/utils"
 import { PageTemplate, loadPageTemplate } from "lib/pageTemplate"
 import Title from "components/ui/Title"
 import { Prisma } from "@prisma/client"
-import { Badge, Button, Card, Tabs } from "flowbite-react"
+import { Badge, Button, Card, Modal, Tabs } from "flowbite-react"
 import CourseLevelBadge from "components/courses/CourseLevelBadge"
 import { getTagColor } from "lib/tagColors"
 import { getServerSession } from "next-auth/next"
@@ -30,6 +30,8 @@ import CourseSectionLink from "components/courses/CourseSectionLink"
 import useCourseProgress from "lib/hooks/useCourseProgress"
 import { HiShieldCheck } from "react-icons/hi"
 import { formatTagLabel } from "lib/tagLabels"
+import { courseToJson } from "lib/courseJson"
+import CodeBlock from "components/content/CodeBlock"
 import {
   DndContext,
   closestCenter,
@@ -409,10 +411,12 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
   const [courseData, setCourseData] = useState(course)
   const [userOnCourseState, setUserOnCourseState] = useState<PublicUserOnCourse | null>(userOnCourse)
   const [isUpdatingEnrolment, setIsUpdatingEnrolment] = useState(false)
+  const [showExportModal, setShowExportModal] = useState(false)
   const tabsRef = useRef<{ setActiveTab: (idx: number) => void } | null>(null)
   const [activeTabIndex, setActiveTabIndex] = useState(0)
 
   const defaultValues = useMemo(() => courseToForm(courseData), [courseData])
+  const exportJson = useMemo(() => JSON.stringify(courseToJson(courseData), null, 2), [courseData])
   const { control, handleSubmit, reset, register } = useForm<CourseForm>({ defaultValues })
   const { progress } = useCourseProgress(userProfile ? courseData.id : undefined)
   const sectionProgress = progress && "sections" in progress ? progress.sections : []
@@ -637,6 +641,13 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
                   </Button>
                 </div>
 
+                <Title text="Export JSON" />
+                <div className="flex justify-end">
+                  <Button type="button" onClick={() => setShowExportModal(true)}>
+                    Export as JSON
+                  </Button>
+                </div>
+
                 <Button type="submit">Save Changes</Button>
               </Stack>
             </form>
@@ -657,6 +668,15 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
           progressCompleted={completedProgress}
         />
       )}
+      <Modal dismissible show={showExportModal} onClose={() => setShowExportModal(false)} size="2xl">
+        <Modal.Header>Course JSON</Modal.Header>
+        <Modal.Body>
+          <CodeBlock code={exportJson} language="json" />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={() => setShowExportModal(false)}>Close</Button>
+        </Modal.Footer>
+      </Modal>
     </Layout>
   )
 }
