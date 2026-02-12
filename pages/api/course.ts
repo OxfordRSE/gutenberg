@@ -115,13 +115,21 @@ const Courses = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     const userEmail = session?.user?.email || undefined
     const currentUser = userEmail ? await prisma.user.findUnique({ where: { email: userEmail } }) : null
     const isAdmin = currentUser?.admin
-    const userOnCourseFilter = userEmail ? { userEmail } : { userEmail: "__none__" }
+
+    if (!userEmail) {
+      const courses = await prisma.course.findMany({
+        where: isAdmin ? {} : { hidden: false },
+      })
+      const publicCourses = courses.map((course) => ({ ...course, UserOnCourse: [] }))
+      res.status(200).json({ courses: sortCourses(publicCourses) })
+      return
+    }
 
     const courses = await prisma.course.findMany({
       where: isAdmin ? {} : { hidden: false },
       include: {
         UserOnCourse: {
-          where: userOnCourseFilter,
+          where: { userEmail },
           select: userOnCourseSelect,
         },
       },
