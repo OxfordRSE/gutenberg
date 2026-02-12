@@ -93,11 +93,36 @@ const Courses = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
         res.status(400).json({ error: "A level is required." })
         return
       }
+      const slugifyExternalId = (value: string) => {
+        return value
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9]+/g, "_")
+          .replace(/^_+|_+$/g, "")
+      }
+
+      const resolveExternalId = async () => {
+        if (externalId && typeof externalId === "string" && externalId.trim().length > 0) {
+          return externalId.trim()
+        }
+
+        const base = slugifyExternalId(trimmedName || "course")
+        let candidate = base || "course"
+        let suffix = 1
+        // Ensure uniqueness by appending _2, _3, ...
+        while (await prisma.course.findUnique({ where: { externalId: candidate }, select: { id: true } })) {
+          suffix += 1
+          candidate = `${base || "course"}_${suffix}`
+        }
+        return candidate
+      }
+
+      const resolvedExternalId = await resolveExternalId()
       try {
         const course =
-          externalId && typeof externalId === "string"
+          resolvedExternalId
             ? await prisma.course.upsert({
-                where: { externalId },
+                where: { externalId: resolvedExternalId },
                 update: {
                   name,
                   summary,
@@ -109,7 +134,7 @@ const Courses = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
                   outcomes,
                 },
                 create: {
-                  externalId,
+                  externalId: resolvedExternalId,
                   name,
                   summary,
                   level,
@@ -135,9 +160,9 @@ const Courses = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
         return
       } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
-          if (externalId && typeof externalId === "string") {
+          if (resolvedExternalId) {
             const course = await prisma.course.findUnique({
-              where: { externalId },
+              where: { externalId: resolvedExternalId },
               include: { UserOnCourse: { select: userOnCourseSelect } },
             })
             if (course) {

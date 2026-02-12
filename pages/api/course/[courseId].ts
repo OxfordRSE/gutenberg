@@ -64,12 +64,12 @@ const courseHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) =>
       const courseData = req.body.course
       if (!courseData) return res.status(400).json({ error: "Missing course data" })
 
-      const { externalId, name, summary, level, hidden, language, prerequisites, tags, outcomes } = courseData
+    const { name, summary, level, hidden, language, prerequisites, tags, outcomes } = courseData
 
-      await prisma.course.update({
-        where: { id: courseId },
-        data: { externalId, name, summary, level, hidden: !!hidden, language, prerequisites, tags, outcomes },
-      })
+    await prisma.course.update({
+      where: { id: courseId },
+      data: { name, summary, level, hidden: !!hidden, language, prerequisites, tags, outcomes },
+    })
 
       const submittedGroups: CourseGroup[] = courseData.CourseGroup ?? []
       const existingGroups = await prisma.courseGroup.findMany({
