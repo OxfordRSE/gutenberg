@@ -64,12 +64,12 @@ const courseHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) =>
       const courseData = req.body.course
       if (!courseData) return res.status(400).json({ error: "Missing course data" })
 
-    const { name, summary, level, hidden, language, prerequisites, tags, outcomes } = courseData
+      const { name, summary, level, hidden, language, prerequisites, tags, outcomes } = courseData
 
-    await prisma.course.update({
-      where: { id: courseId },
-      data: { name, summary, level, hidden: !!hidden, language, prerequisites, tags, outcomes },
-    })
+      await prisma.course.update({
+        where: { id: courseId },
+        data: { name, summary, level, hidden: !!hidden, language, prerequisites, tags, outcomes },
+      })
 
       const submittedGroups: CourseGroup[] = courseData.CourseGroup ?? []
       const existingGroups = await prisma.courseGroup.findMany({
@@ -85,7 +85,8 @@ const courseHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) =>
       }
 
       for (const group of submittedGroups) {
-        const groupOrder = typeof group.order === "string" ? parseInt(group.order as unknown as string, 10) : group.order
+        const groupOrder =
+          typeof group.order === "string" ? parseInt(group.order as unknown as string, 10) : group.order
         const groupItems: CourseItem[] = group.CourseItem ?? []
 
         if (group.id && existingGroupIds.has(group.id)) {

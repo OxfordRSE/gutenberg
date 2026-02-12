@@ -43,9 +43,7 @@ const CourseFilters: React.FC<Props> = ({
   }
 
   const toggleLanguage = (language: string) => {
-    setSelectedLanguages((prev) =>
-      prev.includes(language) ? prev.filter((t) => t !== language) : [...prev, language]
-    )
+    setSelectedLanguages((prev) => (prev.includes(language) ? prev.filter((t) => t !== language) : [...prev, language]))
   }
 
   const hasFilters = activeCount > 0
@@ -91,7 +89,7 @@ const CourseFilters: React.FC<Props> = ({
               </button>
             )
           })}
-          {selectedTags.map((tag) => (
+          {selectedTags.map((tag) =>
             (() => {
               const color = getTagColor(tag)
               return (
@@ -107,7 +105,7 @@ const CourseFilters: React.FC<Props> = ({
                 </button>
               )
             })()
-          ))}
+          )}
         </div>
         {hasFilters && (
           <Button size="xs" color="gray" onClick={clearFilters}>

@@ -22,7 +22,13 @@ const CodeBlock: React.FC<Props> = ({ code, language, className }) => {
             <span className="group-hover:text-white">Copy</span>
           </button>
         </CopyToClipboard>
-        <SyntaxHighlighter language={language} PreTag="div" style={codeStyle} codeTagProps={{ className: "text-sm" }} customStyle={{ margin: 0 }}>
+        <SyntaxHighlighter
+          language={language}
+          PreTag="div"
+          style={codeStyle}
+          codeTagProps={{ className: "text-sm" }}
+          customStyle={{ margin: 0 }}
+        >
           {code}
         </SyntaxHighlighter>
       </div>

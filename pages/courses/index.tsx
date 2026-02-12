@@ -52,11 +52,21 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
   })
 
   const tagOptions = Array.from(
-    new Set(visibleCourses.flatMap((course) => course.tags ?? []).map((tag) => tag.trim()).filter(Boolean))
+    new Set(
+      visibleCourses
+        .flatMap((course) => course.tags ?? [])
+        .map((tag) => tag.trim())
+        .filter(Boolean)
+    )
   ).sort((a, b) => a.localeCompare(b))
 
   const languageOptions = Array.from(
-    new Set(visibleCourses.flatMap((course) => course.language ?? []).map((language) => language.trim()).filter(Boolean))
+    new Set(
+      visibleCourses
+        .flatMap((course) => course.language ?? [])
+        .map((language) => language.trim())
+        .filter(Boolean)
+    )
   ).sort((a, b) => a.localeCompare(b))
 
   const applyFilters = (course: Course) => {
@@ -66,10 +76,10 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
       course.name.toLowerCase().includes(searchValue) ||
       (course.summary ?? "").toLowerCase().includes(searchValue)
     const matchesLevel = !selectedLevel || course.level === selectedLevel
-    const matchesTags =
-      selectedTags.length === 0 || selectedTags.every((tag) => (course.tags ?? []).includes(tag))
+    const matchesTags = selectedTags.length === 0 || selectedTags.every((tag) => (course.tags ?? []).includes(tag))
     const matchesLanguages =
-      selectedLanguages.length === 0 || selectedLanguages.every((language) => (course.language ?? []).includes(language))
+      selectedLanguages.length === 0 ||
+      selectedLanguages.every((language) => (course.language ?? []).includes(language))
 
     return matchesSearch && matchesLevel && matchesTags && matchesLanguages
   }

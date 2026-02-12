@@ -119,34 +119,10 @@ const Courses = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
       const resolvedExternalId = await resolveExternalId()
       try {
-        const course =
-          resolvedExternalId
-            ? await prisma.course.upsert({
-                where: { externalId: resolvedExternalId },
-                update: {
-                  name,
-                  summary,
-                  level,
-                  hidden: !!hidden,
-                  language,
-                  prerequisites,
-                  tags,
-                  outcomes,
-                },
-                create: {
-                  externalId: resolvedExternalId,
-                  name,
-                  summary,
-                  level,
-                  hidden: !!hidden,
-                  language,
-                  prerequisites,
-                  tags,
-                  outcomes,
-                },
-                include: { UserOnCourse: { select: userOnCourseSelect } },
-              })
-            : await createCourse({
+        const course = resolvedExternalId
+          ? await prisma.course.upsert({
+              where: { externalId: resolvedExternalId },
+              update: {
                 name,
                 summary,
                 level,
@@ -155,7 +131,30 @@ const Courses = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
                 prerequisites,
                 tags,
                 outcomes,
-              })
+              },
+              create: {
+                externalId: resolvedExternalId,
+                name,
+                summary,
+                level,
+                hidden: !!hidden,
+                language,
+                prerequisites,
+                tags,
+                outcomes,
+              },
+              include: { UserOnCourse: { select: userOnCourseSelect } },
+            })
+          : await createCourse({
+              name,
+              summary,
+              level,
+              hidden: !!hidden,
+              language,
+              prerequisites,
+              tags,
+              outcomes,
+            })
         res.status(201).json({ course })
         return
       } catch (error) {
