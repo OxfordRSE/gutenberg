@@ -7,6 +7,7 @@ import { Button } from "flowbite-react"
 import useCourseProgress from "lib/hooks/useCourseProgress"
 import CourseProgressBar from "components/courses/CourseProgressBar"
 import { HiShieldCheck } from "react-icons/hi"
+import { formatTagLabel } from "lib/tagLabels"
 
 type Props = {
   course: Course
@@ -55,7 +56,7 @@ const CourseCard: React.FC<Props> = ({ course }) => {
             const color = getTagColor(tag)
             return (
               <Badge key={tag} style={{ backgroundColor: color.background, color: color.text }}>
-                {tag}
+                {formatTagLabel(tag)}
               </Badge>
             )
           })}

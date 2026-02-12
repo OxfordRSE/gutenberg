@@ -29,6 +29,7 @@ import CourseEnrolment from "components/courses/CourseEnrolment"
 import CourseSectionLink from "components/courses/CourseSectionLink"
 import useCourseProgress from "lib/hooks/useCourseProgress"
 import { HiShieldCheck } from "react-icons/hi"
+import { formatTagLabel } from "lib/tagLabels"
 import {
   DndContext,
   closestCenter,
@@ -219,7 +220,7 @@ const CoursePreview = ({
                 const color = getTagColor(tag)
                 return (
                   <Badge key={tag} style={{ backgroundColor: color.background, color: color.text }}>
-                    {tag}
+                    {formatTagLabel(tag)}
                   </Badge>
                 )
               })}

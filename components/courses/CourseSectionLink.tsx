@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Material, sectionSplit } from "lib/material"
+import { formatTagLabel } from "lib/tagLabels"
 
 type Depth = "theme" | "course" | "section"
 
@@ -33,7 +34,7 @@ const CourseSectionLink: React.FC<Props> = ({
   }
 
   const label = parts.length > 0 ? parts.join(" - ") : sectionRef
-  const tagSuffix = showTags && section?.tags?.length ? ` [${section.tags.join(", ")}]` : ""
+  const tagSuffix = showTags && section?.tags?.length ? ` [${section.tags.map(formatTagLabel).join(", ")}]` : ""
 
   if (url) {
     return (
