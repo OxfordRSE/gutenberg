@@ -82,15 +82,15 @@ const Courses = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
       const trimmedSummary = typeof summary === "string" ? summary.trim() : ""
       const trimmedLevel = typeof level === "string" ? level.trim() : ""
       if (!trimmedName) {
-        res.status(400).json({ error: "Courses require a name." })
+        res.status(400).json({ error: "A name is required." })
         return
       }
       if (!trimmedSummary) {
-        res.status(400).json({ error: "Courses require a summary." })
+        res.status(400).json({ error: "A summary is required." })
         return
       }
       if (!trimmedLevel) {
-        res.status(400).json({ error: "Courses require a level." })
+        res.status(400).json({ error: "A level is required." })
         return
       }
       try {

@@ -30,6 +30,7 @@ function Textfield<T extends FieldValues>({
                 <Label
                   htmlFor={name}
                   value={!error ? label : error?.message || (error?.type === "required" ? "Required" : "")}
+                  className={error ? "text-red-600 dark:text-red-400" : undefined}
                 />
               </div>
               <FlowbiteTextfield

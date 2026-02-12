@@ -174,23 +174,18 @@ const AddCourse: NextPage<AddCourseProps> = ({ material, pageInfo }) => {
           {error && <div className="mb-3 text-sm text-red-600 dark:text-red-400">{error}</div>}
           <form onSubmit={handleSubmit(onSubmit)}>
             <Stack>
-              <Textfield
-                label="Title"
-                name="name"
-                control={control}
-                rules={{ required: "Courses require a name." }}
-              />
+              <Textfield label="Title" name="name" control={control} rules={{ required: "A name is required." }} />
               <Textarea
                 label="Summary"
                 name="summary"
                 control={control}
-                rules={{ required: "Courses require a summary." }}
+                rules={{ required: "A summary is required." }}
               />
               <SelectField
                 label="Level"
                 name="level"
                 control={control}
-                rules={{ required: "Courses require a level." }}
+                rules={{ required: "A level is required." }}
                 options={[
                   { label: "Select course level…", value: "" },
                   { label: "Beginner", value: "beginner" },
