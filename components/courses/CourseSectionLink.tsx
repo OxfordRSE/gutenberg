@@ -11,7 +11,13 @@ type Props = {
   className?: string
 }
 
-const CourseSectionLink: React.FC<Props> = ({ material, sectionRef, depth = "section", showTags = true, className }) => {
+const CourseSectionLink: React.FC<Props> = ({
+  material,
+  sectionRef,
+  depth = "section",
+  showTags = true,
+  className,
+}) => {
   const { section, course, theme, url } = sectionSplit(sectionRef, material)
 
   const parts: string[] = []

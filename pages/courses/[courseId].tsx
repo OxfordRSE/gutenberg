@@ -279,9 +279,7 @@ const CoursePreview = ({
                       <li
                         key={item.id}
                         className={`text-sm ${
-                          isComplete
-                            ? "text-emerald-700 dark:text-emerald-300"
-                            : "text-gray-700 dark:text-gray-300"
+                          isComplete ? "text-emerald-700 dark:text-emerald-300" : "text-gray-700 dark:text-gray-300"
                         }`}
                       >
                         {isComplete ? "✓ " : ""}
@@ -417,10 +415,7 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
   const { control, handleSubmit, reset, register } = useForm<CourseForm>({ defaultValues })
   const { progress } = useCourseProgress(userProfile ? courseData.id : undefined)
   const sectionProgress = progress && "sections" in progress ? progress.sections : []
-  const sectionMap = useMemo(
-    () => new Map(sectionProgress.map((entry) => [entry.section, entry])),
-    [sectionProgress]
-  )
+  const sectionMap = useMemo(() => new Map(sectionProgress.map((entry) => [entry.section, entry])), [sectionProgress])
   const totalProgress = progress && "total" in progress ? progress.total : 0
   const completedProgress = progress && "completed" in progress ? progress.completed : 0
 
