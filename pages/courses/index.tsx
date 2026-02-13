@@ -76,10 +76,10 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
       course.name.toLowerCase().includes(searchValue) ||
       (course.summary ?? "").toLowerCase().includes(searchValue)
     const matchesLevel = !selectedLevel || course.level === selectedLevel
-    const matchesTags = selectedTags.length === 0 || selectedTags.every((tag) => (course.tags ?? []).includes(tag))
+    const matchesTags = selectedTags.length === 0 || selectedTags.some((tag) => (course.tags ?? []).includes(tag))
     const matchesLanguages =
       selectedLanguages.length === 0 ||
-      selectedLanguages.every((language) => (course.language ?? []).includes(language))
+      selectedLanguages.some((language) => (course.language ?? []).includes(language))
 
     return matchesSearch && matchesLevel && matchesTags && matchesLanguages
   }
