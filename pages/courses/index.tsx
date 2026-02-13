@@ -78,8 +78,7 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
     const matchesLevel = !selectedLevel || course.level === selectedLevel
     const matchesTags = selectedTags.length === 0 || selectedTags.some((tag) => (course.tags ?? []).includes(tag))
     const matchesLanguages =
-      selectedLanguages.length === 0 ||
-      selectedLanguages.some((language) => (course.language ?? []).includes(language))
+      selectedLanguages.length === 0 || selectedLanguages.some((language) => (course.language ?? []).includes(language))
 
     return matchesSearch && matchesLevel && matchesTags && matchesLanguages
   }

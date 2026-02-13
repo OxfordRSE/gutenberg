@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import React, { useState } from "react"
 import { Button, Select, TextInput } from "flowbite-react"
 import { getTagColor } from "lib/tagColors"
 import { formatTagLabel } from "lib/tagLabels"
@@ -39,11 +39,19 @@ const CourseFilters: React.FC<Props> = ({
   }
 
   const toggleTag = (tag: string) => {
-    setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]))
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter((t) => t !== tag))
+      return
+    }
+    setSelectedTags([...selectedTags, tag])
   }
 
   const toggleLanguage = (language: string) => {
-    setSelectedLanguages((prev) => (prev.includes(language) ? prev.filter((t) => t !== language) : [...prev, language]))
+    if (selectedLanguages.includes(language)) {
+      setSelectedLanguages(selectedLanguages.filter((t) => t !== language))
+      return
+    }
+    setSelectedLanguages([...selectedLanguages, language])
   }
 
   const hasFilters = activeCount > 0

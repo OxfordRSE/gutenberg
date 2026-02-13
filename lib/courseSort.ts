@@ -1,6 +1,7 @@
-import { Prisma } from "@prisma/client"
-
-type Course = Prisma.CourseGetPayload<{}>
+type CourseLike = {
+  level?: string | null
+  name?: string | null
+}
 
 const levelOrder: Record<string, number> = {
   beginner: 0,
@@ -8,7 +9,7 @@ const levelOrder: Record<string, number> = {
   advanced: 2,
 }
 
-export function sortCourses(courses: Course[]): Course[] {
+export function sortCourses<T extends CourseLike>(courses: T[]): T[] {
   return [...courses].sort((a, b) => {
     const aLevel = levelOrder[a.level?.toLowerCase?.() ?? ""] ?? 99
     const bLevel = levelOrder[b.level?.toLowerCase?.() ?? ""] ?? 99
