@@ -1,6 +1,6 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
 import prisma from "lib/prisma"
-import { getMaterial, Course, Theme, Material, removeMarkdown } from "lib/material"
+import { getMaterial, MaterialCourse, MaterialTheme, Material, removeMarkdown } from "lib/material"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
 import NavDiagram from "components/navdiagram/NavDiagram"
@@ -10,8 +10,8 @@ import { PageTemplate, loadPageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
 
 type CourseComponentProps = {
-  theme: Theme
-  course: Course
+  theme: MaterialTheme
+  course: MaterialCourse
   material: Material
   events: Event[]
   pageInfo: PageTemplate

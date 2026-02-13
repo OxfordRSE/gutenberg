@@ -1,14 +1,14 @@
 import { SectionLink, LinkedSection } from "components/ui/LinkedSection"
 import { getExcludes } from "lib/material"
-import { Material, Theme, Course, Section } from "./material"
+import { Material, MaterialTheme, MaterialCourse, MaterialSection } from "./material"
 import { sectionSplit } from "./material"
 import { EventFull } from "lib/types"
 
 export const findLinks = (
   material: Material,
-  theme?: Theme,
-  course?: Course,
-  section?: Section,
+  theme?: MaterialTheme,
+  course?: MaterialCourse,
+  section?: MaterialSection,
   activeEvent?: EventFull | undefined
 ): SectionLink[] => {
   const pageLabel = `${theme?.repo}.${theme?.id}.${course?.id}${section ? `.${section.id}` : ""}`

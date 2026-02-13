@@ -1,4 +1,4 @@
-import { Section, getMaterial, sectionSplit } from "../lib/material"
+import { getMaterial, sectionSplit } from "../lib/material"
 import * as fs from "fs"
 
 async function generateTable() {

@@ -51,7 +51,7 @@ function SelectSectionField<T extends FieldValues>({
         getOptionLabel={(option) => option.label}
         filterOptions={filterOptions}
         isOptionEqualToValue={(option, value) => option.value === value.value}
-        sx={{ width: 1000 }}
+        sx={{ width: "100%" }}
         renderOption={(props, option, { selected }) => (
           <li {...props}>
             <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} />

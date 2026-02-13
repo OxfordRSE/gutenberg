@@ -1,6 +1,6 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
 import prisma from "lib/prisma"
-import { getMaterial, Theme, Material, removeMarkdown, getExcludes, Excludes } from "lib/material"
+import { getMaterial, MaterialTheme, Material, removeMarkdown, getExcludes, Excludes } from "lib/material"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
 import Content from "components/content/Content"
@@ -13,7 +13,7 @@ import Link from "next/link"
 import ThemeGrid from "components/navdiagram/ThemeGrid"
 
 type ThemeComponentProps = {
-  theme: Theme
+  theme: MaterialTheme
   material: Material
   events: Event[]
   pageInfo: PageTemplate

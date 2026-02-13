@@ -35,7 +35,11 @@ function SelectField<T extends FieldValues>({
       render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
         <div className={className} id="select">
           <div className="mb-2 block">
-            <Label htmlFor={name} value={label} />
+            <Label
+              htmlFor={name}
+              value={!error ? label : error?.message || (error?.type === "required" ? "Required" : "")}
+              className={error ? "text-red-600 dark:text-red-400" : undefined}
+            />
           </div>
           <Select
             name={name}
