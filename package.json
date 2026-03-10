@@ -75,7 +75,7 @@
     "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0",
     "sentence-similarity": "^3.1.0",
-    "simple-git": "^3.30.0",
+    "simple-git": "^3.32.3",
     "string-similarity-js": "^2.1.4",
     "swr": "^2.3.6",
     "tailwindcss": "^3.4.18",
