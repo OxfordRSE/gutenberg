@@ -17,6 +17,7 @@ import revalidateTimeout from "lib/revalidateTimeout"
 import { sortCourses } from "lib/courseSort"
 import { CourseStatus } from "@prisma/client"
 import CourseFilters from "components/courses/CourseFilters"
+import { BreadcrumbItem } from "lib/breadcrumbs"
 
 type CoursesProps = {
   material: Material
@@ -113,7 +114,12 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
   }
 
   return (
-    <Layout material={material} pageInfo={pageInfo} pageTitle={`Courses: ${pageInfo.title}`}>
+    <Layout
+      material={material}
+      pageInfo={pageInfo}
+      pageTitle={`Courses: ${pageInfo.title}`}
+      breadcrumbs={breadcrumbs}
+    >
       <div className="flex items-center justify-between gap-3 px-3 pt-3">
         <Title text="Courses" className="text-3xl font-bold text-center p-3" style={{ marginBottom: "0px" }} />
         {!profileLoading && userProfile?.admin && (
@@ -212,3 +218,4 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 export default Courses
+  const breadcrumbs: BreadcrumbItem[] = [{ label: "Courses" }]

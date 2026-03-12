@@ -49,6 +49,7 @@ import {
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
+import { BreadcrumbItem } from "lib/breadcrumbs"
 
 type CourseFull = Prisma.CourseGetPayload<{
   include: {
@@ -566,8 +567,18 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
     }
   }
 
+  const breadcrumbs: BreadcrumbItem[] = [
+    { label: "Courses", href: "/courses" },
+    { label: courseData.name || "Course", maxLength: 22 },
+  ]
+
   return (
-    <Layout material={material} pageInfo={pageInfo} pageTitle={`${courseData.name}: ${pageInfo.title}`}>
+    <Layout
+      material={material}
+      pageInfo={pageInfo}
+      pageTitle={`${courseData.name}: ${pageInfo.title}`}
+      breadcrumbs={breadcrumbs}
+    >
       {userProfile?.admin ? (
         <Tabs.Group style="underline" ref={tabsRef} onActiveTabChange={handleTabChange}>
           <Tabs.Item title="Course" active={activeTabIndex === 0} icon={MdPreview}>

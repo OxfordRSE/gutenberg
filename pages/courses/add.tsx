@@ -20,6 +20,7 @@ import { authOptions } from "pages/api/auth/[...nextauth]"
 import type { Data } from "pages/api/course"
 import { normalizeCourseJson, type CourseJsonInput } from "lib/courseJson"
 import { putCourse, CourseUpdatePayload } from "lib/actions/putCourse"
+import { BreadcrumbItem } from "lib/breadcrumbs"
 
 type AddCourseProps = {
   material: Material
@@ -43,6 +44,10 @@ function textToList(value: string): string[] {
 }
 
 const AddCourse: NextPage<AddCourseProps> = ({ material, pageInfo }) => {
+  const breadcrumbs: BreadcrumbItem[] = [
+    { label: "Courses", href: "/courses" },
+    { label: "Add course" },
+  ]
   const router = useRouter()
   const { control, handleSubmit } = useForm<AddCourseForm>({
     defaultValues: {
@@ -167,7 +172,12 @@ const AddCourse: NextPage<AddCourseProps> = ({ material, pageInfo }) => {
   }
 
   return (
-    <Layout material={material} pageInfo={pageInfo} pageTitle={`Add course: ${pageInfo.title}`}>
+    <Layout
+      material={material}
+      pageInfo={pageInfo}
+      pageTitle={`Add course: ${pageInfo.title}`}
+      breadcrumbs={breadcrumbs}
+    >
       <div className="px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32">
         <Title text="Add course" className="text-3xl font-bold" style={{ marginBottom: "0px" }} />
         <Card className="mt-4">

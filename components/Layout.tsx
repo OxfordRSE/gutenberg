@@ -20,6 +20,7 @@ import { useTheme } from "next-themes"
 import { ThemeProvider } from "@mui/material/styles"
 import { LightTheme, DarkTheme } from "./MuiTheme"
 import plausibleHost from "lib/plausibleHost"
+import { BreadcrumbItem } from "lib/breadcrumbs"
 
 type Props = {
   material: Material
@@ -29,6 +30,7 @@ type Props = {
   children: ReactNode
   pageInfo: PageTemplate
   pageTitle?: string
+  breadcrumbs?: BreadcrumbItem[]
   repoUrl?: string
   excludes?: Excludes
 }
@@ -41,6 +43,7 @@ const Layout: React.FC<Props> = ({
   children,
   pageInfo,
   pageTitle,
+  breadcrumbs,
   repoUrl,
   excludes,
 }) => {
@@ -74,6 +77,7 @@ const Layout: React.FC<Props> = ({
               repoUrl={repoUrl}
               excludes={excludes}
               pageInfo={pageInfo}
+              breadcrumbs={breadcrumbs}
             />
           </header>
           <main id="main">
