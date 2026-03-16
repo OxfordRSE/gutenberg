@@ -27,7 +27,7 @@ Setting up a local development requires the following software:
 
 - `git` version 2.43.0 or later - install according to instructions for your system
 - `npm` version `9.2.0` or later - install according to instructions for your system
-- `node` version v18.19.1 or later - packaged with `npm`
+- `node` version v20.9.0 or later - this repo currently uses `lts/krypton` (a newer supported Node release)
 - `corepack` version `0.28.0` or later - install with `npm install -g corepack`
 - `yarn` version `3.3.0` or later - installed via `corepack` with `yarn --version`
 - For developing the full web application functionality rather than just previewing materials, you'll also need a `postgres` instance
