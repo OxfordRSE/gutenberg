@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 import bundleAnalyzer from "@next/bundle-analyzer"
+import { fileURLToPath } from "url"
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 })
@@ -8,6 +9,7 @@ import plausibleHost from "./lib/plausibleHost.js"
 
 const nextConfig = {
   output: "standalone",
+  outputFileTracingRoot: fileURLToPath(new URL(".", import.meta.url)),
   reactStrictMode: true,
   trailingSlash: false,
   logging: {
