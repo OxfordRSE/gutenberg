@@ -88,10 +88,13 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const repoId = context?.params?.repoId
   const excludes = getExcludes(repoId as string)
   const repoUrl = getRepoUrl(repoId as string)
-  const events = await runBuildPrismaQuery("pages/material/[repoId]/[themeId]/[courseId]/[sectionId].tsx events", [], (prisma) =>
-    prisma.event.findMany({
-      where: { hidden: false },
-    })
+  const events = await runBuildPrismaQuery(
+    "pages/material/[repoId]/[themeId]/[courseId]/[sectionId].tsx events",
+    [],
+    (prisma) =>
+      prisma.event.findMany({
+        where: { hidden: false },
+      })
   )
   const themeId = context?.params?.themeId
   if (!themeId || Array.isArray(themeId)) {

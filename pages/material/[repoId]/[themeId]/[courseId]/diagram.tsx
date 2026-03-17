@@ -55,7 +55,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     [],
     (prisma) =>
       prisma.event.findMany({
-      where: { hidden: false },
+        where: { hidden: false },
       })
   )
   const themeId = context?.params?.themeId
