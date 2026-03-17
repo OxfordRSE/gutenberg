@@ -94,7 +94,8 @@ describe("course enrolment flow", () => {
     createDisposableCourse(suffix).then((course) => {
       const courseId = course.id
 
-      cy.clearCookie("next-auth.session-token")
+      cy.clearCookies()
+      cy.clearLocalStorage()
       cy.visit(`/courses/${courseId}`)
       cy.contains("Sign in to enrol").should("be.visible")
       cy.contains("button", "Enrol").should("not.exist")
