@@ -21,9 +21,10 @@ import EventsToolbar from "components/timeline/EventsToolbar"
 type EventsProps = {
   material: Material
   events: Event[]
+  collapseOlderEvents?: boolean
 }
 
-const EventsView: React.FC<EventsProps> = ({ material, events }) => {
+const EventsView: React.FC<EventsProps> = ({ material, events, collapseOlderEvents = true }) => {
   // avoid hydration mismatch for date formatting
   const [showDateTime, setShowDateTime] = useState(false)
 
@@ -86,9 +87,9 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
   // Effective hidden-older count:
   // - while filtering: show all (0 hidden)
   // - otherwise: use user override if any, else derived olderCount
-  const effectiveOldEvents = isFiltering ? 0 : (userOldEvents ?? olderCount)
-  const toolbarOld = isFiltering ? 0 : effectiveOldEvents
-  const toolbarNew = isFiltering ? filteredEvents.length : newerCount
+  const effectiveOldEvents = collapseOlderEvents ? (isFiltering ? 0 : (userOldEvents ?? olderCount)) : 0
+  const toolbarOld = collapseOlderEvents ? (isFiltering ? 0 : effectiveOldEvents) : 0
+  const toolbarNew = collapseOlderEvents ? (isFiltering ? filteredEvents.length : newerCount) : filteredEvents.length
 
   // Hydration guard for date formatting, prevent dom mismatch
   useEffect(() => {
@@ -119,7 +120,7 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
 
   // Paging helpers: no-op during filtering
   const loadMoreEvents = () => {
-    if (isFiltering) return
+    if (isFiltering || !collapseOlderEvents) return
     setUserOldEvents((prev) => {
       const base = prev ?? olderCount
       return Math.max(base - 3, 0)
@@ -127,7 +128,7 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
   }
 
   const hideMoreEvents = () => {
-    if (isFiltering) return
+    if (isFiltering || !collapseOlderEvents) return
     setUserOldEvents((prev) => {
       const base = prev ?? olderCount
       const maxHideable = Math.max(0, filteredEvents.length - newerCount)
