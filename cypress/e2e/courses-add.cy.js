@@ -80,8 +80,10 @@ describe("add course flows", () => {
       .then((courseId) => {
         cy.location("hash").should("eq", "#edit")
         cy.contains("button", "Export as JSON").click()
-        cy.contains("Course JSON").should("be.visible")
-        cy.contains(courseJson.name).should("be.visible")
+        cy.get('[role="dialog"]').within(() => {
+          cy.contains("Course JSON").should("be.visible")
+          cy.contains(courseJson.name).should("be.visible")
+        })
         cy.request("GET", `/api/course/${courseId}`).then((response) => {
           expect(response.body.course.CourseGroup).to.have.length(1)
           expect(response.body.course.CourseItem).to.have.length(1)

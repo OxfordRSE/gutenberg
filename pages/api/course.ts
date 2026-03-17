@@ -171,6 +171,7 @@ const Courses = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
           }
           await resetCourseSequence()
           const course = await createCourse({
+            externalId: resolvedExternalId,
             name,
             summary,
             level,
