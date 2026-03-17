@@ -37,7 +37,7 @@ const EventsPage: NextPage<Props> = ({ material, events, pageInfo }) => {
               &nbsp; to enrol on an upcoming course, to select an active course, or to view your current courses.
             </p>
           )}
-          <EventsView material={material} events={events} collapseOlderEvents={false} />
+          <EventsView material={material} events={events} />
         </Card>
       </div>
     </Layout>
