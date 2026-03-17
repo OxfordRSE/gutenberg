@@ -10,6 +10,7 @@ import { Event } from "lib/types"
 import { loadPageTemplate, PageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
 import { BreadcrumbItem } from "lib/breadcrumbs"
+import { hasBuildDatabase, runBuildPrismaQuery } from "lib/buildPrisma"
 
 type Props = {
   material: Material
@@ -49,7 +50,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const material = await getMaterial()
   removeMarkdown(material, material)
 
-  if (!process.env.DATABASE_URL) {
+  if (!hasBuildDatabase()) {
     return {
       props: {
         material: makeSerializable(material),
@@ -60,15 +61,11 @@ export const getStaticProps: GetStaticProps = async () => {
     }
   }
 
-  const prisma = (await import("lib/prisma")).default
-  const events = await prisma.event
-    .findMany({
+  const events = await runBuildPrismaQuery("pages/events/index.tsx events", [], (prisma) =>
+    prisma.event.findMany({
       where: { hidden: false },
     })
-    .catch((e) => {
-      console.log("error", e)
-      return []
-    })
+  )
 
   return {
     props: {

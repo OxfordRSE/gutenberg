@@ -1,5 +1,4 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
-import prisma from "lib/prisma"
 import {
   getMaterial,
   MaterialCourse,
@@ -19,6 +18,7 @@ import { Event } from "lib/types"
 import { PageTemplate, loadPageTemplate } from "lib/pageTemplate"
 import LearningOutcomes from "components/content/LearningOutcomes"
 import revalidateTimeout from "lib/revalidateTimeout"
+import { runBuildPrismaQuery } from "lib/buildPrisma"
 
 type SectionComponentProps = {
   theme: MaterialTheme
@@ -88,13 +88,11 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const repoId = context?.params?.repoId
   const excludes = getExcludes(repoId as string)
   const repoUrl = getRepoUrl(repoId as string)
-  const events = await prisma.event
-    .findMany({
+  const events = await runBuildPrismaQuery("pages/material/[repoId]/[themeId]/[courseId]/[sectionId].tsx events", [], (prisma) =>
+    prisma.event.findMany({
       where: { hidden: false },
     })
-    .catch((e) => {
-      return []
-    })
+  )
   const themeId = context?.params?.themeId
   if (!themeId || Array.isArray(themeId)) {
     return { notFound: true }
@@ -122,7 +120,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   }
   removeMarkdown(material, section)
   return {
-    props: makeSerializable({ theme, course, section, events, material, pageInfo, repoUrl }),
+    props: makeSerializable({ theme, course, section, events, material, pageInfo, repoUrl, excludes }),
     revalidate: revalidateTimeout,
   }
 }

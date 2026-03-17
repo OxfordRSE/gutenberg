@@ -11,6 +11,7 @@ import type { Course } from "pages/api/course"
 import HomeCoursesPanel from "components/home/HomeCoursesPanel"
 import HomeEventsPanel from "components/home/HomeEventsPanel"
 import HomeCourseMaterialPanel from "components/home/HomeCourseMaterialPanel"
+import { hasBuildDatabase, runBuildPrismaQuery } from "lib/buildPrisma"
 
 type HomeProps = {
   material: Material
@@ -45,7 +46,7 @@ export const getStaticProps: GetStaticProps = async () => {
   let material = await getMaterial()
   removeMarkdown(material, material)
 
-  if (!process.env.DATABASE_URL) {
+  if (!hasBuildDatabase()) {
     return {
       props: {
         material: makeSerializable(material),
@@ -57,26 +58,17 @@ export const getStaticProps: GetStaticProps = async () => {
     }
   }
 
-  const prisma = (await import("lib/prisma")).default
-
-  const events = await prisma.event
-    .findMany({
+  const events = await runBuildPrismaQuery("pages/index.tsx events", [], (prisma) =>
+    prisma.event.findMany({
       where: { hidden: false },
     })
-    .catch((e) => {
-      console.log("error", e)
-      return []
-    })
+  )
 
-  const courses = await prisma.course
-    .findMany({
+  const courses = await runBuildPrismaQuery("pages/index.tsx courses", [], (prisma) =>
+    prisma.course.findMany({
       where: { hidden: false },
     })
-    .then((courses) => courses.map((course) => ({ ...course, UserOnCourse: [] })))
-    .catch((e) => {
-      console.log("error", e)
-      return []
-    })
+  ).then((courses) => courses.map((course) => ({ ...course, UserOnCourse: [] })))
 
   return {
     props: {

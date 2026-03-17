@@ -1,5 +1,4 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
-import prisma from "lib/prisma"
 import { getMaterial, MaterialTheme, Material, removeMarkdown, getExcludes, Excludes } from "lib/material"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
@@ -11,6 +10,7 @@ import { PageTemplate, loadPageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
 import Link from "next/link"
 import ThemeGrid from "components/navdiagram/ThemeGrid"
+import { runBuildPrismaQuery } from "lib/buildPrisma"
 
 type ThemeComponentProps = {
   theme: MaterialTheme
@@ -44,13 +44,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const pageInfo = loadPageTemplate()
-  const events = await prisma.event
-    .findMany({
+  const events = await runBuildPrismaQuery("pages/material/[repoId]/[themeId].tsx events", [], (prisma) =>
+    prisma.event.findMany({
       where: { hidden: false },
     })
-    .catch((e) => {
-      return []
-    })
+  )
   let material = await getMaterial()
   const themeId = context?.params?.themeId
   const repoId = context?.params?.repoId

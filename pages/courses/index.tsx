@@ -20,6 +20,7 @@ import CourseFilters from "components/courses/CourseFilters"
 import { BreadcrumbItem } from "lib/breadcrumbs"
 import { matchesCourseFilters } from "lib/courseFilters"
 import { partitionCoursesForListPage } from "lib/courseSections"
+import { hasBuildDatabase, runBuildPrismaQuery } from "lib/buildPrisma"
 
 type CoursesProps = {
   material: Material
@@ -183,15 +184,16 @@ export const getStaticProps: GetStaticProps = async () => {
   let material = await getMaterial()
   removeMarkdown(material, material)
 
-  if (!process.env.DATABASE_URL) {
+  if (!hasBuildDatabase()) {
     return {
       props: makeSerializable({ material, courses: [], pageInfo }),
       revalidate: revalidateTimeout,
     }
   }
 
-  const prisma = (await import("lib/prisma")).default
-  const courses = await prisma.course.findMany({ where: { hidden: false } })
+  const courses = await runBuildPrismaQuery("pages/courses/index.tsx courses", [], (prisma) =>
+    prisma.course.findMany({ where: { hidden: false } })
+  )
   const coursesWithUser = courses.map((course) => ({ ...course, UserOnCourse: [] }))
 
   return {

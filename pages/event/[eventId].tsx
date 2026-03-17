@@ -1,5 +1,4 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
-import prisma from "lib/prisma"
 import { getMaterial, Material, removeMarkdown } from "lib/material"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
@@ -26,6 +25,7 @@ import { PageTemplate, loadPageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
 import { load } from "js-yaml"
 import EventViewPane from "components/event/EventViewPane"
+import { runBuildPrismaQuery } from "lib/buildPrisma"
 
 type EventProps = {
   material: Material
@@ -218,11 +218,11 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const events = await prisma.event
-    .findMany({
+  const events = await runBuildPrismaQuery("pages/event/[eventId].tsx paths", [], (prisma) =>
+    prisma.event.findMany({
       where: { hidden: false },
     })
-    .catch((e) => [])
+  )
   return {
     paths: events.map((e) => ({ params: { eventId: `${e.id}` } })),
     fallback: "blocking",
@@ -232,7 +232,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async (context) => {
   const pageInfo = loadPageTemplate()
   const eventId = parseInt(context?.params?.eventId as string)
-  const event = await prisma.event.findUnique({ where: { id: eventId } })
+  const event = await runBuildPrismaQuery("pages/event/[eventId].tsx event", null, (prisma) =>
+    prisma.event.findUnique({ where: { id: eventId } })
+  )
   if (!event) {
     return { notFound: true }
   }

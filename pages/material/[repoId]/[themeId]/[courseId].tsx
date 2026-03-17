@@ -1,5 +1,4 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
-import prisma from "lib/prisma"
 import { getMaterial, MaterialCourse, MaterialTheme, Material, removeMarkdown } from "lib/material"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
@@ -12,6 +11,7 @@ import CourseGrid from "components/navdiagram/CourseGrid"
 import LearningOutcomes from "components/content/LearningOutcomes"
 import Link from "next/link"
 import SubTitle from "components/ui/SubTitle"
+import { runBuildPrismaQuery } from "lib/buildPrisma"
 
 type CourseComponentProps = {
   theme: MaterialTheme
@@ -60,13 +60,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const pageInfo = loadPageTemplate()
-  const events = await prisma.event
-    .findMany({
+  const events = await runBuildPrismaQuery("pages/material/[repoId]/[themeId]/[courseId].tsx events", [], (prisma) =>
+    prisma.event.findMany({
       where: { hidden: false },
     })
-    .catch((e) => {
-      return []
-    })
+  )
   const themeId = context?.params?.themeId
   if (!themeId || Array.isArray(themeId)) {
     return { notFound: true }
