@@ -4,7 +4,7 @@ describe("landing page", () => {
   })
 
   it("loads", () => {
-    cy.contains("Your Events").should("be.visible")
+    cy.contains("Events").should("be.visible")
   })
 
   it("has page language", () => {

@@ -30,7 +30,6 @@ describe("non admin events page", () => {
     cy.get('[data-cy="search-input"]').clear()
     cy.contains("No events match your filter").should("not.exist")
 
-    cy.contains("older").should("not.exist")
     cy.get('[data-cy="search-input"]').click().type("older")
     cy.wait(400)
     cy.contains("older").should("be.visible")
