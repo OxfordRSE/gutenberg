@@ -22,12 +22,12 @@ describe("add course flows", () => {
     cy.get("#tagsText").type("basics")
     cy.contains("button", "Create course").click()
 
-    cy.location("pathname", { timeout: 10000 })
-      .should((pathname) => {
-        expect(pathname).to.match(/\/courses\/\d+$/)
+    cy.url({ timeout: 10000 })
+      .should((url) => {
+        expect(url).to.match(/\/courses\/\d+#edit$/)
       })
-      .then((pathname) => {
-        const match = /\/courses\/(\d+)$/.exec(pathname)
+      .then((url) => {
+        const match = /\/courses\/(\d+)#edit$/.exec(url)
         expect(match).to.not.be.null
         return Number(match[1])
       })
@@ -68,12 +68,12 @@ describe("add course flows", () => {
       })
     cy.contains("button", "Create from JSON").click()
 
-    cy.location("pathname", { timeout: 10000 })
-      .should((pathname) => {
-        expect(pathname).to.match(/\/courses\/\d+$/)
+    cy.url({ timeout: 10000 })
+      .should((url) => {
+        expect(url).to.match(/\/courses\/\d+#edit$/)
       })
-      .then((pathname) => {
-        const match = /\/courses\/(\d+)$/.exec(pathname)
+      .then((url) => {
+        const match = /\/courses\/(\d+)#edit$/.exec(url)
         expect(match).to.not.be.null
         return Number(match[1])
       })

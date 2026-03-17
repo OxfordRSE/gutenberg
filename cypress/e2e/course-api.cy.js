@@ -17,6 +17,7 @@ describe("course API", () => {
 
   it("rejects non-admin create", () => {
     cy.login({ name: "notOnCourse", email: "notOnCourse@localhost" })
+    cy.visit("/")
     cy.request({
       method: "POST",
       url: "/api/course",
@@ -34,6 +35,7 @@ describe("course API", () => {
 
   it("returns validation errors and generates slug external ids", () => {
     cy.login({ name: "admin", email: "admin@localhost" })
+    cy.visit("/")
 
     cy.request({
       method: "POST",

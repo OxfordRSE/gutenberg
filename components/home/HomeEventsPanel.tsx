@@ -35,9 +35,7 @@ const HomeEventsPanel: React.FC<Props> = ({ events: _events }) => {
               {session ? "Your Events" : "Events"}
             </h2>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              {session
-                ? "Events you are enrolled on. Full scheduling stays on the events page."
-                : "Scheduled teaching stays here. The full timeline lives on the events page."}
+              {session ? "Your enrolled events." : "Login to see your enrolled events."}
             </p>
           </div>
           <Link href="/events">
