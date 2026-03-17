@@ -23,9 +23,10 @@ const HomeCoursesPanel: React.FC<Props> = ({ initialCourses }) => {
 
   const courses = sortCourses(data?.courses ?? [])
   const visibleCourses = courses.filter((course) => !course.hidden)
+  const previewCourses = visibleCourses.filter((course) => course.UserOnCourse?.[0]?.status !== CourseStatus.DROPPED)
 
   const myCourses = useMemo(() => {
-    return visibleCourses
+    return previewCourses
       .filter((course) => {
         const status = course.UserOnCourse?.[0]?.status
         return status && status !== CourseStatus.DROPPED
@@ -36,11 +37,11 @@ const HomeCoursesPanel: React.FC<Props> = ({ initialCourses }) => {
         if (aCompleted !== bCompleted) return aCompleted ? 1 : -1
         return 0
       })
-  }, [visibleCourses])
+  }, [previewCourses])
 
   const otherCourses = useMemo(() => {
-    return visibleCourses.filter((course) => !myCourses.some((mine) => mine.id === course.id))
-  }, [myCourses, visibleCourses])
+    return previewCourses.filter((course) => !myCourses.some((mine) => mine.id === course.id))
+  }, [myCourses, previewCourses])
 
   const displayedMyCourses = myCourses.slice(0, 2)
   const displayedOtherCourses = otherCourses.slice(0, Math.max(0, 4 - displayedMyCourses.length))
@@ -62,7 +63,7 @@ const HomeCoursesPanel: React.FC<Props> = ({ initialCourses }) => {
           <div className="rounded-lg border border-gray-100 bg-gray-50 p-4 text-sm text-gray-600 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
             Loading courses...
           </div>
-        ) : visibleCourses.length === 0 ? (
+        ) : previewCourses.length === 0 ? (
           <div className="rounded-lg border border-gray-100 bg-gray-50 p-4 text-sm text-gray-600 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
             No courses are available yet.
           </div>
@@ -104,7 +105,7 @@ const HomeCoursesPanel: React.FC<Props> = ({ initialCourses }) => {
 
         <div className="mt-2 flex gap-3">
           <Link href="/courses">
-            <Button color="info">Browse all {visibleCourses.length} courses</Button>
+            <Button color="info">Browse all {previewCourses.length} courses</Button>
           </Link>
         </div>
       </div>

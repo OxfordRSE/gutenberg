@@ -19,6 +19,7 @@ import { CourseStatus } from "@prisma/client"
 import CourseFilters from "components/courses/CourseFilters"
 import { BreadcrumbItem } from "lib/breadcrumbs"
 import { matchesCourseFilters } from "lib/courseFilters"
+import { partitionCoursesForListPage } from "lib/courseSections"
 
 type CoursesProps = {
   material: Material
@@ -43,16 +44,7 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
     fallbackData: { courses: initialCourses },
   })
   const courses = sortCourses(data?.courses ?? [])
-  const visibleCourses = courses.filter((course) => !course.hidden)
-  const hiddenCourses = courses.filter((course) => course.hidden)
-  const myCourses = visibleCourses.filter((course) => {
-    const status = course.UserOnCourse?.[0]?.status
-    return status && status !== CourseStatus.DROPPED
-  })
-  const otherCourses = visibleCourses.filter((course) => {
-    const status = course.UserOnCourse?.[0]?.status
-    return !status || status === CourseStatus.DROPPED
-  })
+  const { visibleCourses, hiddenCourses, myCourses, otherCourses } = partitionCoursesForListPage(courses)
 
   const tagOptions = Array.from(
     new Set(
