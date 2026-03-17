@@ -18,6 +18,7 @@ import { sortCourses } from "lib/courseSort"
 import { CourseStatus } from "@prisma/client"
 import CourseFilters from "components/courses/CourseFilters"
 import { BreadcrumbItem } from "lib/breadcrumbs"
+import { matchesCourseFilters } from "lib/courseFilters"
 
 type CoursesProps = {
   material: Material
@@ -28,6 +29,7 @@ type CoursesProps = {
 type CoursesData = { courses?: Course[]; error?: string }
 
 const coursesFetcher: Fetcher<CoursesData, string> = (url) => fetch(url).then((r) => r.json())
+const breadcrumbs: BreadcrumbItem[] = [{ label: "Courses" }]
 
 const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pageInfo }) => {
   const { userProfile, isLoading: profileLoading } = useProfile()
@@ -70,19 +72,13 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
     )
   ).sort((a, b) => a.localeCompare(b))
 
-  const applyFilters = (course: Course) => {
-    const searchValue = search.trim().toLowerCase()
-    const matchesSearch =
-      !searchValue ||
-      course.name.toLowerCase().includes(searchValue) ||
-      (course.summary ?? "").toLowerCase().includes(searchValue)
-    const matchesLevel = !selectedLevel || course.level === selectedLevel
-    const matchesTags = selectedTags.length === 0 || selectedTags.some((tag) => (course.tags ?? []).includes(tag))
-    const matchesLanguages =
-      selectedLanguages.length === 0 || selectedLanguages.some((language) => (course.language ?? []).includes(language))
-
-    return matchesSearch && matchesLevel && matchesTags && matchesLanguages
-  }
+  const applyFilters = (course: Course) =>
+    matchesCourseFilters(course, {
+      search,
+      selectedLevel,
+      selectedTags,
+      selectedLanguages,
+    })
 
   const filteredMyCourses = myCourses.filter(applyFilters).sort((a, b) => {
     const aStatus = a.UserOnCourse?.[0]?.status
@@ -218,4 +214,3 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 export default Courses
-  const breadcrumbs: BreadcrumbItem[] = [{ label: "Courses" }]

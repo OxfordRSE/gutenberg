@@ -18,7 +18,7 @@ const CourseProgressBar: React.FC<Props> = ({
   const ratio = total > 0 ? completed / total : 0
 
   return (
-    <div className={className}>
+    <div className={className} data-cy="course-progress-bar">
       {!hideLabelRow && (
         <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
           <span>{label}</span>
@@ -29,6 +29,7 @@ const CourseProgressBar: React.FC<Props> = ({
       )}
       <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
         <div
+          data-cy="course-progress-fill"
           className={`h-full rounded-full transition-[width] duration-300 ${fillClassName}`}
           style={{ width: `${Math.round(ratio * 100)}%` }}
         />
