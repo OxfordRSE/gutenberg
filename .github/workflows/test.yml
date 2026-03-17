@@ -136,6 +136,7 @@ jobs:
             --exclude "docs.python.org" \
             --exclude "mpich.org" \
             --exclude "medium.com" \
+            --exclude "unsplash.com" \
           ; true)
           echo "$OUTPUT"
 

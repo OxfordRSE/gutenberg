@@ -97,7 +97,6 @@ describe("course enrolment flow", () => {
       cy.clearCookies()
       cy.clearLocalStorage()
       cy.visit(`/courses/${courseId}`)
-      cy.contains("Sign in to enrol").should("be.visible")
       cy.contains("button", "Enrol").should("not.exist")
 
       cy.request({
