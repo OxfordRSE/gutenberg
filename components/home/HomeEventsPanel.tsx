@@ -20,7 +20,10 @@ const HomeEventsPanel: React.FC<Props> = ({ events: _events }) => {
       start: new Date(event.start as unknown as string),
       end: new Date(event.end as unknown as string),
     }))
-    .sort((a: Event & { start: Date; end: Date }, b: Event & { start: Date; end: Date }) => a.start.getTime() - b.start.getTime())
+    .sort(
+      (a: Event & { start: Date; end: Date }, b: Event & { start: Date; end: Date }) =>
+        a.start.getTime() - b.start.getTime()
+    )
   const displayedEvents = enrolledEvents.slice(0, 2)
 
   return (
@@ -65,7 +68,10 @@ const HomeEventsPanel: React.FC<Props> = ({ events: _events }) => {
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <Link href={`/event/${event.id}`} className="text-sm text-gray-400 hover:underline dark:text-gray-500">
+                    <Link
+                      href={`/event/${event.id}`}
+                      className="text-sm text-gray-400 hover:underline dark:text-gray-500"
+                    >
                       <time dateTime={event.start.toISOString()}>
                         {`${event.start.toLocaleString([], {
                           day: "numeric",

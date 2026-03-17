@@ -93,11 +93,7 @@ const EventsView: React.FC<EventsProps> = ({ material: _material, events }) => {
 
   return (
     <>
-      <EventsToolbar
-        query={query}
-        onQueryChange={setQuery}
-        onDebouncedQueryChange={setDebouncedQuery}
-      />
+      <EventsToolbar query={query} onQueryChange={setQuery} onDebouncedQueryChange={setDebouncedQuery} />
       <Timeline>
         {/* Empty state when filter finds nothing */}
         {filteredEvents.length === 0 && (

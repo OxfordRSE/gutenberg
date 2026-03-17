@@ -3,4 +3,3 @@ export type BreadcrumbItem = {
   href?: string
   maxLength?: number
 }
-

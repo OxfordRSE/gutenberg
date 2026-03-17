@@ -23,7 +23,9 @@ describe("course JSON helpers", () => {
           ],
         },
       ],
-      CourseItem: [{ section: "HPCu.software_architecture_and_design.procedural.containers_cpp", order: 1, groupId: null }],
+      CourseItem: [
+        { section: "HPCu.software_architecture_and_design.procedural.containers_cpp", order: 1, groupId: null },
+      ],
     }
 
     const exported = courseToJson(source)

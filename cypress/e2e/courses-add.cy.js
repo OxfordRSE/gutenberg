@@ -15,11 +15,11 @@ describe("add course flows", () => {
     const uniqueName = `Short Form Course ${Date.now()}`
 
     cy.visit("/courses/add")
-    cy.get('#name').type(uniqueName)
-    cy.get('#summary').type("Created from the short form")
-    cy.get('#level').select("beginner")
-    cy.get('#languageText').type("python")
-    cy.get('#tagsText').type("basics")
+    cy.get("#name").type(uniqueName)
+    cy.get("#summary").type("Created from the short form")
+    cy.get("#level").select("beginner")
+    cy.get("#languageText").type("python")
+    cy.get("#tagsText").type("basics")
     cy.contains("button", "Create course").click()
 
     cy.location("pathname", { timeout: 10000 })
@@ -60,9 +60,12 @@ describe("add course flows", () => {
     }
 
     cy.visit("/courses/add")
-    cy.get("textarea").last().clear().type(JSON.stringify(courseJson, null, 2), {
-      parseSpecialCharSequences: false,
-    })
+    cy.get("textarea")
+      .last()
+      .clear()
+      .type(JSON.stringify(courseJson, null, 2), {
+        parseSpecialCharSequences: false,
+      })
     cy.contains("button", "Create from JSON").click()
 
     cy.location("pathname", { timeout: 10000 })

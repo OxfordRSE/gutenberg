@@ -44,10 +44,7 @@ function textToList(value: string): string[] {
 }
 
 const AddCourse: NextPage<AddCourseProps> = ({ material, pageInfo }) => {
-  const breadcrumbs: BreadcrumbItem[] = [
-    { label: "Courses", href: "/courses" },
-    { label: "Add course" },
-  ]
+  const breadcrumbs: BreadcrumbItem[] = [{ label: "Courses", href: "/courses" }, { label: "Add course" }]
   const router = useRouter()
   const { control, handleSubmit } = useForm<AddCourseForm>({
     defaultValues: {

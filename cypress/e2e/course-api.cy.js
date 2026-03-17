@@ -44,7 +44,9 @@ describe("course API", () => {
         summary: "Summary",
         level: "beginner",
       },
-    }).its("body.error").should("eq", "A name is required.")
+    })
+      .its("body.error")
+      .should("eq", "A name is required.")
 
     cy.request({
       method: "POST",
