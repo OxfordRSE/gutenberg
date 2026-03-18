@@ -5,9 +5,10 @@ import { makeSerializable } from "lib/utils"
 import { PageTemplate, loadPageTemplate } from "lib/pageTemplate"
 import Title from "components/ui/Title"
 import { Button, Card } from "flowbite-react"
+import { Modal } from "flowbite-react"
 import CourseGrid from "components/courses/CourseGrid"
 import useProfile from "lib/hooks/useProfile"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { basePath } from "lib/basePath"
 import { HiRefresh } from "react-icons/hi"
 import Link from "next/link"
@@ -21,6 +22,7 @@ import { BreadcrumbItem } from "lib/breadcrumbs"
 import { matchesCourseFilters } from "lib/courseFilters"
 import { partitionCoursesForListPage } from "lib/courseSections"
 import { hasBuildDatabase, runBuildPrismaQuery } from "lib/buildPrisma"
+import type { CourseSyncReview } from "lib/courseSync"
 
 type CoursesProps = {
   material: Material
@@ -29,6 +31,20 @@ type CoursesProps = {
 }
 
 type CoursesData = { courses?: Course[]; error?: string }
+type SyncDefaultsReviewResponse =
+  | {
+      mode: "review"
+      review: CourseSyncReview
+      summary: { unchanged: number; newCourses: number; changedCourses: number }
+    }
+  | {
+      mode: "apply"
+      created: number
+      updated: number
+      skipped: number
+      appliedExternalIds: string[]
+    }
+  | { error: string }
 
 const coursesFetcher: Fetcher<CoursesData, string> = (url) => fetch(url).then((r) => r.json())
 const breadcrumbs: BreadcrumbItem[] = [{ label: "Courses" }]
@@ -37,6 +53,13 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
   const { userProfile, isLoading: profileLoading } = useProfile()
   const [syncError, setSyncError] = useState<string | null>(null)
   const [syncing, setSyncing] = useState(false)
+  const [showSyncModal, setShowSyncModal] = useState(false)
+  const [syncReview, setSyncReview] = useState<CourseSyncReview | null>(null)
+  const [syncSummary, setSyncSummary] = useState<{ unchanged: number; newCourses: number; changedCourses: number } | null>(
+    null
+  )
+  const [selectedSyncExternalIds, setSelectedSyncExternalIds] = useState<string[]>([])
+  const [applySyncing, setApplySyncing] = useState(false)
   const [search, setSearch] = useState("")
   const [selectedLevel, setSelectedLevel] = useState("")
   const [selectedTags, setSelectedTags] = useState<string[]>([])
@@ -85,20 +108,66 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
   const filteredOtherCourses = otherCourses.filter(applyFilters)
   const filteredHiddenCourses = hiddenCourses.filter(applyFilters)
 
+  const syncSelectionsCount = selectedSyncExternalIds.length
+  const hasReviewChanges = (syncReview?.newCourses.length ?? 0) + (syncReview?.changedCourses.length ?? 0) > 0
+
+  const defaultSelectedExternalIds = useMemo(
+    () => syncReview?.newCourses.map((course) => course.externalId) ?? [],
+    [syncReview]
+  )
+
   const handleSyncDefaults = async () => {
     setSyncError(null)
     setSyncing(true)
     try {
-      const res = await fetch(`${basePath}/api/course/sync-defaults`, { method: "POST" })
-      if (!res.ok) {
-        const data = await res.json()
-        throw new Error(data?.error || "Failed to sync defaults")
+      const res = await fetch(`${basePath}/api/course/sync-defaults`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: "review" }),
+      })
+      const data = (await res.json()) as SyncDefaultsReviewResponse
+      if (!res.ok || !("mode" in data) || data.mode !== "review") {
+        throw new Error(("error" in data && data.error) || "Failed to review sync")
       }
-      await mutate()
+      setSyncReview(data.review)
+      setSyncSummary(data.summary)
+      setSelectedSyncExternalIds(data.review.newCourses.map((course) => course.externalId))
+      setShowSyncModal(true)
     } catch (err) {
       setSyncError(err instanceof Error ? err.message : "Failed to sync defaults")
     } finally {
       setSyncing(false)
+    }
+  }
+
+  const toggleSyncExternalId = (externalId: string) => {
+    setSelectedSyncExternalIds((current) =>
+      current.includes(externalId) ? current.filter((value) => value !== externalId) : [...current, externalId]
+    )
+  }
+
+  const handleApplySync = async () => {
+    setSyncError(null)
+    setApplySyncing(true)
+    try {
+      const res = await fetch(`${basePath}/api/course/sync-defaults`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: "apply", externalIds: selectedSyncExternalIds }),
+      })
+      const data = (await res.json()) as SyncDefaultsReviewResponse
+      if (!res.ok || !("mode" in data) || data.mode !== "apply") {
+        throw new Error(("error" in data && data.error) || "Failed to apply sync")
+      }
+      await mutate()
+      setShowSyncModal(false)
+      setSyncReview(null)
+      setSyncSummary(null)
+      setSelectedSyncExternalIds([])
+    } catch (err) {
+      setSyncError(err instanceof Error ? err.message : "Failed to apply sync")
+    } finally {
+      setApplySyncing(false)
     }
   }
 
@@ -116,7 +185,7 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
             <Button size="sm" onClick={handleSyncDefaults} disabled={syncing}>
               <span className="flex items-center gap-2">
                 <HiRefresh className={syncing ? "animate-spin" : ""} />
-                {syncing ? "Syncing…" : "Sync courses"}
+                {syncing ? "Reviewing…" : "Review sync"}
               </span>
             </Button>
           </div>
@@ -175,6 +244,115 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
           </div>
         )}
       </div>
+      <Modal show={showSyncModal} onClose={() => setShowSyncModal(false)} size="4xl">
+        <Modal.Header>Review course sync</Modal.Header>
+        <Modal.Body>
+          {syncSummary && (
+            <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <Card>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Unchanged</div>
+                <div className="text-2xl font-semibold text-gray-900 dark:text-white">{syncSummary.unchanged}</div>
+              </Card>
+              <Card>
+                <div className="text-sm text-gray-600 dark:text-gray-400">New courses</div>
+                <div className="text-2xl font-semibold text-gray-900 dark:text-white">{syncSummary.newCourses}</div>
+              </Card>
+              <Card>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Changed courses</div>
+                <div className="text-2xl font-semibold text-gray-900 dark:text-white">{syncSummary.changedCourses}</div>
+              </Card>
+            </div>
+          )}
+          {syncReview && (
+            <div className="space-y-4">
+              {syncReview.newCourses.length > 0 && (
+                <section>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">New courses</h3>
+                  <div className="mt-3 space-y-3">
+                    {syncReview.newCourses.map((course) => (
+                      <Card key={course.externalId}>
+                        <label className="flex cursor-pointer items-start gap-3">
+                          <input
+                            type="checkbox"
+                            className="mt-1"
+                            checked={selectedSyncExternalIds.includes(course.externalId)}
+                            onChange={() => toggleSyncExternalId(course.externalId)}
+                          />
+                          <div>
+                            <div className="font-semibold text-gray-900 dark:text-white">{course.name}</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">{course.externalId}</div>
+                          </div>
+                        </label>
+                      </Card>
+                    ))}
+                  </div>
+                </section>
+              )}
+              {syncReview.changedCourses.length > 0 && (
+                <section>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Changed courses</h3>
+                  <div className="mt-3 space-y-3">
+                    {syncReview.changedCourses.map((course) => (
+                      <Card key={course.externalId}>
+                        <label className="flex cursor-pointer items-start gap-3">
+                          <input
+                            type="checkbox"
+                            className="mt-1"
+                            checked={selectedSyncExternalIds.includes(course.externalId)}
+                            onChange={() => toggleSyncExternalId(course.externalId)}
+                          />
+                          <div className="min-w-0 flex-1">
+                            <div className="font-semibold text-gray-900 dark:text-white">{course.name}</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">{course.externalId}</div>
+                            <div className="mt-3 space-y-3">
+                              {course.diffs.map((diff) => (
+                                <div key={`${course.externalId}-${diff.field}`} className="rounded border border-slate-200 p-3 dark:border-slate-700">
+                                  <div className="font-medium text-gray-900 dark:text-white">{diff.label}</div>
+                                  <div className="mt-2 grid grid-cols-1 gap-3 lg:grid-cols-2">
+                                    <div>
+                                      <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                                        Current
+                                      </div>
+                                      <pre className="mt-1 whitespace-pre-wrap rounded bg-slate-100 p-2 text-xs text-gray-800 dark:bg-slate-900 dark:text-gray-200">
+                                        {diff.current}
+                                      </pre>
+                                    </div>
+                                    <div>
+                                      <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                                        Incoming
+                                      </div>
+                                      <pre className="mt-1 whitespace-pre-wrap rounded bg-emerald-50 p-2 text-xs text-gray-800 dark:bg-emerald-950/30 dark:text-gray-200">
+                                        {diff.incoming}
+                                      </pre>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </label>
+                      </Card>
+                    ))}
+                  </div>
+                </section>
+              )}
+              {!hasReviewChanges && (
+                <Card>
+                  <p className="text-gray-700 dark:text-gray-300">All default courses already match the database.</p>
+                </Card>
+              )}
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button color="gray" onClick={() => setShowSyncModal(false)}>
+            Close
+          </Button>
+          <Button onClick={handleApplySync} disabled={applySyncing || syncSelectionsCount === 0}>
+            {applySyncing ? "Applying…" : `Apply selected (${syncSelectionsCount || defaultSelectedExternalIds.length || 0})`}
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Layout>
   )
 }
