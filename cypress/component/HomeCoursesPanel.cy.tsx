@@ -88,15 +88,19 @@ describe("<HomeCoursesPanel />", () => {
       body: { courses },
     }).as("getCourses")
 
-    cy.intercept("GET", "**/api/course/1/progress", {
+    cy.intercept("GET", "**/api/course/progress", {
       statusCode: 200,
-      body: { total: 4, completed: 2, sections: [] },
-    }).as("getCourseProgress")
+      body: {
+        progressByCourseId: {
+          1: { total: 4, completed: 2, sections: [] },
+        },
+      },
+    }).as("getMyCourseProgress")
 
     cy.mount(<HomeCoursesPanel initialCourses={courses} />)
 
     cy.wait("@getCourses")
-    cy.wait("@getCourseProgress")
+    cy.wait("@getMyCourseProgress")
     cy.contains("Continue where you left off").should("be.visible")
     cy.contains("Start a new course").should("be.visible")
     cy.contains("h3", "Continue where you left off")

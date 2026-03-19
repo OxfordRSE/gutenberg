@@ -23,6 +23,7 @@ import { matchesCourseFilters } from "lib/courseFilters"
 import { partitionCoursesForListPage } from "lib/courseSections"
 import { hasBuildDatabase, runBuildPrismaQuery } from "lib/buildPrisma"
 import type { CourseSyncReview } from "lib/courseSync"
+import useMyCourseProgress from "lib/hooks/useMyCourseProgress"
 
 type CoursesProps = {
   material: Material
@@ -109,6 +110,8 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
 
   const filteredOtherCourses = otherCourses.filter(applyFilters)
   const filteredHiddenCourses = hiddenCourses.filter(applyFilters)
+  const shouldLoadProgress = !!userProfile && filteredMyCourses.length > 0
+  const { progressByCourseId } = useMyCourseProgress(shouldLoadProgress)
 
   const syncSelectionsCount = selectedSyncExternalIds.length
   const hasReviewChanges = (syncReview?.newCourses.length ?? 0) + (syncReview?.changedCourses.length ?? 0) > 0
@@ -122,7 +125,7 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
     setSyncError(null)
     setSyncing(true)
     try {
-      const res = await fetch(`${basePath}/api/course/sync-defaults`, {
+      const res = await fetch(`${basePath}/api/course/syncDefaults`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mode: "review" }),
@@ -152,7 +155,7 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
     setSyncError(null)
     setApplySyncing(true)
     try {
-      const res = await fetch(`${basePath}/api/course/sync-defaults`, {
+      const res = await fetch(`${basePath}/api/course/syncDefaults`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mode: "apply", externalIds: selectedSyncExternalIds }),
@@ -223,7 +226,7 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
               <div className="mb-8">
                 <Title text="My Courses" className="text-2xl font-bold" style={{ marginBottom: "0px" }} />
                 <div className="mt-3">
-                  <CourseGrid courses={filteredMyCourses} />
+                  <CourseGrid courses={filteredMyCourses} progressByCourseId={progressByCourseId} />
                 </div>
               </div>
             )}

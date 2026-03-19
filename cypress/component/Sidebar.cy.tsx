@@ -171,7 +171,7 @@ describe("<Sidebar />", () => {
       },
     }).as("getCourses")
 
-    cy.intercept("GET", "**/api/course/by-external/python_foundations", {
+    cy.intercept("GET", "**/api/course/byExternal/python_foundations", {
       statusCode: 200,
       body: {
         course: {

@@ -8,6 +8,7 @@ import { basePath } from "lib/basePath"
 import type { Course, Data as CoursesData } from "pages/api/course"
 import { sortCourses } from "lib/courseSort"
 import HomeCourseListItem from "./HomeCourseListItem"
+import useMyCourseProgress from "lib/hooks/useMyCourseProgress"
 
 type Props = {
   initialCourses: Course[]
@@ -45,6 +46,8 @@ const HomeCoursesPanel: React.FC<Props> = ({ initialCourses }) => {
 
   const displayedMyCourses = myCourses.slice(0, 2)
   const displayedOtherCourses = otherCourses.slice(0, Math.max(0, 4 - displayedMyCourses.length))
+  const shouldLoadProgress = !!session && displayedMyCourses.length > 0
+  const { progressByCourseId } = useMyCourseProgress(shouldLoadProgress)
 
   const heading = session ? "Courses" : "Self-paced Courses"
   const hasMyCourses = displayedMyCourses.length > 0
@@ -80,7 +83,7 @@ const HomeCoursesPanel: React.FC<Props> = ({ initialCourses }) => {
                 </div>
                 <ul role="list" className="space-y-3">
                   {displayedMyCourses.map((course) => (
-                    <HomeCourseListItem key={course.id} course={course} />
+                    <HomeCourseListItem key={course.id} course={course} progress={progressByCourseId[course.id]} />
                   ))}
                 </ul>
               </section>

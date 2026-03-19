@@ -9,18 +9,21 @@ import CourseProgressBar from "components/courses/CourseProgressBar"
 import { HiShieldCheck } from "react-icons/hi"
 import { formatTagLabel } from "lib/tagLabels"
 import CourseActiveActions from "./CourseActiveActions"
+import type { CourseProgress } from "lib/courseProgress"
 
 type Props = {
   course: Course
+  progress?: CourseProgress
 }
 
-const CourseCard: React.FC<Props> = ({ course }) => {
+const CourseCard: React.FC<Props> = ({ course, progress: providedProgress }) => {
   const languageCount = course.language?.length ?? 0
   const languageLabel = languageCount === 1 ? "Language:" : "Languages:"
   const enrolment = course.UserOnCourse?.[0]
   const isCompleted = enrolment?.status === "COMPLETED"
   const showProgress = enrolment?.status === "ENROLLED" || isCompleted
-  const { progress } = useCourseProgress(showProgress ? course.id : undefined)
+  const { progress: fetchedProgress } = useCourseProgress(providedProgress || !showProgress ? undefined : course.id)
+  const progress = providedProgress ?? fetchedProgress
   const total = progress?.total ?? 0
   const completed = progress?.completed ?? 0
   const hasProgress = showProgress && total > 0

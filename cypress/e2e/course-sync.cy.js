@@ -24,7 +24,7 @@ describe("course sync review flow", () => {
 
   const applyDefaults = (externalIds) => {
     loginAsAdmin()
-    cy.request("POST", "/api/course/sync-defaults", {
+    cy.request("POST", "/api/course/syncDefaults", {
       mode: "apply",
       externalIds,
     })

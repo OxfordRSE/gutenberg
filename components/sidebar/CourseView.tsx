@@ -5,7 +5,7 @@ import { Timeline } from "flowbite-react"
 import { Material } from "lib/material"
 import { basePath } from "lib/basePath"
 import CourseSectionLink from "components/courses/CourseSectionLink"
-import type { Data } from "pages/api/course/by-external/[externalId]"
+import type { Data } from "pages/api/course/byExternal/[externalId]"
 
 type Props = {
   material: Material
@@ -15,7 +15,7 @@ type Props = {
 const courseFetcher: Fetcher<Data, string> = (url) => fetch(url).then((r) => r.json())
 
 const CourseView: React.FC<Props> = ({ material, externalId }) => {
-  const { data } = useSWR(`${basePath}/api/course/by-external/${externalId}`, courseFetcher)
+  const { data } = useSWR(`${basePath}/api/course/byExternal/${externalId}`, courseFetcher)
   const course = data?.course
 
   if (!course) {

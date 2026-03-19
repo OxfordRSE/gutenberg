@@ -3,7 +3,7 @@ import useSWR, { Fetcher } from "swr"
 import { CourseStatus } from "@prisma/client"
 import { Card } from "flowbite-react"
 import { basePath } from "lib/basePath"
-import type { CourseBySection, Data } from "pages/api/course/by-section"
+import type { CourseBySection, Data } from "pages/api/course/bySection"
 import useLearningContext from "lib/hooks/useLearningContext"
 import CourseActiveActions from "./CourseActiveActions"
 
@@ -86,7 +86,7 @@ type Props = {
 
 const MaterialCourseHint: React.FC<Props> = ({ pageLabel }) => {
   const { data } = useSWR(
-    `${basePath}/api/course/by-section?section=${encodeURIComponent(pageLabel)}`,
+    `${basePath}/api/course/bySection?section=${encodeURIComponent(pageLabel)}`,
     courseHintFetcher
   )
   const courses = data?.courses ?? []

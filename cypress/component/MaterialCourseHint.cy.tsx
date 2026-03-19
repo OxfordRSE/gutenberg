@@ -1,7 +1,7 @@
 import React from "react"
 import { ContextProvider } from "lib/context/ContextProvider"
 import { MaterialCourseHintContent } from "components/courses/MaterialCourseHint"
-import type { CourseBySection } from "pages/api/course/by-section"
+import type { CourseBySection } from "pages/api/course/bySection"
 
 const mountHint = (courses: CourseBySection[], storageValue?: string) => {
   cy.mount(

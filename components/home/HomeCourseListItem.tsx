@@ -6,17 +6,20 @@ import { formatTagLabel } from "lib/tagLabels"
 import type { Course } from "pages/api/course"
 import useCourseProgress from "lib/hooks/useCourseProgress"
 import CourseProgressBar from "components/courses/CourseProgressBar"
+import type { CourseProgress } from "lib/courseProgress"
 
 type Props = {
   course: Course
+  progress?: CourseProgress
 }
 
-const HomeCourseListItem: React.FC<Props> = ({ course }) => {
+const HomeCourseListItem: React.FC<Props> = ({ course, progress: providedProgress }) => {
   const enrolment = course.UserOnCourse?.[0]
   const isCompleted = enrolment?.status === "COMPLETED"
   const isEnrolled = enrolment?.status === "ENROLLED"
   const showProgress = isCompleted || isEnrolled
-  const { progress } = useCourseProgress(showProgress ? course.id : undefined)
+  const { progress: fetchedProgress } = useCourseProgress(providedProgress || !showProgress ? undefined : course.id)
+  const progress = providedProgress ?? fetchedProgress
   const total = progress?.total ?? 0
   const completed = progress?.completed ?? 0
   const percent = total > 0 ? Math.round((completed / total) * 100) : isCompleted ? 100 : 0
