@@ -2,19 +2,29 @@ import { useReducer, createContext, ReactNode, Dispatch } from "react"
 
 interface State {
   activeEventId: number | undefined
+  activeCourseId: number | undefined
 }
 
 const initialState: State = {
   activeEventId: undefined,
+  activeCourseId: undefined,
 }
 
-type Action = { type: "SET_ACTIVE_EVENT_ID"; activeEventId: number | undefined }
+type Action =
+  | { type: "SET_ACTIVE_EVENT_ID"; activeEventId: number | undefined }
+  | { type: "SET_ACTIVE_COURSE_ID"; activeCourseId: number | undefined }
 
 const reducer = (state: State, action: Action) => {
   switch (action.type) {
     case "SET_ACTIVE_EVENT_ID":
       return {
+        ...state,
         activeEventId: action.activeEventId,
+      }
+    case "SET_ACTIVE_COURSE_ID":
+      return {
+        ...state,
+        activeCourseId: action.activeCourseId,
       }
     default:
       return state
