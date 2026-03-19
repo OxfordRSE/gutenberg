@@ -9,6 +9,7 @@ import { Button } from "flowbite-react"
 import { useUserOnEvent } from "lib/hooks/useUserOnEvent"
 import useActiveEvent from "lib/hooks/useActiveEvents"
 import useEvent from "lib/hooks/useEvent"
+import useLearningContext from "lib/hooks/useLearningContext"
 
 type EventActionsProps = {
   event: Event
@@ -19,6 +20,7 @@ const userOnEventFetcher: Fetcher<UserOnEvent, string> = (url) => fetch(url).the
 
 const EventActions: React.FC<EventActionsProps> = ({ event, verbose }) => {
   const [activeEvent, setActiveEvent] = useActiveEvent()
+  const [learningContext, setLearningContext] = useLearningContext()
 
   const { data: session } = useSession()
   const [showEvent, setShowEvent] = React.useState<Event | null>(null)
@@ -26,6 +28,9 @@ const EventActions: React.FC<EventActionsProps> = ({ event, verbose }) => {
 
   const handleDeactivate = (event: Event) => () => {
     setActiveEvent(undefined)
+    if (learningContext?.type === "event" && learningContext.id === event.id) {
+      setLearningContext(undefined)
+    }
   }
   const handleEnrol = (event: Event) => () => {
     setShowEvent(event)
@@ -50,6 +55,7 @@ const EventActions: React.FC<EventActionsProps> = ({ event, verbose }) => {
   const handleActivate = (event: Event) => () => {
     if (eventData) {
       setActiveEvent(eventData)
+      setLearningContext({ type: "event", id: event.id })
     }
   }
 

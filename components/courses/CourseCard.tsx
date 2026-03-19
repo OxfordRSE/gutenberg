@@ -62,7 +62,7 @@ const CourseCard: React.FC<Props> = ({ course }) => {
             )
           })}
         <div className="ml-auto flex items-center gap-2">
-          <CourseActiveActions courseId={course.id} status={enrolment?.status ?? null} />
+          <CourseActiveActions courseExternalId={course.externalId} status={enrolment?.status ?? null} />
           <Link href={`/courses/${course.id}`}>
             <Button size="xs" color="info">
               View course

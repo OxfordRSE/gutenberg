@@ -6,7 +6,12 @@ import { ContextProvider } from "lib/context/ContextProvider"
 const mountAction = (status: CourseStatus | null, props?: Partial<React.ComponentProps<typeof CourseActiveActions>>) => {
   cy.mount(
     <ContextProvider>
-      <CourseActiveActions courseId={props?.courseId ?? 7} status={status} verbose={props?.verbose} size={props?.size} />
+      <CourseActiveActions
+        courseExternalId={props?.courseExternalId ?? "python_foundations"}
+        status={status}
+        verbose={props?.verbose}
+        size={props?.size}
+      />
     </ContextProvider>
   )
 }
@@ -25,13 +30,13 @@ describe("<CourseActiveActions />", () => {
     cy.contains("button", "Select").should("be.visible").click()
     cy.contains("button", "Unselect").should("be.visible")
     cy.window().then((win) => {
-      expect(win.localStorage.getItem("activeCourse")).to.eq("7")
+      expect(win.localStorage.getItem("activeEvent")).to.eq("course:python_foundations")
     })
 
     cy.contains("button", "Unselect").click()
     cy.contains("button", "Select").should("be.visible")
     cy.window().then((win) => {
-      expect(win.localStorage.getItem("activeCourse")).to.be.null
+      expect(win.localStorage.getItem("activeEvent")).to.be.null
     })
   })
 
@@ -46,7 +51,7 @@ describe("<CourseActiveActions />", () => {
     mountAction(null)
     cy.contains("button", "Select").should("not.exist")
 
-    mountAction(CourseStatus.DROPPED, { courseId: 8 })
+    mountAction(CourseStatus.DROPPED, { courseExternalId: "dropped_course" })
     cy.contains("button", "Select").should("not.exist")
   })
 })

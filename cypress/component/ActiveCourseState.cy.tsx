@@ -4,17 +4,17 @@ import useActiveCourse from "lib/hooks/useActiveCourse"
 import useActiveEvent from "lib/hooks/useActiveEvents"
 
 const ActiveStateProbe = () => {
-  const [activeCourseId, setActiveCourseId] = useActiveCourse()
+  const [activeCourseExternalId, setActiveCourseExternalId] = useActiveCourse()
   const [activeEvent, setActiveEvent] = useActiveEvent()
 
   return (
     <div>
-      <div data-cy="active-course">{activeCourseId ?? "none"}</div>
+      <div data-cy="active-course">{activeCourseExternalId ?? "none"}</div>
       <div data-cy="active-event">{activeEvent?.id ?? "none"}</div>
-      <button type="button" data-cy="set-course-7" onClick={() => setActiveCourseId(7)}>
-        Set course 7
+      <button type="button" data-cy="set-course-python" onClick={() => setActiveCourseExternalId("python_foundations")}>
+        Set course python
       </button>
-      <button type="button" data-cy="clear-course" onClick={() => setActiveCourseId(undefined)}>
+      <button type="button" data-cy="clear-course" onClick={() => setActiveCourseExternalId(undefined)}>
         Clear course
       </button>
       <button type="button" data-cy="set-event-3" onClick={() => setActiveEvent({ id: 3 } as any)}>
@@ -35,9 +35,9 @@ describe("active course state", () => {
     })
   })
 
-  it("hydrates active course id from localStorage", () => {
+  it("hydrates active course from explicit localStorage context", () => {
     cy.window().then((win) => {
-      win.localStorage.setItem("activeCourse", "12")
+      win.localStorage.setItem("activeEvent", "course:python_foundations")
     })
 
     cy.mount(
@@ -46,10 +46,10 @@ describe("active course state", () => {
       </ContextProvider>
     )
 
-    cy.get('[data-cy="active-course"]').should("have.text", "12")
+    cy.get('[data-cy="active-course"]').should("have.text", "python_foundations")
   })
 
-  it("persists active course id changes to localStorage", () => {
+  it("persists active course changes to the unified localStorage key", () => {
     cy.mount(
       <ContextProvider>
         <ActiveStateProbe />
@@ -57,20 +57,20 @@ describe("active course state", () => {
     )
 
     cy.get('[data-cy="active-course"]').should("have.text", "none")
-    cy.get('[data-cy="set-course-7"]').click()
-    cy.get('[data-cy="active-course"]').should("have.text", "7")
+    cy.get('[data-cy="set-course-python"]').click()
+    cy.get('[data-cy="active-course"]').should("have.text", "python_foundations")
     cy.window().then((win) => {
-      expect(win.localStorage.getItem("activeCourse")).to.eq("7")
+      expect(win.localStorage.getItem("activeEvent")).to.eq("course:python_foundations")
     })
 
     cy.get('[data-cy="clear-course"]').click()
     cy.get('[data-cy="active-course"]').should("have.text", "none")
     cy.window().then((win) => {
-      expect(win.localStorage.getItem("activeCourse")).to.be.null
+      expect(win.localStorage.getItem("activeEvent")).to.be.null
     })
   })
 
-  it("keeps active event state intact when active course changes", () => {
+  it("switches the unified context from event to course", () => {
     cy.intercept("GET", "**/api/event/3", {
       statusCode: 200,
       body: {
@@ -99,19 +99,17 @@ describe("active course state", () => {
 
     cy.get('[data-cy="set-event-3"]').click()
     cy.wait("@getEvent")
-    cy.get('[data-cy="set-course-7"]').click()
-    cy.get('[data-cy="active-event"]').should("have.text", "3")
-    cy.get('[data-cy="active-course"]').should("have.text", "7")
+    cy.get('[data-cy="set-course-python"]').click()
+    cy.get('[data-cy="active-event"]').should("have.text", "none")
+    cy.get('[data-cy="active-course"]').should("have.text", "python_foundations")
     cy.window().then((win) => {
-      expect(win.localStorage.getItem("activeEvent")).to.eq("3")
-      expect(win.localStorage.getItem("activeCourse")).to.eq("7")
+      expect(win.localStorage.getItem("activeEvent")).to.eq("course:python_foundations")
     })
 
     cy.get('[data-cy="clear-course"]').click()
-    cy.get('[data-cy="active-event"]').should("have.text", "3")
+    cy.get('[data-cy="active-event"]').should("have.text", "none")
     cy.window().then((win) => {
-      expect(win.localStorage.getItem("activeEvent")).to.eq("3")
-      expect(win.localStorage.getItem("activeCourse")).to.be.null
+      expect(win.localStorage.getItem("activeEvent")).to.be.null
     })
   })
 })

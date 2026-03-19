@@ -199,7 +199,12 @@ const CoursePreview = ({
         />
         {isLoggedIn && (
           <div className="mt-3">
-            <CourseActiveActions courseId={course.id} status={userOnCourse?.status ?? null} verbose size="sm" />
+            <CourseActiveActions
+              courseExternalId={course.externalId}
+              status={userOnCourse?.status ?? null}
+              verbose
+              size="sm"
+            />
           </div>
         )}
         <div className="mt-2">
