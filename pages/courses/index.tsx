@@ -55,9 +55,11 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
   const [syncing, setSyncing] = useState(false)
   const [showSyncModal, setShowSyncModal] = useState(false)
   const [syncReview, setSyncReview] = useState<CourseSyncReview | null>(null)
-  const [syncSummary, setSyncSummary] = useState<{ unchanged: number; newCourses: number; changedCourses: number } | null>(
-    null
-  )
+  const [syncSummary, setSyncSummary] = useState<{
+    unchanged: number
+    newCourses: number
+    changedCourses: number
+  } | null>(null)
   const [selectedSyncExternalIds, setSelectedSyncExternalIds] = useState<string[]>([])
   const [applySyncing, setApplySyncing] = useState(false)
   const [search, setSearch] = useState("")
@@ -354,8 +356,14 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
           <Button color="gray" onClick={() => setShowSyncModal(false)}>
             Close
           </Button>
-          <Button data-cy="sync-apply-selected" onClick={handleApplySync} disabled={applySyncing || syncSelectionsCount === 0}>
-            {applySyncing ? "Applying…" : `Apply selected (${syncSelectionsCount || defaultSelectedExternalIds.length || 0})`}
+          <Button
+            data-cy="sync-apply-selected"
+            onClick={handleApplySync}
+            disabled={applySyncing || syncSelectionsCount === 0}
+          >
+            {applySyncing
+              ? "Applying…"
+              : `Apply selected (${syncSelectionsCount || defaultSelectedExternalIds.length || 0})`}
           </Button>
         </Modal.Footer>
       </Modal>

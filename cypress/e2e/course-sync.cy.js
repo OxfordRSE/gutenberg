@@ -76,14 +76,18 @@ describe("course sync review flow", () => {
     })
     cy.get(`[data-cy="sync-checkbox-${targetCourses[0].externalId}"]`).should("not.be.checked")
     cy.get(`[data-cy="sync-checkbox-${targetCourses[1].externalId}"]`).should("not.be.checked")
-    cy.get(`[data-cy="sync-diff-${targetCourses[0].externalId}-summary"]`).scrollIntoView().within(() => {
-      cy.contains(targetCourses[0].editedSummary).should("be.visible")
-      cy.contains(targetCourses[0].defaultSummary).should("be.visible")
-    })
-    cy.get(`[data-cy="sync-diff-${targetCourses[1].externalId}-summary"]`).scrollIntoView().within(() => {
-      cy.contains(targetCourses[1].editedSummary).should("be.visible")
-      cy.contains(targetCourses[1].defaultSummary).should("be.visible")
-    })
+    cy.get(`[data-cy="sync-diff-${targetCourses[0].externalId}-summary"]`)
+      .scrollIntoView()
+      .within(() => {
+        cy.contains(targetCourses[0].editedSummary).should("be.visible")
+        cy.contains(targetCourses[0].defaultSummary).should("be.visible")
+      })
+    cy.get(`[data-cy="sync-diff-${targetCourses[1].externalId}-summary"]`)
+      .scrollIntoView()
+      .within(() => {
+        cy.contains(targetCourses[1].editedSummary).should("be.visible")
+        cy.contains(targetCourses[1].defaultSummary).should("be.visible")
+      })
 
     cy.get(`[data-cy="sync-checkbox-${targetCourses[0].externalId}"]`).scrollIntoView().check()
     cy.get('[data-cy="sync-apply-selected"]').click()

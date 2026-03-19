@@ -26,6 +26,17 @@ describe("course enrolment flow", () => {
     cy.request("DELETE", `/api/course/${courseId}`)
   }
 
+  const clearAuthState = () => {
+    cy.clearCookies()
+    cy.clearCookie("next-auth.session-token")
+    cy.clearCookie("__Secure-next-auth.session-token")
+    cy.clearCookie("next-auth.callback-url")
+    cy.clearCookie("__Secure-next-auth.callback-url")
+    cy.clearCookie("next-auth.csrf-token")
+    cy.clearCookie("__Host-next-auth.csrf-token")
+    cy.clearLocalStorage()
+  }
+
   it("enrols and unenrols from the detail page and updates course list sections", () => {
     const suffix = Date.now()
 
@@ -94,8 +105,8 @@ describe("course enrolment flow", () => {
     createDisposableCourse(suffix).then((course) => {
       const courseId = course.id
 
-      cy.clearCookies()
-      cy.clearLocalStorage()
+      clearAuthState()
+      cy.request("/api/auth/session").its("body.user").should("not.exist")
       cy.visit(`/courses/${courseId}`)
       cy.contains("button", "Enrol").should("not.exist")
 
@@ -103,6 +114,9 @@ describe("course enrolment flow", () => {
         method: "POST",
         url: `/api/course/${courseId}/enrol`,
         failOnStatusCode: false,
+        headers: {
+          cookie: "",
+        },
       }).then((response) => {
         expect(response.status).to.eq(401)
         expect(response.body.error).to.eq("Unauthorized")

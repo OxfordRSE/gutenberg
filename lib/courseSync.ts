@@ -77,7 +77,8 @@ const formatGroupedItems = (
   return groups
     .map((group) => {
       const summary = group.summary ? ` — ${group.summary}` : ""
-      const items = group.items.length > 0 ? group.items.map((item) => `${item.order}. ${item.section}`).join("; ") : "—"
+      const items =
+        group.items.length > 0 ? group.items.map((item) => `${item.order}. ${item.section}`).join("; ") : "—"
       return `${group.order}. ${group.name || "Untitled"}${summary}\n${items}`
     })
     .join("\n\n")
@@ -148,10 +149,7 @@ export const diffNormalizedCourses = (
     .filter((entry): entry is CourseSyncDiff => entry !== null)
 }
 
-export const reviewCourseDefaults = (
-  defaults: CourseJsonInput[],
-  courses: DbCourseShape[]
-): CourseSyncReview => {
+export const reviewCourseDefaults = (defaults: CourseJsonInput[], courses: DbCourseShape[]): CourseSyncReview => {
   const coursesByExternalId = new Map(
     courses.filter((course) => course.externalId).map((course) => [course.externalId as string, course])
   )
