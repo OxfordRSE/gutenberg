@@ -34,13 +34,18 @@ export async function encode(token: JWTPayload, secret: string): Promise<string>
 
 // taken from https://github.com/yeungalan0/site-monorepo/blob/main/my_site/cypress/support/commands.ts
 Cypress.Commands.add("login", (userObj: JWTPayload) => {
-  const session = {
-    user: userObj,
-  }
-  //cy.intercept("/api/auth/session", session).as("session");
-
   // Generate and set a valid cookie from the fixture that next-auth can decrypt
-  cy.wrap(null)
+  return cy
+    .wrap(null)
+    .then(() => {
+      cy.clearCookie("next-auth.session-token")
+      cy.clearCookie("__Secure-next-auth.session-token")
+      cy.clearCookie("next-auth.callback-url")
+      cy.clearCookie("__Secure-next-auth.callback-url")
+      cy.clearCookie("next-auth.csrf-token")
+      cy.clearCookie("__Host-next-auth.csrf-token")
+      cy.clearLocalStorage()
+    })
     .then(() => {
       return encode(userObj, Cypress.env("NEXTAUTH_SECRET"))
     })
