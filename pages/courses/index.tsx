@@ -246,18 +246,18 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
       </div>
       <Modal show={showSyncModal} onClose={() => setShowSyncModal(false)} size="4xl">
         <Modal.Header>Review course sync</Modal.Header>
-        <Modal.Body>
+        <Modal.Body data-cy="sync-review-modal">
           {syncSummary && (
             <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <Card>
+              <Card data-cy="sync-summary-unchanged">
                 <div className="text-sm text-gray-600 dark:text-gray-400">Unchanged</div>
                 <div className="text-2xl font-semibold text-gray-900 dark:text-white">{syncSummary.unchanged}</div>
               </Card>
-              <Card>
+              <Card data-cy="sync-summary-new">
                 <div className="text-sm text-gray-600 dark:text-gray-400">New courses</div>
                 <div className="text-2xl font-semibold text-gray-900 dark:text-white">{syncSummary.newCourses}</div>
               </Card>
-              <Card>
+              <Card data-cy="sync-summary-changed">
                 <div className="text-sm text-gray-600 dark:text-gray-400">Changed courses</div>
                 <div className="text-2xl font-semibold text-gray-900 dark:text-white">{syncSummary.changedCourses}</div>
               </Card>
@@ -266,15 +266,16 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
           {syncReview && (
             <div className="space-y-4">
               {syncReview.newCourses.length > 0 && (
-                <section>
+                <section data-cy="sync-section-new">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">New courses</h3>
                   <div className="mt-3 space-y-3">
                     {syncReview.newCourses.map((course) => (
-                      <Card key={course.externalId}>
+                      <Card key={course.externalId} data-cy={`sync-course-${course.externalId}`}>
                         <label className="flex cursor-pointer items-start gap-3">
                           <input
                             type="checkbox"
                             className="mt-1"
+                            data-cy={`sync-checkbox-${course.externalId}`}
                             checked={selectedSyncExternalIds.includes(course.externalId)}
                             onChange={() => toggleSyncExternalId(course.externalId)}
                           />
@@ -289,15 +290,16 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
                 </section>
               )}
               {syncReview.changedCourses.length > 0 && (
-                <section>
+                <section data-cy="sync-section-changed">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Changed courses</h3>
                   <div className="mt-3 space-y-3">
                     {syncReview.changedCourses.map((course) => (
-                      <Card key={course.externalId}>
+                      <Card key={course.externalId} data-cy={`sync-course-${course.externalId}`}>
                         <label className="flex cursor-pointer items-start gap-3">
                           <input
                             type="checkbox"
                             className="mt-1"
+                            data-cy={`sync-checkbox-${course.externalId}`}
                             checked={selectedSyncExternalIds.includes(course.externalId)}
                             onChange={() => toggleSyncExternalId(course.externalId)}
                           />
@@ -306,7 +308,11 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
                             <div className="text-sm text-gray-600 dark:text-gray-400">{course.externalId}</div>
                             <div className="mt-3 space-y-3">
                               {course.diffs.map((diff) => (
-                                <div key={`${course.externalId}-${diff.field}`} className="rounded border border-slate-200 p-3 dark:border-slate-700">
+                                <div
+                                  key={`${course.externalId}-${diff.field}`}
+                                  className="rounded border border-slate-200 p-3 dark:border-slate-700"
+                                  data-cy={`sync-diff-${course.externalId}-${diff.field}`}
+                                >
                                   <div className="font-medium text-gray-900 dark:text-white">{diff.label}</div>
                                   <div className="mt-2 grid grid-cols-1 gap-3 lg:grid-cols-2">
                                     <div>
@@ -348,7 +354,7 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
           <Button color="gray" onClick={() => setShowSyncModal(false)}>
             Close
           </Button>
-          <Button onClick={handleApplySync} disabled={applySyncing || syncSelectionsCount === 0}>
+          <Button data-cy="sync-apply-selected" onClick={handleApplySync} disabled={applySyncing || syncSelectionsCount === 0}>
             {applySyncing ? "Applying…" : `Apply selected (${syncSelectionsCount || defaultSelectedExternalIds.length || 0})`}
           </Button>
         </Modal.Footer>

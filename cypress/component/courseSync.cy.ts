@@ -81,4 +81,104 @@ describe("course sync review", () => {
       "outcomes",
     ])
   })
+
+  it("reports only the single field that changed", () => {
+    const review = reviewCourseDefaults(
+      [
+        {
+          externalId: "single_field_course",
+          name: "Single Field Course",
+          summary: "Incoming summary",
+          level: "beginner",
+          hidden: false,
+          language: ["python"],
+          tags: ["basics"],
+          prerequisites: [],
+          outcomes: [],
+        },
+      ],
+      [
+        {
+          externalId: "single_field_course",
+          name: "Single Field Course",
+          summary: "Old summary",
+          level: "beginner",
+          hidden: false,
+          language: ["python"],
+          prerequisites: [],
+          tags: ["basics"],
+          outcomes: [],
+          CourseGroup: [],
+          CourseItem: [],
+        },
+      ]
+    )
+
+    expect(review.changedCourses).to.have.length(1)
+    expect(review.changedCourses[0].diffs.map((diff) => diff.field)).to.deep.eq(["summary"])
+    expect(review.changedCourses[0].diffs[0].current).to.eq("Old summary")
+    expect(review.changedCourses[0].diffs[0].incoming).to.eq("Incoming summary")
+  })
+
+  it("reports all and only the fields that changed across scalar and structured content", () => {
+    const review = reviewCourseDefaults(
+      [
+        {
+          externalId: "multi_field_course",
+          name: "Multi Field Course",
+          summary: "Incoming summary",
+          level: "advanced",
+          hidden: true,
+          language: ["cpp"],
+          tags: ["functional"],
+          prerequisites: ["Intro to C++"],
+          outcomes: ["Updated outcome"],
+          groups: [
+            {
+              name: "Updated Group",
+              summary: "Updated group summary",
+              order: 2,
+              items: [{ section: "HPCu.software_architecture_and_design.procedural.functions_cpp", order: 1 }],
+            },
+          ],
+          items: [{ section: "HPCu.software_architecture_and_design.procedural.containers_cpp", order: 1 }],
+        },
+      ],
+      [
+        {
+          externalId: "multi_field_course",
+          name: "Multi Field Course",
+          summary: "Old summary",
+          level: "beginner",
+          hidden: false,
+          language: ["python"],
+          prerequisites: [],
+          tags: ["basics"],
+          outcomes: ["Old outcome"],
+          CourseGroup: [
+            {
+              name: "Old Group",
+              summary: "Old group summary",
+              order: 1,
+              CourseItem: [{ section: "HPCu.technology_and_tooling.bash_shell.bash", order: 1 }],
+            },
+          ],
+          CourseItem: [],
+        },
+      ]
+    )
+
+    expect(review.changedCourses).to.have.length(1)
+    expect(review.changedCourses[0].diffs.map((diff) => diff.field)).to.deep.eq([
+      "summary",
+      "level",
+      "hidden",
+      "language",
+      "prerequisites",
+      "tags",
+      "outcomes",
+      "groups",
+      "items",
+    ])
+  })
 })
