@@ -70,9 +70,7 @@ describe("EventSwitcher @ /", () => {
   // Helpers
   const openSwitcher = () => {
     cy.get('section[aria-label="Active learning context selection"]').within(() => {
-      cy.get('[data-cy="toggle-learning-context"]')
-        .should("be.visible")
-        .click()
+      cy.get('[data-cy="toggle-learning-context"]').should("be.visible").click()
     })
     cy.get('[data-cy="learning-context-options"]').should("be.visible")
   }

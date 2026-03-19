@@ -33,7 +33,13 @@ const activeEvent = {
 const mountSidebar = () => {
   cy.mount(
     <ContextProvider>
-      <Sidebar material={material} activeEvent={activeEvent} sidebarOpen={true} handleClose={cy.stub()} pageInfo={pageInfo} />
+      <Sidebar
+        material={material}
+        activeEvent={activeEvent}
+        sidebarOpen={true}
+        handleClose={cy.stub()}
+        pageInfo={pageInfo}
+      />
     </ContextProvider>
   )
 }
@@ -56,7 +62,10 @@ describe("<Sidebar />", () => {
   })
 
   it("renders the course sidebar when the learning context is a course", () => {
-    cy.stub(learningContextHook, "default").returns([{ type: "course", externalId: "python_foundations" }, cy.stub()] as any)
+    cy.stub(learningContextHook, "default").returns([
+      { type: "course", externalId: "python_foundations" },
+      cy.stub(),
+    ] as any)
 
     mountSidebar()
 

@@ -63,7 +63,9 @@ const MySidebar: React.FC<SidebarProps> = ({ material, activeEvent, sidebarOpen,
             ) : learningContext?.type === "course" ? (
               <CourseView material={material} externalId={learningContext.externalId} />
             ) : (
-              <div className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">No active learning context</div>
+              <div className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                No active learning context
+              </div>
             )}
 
             <button

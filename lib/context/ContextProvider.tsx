@@ -1,10 +1,7 @@
 import { useReducer, createContext, ReactNode, Dispatch } from "react"
 
 interface State {
-  learningContext:
-    | { type: "event"; id: number }
-    | { type: "course"; externalId: string }
-    | undefined
+  learningContext: { type: "event"; id: number } | { type: "course"; externalId: string } | undefined
 }
 
 const initialState: State = {

@@ -44,10 +44,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   const courses = await prisma.course.findMany({
     where: {
       hidden: false,
-      OR: [
-        { CourseItem: { some: { section } } },
-        { CourseGroup: { some: { CourseItem: { some: { section } } } } },
-      ],
+      OR: [{ CourseItem: { some: { section } } }, { CourseGroup: { some: { CourseItem: { some: { section } } } } }],
     },
     select: {
       id: true,

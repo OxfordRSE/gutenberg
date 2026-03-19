@@ -154,7 +154,11 @@ const EventSwitcher: React.FC<EventSwitcherProps> = ({ pageInfo }) => {
             aria-label={`Change ${buttonTargetLabel.toLowerCase()}`}
             className="flex items-center gap-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
           >
-            {learningContext ? <HiSwitchHorizontal className="w-5 h-5 flex-shrink-0" /> : <GoArrowRight className="w-5 h-5 flex-shrink-0" />}
+            {learningContext ? (
+              <HiSwitchHorizontal className="w-5 h-5 flex-shrink-0" />
+            ) : (
+              <GoArrowRight className="w-5 h-5 flex-shrink-0" />
+            )}
             <span className="flex flex-col text-xs text-left leading-tight">
               <span>Change</span>
               <span>{buttonTargetLabel}</span>

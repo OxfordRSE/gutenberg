@@ -20,9 +20,13 @@ export const MaterialCourseHintContent: React.FC<ContentProps> = ({ courses }) =
 
   if (courses.length === 0) return null
 
-  const enrolledCourses = courses.filter((course) => enrolledStatuses.has(course.UserOnCourse?.[0]?.status as CourseStatus))
+  const enrolledCourses = courses.filter((course) =>
+    enrolledStatuses.has(course.UserOnCourse?.[0]?.status as CourseStatus)
+  )
   const activeCourse =
-    learningContext?.type === "course" ? courses.find((course) => course.externalId === learningContext.externalId) : undefined
+    learningContext?.type === "course"
+      ? courses.find((course) => course.externalId === learningContext.externalId)
+      : undefined
 
   const primaryCourse = activeCourse ?? enrolledCourses[0] ?? courses[0]
   const primaryStatus = primaryCourse.UserOnCourse?.[0]?.status ?? null
@@ -49,7 +53,10 @@ export const MaterialCourseHintContent: React.FC<ContentProps> = ({ courses }) =
           <p className="text-sm text-cyan-900 dark:text-cyan-100">{message}</p>
           {(showPrimaryActions || courses.length === 1) && (
             <div className="mt-2 flex flex-wrap items-center gap-2">
-              <Link href={`/courses/${primaryCourse.id}`} className="font-semibold text-cyan-900 hover:underline dark:text-cyan-100">
+              <Link
+                href={`/courses/${primaryCourse.id}`}
+                className="font-semibold text-cyan-900 hover:underline dark:text-cyan-100"
+              >
                 {primaryCourse.name}
               </Link>
               {showPrimaryActions && (
@@ -78,7 +85,10 @@ type Props = {
 }
 
 const MaterialCourseHint: React.FC<Props> = ({ pageLabel }) => {
-  const { data } = useSWR(`${basePath}/api/course/by-section?section=${encodeURIComponent(pageLabel)}`, courseHintFetcher)
+  const { data } = useSWR(
+    `${basePath}/api/course/by-section?section=${encodeURIComponent(pageLabel)}`,
+    courseHintFetcher
+  )
   const courses = data?.courses ?? []
 
   if (!courses.length) return null

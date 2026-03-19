@@ -3,7 +3,10 @@ import { CourseStatus } from "@prisma/client"
 import CourseActiveActions from "components/courses/CourseActiveActions"
 import { ContextProvider } from "lib/context/ContextProvider"
 
-const mountAction = (status: CourseStatus | null, props?: Partial<React.ComponentProps<typeof CourseActiveActions>>) => {
+const mountAction = (
+  status: CourseStatus | null,
+  props?: Partial<React.ComponentProps<typeof CourseActiveActions>>
+) => {
   cy.mount(
     <ContextProvider>
       <CourseActiveActions
