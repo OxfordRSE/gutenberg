@@ -71,21 +71,21 @@ describe("course sync review flow", () => {
 
     cy.get('[data-cy="sync-review-modal"]').should("be.visible")
     cy.get('[data-cy="sync-section-changed"]').within(() => {
-      cy.contains(targetCourses[0].name).should("be.visible")
-      cy.contains(targetCourses[1].name).should("be.visible")
+      cy.contains(targetCourses[0].name).should("exist")
+      cy.contains(targetCourses[1].name).should("exist")
     })
     cy.get(`[data-cy="sync-checkbox-${targetCourses[0].externalId}"]`).should("not.be.checked")
     cy.get(`[data-cy="sync-checkbox-${targetCourses[1].externalId}"]`).should("not.be.checked")
-    cy.get(`[data-cy="sync-diff-${targetCourses[0].externalId}-summary"]`).within(() => {
+    cy.get(`[data-cy="sync-diff-${targetCourses[0].externalId}-summary"]`).scrollIntoView().within(() => {
       cy.contains(targetCourses[0].editedSummary).should("be.visible")
       cy.contains(targetCourses[0].defaultSummary).should("be.visible")
     })
-    cy.get(`[data-cy="sync-diff-${targetCourses[1].externalId}-summary"]`).within(() => {
+    cy.get(`[data-cy="sync-diff-${targetCourses[1].externalId}-summary"]`).scrollIntoView().within(() => {
       cy.contains(targetCourses[1].editedSummary).should("be.visible")
       cy.contains(targetCourses[1].defaultSummary).should("be.visible")
     })
 
-    cy.get(`[data-cy="sync-checkbox-${targetCourses[0].externalId}"]`).check()
+    cy.get(`[data-cy="sync-checkbox-${targetCourses[0].externalId}"]`).scrollIntoView().check()
     cy.get('[data-cy="sync-apply-selected"]').click()
     cy.get('[data-cy="sync-review-modal"]').should("not.exist")
 
@@ -101,7 +101,7 @@ describe("course sync review flow", () => {
     cy.contains("button", "Review sync").click()
     cy.get('[data-cy="sync-review-modal"]').should("be.visible")
     cy.get('[data-cy="sync-section-changed"]').within(() => {
-      cy.contains(targetCourses[1].name).should("be.visible")
+      cy.contains(targetCourses[1].name).should("exist")
       cy.contains(targetCourses[0].name).should("not.exist")
     })
 

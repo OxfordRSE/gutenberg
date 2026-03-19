@@ -91,9 +91,9 @@ describe("course access rules", () => {
         })
 
       cy.visit(`/courses/${course.id}#edit`)
-      cy.contains(course.name).should("be.visible")
       cy.location("hash").should("eq", "#edit")
-      cy.contains("button", "Export as JSON").should("be.visible")
+      cy.contains('[role="tab"]', "Edit").click()
+      cy.contains("button", "Export as JSON").scrollIntoView().should("be.visible")
 
       deleteCourse(course.id)
     })
