@@ -19,6 +19,7 @@ import { PageTemplate, loadPageTemplate } from "lib/pageTemplate"
 import LearningOutcomes from "components/content/LearningOutcomes"
 import revalidateTimeout from "lib/revalidateTimeout"
 import { runBuildPrismaQuery } from "lib/buildPrisma"
+import MaterialCourseHint from "components/courses/MaterialCourseHint"
 
 type SectionComponentProps = {
   theme: MaterialTheme
@@ -42,6 +43,7 @@ const SectionComponent: NextPage<SectionComponentProps> = ({
   excludes,
 }: SectionComponentProps) => {
   const pageTitle = pageInfo?.title ? `${section.name}: ${pageInfo.title}` : section.name
+  const pageLabel = `${theme.repo}.${theme.id}.${course.id}.${section.id}`
   return (
     <Layout
       theme={theme}
@@ -54,6 +56,7 @@ const SectionComponent: NextPage<SectionComponentProps> = ({
       excludes={excludes}
     >
       <Title text={section.name} />
+      <MaterialCourseHint pageLabel={pageLabel} />
       <LearningOutcomes learningOutcomes={section.learningOutcomes} />
       <Content markdown={section.markdown} theme={theme} course={course} section={section} />
     </Layout>
