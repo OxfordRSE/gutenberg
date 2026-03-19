@@ -4,12 +4,53 @@ import { ContextProvider } from "lib/context/ContextProvider"
 import type { Material } from "lib/material"
 import type { EventFull } from "lib/types"
 import type { PageTemplate } from "lib/pageTemplate"
-import * as learningContextHook from "lib/hooks/useLearningContext"
-import * as eventSwitcher from "components/sidebar/EventSwitcher"
-import * as eventView from "components/sidebar/EventView"
-import * as courseView from "components/sidebar/CourseView"
 
-const material = { markdown: "", name: "test", type: "material", themes: [] } as Material
+const material = {
+  markdown: "",
+  name: "test",
+  type: "Material",
+  themes: [
+    {
+      repo: "HPCu",
+      id: "software_architecture_and_design",
+      name: "Software Architecture and Design",
+      markdown: "",
+      type: "Theme",
+      summary: "",
+      courses: [
+        {
+          id: "procedural",
+          name: "Procedural Programming",
+          theme: "software_architecture_and_design",
+          markdown: "",
+          type: "Course",
+          summary: "",
+          files: [],
+          sections: [
+            {
+              id: "containers_cpp",
+              file: "containers_cpp.md",
+              course: "procedural",
+              theme: "software_architecture_and_design",
+              name: "Containers and Arrays in C++",
+              markdown: "",
+              index: 0,
+              type: "Section",
+              dependsOn: [],
+              problems: [],
+              tags: [],
+              learningOutcomes: [],
+              attribution: [],
+            },
+          ],
+          dependsOn: [],
+          learningOutcomes: [],
+          attribution: [],
+        },
+      ],
+    },
+  ],
+} as Material
 const pageInfo = {
   title: "Training",
   logo: { src: "/logo.svg", alt: "Training logo" },
@@ -46,40 +87,165 @@ const mountSidebar = () => {
 
 describe("<Sidebar />", () => {
   beforeEach(() => {
-    cy.stub(eventSwitcher, "default").callsFake(() => <div data-cy="event-switcher-stub" />)
-    cy.stub(eventView, "default").callsFake(() => <div data-cy="event-view-stub" />)
-    cy.stub(courseView, "default").callsFake(() => <div data-cy="course-view-stub" />)
+    cy.window().then((win) => {
+      win.localStorage.clear()
+      win.sessionStorage.clear()
+    })
   })
 
   it("renders the event sidebar when the learning context is an event", () => {
-    cy.stub(learningContextHook, "default").returns([{ type: "event", id: 1 }, cy.stub()] as any)
+    cy.window().then((win) => {
+      win.localStorage.setItem("activeEvent", "event:1")
+    })
+
+    cy.intercept("GET", "**/api/event/1", {
+      statusCode: 200,
+      body: { event: activeEvent },
+    }).as("getEvent")
+
+    cy.intercept("GET", "**/api/eventFull", {
+      statusCode: 200,
+      body: { events: [activeEvent] },
+    }).as("getEventFull")
+
+    cy.intercept("GET", "**/api/course", {
+      statusCode: 200,
+      body: { courses: [] },
+    }).as("getCourses")
+
+    cy.intercept("GET", "**/api/event/1/problems", {
+      statusCode: 200,
+      body: { problems: [] },
+    }).as("getEventProblems")
 
     mountSidebar()
 
-    cy.get('[data-cy="event-switcher-stub"]').should("be.visible")
-    cy.get('[data-cy="event-view-stub"]').should("be.visible")
-    cy.get('[data-cy="course-view-stub"]').should("not.exist")
+    cy.wait("@getEvent")
+    cy.wait("@getEventFull")
+    cy.wait("@getCourses")
+    cy.wait("@getEventProblems")
+    cy.contains("Active Event").should("be.visible")
+    cy.contains("Event summary").should("be.visible")
+    cy.get('[data-cy="toggle-learning-context"]').should("be.visible")
+    cy.get('[data-cy="course-sidebar-view"]').should("not.exist")
   })
 
   it("renders the course sidebar when the learning context is a course", () => {
-    cy.stub(learningContextHook, "default").returns([
-      { type: "course", externalId: "python_foundations" },
-      cy.stub(),
-    ] as any)
+    cy.window().then((win) => {
+      win.localStorage.setItem("activeEvent", "course:python_foundations")
+    })
+
+    cy.intercept("GET", "**/api/eventFull", {
+      statusCode: 200,
+      body: { events: [activeEvent] },
+    }).as("getEventFull")
+
+    cy.intercept("GET", "**/api/course", {
+      statusCode: 200,
+      body: {
+        courses: [
+          {
+            id: 7,
+            externalId: "python_foundations",
+            name: "Python Foundations",
+            summary: "Learn Python",
+            level: "beginner",
+            hidden: false,
+            language: ["python"],
+            prerequisites: [],
+            tags: ["basics"],
+            outcomes: [],
+            createdAt: new Date("2026-01-01T00:00:00.000Z"),
+            updatedAt: new Date("2026-01-01T00:00:00.000Z"),
+            UserOnCourse: [
+              {
+                courseId: 7,
+                userEmail: "test@test.com",
+                status: "ENROLLED",
+                startedAt: new Date("2026-01-02T00:00:00.000Z"),
+                completedAt: null,
+              },
+            ],
+          },
+        ],
+      },
+    }).as("getCourses")
+
+    cy.intercept("GET", "**/api/course/by-external/python_foundations", {
+      statusCode: 200,
+      body: {
+        course: {
+          id: 7,
+          externalId: "python_foundations",
+          name: "Python Foundations",
+          summary: "Learn Python",
+          level: "beginner",
+          hidden: false,
+          language: ["python"],
+          prerequisites: [],
+          tags: ["basics"],
+          outcomes: [],
+          createdAt: new Date("2026-01-01T00:00:00.000Z"),
+          updatedAt: new Date("2026-01-01T00:00:00.000Z"),
+          CourseGroup: [
+            {
+              id: 1,
+              name: "Foundations",
+              summary: "Core syntax",
+              order: 1,
+              courseId: 7,
+              CourseItem: [
+                {
+                  id: 11,
+                  order: 1,
+                  section: "HPCu.software_architecture_and_design.procedural.containers_cpp",
+                  courseId: 7,
+                  groupId: 1,
+                },
+              ],
+            },
+          ],
+          CourseItem: [],
+          UserOnCourse: [
+            {
+              courseId: 7,
+              userEmail: "test@test.com",
+              status: "ENROLLED",
+              startedAt: new Date("2026-01-02T00:00:00.000Z"),
+              completedAt: null,
+            },
+          ],
+        },
+      },
+    }).as("getCourseByExternal")
 
     mountSidebar()
 
-    cy.get('[data-cy="course-view-stub"]').should("be.visible")
-    cy.get('[data-cy="event-view-stub"]').should("not.exist")
+    cy.wait("@getEventFull")
+    cy.wait("@getCourses")
+    cy.wait("@getCourseByExternal")
+    cy.get('[data-cy="course-sidebar-view"]').should("be.visible")
+    cy.contains("Python Foundations").should("be.visible")
+    cy.contains("Foundations").should("be.visible")
+    cy.contains("Containers and Arrays in C++").should("be.visible")
   })
 
   it("renders an empty message when there is no learning context", () => {
-    cy.stub(learningContextHook, "default").returns([undefined, cy.stub()] as any)
+    cy.intercept("GET", "**/api/eventFull", {
+      statusCode: 200,
+      body: { events: [] },
+    }).as("getEmptyEventFull")
+
+    cy.intercept("GET", "**/api/course", {
+      statusCode: 200,
+      body: { courses: [] },
+    }).as("getEmptyCourses")
 
     mountSidebar()
 
+    cy.wait("@getEmptyEventFull")
+    cy.wait("@getEmptyCourses")
     cy.contains("No active learning context").should("be.visible")
-    cy.get('[data-cy="event-view-stub"]').should("not.exist")
-    cy.get('[data-cy="course-view-stub"]').should("not.exist")
+    cy.get('[data-cy="course-sidebar-view"]').should("not.exist")
   })
 })

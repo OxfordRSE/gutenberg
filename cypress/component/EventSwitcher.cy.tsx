@@ -28,6 +28,26 @@ describe("<EventSwitcher />", () => {
   })
 
   it("selects event and course learning contexts from one switcher", () => {
+    cy.intercept("GET", "**/api/event/1", {
+      statusCode: 200,
+      body: {
+        event: {
+          id: 1,
+          name: "Event One",
+          summary: "",
+          enrol: "",
+          content: "",
+          enrolKey: "eventKey",
+          instructorKey: "instructorKey",
+          start: new Date("2026-01-01T10:00:00.000Z"),
+          end: new Date("2026-01-01T12:00:00.000Z"),
+          hidden: false,
+          EventGroup: [],
+          UserOnEvent: [],
+        },
+      },
+    }).as("getEventOne")
+
     cy.intercept("GET", "**/api/eventFull", {
       statusCode: 200,
       body: {
@@ -89,6 +109,7 @@ describe("<EventSwitcher />", () => {
 
     cy.get('[data-cy="toggle-learning-context"]').click()
     cy.get('[data-cy="context-event-option-1"]').click()
+    cy.wait("@getEventOne")
     cy.get('[data-cy="learning-context-summary"]').should("contain.text", "Event One")
     cy.window().then((win) => {
       expect(win.localStorage.getItem("activeEvent")).to.eq("event:1")
