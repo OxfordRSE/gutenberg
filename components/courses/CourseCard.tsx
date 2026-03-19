@@ -8,6 +8,7 @@ import useCourseProgress from "lib/hooks/useCourseProgress"
 import CourseProgressBar from "components/courses/CourseProgressBar"
 import { HiShieldCheck } from "react-icons/hi"
 import { formatTagLabel } from "lib/tagLabels"
+import CourseActiveActions from "./CourseActiveActions"
 
 type Props = {
   course: Course
@@ -60,7 +61,8 @@ const CourseCard: React.FC<Props> = ({ course }) => {
               </Badge>
             )
           })}
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-2">
+          <CourseActiveActions courseId={course.id} status={enrolment?.status ?? null} />
           <Link href={`/courses/${course.id}`}>
             <Button size="xs" color="info">
               View course

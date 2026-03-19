@@ -32,6 +32,7 @@ import { HiShieldCheck } from "react-icons/hi"
 import { formatTagLabel } from "lib/tagLabels"
 import { courseToJson } from "lib/courseJson"
 import CodeBlock from "components/content/CodeBlock"
+import CourseActiveActions from "components/courses/CourseActiveActions"
 import {
   DndContext,
   closestCenter,
@@ -196,6 +197,11 @@ const CoursePreview = ({
           progressCompleted={progressCompleted}
           completedAt={userOnCourse?.completedAt ?? null}
         />
+        {isLoggedIn && (
+          <div className="mt-3">
+            <CourseActiveActions courseId={course.id} status={userOnCourse?.status ?? null} verbose size="sm" />
+          </div>
+        )}
         <div className="mt-2">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
@@ -420,8 +426,10 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
   const exportJson = useMemo(() => JSON.stringify(courseToJson(courseData), null, 2), [courseData])
   const { control, handleSubmit, reset, register } = useForm<CourseForm>({ defaultValues })
   const { progress } = useCourseProgress(userProfile ? courseData.id : undefined)
-  const sectionProgress = progress && "sections" in progress ? progress.sections : []
-  const sectionMap = useMemo(() => new Map(sectionProgress.map((entry) => [entry.section, entry])), [sectionProgress])
+  const sectionMap = useMemo(() => {
+    const sectionProgress = progress && "sections" in progress ? progress.sections : []
+    return new Map(sectionProgress.map((entry) => [entry.section, entry]))
+  }, [progress])
   const totalProgress = progress && "total" in progress ? progress.total : 0
   const completedProgress = progress && "completed" in progress ? progress.completed : 0
 
