@@ -4,6 +4,7 @@ import React, { SyntheticEvent, useRef } from "react"
 import { Tooltip } from "@mui/material"
 import useWindowSize from "lib/hooks/useWindowSize"
 import Link from "next/link"
+import { formatTagLabel } from "lib/tagLabels"
 
 export type SectionLink = {
   theme?: String
@@ -35,6 +36,9 @@ export const LinkedSection = (sectionLink: SectionLink) => {
   if (sectionLink.linkedType === "event") {
     iconColor = "#14b8a6"
     borderColor = "border-teal-700 dark:border-teal-500"
+  } else if (sectionLink.linkedType === "course") {
+    iconColor = "#f59e0b"
+    borderColor = "border-amber-600 dark:border-amber-400"
   } else if (sectionLink.linkedType === "internal") {
     iconColor = "#a855f7"
     borderColor = "border-purple-700 dark:border-purple-500"
@@ -59,7 +63,7 @@ export const LinkedSection = (sectionLink: SectionLink) => {
         <Tooltip title={tooltipTitle} enterDelay={400}>
           <Link
             href={`${sectionLink.url}`}
-            className={`pointer-events-auto text-gray-600 hover:text-gray-500 opacity-50`}
+            className="pointer-events-auto rounded-md bg-white/90 text-slate-700 shadow-sm ring-1 ring-slate-200/90 transition-all hover:-translate-y-0.5 hover:bg-white hover:text-slate-900 hover:shadow-lg hover:ring-2 hover:ring-slate-300/90 dark:bg-slate-900/85 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-900 dark:hover:ring-slate-500"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
@@ -72,7 +76,7 @@ export const LinkedSection = (sectionLink: SectionLink) => {
         <Tooltip title={tooltipTitle} enterDelay={400}>
           <Link
             href={`${sectionLink.url}`}
-            className={`pointer-events-auto text-gray-600 hover:text-gray-500 opacity-50`}
+            className="pointer-events-auto rounded-md bg-white/90 text-slate-700 shadow-sm ring-1 ring-slate-200/90 transition-all hover:-translate-y-0.5 hover:bg-white hover:text-slate-900 hover:shadow-lg hover:ring-2 hover:ring-slate-300/90 dark:bg-slate-900/85 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-900 dark:hover:ring-slate-500"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
@@ -95,9 +99,12 @@ export const LinkedSection = (sectionLink: SectionLink) => {
 
   return (
     <Tooltip title={tooltipTitle}>
-      <Link href={`${sectionLink.url}`} className={`pointer-events-auto text-gray-600 hover:text-gray-500 opacity-50`}>
+      <Link
+        href={`${sectionLink.url}`}
+        className="pointer-events-auto rounded-md bg-white/90 text-slate-700 shadow-sm ring-1 ring-slate-200/90 transition-all hover:-translate-y-0.5 hover:bg-white hover:text-slate-900 hover:shadow-lg hover:ring-2 hover:ring-slate-300/90 dark:bg-slate-900/85 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-900 dark:hover:ring-slate-500"
+      >
         <div
-          className={`group rounded-md border-2 hover:border-4 hover:-mt-1 ${calcAnchorHeight()} ${borderColor}  w-[150px] text-sm`}
+          className={`group rounded-md border-2 bg-white/95 px-2 py-1 shadow-sm transition-shadow hover:shadow-md dark:bg-slate-900/90 ${calcAnchorHeight()} ${borderColor} w-[150px] text-sm`}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
@@ -105,17 +112,29 @@ export const LinkedSection = (sectionLink: SectionLink) => {
             {navIcon}
             <div>
               {sectionLink.theme && (
-                <p className="text-slate-500 dark:text-slate-200 text-xs font-medium">
+                <p className="text-slate-600 dark:text-slate-200 text-xs font-medium">
                   {trimString(sectionLink.theme, 35)}
                 </p>
               )}
               {sectionLink.course && (
-                <p className="text-slate-600 dark:text-slate-300 text-xs"> {trimString(sectionLink.course, 21)} </p>
+                <p className="text-slate-700 dark:text-slate-300 text-xs"> {trimString(sectionLink.course, 21)} </p>
               )}
               {sectionLink.section && (
-                <p className="text-slate-700 dark:text-slate-400">
-                  {trimString(sectionLink.section, 16)} {sectionLink.tags && `[${sectionLink.tags.join(", ")}]`}
-                </p>
+                <div className="space-y-1">
+                  <p className="text-slate-900 dark:text-slate-300">{trimString(sectionLink.section, 16)}</p>
+                  {sectionLink.tags && sectionLink.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1" data-cy="linked-section-tags">
+                      {sectionLink.tags.map((tag) => (
+                        <span
+                          key={String(tag)}
+                          className="rounded-full border border-slate-300/80 bg-white/70 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-slate-700 dark:border-slate-600 dark:bg-slate-800/70 dark:text-slate-200"
+                        >
+                          {formatTagLabel(String(tag))}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               )}
             </div>
           </Stack>

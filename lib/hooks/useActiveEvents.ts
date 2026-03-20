@@ -1,40 +1,15 @@
-import { useState, useEffect, useContext, useCallback } from "react"
-import { EventFull, Event } from "lib/types"
+import { EventFull } from "lib/types"
 import useEvent from "./useEvent"
-import { AppContext } from "lib/context/ContextProvider"
+import useLearningContext from "./useLearningContext"
 
 function useActiveEvent(): [EventFull | undefined, (event: EventFull | undefined) => void] {
-  const { state, dispatch } = useContext(AppContext)
-
-  const activeEventId = state.activeEventId
+  const [learningContext, setLearningContext] = useLearningContext()
+  const activeEventId = learningContext?.type === "event" ? learningContext.id : undefined
 
   const { event: activeEvent } = useEvent(activeEventId || undefined)
 
-  const setActiveEventId = useCallback(
-    (id: number | undefined) => {
-      dispatch({ type: "SET_ACTIVE_EVENT_ID", activeEventId: id })
-    },
-    [dispatch]
-  )
-
-  useEffect(() => {
-    const store = localStorage.getItem("activeEvent")
-    if (store) {
-      setActiveEventId(parseInt(store))
-    }
-  }, [setActiveEventId])
-
-  useEffect(() => {
-    const store = activeEventId?.toString()
-    if (store) {
-      localStorage.setItem("activeEvent", store)
-    } else {
-      localStorage.removeItem("activeEvent")
-    }
-  }, [activeEventId])
-
   const setActiveEvent = (event: EventFull | undefined) => {
-    return event ? setActiveEventId(event.id) : setActiveEventId(undefined)
+    return event ? setLearningContext({ type: "event", id: event.id }) : setLearningContext(undefined)
   }
 
   return [activeEvent, setActiveEvent]

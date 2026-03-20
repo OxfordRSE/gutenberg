@@ -1,0 +1,245 @@
+{
+  "courses": [
+    {
+      "externalId": "course_intro_cpp",
+      "name": "Intro to C++ (Self-paced)",
+      "summary": "Self-paced version of the C++ introduction",
+      "level": "beginner",
+      "hidden": false,
+      "language": ["cpp"],
+      "prerequisites": [],
+      "tags": ["basics"],
+      "outcomes": ["Basic syntax", "Functions", "Containers"],
+      "groups": [
+        {
+          "name": "Foundations",
+          "summary": "Core language fundamentals",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.technology_and_tooling.bash_shell.bash" },
+            { "order": 2, "section": "HPCu.technology_and_tooling.ide.cpp" }
+          ]
+        },
+        {
+          "name": "Procedural C++",
+          "summary": "Procedural programming concepts",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.software_architecture_and_design.procedural.types_cpp" },
+            { "order": 2, "section": "HPCu.software_architecture_and_design.procedural.functions_cpp" }
+          ]
+        }
+      ],
+      "items": [{ "order": 1, "section": "HPCu.software_architecture_and_design.procedural.containers_cpp" }]
+    },
+    {
+      "externalId": "course_functional_cpp_bitesize",
+      "name": "Functional C++ (Bitesize)",
+      "summary": "Short path into functional programming",
+      "level": "intermediate",
+      "hidden": false,
+      "language": ["cpp"],
+      "prerequisites": ["Intro to C++ (Self-paced)"],
+      "tags": ["functional"],
+      "outcomes": ["Understanding recursion", "Higher-order functions"],
+      "groups": [],
+      "items": [
+        { "order": 1, "section": "HPCu.software_architecture_and_design.functional.recursion_cpp" },
+        { "order": 2, "section": "HPCu.software_architecture_and_design.functional.higher_order_functions_cpp" }
+      ]
+    },
+    {
+      "externalId": "course_python_foundations",
+      "name": "Python Foundations",
+      "summary": "A practical intro to Python for research and automation.",
+      "level": "beginner",
+      "hidden": false,
+      "language": ["python"],
+      "prerequisites": [],
+      "tags": ["basics"],
+      "outcomes": ["Core syntax", "Functions", "Working with files"],
+      "groups": [
+        {
+          "name": "Getting Started",
+          "summary": "First steps with Python",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.technology_and_tooling.command_line.navigation" },
+            { "order": 2, "section": "HPCu.software_architecture_and_design.procedural.types_cpp" }
+          ]
+        }
+      ],
+      "items": [
+        { "order": 1, "section": "HPCu.software_architecture_and_design.procedural.functions_cpp" }
+      ]
+    },
+    {
+      "externalId": "course_hpc_basics",
+      "name": "HPC Basics",
+      "summary": "Core concepts for running jobs on HPC systems.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": [],
+      "prerequisites": ["Python Foundations"],
+      "tags": ["hpc", "batch", "linux"],
+      "outcomes": ["Shell fluency", "Batch systems", "Resource awareness"],
+      "groups": [
+        {
+          "name": "Shell & Environment",
+          "summary": "Command line and environment basics",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.technology_and_tooling.bash_shell.bash" },
+            { "order": 2, "section": "HPCu.technology_and_tooling.ide.cpp" }
+          ]
+        }
+      ],
+      "items": [
+        { "order": 1, "section": "HPCu.software_architecture_and_design.procedural.containers_cpp" }
+      ]
+    },
+    {
+      "externalId": "course_system_design",
+      "name": "System Design Primer",
+      "summary": "Conceptual overview of designing maintainable systems.",
+      "level": "advanced",
+      "hidden": false,
+      "language": [],
+      "prerequisites": ["Intro to C++ (Self-paced)"],
+      "tags": ["architecture", "design"],
+      "outcomes": ["Reason about trade-offs", "Structure modules", "Manage complexity"],
+      "groups": [],
+      "items": [
+        { "order": 1, "section": "HPCu.software_architecture_and_design.procedural.types_cpp" },
+        { "order": 2, "section": "HPCu.software_architecture_and_design.functional.state_and_side_effects_cpp" }
+      ]
+    },
+    {
+      "externalId": "course_python_architecture_design",
+      "name": "Python Software Architecture & Design",
+      "summary": "Designing maintainable Python systems with clear structure and boundaries.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": ["python"],
+      "prerequisites": ["Python Foundations"],
+      "tags": ["architecture", "design"],
+      "outcomes": ["Structure Python projects", "Design modules", "Manage dependencies"],
+      "groups": [
+        {
+          "name": "Design Concepts",
+          "summary": "Core software design ideas applied to Python",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.software_architecture_and_design.procedural.types_cpp" },
+            { "order": 2, "section": "HPCu.software_architecture_and_design.procedural.functions_cpp" }
+          ]
+        },
+        {
+          "name": "Functional Thinking",
+          "summary": "Functional patterns for clearer logic",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.software_architecture_and_design.functional.state_and_side_effects_cpp" }
+          ]
+        }
+      ],
+      "items": [
+        { "order": 1, "section": "HPCu.software_architecture_and_design.procedural.containers_cpp" }
+      ]
+    },
+    {
+      "externalId": "course_intro_python",
+      "name": "Intro to Python",
+      "summary": "Learn the Python fundamentals and get comfortable with core data types and control flow.",
+      "level": "beginner",
+      "hidden": false,
+      "language": ["python"],
+      "prerequisites": [],
+      "tags": ["basics"],
+      "outcomes": ["Run Python", "Use variables", "Write functions", "Work with data"],
+      "groups": [
+        {
+          "name": "Foundations",
+          "summary": "Core language basics",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.introductory_courses.intro_to_python.01_running_python" },
+            { "order": 2, "section": "HPCu.introductory_courses.intro_to_python.02_variables_and_types" }
+          ]
+        }
+      ],
+      "items": [
+        { "order": 1, "section": "HPCu.introductory_courses.intro_to_python.07_pandas_dataframes" },
+        { "order": 2, "section": "HPCu.introductory_courses.intro_to_python.13_writing_functions" }
+      ]
+    },
+    {
+      "externalId": "course_snakemake_workflows",
+      "name": "Snakemake Workflows",
+      "summary": "Build reproducible workflows with Snakemake.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": ["python"],
+      "prerequisites": ["Intro to Python"],
+      "tags": ["workflow", "snakemake"],
+      "outcomes": ["Define workflows", "Manage dependencies", "Scale runs"],
+      "groups": [
+        {
+          "name": "Getting Started",
+          "summary": "Set up and run your first workflow",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.technology_and_tooling.snakemake.setup" },
+            { "order": 2, "section": "HPCu.technology_and_tooling.snakemake.basics" }
+          ]
+        }
+      ],
+      "items": [
+        { "order": 1, "section": "HPCu.technology_and_tooling.snakemake.advanced" },
+        { "order": 2, "section": "HPCu.technology_and_tooling.snakemake.additional_features" }
+      ]
+    },
+    {
+      "externalId": "course_python_packaging",
+      "name": "Python Packaging & Dependency Management",
+      "summary": "Structure Python projects, manage dependencies, and publish packages.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": ["python"],
+      "prerequisites": ["Intro to Python"],
+      "tags": ["packaging", "dependencies"],
+      "outcomes": ["Create packages", "Use virtual envs", "Publish to PyPI"],
+      "groups": [
+        {
+          "name": "Packaging Basics",
+          "summary": "Structure and distribute Python projects",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.technology_and_tooling.packaging_dependency_management.pack_python_01intro" },
+            { "order": 2, "section": "HPCu.technology_and_tooling.packaging_dependency_management.pack_python_02making" }
+          ]
+        }
+      ],
+      "items": [
+        { "order": 1, "section": "HPCu.technology_and_tooling.packaging_dependency_management.pack_python_03reusing" },
+        { "order": 2, "section": "HPCu.technology_and_tooling.packaging_dependency_management.virtual_environments_python" }
+      ]
+    },
+    {
+      "externalId": "course_python_best_practices",
+      "name": "Python Best Practices",
+      "summary": "Style, linting, and maintainability for Python projects.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": ["python"],
+      "prerequisites": ["Intro to Python"],
+      "tags": ["linting", "style"],
+      "outcomes": ["Apply style guides", "Use linters", "Spot common issues"],
+      "groups": [],
+      "items": [
+        { "order": 1, "section": "HPCu.technology_and_tooling.best_practices.code_style_python" },
+        { "order": 2, "section": "HPCu.technology_and_tooling.best_practices.linters_python" }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import { Dropdown, Tooltip } from "flowbite-react"
 import Avatar from "@mui/material/Avatar"
-import { Course, Material, Section, Theme, Excludes } from "lib/material"
+import { MaterialCourse, Material, MaterialSection, MaterialTheme, Excludes } from "lib/material"
 import { EventFull } from "lib/types"
 import { signIn, signOut, useSession } from "next-auth/react"
 import Link from "next/link"
@@ -20,12 +20,13 @@ import Box from "@mui/material/Box"
 import useWindowSize from "lib/hooks/useWindowSize"
 import type { PageTemplate } from "lib/pageTemplate"
 import { HomeBreadcrumb } from "components/navbar/HomeBreadcrumb"
+import { BreadcrumbItem } from "lib/breadcrumbs"
 
 interface Props {
   material: Material
-  theme?: Theme
-  course?: Course
-  section?: Section
+  theme?: MaterialTheme
+  course?: MaterialCourse
+  section?: MaterialSection
   activeEvent: EventFull | undefined
   setShowAttribution: (show: boolean) => void
   setSidebarOpen: (open: boolean) => void
@@ -34,6 +35,7 @@ interface Props {
   repoUrl?: string
   excludes?: Excludes
   pageInfo?: PageTemplate
+  breadcrumbs?: BreadcrumbItem[]
 }
 
 const Navbar: React.FC<Props> = ({
@@ -49,6 +51,7 @@ const Navbar: React.FC<Props> = ({
   repoUrl,
   excludes,
   pageInfo,
+  breadcrumbs,
 }) => {
   const [showSearch, setShowSearch] = useAtom(searchQueryState)
   const [showNavDiagram, setShowNavDiagram] = useState(false)
@@ -128,6 +131,11 @@ const Navbar: React.FC<Props> = ({
     setDrawerOpen(open)
   }
 
+  const truncateLabel = (label: string, maxLength = 24) => {
+    if (label.length <= maxLength) return label
+    return `${label.slice(0, maxLength).trimEnd()}...`
+  }
+
   return (
     // remove width !
     <div className="z-10 flex p-2 mx-2 mt-2 mb-4 text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 justify-between">
@@ -152,6 +160,44 @@ const Navbar: React.FC<Props> = ({
             <li className="inline-flex items-center">
               <HomeBreadcrumb pageInfo={pageInfo} />
             </li>
+            {(breadcrumbs ?? []).map((crumb, index) => {
+              const label = truncateLabel(crumb.label, crumb.maxLength ?? 24)
+              const isLast = index === (breadcrumbs?.length ?? 0) - 1
+              return (
+                <li key={`${crumb.label}-${index}`} aria-current={isLast ? "page" : undefined}>
+                  <div className="flex items-center">
+                    <svg
+                      className="w-6 h-6 text-gray-400"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clipRule="evenodd"
+                      ></path>
+                    </svg>
+                    {crumb.href && !isLast ? (
+                      <Link
+                        href={crumb.href}
+                        className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white"
+                        title={crumb.label}
+                      >
+                        {label}
+                      </Link>
+                    ) : (
+                      <span
+                        className="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400"
+                        title={crumb.label}
+                      >
+                        {label}
+                      </span>
+                    )}
+                  </div>
+                </li>
+              )
+            })}
             {theme && (
               <li ref={ref1} onMouseEnter={() => handleIsHovered("theme")} onMouseLeave={handleIsNotHovered}>
                 <div className="flex items-center">
@@ -312,6 +358,32 @@ const Navbar: React.FC<Props> = ({
                 <li className="inline-flex items-center">
                   <HomeBreadcrumb pageInfo={pageInfo} />
                 </li>
+                {(breadcrumbs ?? []).map((crumb, index) => {
+                  const label = truncateLabel(crumb.label, crumb.maxLength ?? 24)
+                  const isLast = index === (breadcrumbs?.length ?? 0) - 1
+                  return (
+                    <li key={`${crumb.label}-${index}`}>
+                      <div className="flex items-center">
+                        {crumb.href && !isLast ? (
+                          <Link
+                            href={crumb.href}
+                            className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                            title={crumb.label}
+                          >
+                            <span className={burgerDrawerMaterialMargin}>{label}</span>
+                          </Link>
+                        ) : (
+                          <span
+                            className={`${burgerDrawerMaterialMargin} text-sm font-medium text-gray-700 dark:text-gray-400`}
+                            title={crumb.label}
+                          >
+                            {label}
+                          </span>
+                        )}
+                      </div>
+                    </li>
+                  )
+                })}
                 {theme && (
                   <ol>
                     <li>

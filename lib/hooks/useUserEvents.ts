@@ -20,10 +20,12 @@ const useUserEvents = (
   userEmail?: string | null | undefined
 ): { data: any; error: string; isLoading: boolean; mutate: KeyedMutator<Data> } => {
   const { data, isLoading, error, mutate } = useSWR(
-    {
-      url: `/api/user/userEvents/`,
-      data: { userEmail },
-    },
+    userEmail
+      ? {
+          url: `/api/user/userEvents/`,
+          data: { userEmail },
+        }
+      : null,
     // @ts-ignore
     userEventFetcher
   )

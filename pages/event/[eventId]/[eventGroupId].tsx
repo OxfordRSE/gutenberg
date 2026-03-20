@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react"
 import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
-import prisma from "lib/prisma"
 import { getMaterial, Material, removeMarkdown, eventItemSplit } from "lib/material"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
@@ -43,6 +42,7 @@ import { CSS } from "@dnd-kit/utilities"
 import { loadPageTemplate, PageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
 import { HiArrowNarrowRight, HiArrowNarrowLeft } from "react-icons/hi"
+import { runBuildPrismaQuery } from "lib/buildPrisma"
 
 type EventGroupProps = {
   material: Material
@@ -370,7 +370,9 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const events = await prisma.event.findMany({ include: { EventGroup: true } }).catch((e) => [])
+  const events = await runBuildPrismaQuery("pages/event/[eventId]/[eventGroupId].tsx paths", [], (prisma) =>
+    prisma.event.findMany({ include: { EventGroup: true } })
+  )
   let paths = []
   for (let event of events) {
     for (let eventGroup of event.EventGroup) {
@@ -387,7 +389,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const pageInfo = loadPageTemplate()
   const eventId = parseInt(context?.params?.eventId as string)
   const eventGroupId = parseInt(context?.params?.eventGroupId as string)
-  const event = await prisma.event.findUnique({ where: { id: eventId } })
+  const event = await runBuildPrismaQuery("pages/event/[eventId]/[eventGroupId].tsx event", null, (prisma) =>
+    prisma.event.findUnique({ where: { id: eventId } })
+  )
   if (!event) {
     return { notFound: true }
   }
@@ -397,20 +401,22 @@ export const getStaticProps: GetStaticProps = async (context) => {
   removeMarkdown(material, undefined)
 
   // Fetch all groups for this event to enable prev/next navigation
-  const eventGroups = await prisma.eventGroup.findMany({
-    where: { eventId },
-    orderBy: { start: "asc" },
-    select: {
-      id: true,
-      name: true,
-      start: true,
-      end: true,
-      location: true,
-      summary: true,
-      content: true,
-      eventId: true,
-    },
-  })
+  const eventGroups = await runBuildPrismaQuery("pages/event/[eventId]/[eventGroupId].tsx eventGroups", [], (prisma) =>
+    prisma.eventGroup.findMany({
+      where: { eventId },
+      orderBy: { start: "asc" },
+      select: {
+        id: true,
+        name: true,
+        start: true,
+        end: true,
+        location: true,
+        summary: true,
+        content: true,
+        eventId: true,
+      },
+    })
+  )
 
   return {
     props: makeSerializable({ event, material, eventGroupId, eventGroups, pageInfo }),

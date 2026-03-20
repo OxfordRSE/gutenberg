@@ -1,4 +1,4 @@
-import { Course, Material, Section, Theme } from "lib/material"
+import { MaterialCourse, Material, MaterialSection, MaterialTheme } from "lib/material"
 import { EventFull } from "lib/types"
 import { NextPage } from "next"
 import React, { useEffect, useState } from "react"
@@ -19,9 +19,9 @@ import type { PageTemplate } from "lib/pageTemplate"
 
 interface Props {
   material: Material
-  theme?: Theme
-  course?: Course
-  section?: Section
+  theme?: MaterialTheme
+  course?: MaterialCourse
+  section?: MaterialSection
   activeEvent: EventFull | undefined
   showAttribution: boolean
   setShowAttribution: (show: boolean) => void

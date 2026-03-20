@@ -5,22 +5,32 @@ template:
     alt: OxRSE logo
   description: Created by OxRSE team
   frontpage:
-    intro: This is the teaching website for the [Oxford Research Software
-      Engineering Group](https://www.rse.ox.ac.uk/ ). Please see our list of past and upcoming courses
-      on the left.
+    intro: This is Gutenberg, the teaching website for the [Oxford Research
+      Software Engineering Group](https://www.rse.ox.ac.uk/). You can join live
+      teaching through our [events](/events) page or work through
+      self-paced [courses](/courses) at your own pace.
 
 
-      The material for these courses is generated from a
-      set of [markdown materials](https://github.com/UNIVERSE-HPC/course-material) collated by
-      the [UNIVERSE-HPC project](https://universe-hpc.github.io),
-      a joint collaboration between RSE teams at Oxford, Southampton,
-      Imperial and Edinburgh, the Software Sustainability Institute and the
-      Edinburgh Parallel Computing Centre.
+      The material for these courses is generated from a set of [markdown
+      materials](https://github.com/UNIVERSE-HPC/course-material) collated by
+      the [UNIVERSE-HPC project](https://universe-hpc.github.io), a joint
+      collaboration between RSE teams at Oxford, Southampton, Imperial and
+      Edinburgh, the Software Sustainability Institute and the Edinburgh
+      Parallel Computing Centre.
 
 
-      These materials have been collated from a variety of sources published under different [CC-BY licenses](https://creativecommons.org/about/cclicenses/) . The
-      attributions for each course and section are given on the relevant
-      pages, alongside the exact license of the original work.
+      You can also browse the underlying [learning material](/material) directly. These
+      materials have been produced by the Oxford Research Software Engineering group or collated from a variety of sources published under
+      different [CC-BY licenses](https://creativecommons.org/about/cclicenses/).
+      The attributions for each course and section are given on the relevant
+      pages, alongside the license of the original work.
+
+
+      Gutenberg is open source. If you are interested in contributing,
+      collaborating, or exploring the codebase, see the
+      [GitHub project](https://github.com/OxfordRSE/gutenberg). If you want to
+      learn more about running your own instance of Gutenberg, see the
+      [documentation](https://blog.oxrse.uk/gutenberg).
   footer: University of Oxford, [Oxford Research Software Engineering](https://www.rse.ox.ac.uk/)
 material:
   HPCu:
