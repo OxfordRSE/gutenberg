@@ -4,6 +4,7 @@ import React, { SyntheticEvent, useRef } from "react"
 import { Tooltip } from "@mui/material"
 import useWindowSize from "lib/hooks/useWindowSize"
 import Link from "next/link"
+import { formatTagLabel } from "lib/tagLabels"
 
 export type SectionLink = {
   theme?: String
@@ -119,9 +120,21 @@ export const LinkedSection = (sectionLink: SectionLink) => {
                 <p className="text-slate-700 dark:text-slate-300 text-xs"> {trimString(sectionLink.course, 21)} </p>
               )}
               {sectionLink.section && (
-                <p className="text-slate-900 dark:text-slate-300">
-                  {trimString(sectionLink.section, 16)} {sectionLink.tags && `[${sectionLink.tags.join(", ")}]`}
-                </p>
+                <div className="space-y-1">
+                  <p className="text-slate-900 dark:text-slate-300">{trimString(sectionLink.section, 16)}</p>
+                  {sectionLink.tags && sectionLink.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1" data-cy="linked-section-tags">
+                      {sectionLink.tags.map((tag) => (
+                        <span
+                          key={String(tag)}
+                          className="rounded-full border border-slate-300/80 bg-white/70 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-slate-700 dark:border-slate-600 dark:bg-slate-800/70 dark:text-slate-200"
+                        >
+                          {formatTagLabel(String(tag))}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               )}
             </div>
           </Stack>
