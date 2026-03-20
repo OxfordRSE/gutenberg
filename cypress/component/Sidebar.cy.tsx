@@ -38,7 +38,7 @@ const material = {
               type: "Section",
               dependsOn: [],
               problems: [],
-              tags: [],
+              tags: ["cpp"],
               learningOutcomes: [],
               attribution: [],
             },
@@ -67,7 +67,25 @@ const activeEvent = {
   start: new Date("2026-01-01T10:00:00.000Z"),
   end: new Date("2026-01-01T12:00:00.000Z"),
   hidden: false,
-  EventGroup: [],
+  EventGroup: [
+    {
+      id: 10,
+      name: "Day 1",
+      summary: "Introductions",
+      location: "Room 1",
+      start: new Date("2026-01-01T10:00:00.000Z"),
+      end: new Date("2026-01-01T12:00:00.000Z"),
+      eventId: 1,
+      EventItem: [
+        {
+          id: 100,
+          order: 1,
+          section: "HPCu.software_architecture_and_design.procedural.containers_cpp",
+          eventGroupId: 10,
+        },
+      ],
+    },
+  ],
   UserOnEvent: [],
 } as unknown as EventFull
 
@@ -126,6 +144,10 @@ describe("<Sidebar />", () => {
     cy.wait("@getEventProblems")
     cy.contains("Active Event").should("be.visible")
     cy.contains("Event summary").should("be.visible")
+    cy.contains("Containers and Arrays in C++").should("be.visible")
+    cy.get('[data-cy="course-section-link-tags"]').within(() => {
+      cy.contains("C++").should("be.visible")
+    })
     cy.get('[data-cy="toggle-learning-context"]').should("be.visible")
     cy.get('[data-cy="course-sidebar-view"]').should("not.exist")
   })

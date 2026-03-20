@@ -34,23 +34,34 @@ const CourseSectionLink: React.FC<Props> = ({
   }
 
   const label = parts.length > 0 ? parts.join(" - ") : sectionRef
-  const tagSuffix = showTags && section?.tags?.length ? ` [${section.tags.map(formatTagLabel).join(", ")}]` : ""
+  const tagLabels = showTags && section?.tags?.length ? section.tags.map((tag) => formatTagLabel(String(tag))) : []
+  const content = (
+    <span className="inline-flex flex-wrap items-center gap-1">
+      <span>{label}</span>
+      {tagLabels.length > 0 && (
+        <span className="flex flex-wrap gap-1" data-cy="course-section-link-tags">
+          {tagLabels.map((tag) => (
+            <span
+              key={tag}
+              className="rounded-full border border-slate-300/80 bg-white/70 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-slate-700 dark:border-slate-600 dark:bg-slate-800/70 dark:text-slate-200"
+            >
+              {tag}
+            </span>
+          ))}
+        </span>
+      )}
+    </span>
+  )
 
   if (url) {
     return (
       <Link href={url} className={className ? `${className} hover:underline` : "hover:underline"}>
-        {label}
-        {tagSuffix}
+        {content}
       </Link>
     )
   }
 
-  return (
-    <span className={className}>
-      {label}
-      {tagSuffix}
-    </span>
-  )
+  return <span className={className}>{content}</span>
 }
 
 export default CourseSectionLink
