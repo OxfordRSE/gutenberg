@@ -31,24 +31,25 @@ export const MaterialCourseHintContent: React.FC<ContentProps> = ({ courses }) =
   const primaryCourse = activeCourse ?? enrolledCourses[0] ?? courses[0]
   const primaryStatus = primaryCourse.UserOnCourse?.[0]?.status ?? null
 
-  let message = "This section is part of a course."
+  let message = "This material is part of a course."
   if (activeCourse) {
-    message = "This section is part of your active course on:"
+    message = "This material is part of your active course on:"
   } else if (enrolledCourses.length === 1) {
-    message = "This section is part of your course on:"
+    message = "This material is part of your course on:"
   } else if (enrolledCourses.length > 1) {
-    message = `This section is part of ${enrolledCourses.length} of your courses.`
+    message = `This material is part of ${enrolledCourses.length} of your courses.`
   } else if (courses.length > 1) {
-    message = `This section is part of ${courses.length} courses.`
+    message = `This material is part of ${courses.length} courses.`
   } else {
-    message = "This section is part of the course:"
+    message = "This material is part of the course:"
   }
 
   const showPrimaryActions = !!primaryCourse && (activeCourse || enrolledCourses.length === 1)
+  const showBrowseCoursesLink = enrolledCourses.length > 1 || (enrolledCourses.length === 0 && courses.length > 1)
 
   return (
-    <Card className="mb-6 border border-cyan-200 bg-cyan-50/60 shadow-sm dark:border-cyan-900 dark:bg-cyan-950/20">
-      <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+    <Card className="mb-6 inline-block w-fit max-w-full border border-cyan-100 bg-cyan-50/70 shadow-sm dark:border-cyan-900/70 dark:bg-cyan-950/20">
+      <div className="flex flex-col gap-3">
         <div className="min-w-0">
           <p className="text-sm text-cyan-900 dark:text-cyan-100">{message}</p>
           {(showPrimaryActions || courses.length === 1) && (
@@ -70,8 +71,11 @@ export const MaterialCourseHintContent: React.FC<ContentProps> = ({ courses }) =
             </div>
           )}
         </div>
-        {courses.length > 1 && (
-          <Link href="/courses" className="text-sm font-medium text-cyan-800 hover:underline dark:text-cyan-200">
+        {showBrowseCoursesLink && (
+          <Link
+            href="/courses"
+            className="inline-flex w-fit text-sm font-medium text-cyan-800 hover:underline dark:text-cyan-200"
+          >
             Browse courses
           </Link>
         )}

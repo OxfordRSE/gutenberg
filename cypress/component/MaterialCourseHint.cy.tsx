@@ -50,7 +50,7 @@ describe("<MaterialCourseHintContent />", () => {
 
     mountHint(courses)
 
-    cy.contains("This section is part of your course on:").should("be.visible")
+    cy.contains("This material is part of your course on:").should("be.visible")
     cy.contains("Python Foundations").should("be.visible")
     cy.contains("button", "Select").should("be.visible")
   })
@@ -83,7 +83,7 @@ describe("<MaterialCourseHintContent />", () => {
       </ContextProvider>
     )
 
-    cy.contains("This section is part of your active course on:").should("be.visible")
+    cy.contains("This material is part of your active course on:").should("be.visible")
     cy.contains("button", "Unselect").should("be.visible")
   })
 
@@ -111,13 +111,44 @@ describe("<MaterialCourseHintContent />", () => {
 
     mountHint(courses)
 
-    cy.contains("This section is part of 3 courses.").should("be.visible")
+    cy.contains("This material is part of 3 courses.").should("be.visible")
     cy.contains("Browse courses").should("have.attr", "href", "/courses")
     cy.contains("button", "Select").should("not.exist")
   })
 
+  it("does not show browse courses when one enrolled course is the primary context", () => {
+    const courses: CourseBySection[] = [
+      {
+        id: 7,
+        externalId: "python_foundations",
+        name: "Python Foundations",
+        UserOnCourse: [
+          {
+            courseId: 7,
+            userEmail: "test@test.com",
+            status: "ENROLLED",
+            startedAt: baseDates.startedAt,
+            completedAt: null,
+          },
+        ],
+      },
+      {
+        id: 8,
+        externalId: "cpp_patterns",
+        name: "Modern C++ Patterns",
+        UserOnCourse: [],
+      },
+    ]
+
+    mountHint(courses)
+
+    cy.contains("This material is part of your course on:").should("be.visible")
+    cy.contains("Python Foundations").should("be.visible")
+    cy.contains("Browse courses").should("not.exist")
+  })
+
   it("renders nothing when there are no matching courses", () => {
     mountHint([])
-    cy.contains("This section is part of").should("not.exist")
+    cy.contains("This material is part of").should("not.exist")
   })
 })

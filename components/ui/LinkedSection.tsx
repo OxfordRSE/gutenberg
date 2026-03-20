@@ -59,7 +59,7 @@ export const LinkedSection = (sectionLink: SectionLink) => {
         <Tooltip title={tooltipTitle} enterDelay={400}>
           <Link
             href={`${sectionLink.url}`}
-            className={`pointer-events-auto text-gray-600 hover:text-gray-500 opacity-50`}
+            className="pointer-events-auto rounded-md bg-white/90 text-slate-700 shadow-sm ring-1 ring-slate-200/90 hover:bg-white hover:text-slate-900 dark:bg-slate-900/85 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-900"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
@@ -72,7 +72,7 @@ export const LinkedSection = (sectionLink: SectionLink) => {
         <Tooltip title={tooltipTitle} enterDelay={400}>
           <Link
             href={`${sectionLink.url}`}
-            className={`pointer-events-auto text-gray-600 hover:text-gray-500 opacity-50`}
+            className="pointer-events-auto rounded-md bg-white/90 text-slate-700 shadow-sm ring-1 ring-slate-200/90 hover:bg-white hover:text-slate-900 dark:bg-slate-900/85 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-900"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
@@ -95,9 +95,12 @@ export const LinkedSection = (sectionLink: SectionLink) => {
 
   return (
     <Tooltip title={tooltipTitle}>
-      <Link href={`${sectionLink.url}`} className={`pointer-events-auto text-gray-600 hover:text-gray-500 opacity-50`}>
+      <Link
+        href={`${sectionLink.url}`}
+        className="pointer-events-auto rounded-md bg-white/90 text-slate-700 shadow-sm ring-1 ring-slate-200/90 hover:bg-white hover:text-slate-900 dark:bg-slate-900/85 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-900"
+      >
         <div
-          className={`group rounded-md border-2 hover:border-4 hover:-mt-1 ${calcAnchorHeight()} ${borderColor}  w-[150px] text-sm`}
+          className={`group rounded-md border-2 bg-white/95 px-2 py-1 hover:border-4 hover:-mt-1 dark:bg-slate-900/90 ${calcAnchorHeight()} ${borderColor} w-[150px] text-sm`}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
@@ -105,15 +108,15 @@ export const LinkedSection = (sectionLink: SectionLink) => {
             {navIcon}
             <div>
               {sectionLink.theme && (
-                <p className="text-slate-500 dark:text-slate-200 text-xs font-medium">
+                <p className="text-slate-600 dark:text-slate-200 text-xs font-medium">
                   {trimString(sectionLink.theme, 35)}
                 </p>
               )}
               {sectionLink.course && (
-                <p className="text-slate-600 dark:text-slate-300 text-xs"> {trimString(sectionLink.course, 21)} </p>
+                <p className="text-slate-700 dark:text-slate-300 text-xs"> {trimString(sectionLink.course, 21)} </p>
               )}
               {sectionLink.section && (
-                <p className="text-slate-700 dark:text-slate-400">
+                <p className="text-slate-900 dark:text-slate-300">
                   {trimString(sectionLink.section, 16)} {sectionLink.tags && `[${sectionLink.tags.join(", ")}]`}
                 </p>
               )}
