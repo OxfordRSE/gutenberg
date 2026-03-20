@@ -7,6 +7,8 @@ import type { Course } from "pages/api/course"
 import useCourseProgress from "lib/hooks/useCourseProgress"
 import CourseProgressBar from "components/courses/CourseProgressBar"
 import type { CourseProgress } from "lib/courseProgress"
+import useActiveCourse from "lib/hooks/useActiveCourse"
+import CourseActiveActions from "components/courses/CourseActiveActions"
 
 type Props = {
   course: Course
@@ -24,14 +26,18 @@ const HomeCourseListItem: React.FC<Props> = ({ course, progress: providedProgres
   const completed = progress?.completed ?? 0
   const percent = total > 0 ? Math.round((completed / total) * 100) : isCompleted ? 100 : 0
   const displayLanguages = (course.language ?? []).slice(0, 2)
+  const [activeCourseExternalId] = useActiveCourse()
+  const isActiveCourse = activeCourseExternalId === course.externalId
   const displayTags = (course.tags ?? []).slice(0, 3)
 
   return (
     <li
       className={`rounded-lg border p-4 ${
-        isCompleted
-          ? "border-emerald-300 bg-emerald-50/70 dark:border-emerald-700 dark:bg-emerald-950/30"
-          : "border-gray-100 bg-gray-50 dark:border-gray-700 dark:bg-gray-900"
+        isActiveCourse
+          ? "border-cyan-300 bg-cyan-50/70 dark:border-cyan-700 dark:bg-cyan-950/20"
+          : isCompleted
+            ? "border-emerald-300 bg-emerald-50/70 dark:border-emerald-700 dark:bg-emerald-950/30"
+            : "border-gray-100 bg-gray-50 dark:border-gray-700 dark:bg-gray-900"
       }`}
     >
       <div className="flex items-start justify-between gap-4">
@@ -63,12 +69,15 @@ const HomeCourseListItem: React.FC<Props> = ({ course, progress: providedProgres
             </div>
           )}
         </div>
-        {showProgress && total > 0 && (
-          <div className="w-24 flex-none">
-            <div className="text-right text-xs text-gray-500 dark:text-gray-400">{percent}%</div>
-            <CourseProgressBar completed={completed} total={total} hideLabelRow className="mt-1" />
-          </div>
-        )}
+        <div className="flex flex-none flex-col items-end gap-2">
+          <CourseActiveActions courseExternalId={course.externalId} status={enrolment?.status ?? null} size="xs" />
+          {showProgress && total > 0 && (
+            <div className="w-24 flex-none">
+              <div className="text-right text-xs text-gray-500 dark:text-gray-400">{percent}%</div>
+              <CourseProgressBar completed={completed} total={total} hideLabelRow className="mt-1" />
+            </div>
+          )}
+        </div>
       </div>
     </li>
   )

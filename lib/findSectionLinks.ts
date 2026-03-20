@@ -58,7 +58,12 @@ export const findLinks = (
 
     if (currentIndex > 0) {
       const prevItem = orderedItems[currentIndex - 1]
-      const { theme: themeLink, course: courseLink, section: sectionLink, url } = sectionSplit(`${prevItem.section}`, material)
+      const {
+        theme: themeLink,
+        course: courseLink,
+        section: sectionLink,
+        url,
+      } = sectionSplit(`${prevItem.section}`, material)
       if (url) {
         sectionLinks.push({
           linkedType: "course",
@@ -74,7 +79,12 @@ export const findLinks = (
 
     if (currentIndex < orderedItems.length - 1) {
       const nextItem = orderedItems[currentIndex + 1]
-      const { theme: themeLink, course: courseLink, section: sectionLink, url } = sectionSplit(`${nextItem.section}`, material)
+      const {
+        theme: themeLink,
+        course: courseLink,
+        section: sectionLink,
+        url,
+      } = sectionSplit(`${nextItem.section}`, material)
       if (url) {
         sectionLinks.push({
           linkedType: "course",
