@@ -30,7 +30,12 @@ export default function LearningOutcomes({
       }}
     >
       <Tooltip title={`Click to ${open ? "hide" : "show"} learning outcomes`}>
-        <Typography variant="body2" onClick={() => setOpen(!open)} sx={{ cursor: "pointer", fontWeight: 600 }} className="text-emerald-900 dark:text-emerald-100">
+        <Typography
+          variant="body2"
+          onClick={() => setOpen(!open)}
+          sx={{ cursor: "pointer", fontWeight: 600 }}
+          className="text-emerald-900 dark:text-emerald-100"
+        >
           Learning outcomes
         </Typography>
       </Tooltip>

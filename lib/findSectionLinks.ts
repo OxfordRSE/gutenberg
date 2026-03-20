@@ -1,15 +1,16 @@
-import { SectionLink, LinkedSection } from "components/ui/LinkedSection"
-import { getExcludes } from "lib/material"
+import { SectionLink } from "components/ui/LinkedSection"
 import { Material, MaterialTheme, MaterialCourse, MaterialSection } from "./material"
 import { sectionSplit } from "./material"
 import { EventFull } from "lib/types"
+import type { CourseByExternal } from "pages/api/course/byExternal/[externalId]"
 
 export const findLinks = (
   material: Material,
   theme?: MaterialTheme,
   course?: MaterialCourse,
   section?: MaterialSection,
-  activeEvent?: EventFull | undefined
+  activeEvent?: EventFull | undefined,
+  activeCourse?: CourseByExternal | undefined
 ): SectionLink[] => {
   const pageLabel = `${theme?.repo}.${theme?.id}.${course?.id}${section ? `.${section.id}` : ""}`
 
@@ -40,8 +41,62 @@ export const findLinks = (
     return children
   }
   // check if this section is part of the active event
-  let isInEvent = false
   let sectionLinks: SectionLink[] = []
+
+  const addCourseLinks = () => {
+    if (!activeCourse || !theme || !course || !section) return
+
+    const orderedRootItems = [...activeCourse.CourseItem].sort((a, b) => a.order - b.order)
+    const orderedGroupItems = [...activeCourse.CourseGroup]
+      .sort((a, b) => a.order - b.order)
+      .flatMap((group) => [...group.CourseItem].sort((a, b) => a.order - b.order))
+    const orderedItems = [...orderedRootItems, ...orderedGroupItems]
+    if (orderedItems.length === 0) return
+
+    const currentIndex = orderedItems.findIndex((item) => item.section === pageLabel)
+    if (currentIndex === -1) return
+
+    if (currentIndex > 0) {
+      const prevItem = orderedItems[currentIndex - 1]
+      const { theme: themeLink, course: courseLink, section: sectionLink, url } = sectionSplit(`${prevItem.section}`, material)
+      if (url) {
+        sectionLinks.push({
+          linkedType: "course",
+          direction: "prev",
+          url,
+          section: sectionLink?.name,
+          course: courseLink?.name,
+          theme: themeLink?.name,
+          tags: sectionLink?.tags,
+        } as SectionLink)
+      }
+    }
+
+    if (currentIndex < orderedItems.length - 1) {
+      const nextItem = orderedItems[currentIndex + 1]
+      const { theme: themeLink, course: courseLink, section: sectionLink, url } = sectionSplit(`${nextItem.section}`, material)
+      if (url) {
+        sectionLinks.push({
+          linkedType: "course",
+          direction: "next",
+          url,
+          section: sectionLink?.name,
+          course: courseLink?.name,
+          theme: themeLink?.name,
+          tags: sectionLink?.tags,
+        } as SectionLink)
+      }
+      return
+    }
+
+    sectionLinks.push({
+      linkedType: "course",
+      direction: "next",
+      url: `/courses/${activeCourse.id}`,
+      section: "Return to course",
+      course: activeCourse.name,
+    } as SectionLink)
+  }
 
   if (activeEvent) {
     for (const group of activeEvent.EventGroup) {
@@ -50,7 +105,6 @@ export const findLinks = (
       for (let i = 0; i < group.EventItem.length; i++) {
         const item = orderedEvents[i]
         if (item.section == pageLabel) {
-          isInEvent = true
           if (i > 0) {
             const prevItem = orderedEvents[i - 1]
             const {
@@ -91,6 +145,7 @@ export const findLinks = (
       }
     }
   }
+  addCourseLinks()
   // We also can generate links for all dependents
   section?.dependsOn.map((dep) => {
     const {

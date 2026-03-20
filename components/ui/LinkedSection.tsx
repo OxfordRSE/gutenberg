@@ -35,6 +35,9 @@ export const LinkedSection = (sectionLink: SectionLink) => {
   if (sectionLink.linkedType === "event") {
     iconColor = "#14b8a6"
     borderColor = "border-teal-700 dark:border-teal-500"
+  } else if (sectionLink.linkedType === "course") {
+    iconColor = "#f59e0b"
+    borderColor = "border-amber-600 dark:border-amber-400"
   } else if (sectionLink.linkedType === "internal") {
     iconColor = "#a855f7"
     borderColor = "border-purple-700 dark:border-purple-500"
@@ -59,7 +62,7 @@ export const LinkedSection = (sectionLink: SectionLink) => {
         <Tooltip title={tooltipTitle} enterDelay={400}>
           <Link
             href={`${sectionLink.url}`}
-            className="pointer-events-auto rounded-md bg-white/90 text-slate-700 shadow-sm ring-1 ring-slate-200/90 hover:bg-white hover:text-slate-900 dark:bg-slate-900/85 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-900"
+            className="pointer-events-auto rounded-md bg-white/90 text-slate-700 shadow-sm ring-1 ring-slate-200/90 transition-all hover:-translate-y-0.5 hover:bg-white hover:text-slate-900 hover:shadow-lg hover:ring-2 hover:ring-slate-300/90 dark:bg-slate-900/85 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-900 dark:hover:ring-slate-500"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
@@ -72,7 +75,7 @@ export const LinkedSection = (sectionLink: SectionLink) => {
         <Tooltip title={tooltipTitle} enterDelay={400}>
           <Link
             href={`${sectionLink.url}`}
-            className="pointer-events-auto rounded-md bg-white/90 text-slate-700 shadow-sm ring-1 ring-slate-200/90 hover:bg-white hover:text-slate-900 dark:bg-slate-900/85 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-900"
+            className="pointer-events-auto rounded-md bg-white/90 text-slate-700 shadow-sm ring-1 ring-slate-200/90 transition-all hover:-translate-y-0.5 hover:bg-white hover:text-slate-900 hover:shadow-lg hover:ring-2 hover:ring-slate-300/90 dark:bg-slate-900/85 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-900 dark:hover:ring-slate-500"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
@@ -97,10 +100,10 @@ export const LinkedSection = (sectionLink: SectionLink) => {
     <Tooltip title={tooltipTitle}>
       <Link
         href={`${sectionLink.url}`}
-        className="pointer-events-auto rounded-md bg-white/90 text-slate-700 shadow-sm ring-1 ring-slate-200/90 hover:bg-white hover:text-slate-900 dark:bg-slate-900/85 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-900"
+        className="pointer-events-auto rounded-md bg-white/90 text-slate-700 shadow-sm ring-1 ring-slate-200/90 transition-all hover:-translate-y-0.5 hover:bg-white hover:text-slate-900 hover:shadow-lg hover:ring-2 hover:ring-slate-300/90 dark:bg-slate-900/85 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-900 dark:hover:ring-slate-500"
       >
         <div
-          className={`group rounded-md border-2 bg-white/95 px-2 py-1 hover:border-4 hover:-mt-1 dark:bg-slate-900/90 ${calcAnchorHeight()} ${borderColor} w-[150px] text-sm`}
+          className={`group rounded-md border-2 bg-white/95 px-2 py-1 shadow-sm transition-shadow hover:shadow-md dark:bg-slate-900/90 ${calcAnchorHeight()} ${borderColor} w-[150px] text-sm`}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >

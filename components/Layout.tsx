@@ -11,6 +11,7 @@ import Overlay from "./Overlay"
 import Navbar from "./navbar/Navbar"
 import { useSidebarOpen } from "lib/hooks/useSidebarOpen"
 import useActiveEvent from "lib/hooks/useActiveEvents"
+import useActiveCourse from "lib/hooks/useActiveCourse"
 import { Provider } from "jotai"
 import { PageTemplate } from "lib/pageTemplate"
 import { SectionLink } from "./ui/LinkedSection"
@@ -18,9 +19,14 @@ import { findLinks } from "lib/findSectionLinks"
 import PlausibleProvider from "next-plausible"
 import { useTheme } from "next-themes"
 import { ThemeProvider } from "@mui/material/styles"
+import useSWR, { Fetcher } from "swr"
 import { LightTheme, DarkTheme } from "./MuiTheme"
 import plausibleHost from "lib/plausibleHost"
 import { BreadcrumbItem } from "lib/breadcrumbs"
+import { basePath } from "lib/basePath"
+import type { Data as ActiveCourseData } from "pages/api/course/byExternal/[externalId]"
+
+const activeCourseFetcher: Fetcher<ActiveCourseData, string> = (url) => fetch(url).then((r) => r.json())
 
 type Props = {
   material: Material
@@ -47,12 +53,17 @@ const Layout: React.FC<Props> = ({
   repoUrl,
   excludes,
 }) => {
-  const [activeEvent, setActiveEvent] = useActiveEvent()
-  const { data: session } = useSession()
+  const [activeEvent] = useActiveEvent()
+  const [activeCourseExternalId] = useActiveCourse()
+  useSession()
   const { theme: currentTheme } = useTheme()
   const [showAttribution, setShowAttribution] = useState(false)
+  const { data: activeCourseData } = useSWR(
+    activeCourseExternalId ? `${basePath}/api/course/byExternal/${activeCourseExternalId}` : undefined,
+    activeCourseFetcher
+  )
   const [sidebarOpen, setSidebarOpen] = useSidebarOpen(true)
-  const sectionLinks: SectionLink[] = findLinks(material, theme, course, section, activeEvent)
+  const sectionLinks: SectionLink[] = findLinks(material, theme, course, section, activeEvent, activeCourseData?.course)
 
   const muiTheme = React.useMemo(() => (currentTheme === "light" ? LightTheme : DarkTheme), [currentTheme])
   return (
