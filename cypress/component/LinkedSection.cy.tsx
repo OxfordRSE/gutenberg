@@ -15,7 +15,9 @@ describe("<LinkedSection />", () => {
       />
     )
 
-    cy.contains("Containers and Arrays in C++").should("be.visible")
+    cy.contains("Software Architecture and Design").should("be.visible")
+    cy.contains("Procedural Program...").should("be.visible")
+    cy.contains("Containers an...").should("be.visible")
     cy.get('[data-cy="linked-section-tags"]').within(() => {
       cy.contains("C++").should("be.visible").and("have.class", "rounded-full")
       cy.contains("Python").should("be.visible").and("have.class", "rounded-full")

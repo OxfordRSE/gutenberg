@@ -50,7 +50,7 @@ describe("<MaterialCourseHintContent />", () => {
 
     mountHint(courses)
 
-    cy.contains("This material is part of your course on:").should("be.visible")
+    cy.contains("This material is part of your course:").should("be.visible")
     cy.contains("Python Foundations").should("be.visible")
     cy.contains("button", "Select").should("be.visible")
   })
@@ -83,7 +83,7 @@ describe("<MaterialCourseHintContent />", () => {
       </ContextProvider>
     )
 
-    cy.contains("This material is part of your active course on:").should("be.visible")
+    cy.contains("This material is part of your active course:").should("be.visible")
     cy.contains("button", "Unselect").should("be.visible")
   })
 
@@ -142,7 +142,7 @@ describe("<MaterialCourseHintContent />", () => {
 
     mountHint(courses)
 
-    cy.contains("This material is part of your course on:").should("be.visible")
+    cy.contains("This material is part of your course:").should("be.visible")
     cy.contains("Python Foundations").should("be.visible")
     cy.contains("Browse courses").should("not.exist")
   })
