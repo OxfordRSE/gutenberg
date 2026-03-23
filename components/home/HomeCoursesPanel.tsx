@@ -81,7 +81,7 @@ const HomeCoursesPanel: React.FC<Props> = ({ initialCourses }) => {
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Continue where you left off</h3>
                   </div>
                 </div>
-                <ul role="list" className="space-y-3">
+                <ul className="space-y-3">
                   {displayedMyCourses.map((course) => (
                     <HomeCourseListItem key={course.id} course={course} progress={progressByCourseId[course.id]} />
                   ))}
@@ -98,7 +98,7 @@ const HomeCoursesPanel: React.FC<Props> = ({ initialCourses }) => {
                     </h3>
                   </div>
                 </div>
-                <ul role="list" className="space-y-3">
+                <ul className="space-y-3">
                   {displayedOtherCourses.map((course) => (
                     <HomeCourseListItem key={course.id} course={course} />
                   ))}

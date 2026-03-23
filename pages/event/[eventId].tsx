@@ -3,11 +3,11 @@ import { getMaterial, Material, removeMarkdown } from "lib/material"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
 import Title from "components/ui/Title"
-import type { Event } from "lib/types"
+import type { Event as PublicEvent } from "lib/types"
 import { basePath } from "lib/basePath"
 import { Button, Tabs } from "flowbite-react"
 import Avatar from "@mui/material/Avatar"
-import { useForm, useFieldArray } from "react-hook-form"
+import { useForm, useFieldArray, Control, UseFormRegister } from "react-hook-form"
 import { useSession } from "next-auth/react"
 import { MdEdit, MdPreview } from "react-icons/md"
 import Textfield from "components/forms/Textfield"
@@ -18,32 +18,222 @@ import useProfile from "lib/hooks/useProfile"
 import { Event as EventWithUsers } from "pages/api/event/[eventId]"
 import Stack from "components/ui/Stack"
 import { putEvent } from "lib/actions/putEvent"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import SelectField from "components/forms/SelectField"
 import Checkbox from "components/forms/Checkbox"
 import { PageTemplate, loadPageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
-import { load } from "js-yaml"
 import EventViewPane from "components/event/EventViewPane"
 import { runBuildPrismaQuery } from "lib/buildPrisma"
+import EventItemAdder from "components/forms/EventItemAdder"
+import type { Option } from "components/forms/SelectSectionField"
+import { formatTagLabel } from "lib/tagLabels"
+import {
+  DndContext,
+  closestCenter,
+  useSensor,
+  useSensors,
+  PointerSensor,
+  KeyboardSensor,
+  DragEndEvent,
+} from "@dnd-kit/core"
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+  sortableKeyboardCoordinates,
+} from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 
 type EventProps = {
   material: Material
-  event: Event
+  event: PublicEvent
   pageInfo: PageTemplate
+}
+
+type EventForm = EventWithUsers
+
+const SortableItem = ({ id = "", children }: { id?: string; children: React.ReactNode }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition: transition ?? undefined,
+  }
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      {children}
+    </div>
+  )
+}
+
+function buildSectionsOptions(material: Material): Option[] {
+  return material.themes.flatMap((theme) => {
+    return [
+      {
+        value: `${theme.repo}.${theme.id}`,
+        label: `${theme.repo} - ${theme.name}`,
+      },
+    ].concat(
+      theme.courses.flatMap((course) => {
+        return [
+          {
+            value: `${theme.repo}.${theme.id}.${course.id}`,
+            label: `${theme.repo} - ${theme.name} - ${course.name}`,
+          },
+        ].concat(
+          course.sections.map((section) => {
+            const tags = section.tags.map((tag) => formatTagLabel(tag)).join(", ")
+            let label = `${theme.repo} - ${theme.name} - ${course.name} - ${section.name}`
+            if (tags.length > 0) {
+              label = `${label} [${tags}]`
+            }
+            return {
+              value: `${theme.repo}.${theme.id}.${course.id}.${section.id}`,
+              label,
+            }
+          })
+        )
+      })
+    )
+  })
+}
+
+const EventGroupEditor = ({
+  control,
+  register,
+  groupIndex,
+  sectionsOptions,
+  onRemoveGroup,
+}: {
+  control: Control<EventForm>
+  register: UseFormRegister<EventForm>
+  groupIndex: number
+  sectionsOptions: Option[]
+  onRemoveGroup: () => void
+}) => {
+  const [selectedOptions, setSelectedOptions] = useState<Option[]>([])
+  const [inputValue, setInputValue] = useState("")
+  const {
+    fields: eventItems,
+    append: appendItem,
+    remove: removeItem,
+    replace: replaceItems,
+  } = useFieldArray({
+    control,
+    name: `EventGroup.${groupIndex}.EventItem`,
+    keyName: "fieldId",
+  })
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
+
+  function findOptionLabel(value: string) {
+    const option = sectionsOptions.find((candidate) => candidate.value === value)
+    return option ? option.label : value
+  }
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+
+    const oldIndex = eventItems.findIndex((item) => item.fieldId === active.id)
+    const newIndex = eventItems.findIndex((item) => item.fieldId === over.id)
+
+    if (oldIndex === -1 || newIndex === -1) return
+
+    const reordered = arrayMove(eventItems, oldIndex, newIndex).map((item, index) => ({
+      ...item,
+      order: index + 1,
+    }))
+    replaceItems(reordered)
+  }
+
+  const handleAddItems = () => {
+    let currentOrder = eventItems.length + 1
+    selectedOptions.forEach((option) => {
+      appendItem({
+        id: 0,
+        groupId: 0,
+        order: currentOrder,
+        section: option.value,
+      })
+      currentOrder += 1
+    })
+    setInputValue("")
+    setSelectedOptions([])
+  }
+
+  return (
+    <Stack>
+      <input type="hidden" {...register(`EventGroup.${groupIndex}.id`)} />
+      <Textfield label="Group Name" name={`EventGroup.${groupIndex}.name`} control={control} />
+      <Textarea label="Group Summary" name={`EventGroup.${groupIndex}.summary`} control={control} />
+      <Textarea label="Group Content" name={`EventGroup.${groupIndex}.content`} control={control} />
+      <Textfield label="Group Location" name={`EventGroup.${groupIndex}.location`} control={control} />
+      <DateTimeField label="Start" name={`EventGroup.${groupIndex}.start`} control={control} />
+      <DateTimeField label="End" name={`EventGroup.${groupIndex}.end`} control={control} />
+      <EventItemAdder
+        sectionsOptions={sectionsOptions}
+        selectedOptions={selectedOptions}
+        setSelectedOptions={setSelectedOptions}
+        handleAddClick={handleAddItems}
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        className="font-normal text-gray-700 dark:text-gray-400 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+      />
+      {eventItems.length > 0 && <Title text="Material Sections (drag to reorder)" />}
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={eventItems.map((item) => item.fieldId)} strategy={verticalListSortingStrategy}>
+          {eventItems.map((item, itemIndex) => (
+            <SortableItem key={item.fieldId} id={item.fieldId}>
+              <div className="mb-2 flex items-center justify-between rounded border border-slate-200 bg-slate-100 px-3 py-2 dark:border-slate-700 dark:bg-slate-800">
+                <span className="text-sm text-gray-700 dark:text-gray-200">{findOptionLabel(item.section)}</span>
+                <Button type="button" size="xs" color="warning" onClick={() => removeItem(itemIndex)}>
+                  Remove
+                </Button>
+              </div>
+              <input type="hidden" {...register(`EventGroup.${groupIndex}.EventItem.${itemIndex}.id`)} />
+              <input type="hidden" {...register(`EventGroup.${groupIndex}.EventItem.${itemIndex}.groupId`)} />
+              <input type="hidden" {...register(`EventGroup.${groupIndex}.EventItem.${itemIndex}.section`)} />
+              <input type="hidden" {...register(`EventGroup.${groupIndex}.EventItem.${itemIndex}.order`)} />
+            </SortableItem>
+          ))}
+        </SortableContext>
+      </DndContext>
+      <div>
+        <Button type="button" color="failure" onClick={onRemoveGroup}>
+          Delete Group
+        </Button>
+      </div>
+    </Stack>
+  )
 }
 
 const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
   const [activeTabIndex, setActiveTabIndex] = useState(0)
   const tabsRef = useRef<{ setActiveTab: (idx: number) => void } | null>(null)
 
-  const { event: eventData, error: eventError, isLoading: eventIsLoading, mutate: mutateEvent } = useEvent(event.id)
-  if (eventData) {
-    event = eventData
-  }
+  const { event: eventData, isLoading: eventIsLoading, mutate: mutateEvent } = useEvent(event.id)
+  const currentEvent = eventData ?? event
   const { data: session } = useSession()
-  const { userProfile, error: profileError, isLoading: profileLoading } = useProfile()
-  const { control, handleSubmit, reset, setValue } = useForm<EventWithUsers>({ defaultValues: eventData })
+  const { userProfile } = useProfile()
+  const initialValues = useMemo(
+    () =>
+      ({
+        ...(event as unknown as EventForm),
+        EventGroup: [],
+        UserOnEvent: [],
+      }) satisfies EventForm,
+    [event]
+  )
+  const { control, handleSubmit, reset, register } = useForm<EventForm>({ defaultValues: initialValues })
 
   const {
     fields: eventGroups,
@@ -52,28 +242,34 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
   } = useFieldArray({
     control,
     name: "EventGroup",
+    keyName: "fieldId",
   })
 
-  const { fields: eventUser } = useFieldArray({
+  const { fields: eventUsers } = useFieldArray({
     control,
     name: "UserOnEvent",
+    keyName: "fieldId",
   })
 
-  const myUserOnEvent = eventData?.UserOnEvent.find((e) => e.userEmail == session?.user?.email)
-  const isInstructor = myUserOnEvent?.status === "INSTRUCTOR" || false
-  const isAdmin = userProfile?.admin
+  const myUserOnEvent = eventData?.UserOnEvent.find((userOnEvent) => userOnEvent.userEmail === session?.user?.email)
+  const isInstructor = myUserOnEvent?.status === "INSTRUCTOR"
+  const isAdmin = !!userProfile?.admin
+  const sectionsOptions = useMemo(() => buildSectionsOptions(material), [material])
 
-  const onSubmit = (data: EventWithUsers) => {
-    putEvent(data).then((data) => {
-      data.event && mutateEvent(data.event)
+  const onSubmit = (data: EventForm) => {
+    putEvent(data).then((response) => {
+      if (response.event) {
+        mutateEvent(response.event)
+      }
     })
   }
 
   useEffect(() => {
-    reset(eventData)
+    if (eventData) {
+      reset(eventData)
+    }
   }, [eventData, reset])
 
-  // keep tabs in sync with hash for deep links + browser navigation
   useEffect(() => {
     const syncFromHash = () => {
       const hash = window.location.hash.replace("#", "")
@@ -89,11 +285,9 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
   const handleTabChange = (idx: number) => {
     setActiveTabIndex(idx)
     if (typeof window === "undefined") return
-    const basePath = `${window.location.pathname}${window.location.search}`
-    const nextUrl = idx === 1 ? `${basePath}#edit` : basePath
+    const currentPath = `${window.location.pathname}${window.location.search}`
+    const nextUrl = idx === 1 ? `${currentPath}#edit` : currentPath
     if (window.location.href === `${window.location.origin}${nextUrl}`) return
-    // I am using pushState rather than next router cause i can reliably crash next router
-    // by clicking the same tab twice before it loads
     window.history.pushState(null, "", nextUrl)
   }
 
@@ -102,19 +296,15 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
   const handleAddGroup = () => {
     appendGroup({
       id: 0,
-      eventId: event.id,
+      eventId: currentEvent.id,
       name: "",
       summary: "",
       content: "",
-      start: event.start,
-      end: event.end,
+      start: currentEvent.start,
+      end: currentEvent.end,
       location: "",
       EventItem: [],
     })
-  }
-
-  const handleRemoveGroup = (index: number) => () => {
-    removeGroup(index)
   }
 
   const statusOptions = [
@@ -126,13 +316,14 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
 
   const eventView = (
     <EventViewPane
-      event={event}
+      event={currentEvent}
       eventWithRelations={eventData}
       material={material}
-      isAdmin={!!isAdmin}
-      isInstructor={isInstructor}
+      isAdmin={isAdmin}
+      isInstructor={!!isInstructor}
     />
   )
+
   const eventEditView = (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Stack>
@@ -144,11 +335,11 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
         <Textarea label="Content" name="content" control={control} />
         <DateTimeField label="Start" name="start" control={control} />
         <DateTimeField label="End" name="end" control={control} />
-        <Checkbox label="Hidden" name={`hidden`} control={control} />
+        <Checkbox label="Hidden" name="hidden" control={control} />
         <Title text="Users" />
         <div className="grid grid-cols-4 gap-4">
-          {eventUser.map((user, index) => (
-            <div key={user.id} className="flex items-center space-x-4">
+          {eventUsers.map((user, index) => (
+            <div key={user.fieldId} className="flex items-center space-x-4">
               <div className="shrink-0">
                 <Avatar src={user.user?.image || undefined} alt={user.user?.name || undefined} />
               </div>
@@ -161,44 +352,27 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
           ))}
         </div>
         <Title text="Groups" />
-        <div className="grid grid-cols-3 items-end gap-4 ">
-          {eventGroups.map((group, index) => (
-            <Stack key={group.id}>
-              <input type="hidden" name={`EventGroup.${index}.id`} value={group.id} />
-              <Textfield label="Group Name" name={`EventGroup.${index}.name`} control={control} />
-              <Textfield label="Group Summary" name={`EventGroup.${index}.summary`} control={control} />
-              <Textfield label="Group Location" name={`EventGroup.${index}.location`} control={control} />
-              <DateTimeField label="Start" name={`EventGroup.${index}.start`} control={control} />
-              <DateTimeField label="End" name={`EventGroup.${index}.end`} control={control} />
-              <div className="grid grid-cols-2 gap-4">
-                <Button onClick={handleRemoveGroup(index)}>Delete</Button>
-                {eventData?.EventGroup[index] && (
-                  <Button href={`${basePath}/event/${eventData.id}/${eventData.EventGroup[index].id}`}>
-                    <p>Go</p>
-                    <svg
-                      className="ml-2 -mr-1 h-4 w-4"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </Button>
-                )}
-              </div>
-            </Stack>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {eventGroups.map((group, groupIndex) => (
+            <EventGroupEditor
+              key={group.fieldId}
+              control={control}
+              register={register}
+              groupIndex={groupIndex}
+              sectionsOptions={sectionsOptions}
+              onRemoveGroup={() => removeGroup(groupIndex)}
+            />
           ))}
-          <Button onClick={handleAddGroup}>Add Group</Button>
+          <Button type="button" onClick={handleAddGroup}>
+            Add Group
+          </Button>
         </div>
         <Button type="submit">Save Changes</Button>
       </Stack>
     </form>
   )
-  const pageTitle = pageInfo?.title ? `${event.name}: ${pageInfo.title}` : event.name
+
+  const pageTitle = pageInfo?.title ? `${currentEvent.name}: ${pageInfo.title}` : currentEvent.name
   return (
     <Layout material={material} pageInfo={pageInfo} pageTitle={pageTitle}>
       {eventData && isAdmin ? (
@@ -239,7 +413,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     return { notFound: true }
   }
 
-  let material = await getMaterial()
+  const material = await getMaterial()
 
   removeMarkdown(material, undefined)
 

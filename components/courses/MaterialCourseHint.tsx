@@ -33,9 +33,9 @@ export const MaterialCourseHintContent: React.FC<ContentProps> = ({ courses }) =
 
   let message = "This material is part of a course."
   if (activeCourse) {
-    message = "This material is part of your active course on:"
+    message = "This material is part of your active course:"
   } else if (enrolledCourses.length === 1) {
-    message = "This material is part of your course on:"
+    message = "This material is part of your course:"
   } else if (enrolledCourses.length > 1) {
     message = `This material is part of ${enrolledCourses.length} of your courses.`
   } else if (courses.length > 1) {

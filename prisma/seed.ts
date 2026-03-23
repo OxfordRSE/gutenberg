@@ -86,28 +86,28 @@ async function main() {
                     where: { id: 1 },
                     create: {
                       order: 1,
-                      section: "technology_and_tooling.bash_shell.bash",
+                      section: "HPCu.technology_and_tooling.bash_shell.bash",
                     },
                   },
                   {
                     where: { id: 2 },
                     create: {
                       order: 2,
-                      section: "technology_and_tooling.ide.cpp",
+                      section: "HPCu.technology_and_tooling.ide.cpp",
                     },
                   },
                   {
                     where: { id: 3 },
                     create: {
                       order: 3,
-                      section: "software_architecture_and_design.procedural.types_cpp",
+                      section: "HPCu.software_architecture_and_design.procedural.types_cpp",
                     },
                   },
                   {
                     where: { id: 4 },
                     create: {
                       order: 4,
-                      section: "software_architecture_and_design.procedural.functions_cpp",
+                      section: "HPCu.software_architecture_and_design.procedural.functions_cpp",
                     },
                   },
                 ],
@@ -138,7 +138,7 @@ async function main() {
                     where: { id: 5 },
                     create: {
                       order: 1,
-                      section: "software_architecture_and_design.procedural.containers_cpp",
+                      section: "HPCu.software_architecture_and_design.procedural.containers_cpp",
                     },
                   },
                 ],
@@ -169,21 +169,21 @@ async function main() {
                     where: { id: 6 },
                     create: {
                       order: 1,
-                      section: "software_architecture_and_design.functional.state_and_side_effects_cpp",
+                      section: "HPCu.software_architecture_and_design.functional.state_and_side_effects_cpp",
                     },
                   },
                   {
                     where: { id: 7 },
                     create: {
                       order: 2,
-                      section: "software_architecture_and_design.functional.recursion_cpp",
+                      section: "HPCu.software_architecture_and_design.functional.recursion_cpp",
                     },
                   },
                   {
                     where: { id: 8 },
                     create: {
                       order: 3,
-                      section: "software_architecture_and_design.functional.higher_order_functions_cpp",
+                      section: "HPCu.software_architecture_and_design.functional.higher_order_functions_cpp",
                     },
                   },
                 ],
@@ -242,28 +242,28 @@ async function main() {
                     where: { id: 51 },
                     create: {
                       order: 1,
-                      section: "technology_and_tooling.bash_shell.bash",
+                      section: "HPCu.technology_and_tooling.bash_shell.bash",
                     },
                   },
                   {
                     where: { id: 52 },
                     create: {
                       order: 2,
-                      section: "technology_and_tooling.ide.cpp",
+                      section: "HPCu.technology_and_tooling.ide.cpp",
                     },
                   },
                   {
                     where: { id: 53 },
                     create: {
                       order: 3,
-                      section: "software_architecture_and_design.procedural.types_cpp",
+                      section: "HPCu.software_architecture_and_design.procedural.types_cpp",
                     },
                   },
                   {
                     where: { id: 54 },
                     create: {
                       order: 4,
-                      section: "software_architecture_and_design.procedural.functions_cpp",
+                      section: "HPCu.software_architecture_and_design.procedural.functions_cpp",
                     },
                   },
                 ],
@@ -294,7 +294,7 @@ async function main() {
                     where: { id: 55 },
                     create: {
                       order: 1,
-                      section: "software_architecture_and_design.procedural.containers_cpp",
+                      section: "HPCu.software_architecture_and_design.procedural.containers_cpp",
                     },
                   },
                 ],
@@ -325,21 +325,21 @@ async function main() {
                     where: { id: 56 },
                     create: {
                       order: 1,
-                      section: "software_architecture_and_design.functional.state_and_side_effects_cpp",
+                      section: "HPCu.software_architecture_and_design.functional.state_and_side_effects_cpp",
                     },
                   },
                   {
                     where: { id: 57 },
                     create: {
                       order: 2,
-                      section: "software_architecture_and_design.functional.recursion_cpp",
+                      section: "HPCu.software_architecture_and_design.functional.recursion_cpp",
                     },
                   },
                   {
                     where: { id: 58 },
                     create: {
                       order: 3,
-                      section: "software_architecture_and_design.functional.higher_order_functions_cpp",
+                      section: "HPCu.software_architecture_and_design.functional.higher_order_functions_cpp",
                     },
                   },
                 ],
@@ -409,13 +409,13 @@ async function main() {
                     where: { id: 1 },
                     create: {
                       order: 1,
-                      section: "technology_and_tooling.bash_shell.bash",
+                      section: "HPCu.technology_and_tooling.bash_shell.bash",
                       course: { connect: { id: 1 } },
                     },
                   },
                   {
                     where: { id: 2 },
-                    create: { order: 2, section: "technology_and_tooling.ide.cpp", course: { connect: { id: 1 } } },
+                    create: { order: 2, section: "HPCu.technology_and_tooling.ide.cpp", course: { connect: { id: 1 } } },
                   },
                 ],
               },
@@ -433,7 +433,7 @@ async function main() {
                     where: { id: 3 },
                     create: {
                       order: 1,
-                      section: "software_architecture_and_design.procedural.types_cpp",
+                      section: "HPCu.software_architecture_and_design.procedural.types_cpp",
                       course: { connect: { id: 1 } },
                     },
                   },
@@ -441,7 +441,7 @@ async function main() {
                     where: { id: 4 },
                     create: {
                       order: 2,
-                      section: "software_architecture_and_design.procedural.functions_cpp",
+                      section: "HPCu.software_architecture_and_design.procedural.functions_cpp",
                       course: { connect: { id: 1 } },
                     },
                   },
@@ -455,7 +455,7 @@ async function main() {
         connectOrCreate: [
           {
             where: { id: 5 },
-            create: { order: 1, section: "software_architecture_and_design.procedural.containers_cpp" },
+            create: { order: 1, section: "HPCu.software_architecture_and_design.procedural.containers_cpp" },
           },
         ],
       },
@@ -480,11 +480,11 @@ async function main() {
         connectOrCreate: [
           {
             where: { id: 6 },
-            create: { order: 1, section: "software_architecture_and_design.functional.recursion_cpp" },
+            create: { order: 1, section: "HPCu.software_architecture_and_design.functional.recursion_cpp" },
           },
           {
             where: { id: 7 },
-            create: { order: 2, section: "software_architecture_and_design.functional.higher_order_functions_cpp" },
+            create: { order: 2, section: "HPCu.software_architecture_and_design.functional.higher_order_functions_cpp" },
           },
         ],
       },
