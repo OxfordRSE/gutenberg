@@ -141,7 +141,15 @@ const TableOfContents: FC<TableOfContentsProps> = ({ markdown, tocTitle }: Table
         <div
           className="flex items-center mb-4 absolute top-0 z-50 p-1 bg-transparent"
           style={{ cursor: "pointer", pointerEvents: "auto" }}
+          role="button"
+          tabIndex={0}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault()
+              window.scrollTo({ top: 0, behavior: "smooth" })
+            }
+          }}
         >
           {collapsed ? (
             <button
