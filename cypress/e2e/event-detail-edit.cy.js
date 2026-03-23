@@ -58,6 +58,14 @@ describe("event detail edit flow", () => {
       cy.get("#EventGroup\\.0\\.location").clear().type("Room B")
       cy.get("#EventGroup\\.0\\.summary").clear().type("Edited group summary")
 
+      cy.contains("button", "Delete Group").click()
+      cy.get('[data-cy="event-groups-required"]').should("be.visible")
+      cy.contains("button", "Add Group").click()
+      cy.get('[data-cy="event-groups-required"]').should("not.exist")
+      cy.get("#EventGroup\\.0\\.name").clear().type("Edited Group")
+      cy.get("#EventGroup\\.0\\.location").clear().type("Room B")
+      cy.get("#EventGroup\\.0\\.summary").clear().type("Edited group summary")
+
       cy.contains("button", "Remove").click()
       cy.contains("Containers and Arrays in C++").should("not.exist")
 

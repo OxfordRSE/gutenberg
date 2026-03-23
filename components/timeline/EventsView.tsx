@@ -16,6 +16,7 @@ import { duplicateEventModalState, duplicateEventIdState } from "components/dial
 import { Tooltip } from "@mui/material"
 import Stack from "components/ui/Stack"
 import EventsToolbar from "components/timeline/EventsToolbar"
+import CreateEventModal, { EventCreationValues } from "components/event/CreateEventModal"
 
 type EventsProps = {
   material: Material
@@ -35,6 +36,8 @@ const EventsView: React.FC<EventsProps> = ({ material: _material, events }) => {
   const [deleteEventId, setDeleteEventId] = useAtom(deleteEventIdState)
   const [showDuplicateEventModal, setShowDuplicateEventModal] = useAtom(duplicateEventModalState)
   const [duplicateEventId, setDuplicateEventId] = useAtom(duplicateEventIdState)
+  const [showCreateEventModal, setShowCreateEventModal] = useState(false)
+  const [isCreatingEvent, setIsCreatingEvent] = useState(false)
   const { events: currentEvents } = useEvents()
   const { userProfile } = useProfile()
   const isAdmin = userProfile?.admin
@@ -72,12 +75,16 @@ const EventsView: React.FC<EventsProps> = ({ material: _material, events }) => {
   const getFormattedDate = (date: Date) =>
     showDateTime ? date.toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) : date.toUTCString()
 
-  const handleCreateEvent = async () => {
+  const createAndOpenEvent = async (payload?: { sourceCourseId?: number; startAt?: string }) => {
     try {
-      const event = await postEvent()
+      setIsCreatingEvent(true)
+      const event = await postEvent(payload)
+      setShowCreateEventModal(false)
       router.push(`/event/${event.id}#edit`)
     } catch (err) {
       console.error("Failed to create event:", err)
+    } finally {
+      setIsCreatingEvent(false)
     }
   }
 
@@ -91,9 +98,19 @@ const EventsView: React.FC<EventsProps> = ({ material: _material, events }) => {
     setDuplicateEventId(eventId)
   }
 
+  const handleCreateEvent = async ({ mode, startAt, courseId }: EventCreationValues) => {
+    await createAndOpenEvent(mode === "course" ? { sourceCourseId: courseId, startAt } : { startAt })
+  }
+
   return (
     <>
       <EventsToolbar query={query} onQueryChange={setQuery} onDebouncedQueryChange={setDebouncedQuery} />
+      <CreateEventModal
+        show={showCreateEventModal}
+        isSubmitting={isCreatingEvent}
+        onClose={() => setShowCreateEventModal(false)}
+        onCreate={handleCreateEvent}
+      />
       <Timeline>
         {/* Empty state when filter finds nothing */}
         {filteredEvents.length === 0 && (
@@ -155,7 +172,7 @@ const EventsView: React.FC<EventsProps> = ({ material: _material, events }) => {
             <Timeline.Point />
             <Timeline.Content>
               <Timeline.Title>
-                <Button size="sm" onClick={handleCreateEvent}>
+                <Button size="sm" data-cy="create-event-button" onClick={() => setShowCreateEventModal(true)}>
                   Create new Event
                 </Button>
               </Timeline.Title>

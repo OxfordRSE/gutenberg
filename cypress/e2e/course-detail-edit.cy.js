@@ -57,8 +57,10 @@ describe("course detail edit flow", () => {
 
       cy.contains("button", "Delete Group").click()
       cy.get('[data-cy="textfield-CourseGroup.0.name"]').should("not.exist")
+      cy.get('[data-cy="course-groups-required"]').should("be.visible")
 
       cy.contains("button", "Add Group").click()
+      cy.get('[data-cy="course-groups-required"]').should("not.exist")
       cy.get('[data-cy="textfield-CourseGroup.0.name"]').find("input").clear().type("Replacement Group")
       cy.get("#CourseGroup\\.0\\.summary").clear().type("Replacement group summary")
       cy.get('[data-cy="textfield-CourseGroup.0.order"]').find("input").clear().type("2")

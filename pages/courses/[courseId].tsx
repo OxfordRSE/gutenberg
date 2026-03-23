@@ -51,6 +51,7 @@ import {
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { BreadcrumbItem } from "lib/breadcrumbs"
+import MaterialGroupsNotice from "components/ui/MaterialGroupsNotice"
 
 type CourseFull = Prisma.CourseGetPayload<{
   include: {
@@ -632,6 +633,13 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
                 <Textarea label="Prerequisites (one per line)" name="prerequisitesText" control={control} />
 
                 <Title text="Material Groups" />
+                {groups.length === 0 && (
+                  <MaterialGroupsNotice
+                    dataCy="course-groups-required"
+                    heading="Add a group before adding material"
+                    body="Courses now organise material through groups. Create a material group first, then add sections inside that group."
+                  />
+                )}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   {groups.map((group, groupIndex) => (
                     <Stack key={group.fieldId}>

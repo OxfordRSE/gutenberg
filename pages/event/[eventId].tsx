@@ -25,6 +25,7 @@ import revalidateTimeout from "lib/revalidateTimeout"
 import EventViewPane from "components/event/EventViewPane"
 import { runBuildPrismaQuery } from "lib/buildPrisma"
 import EventGroupEditor, { buildSectionsOptions, EventForm } from "components/event/EventGroupEditor"
+import MaterialGroupsNotice from "components/ui/MaterialGroupsNotice"
 
 type EventProps = {
   material: Material
@@ -168,6 +169,13 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
           ))}
         </div>
         <Title text="Groups" />
+        {eventGroups.length === 0 && (
+          <MaterialGroupsNotice
+            dataCy="event-groups-required"
+            heading="Add a group before adding material"
+            body="Events now organise material through groups. Create a group first, then add sections inside that group."
+          />
+        )}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {eventGroups.map((group, groupIndex) => (
             <EventGroupEditor

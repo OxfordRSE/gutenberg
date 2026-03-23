@@ -114,6 +114,9 @@ const AddCourse: NextPage<AddCourseProps> = ({ material, pageInfo }) => {
       if (!base.name.trim()) {
         throw new Error("JSON must include a course name.")
       }
+      if (items.length > 0) {
+        throw new Error("Ungrouped material is no longer supported. Put all imported items inside groups.")
+      }
 
       const res = await fetch(`${basePath}/api/course`, {
         method: "POST",
@@ -215,13 +218,16 @@ const AddCourse: NextPage<AddCourseProps> = ({ material, pageInfo }) => {
           <div className="space-y-2">
             <Title text="Import from JSON" />
             <p className="text-sm text-gray-600 dark:text-gray-300">
-              Paste Course JSON (same shape as `courses.defaults.json`).
+              Paste Course JSON (same shape as `courses.defaults.json`). Material items must be inside groups.
             </p>
           </div>
           {jsonError && <div className="mb-3 mt-3 text-sm text-red-600 dark:text-red-400">{jsonError}</div>}
           <div className="mt-3">
-            <label className="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Course JSON</label>
+            <label htmlFor="course-json-input" className="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">
+              Course JSON
+            </label>
             <textarea
+              id="course-json-input"
               className="min-h-[200px] w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
               value={jsonText}
               onChange={(event) => setJsonText(event.target.value)}
