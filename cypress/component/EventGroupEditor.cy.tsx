@@ -75,9 +75,7 @@ const Harness = () => {
         sectionsOptions={sectionsOptions}
         onRemoveGroup={() => undefined}
       />
-      <div data-cy="event-group-order-state">
-        {items.map((item) => `${item.order}:${item.section}`).join("|")}
-      </div>
+      <div data-cy="event-group-order-state">{items.map((item) => `${item.order}:${item.section}`).join("|")}</div>
     </div>
   )
 }

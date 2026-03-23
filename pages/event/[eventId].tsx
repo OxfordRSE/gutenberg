@@ -32,7 +32,6 @@ type EventProps = {
   pageInfo: PageTemplate
 }
 
-
 const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
   const [activeTabIndex, setActiveTabIndex] = useState(0)
   const tabsRef = useRef<{ setActiveTab: (idx: number) => void } | null>(null)

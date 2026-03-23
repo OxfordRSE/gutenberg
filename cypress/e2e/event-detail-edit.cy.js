@@ -50,7 +50,9 @@ describe("event detail edit flow", () => {
       cy.visit("/event/" + eventId + "#edit")
 
       cy.get('[data-cy="textfield-name"]').should("be.visible")
-      cy.get("#name").clear().type("Edited Event " + suffix)
+      cy.get("#name")
+        .clear()
+        .type("Edited Event " + suffix)
       cy.get("#summary").clear().type("Edited event summary")
       cy.get("#EventGroup\\.0\\.name").clear().type("Edited Group")
       cy.get("#EventGroup\\.0\\.location").clear().type("Room B")

@@ -415,7 +415,11 @@ async function main() {
                   },
                   {
                     where: { id: 2 },
-                    create: { order: 2, section: "HPCu.technology_and_tooling.ide.cpp", course: { connect: { id: 1 } } },
+                    create: {
+                      order: 2,
+                      section: "HPCu.technology_and_tooling.ide.cpp",
+                      course: { connect: { id: 1 } },
+                    },
                   },
                 ],
               },
@@ -484,7 +488,10 @@ async function main() {
           },
           {
             where: { id: 7 },
-            create: { order: 2, section: "HPCu.software_architecture_and_design.functional.higher_order_functions_cpp" },
+            create: {
+              order: 2,
+              section: "HPCu.software_architecture_and_design.functional.higher_order_functions_cpp",
+            },
           },
         ],
       },

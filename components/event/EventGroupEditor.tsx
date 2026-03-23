@@ -31,13 +31,7 @@ import { CSS } from "@dnd-kit/utilities"
 
 export type EventForm = EventWithUsers
 
-const SortableItem = ({
-  id = "",
-  children,
-}: {
-  id?: string
-  children: React.ReactNode
-}) => {
+const SortableItem = ({ id = "", children }: { id?: string; children: React.ReactNode }) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id })
 
   const style = {
