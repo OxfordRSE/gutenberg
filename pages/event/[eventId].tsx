@@ -172,8 +172,8 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
         {eventGroups.length === 0 && (
           <MaterialGroupsNotice
             dataCy="event-groups-required"
-            heading="Add a group before adding material"
-            body="Events now organise material through groups. Create a group first, then add sections inside that group."
+            heading="Add a group before adding learning material"
+            body="Events organise material through groups. Create a group first, then add sections to that group."
           />
         )}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
