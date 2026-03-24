@@ -1,11 +1,10 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
-import prisma from "lib/prisma"
 import {
   getMaterial,
-  Course,
-  Theme,
+  MaterialCourse,
+  MaterialTheme,
   Material,
-  Section,
+  MaterialSection,
   removeMarkdown,
   getRepoUrl,
   getExcludes,
@@ -19,11 +18,13 @@ import { Event } from "lib/types"
 import { PageTemplate, loadPageTemplate } from "lib/pageTemplate"
 import LearningOutcomes from "components/content/LearningOutcomes"
 import revalidateTimeout from "lib/revalidateTimeout"
+import { runBuildPrismaQuery } from "lib/buildPrisma"
+import MaterialCourseHint from "components/courses/MaterialCourseHint"
 
 type SectionComponentProps = {
-  theme: Theme
-  course: Course
-  section: Section
+  theme: MaterialTheme
+  course: MaterialCourse
+  section: MaterialSection
   material: Material
   events: Event[]
   pageInfo: PageTemplate
@@ -42,6 +43,7 @@ const SectionComponent: NextPage<SectionComponentProps> = ({
   excludes,
 }: SectionComponentProps) => {
   const pageTitle = pageInfo?.title ? `${section.name}: ${pageInfo.title}` : section.name
+  const pageLabel = `${theme.repo}.${theme.id}.${course.id}.${section.id}`
   return (
     <Layout
       theme={theme}
@@ -54,6 +56,7 @@ const SectionComponent: NextPage<SectionComponentProps> = ({
       excludes={excludes}
     >
       <Title text={section.name} />
+      <MaterialCourseHint pageLabel={pageLabel} />
       <LearningOutcomes learningOutcomes={section.learningOutcomes} />
       <Content markdown={section.markdown} theme={theme} course={course} section={section} />
     </Layout>
@@ -88,13 +91,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const repoId = context?.params?.repoId
   const excludes = getExcludes(repoId as string)
   const repoUrl = getRepoUrl(repoId as string)
-  const events = await prisma.event
-    .findMany({
-      where: { hidden: false },
-    })
-    .catch((e) => {
-      return []
-    })
+  const events = await runBuildPrismaQuery(
+    "pages/material/[repoId]/[themeId]/[courseId]/[sectionId].tsx events",
+    [],
+    (prisma) =>
+      prisma.event.findMany({
+        where: { hidden: false },
+      })
+  )
   const themeId = context?.params?.themeId
   if (!themeId || Array.isArray(themeId)) {
     return { notFound: true }
@@ -122,7 +126,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   }
   removeMarkdown(material, section)
   return {
-    props: makeSerializable({ theme, course, section, events, material, pageInfo, repoUrl }),
+    props: makeSerializable({ theme, course, section, events, material, pageInfo, repoUrl, excludes }),
     revalidate: revalidateTimeout,
   }
 }

@@ -4,7 +4,7 @@ describe("landing page", () => {
   })
 
   it("loads", () => {
-    cy.contains("Course Events").should("be.visible")
+    cy.contains("Events").should("be.visible")
   })
 
   it("has page language", () => {
@@ -15,7 +15,6 @@ describe("landing page", () => {
     cy.contains("Create new Event").should("not.exist")
   })
   it("Delete event button does not exist", () => {
-    cy.get('[data-cy="load-more-events"]').click()
     cy.get('[data-cy*="delete-event"]').should("not.exist")
   })
 
@@ -39,8 +38,8 @@ describe("landing page", () => {
     cy.login(user)
     cy.visit("/")
     cy.get('[data-cy="toggle-sidebar"]').should("be.visible").click()
-    cy.contains("button", /select|swap/i).should("be.visible")
+    cy.get('[data-cy="toggle-learning-context"]').should("be.visible")
     cy.get('[data-cy="close-sidebar"]').click()
-    cy.contains("button", /select|swap/i).should("not.exist")
+    cy.get('[data-cy="toggle-learning-context"]').should("not.exist")
   })
 })

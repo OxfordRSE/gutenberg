@@ -60,8 +60,7 @@ If you want iterative editing of material or code, switch to the dev workflow be
 Use `docker-compose.dev.yml` when changing application code or styling and you need fast feedback.
 
 ```bash
-pip install -r scripts/python_requirements.txt
-python scripts/pull_material.py
+yarn pullmat
 
 # Build the dev image (installs Node/Yarn, sets up volumes)
 docker compose -f docker-compose.dev.yml build
@@ -78,15 +77,16 @@ Characteristics:
 - Runs Next.js in development mode (fast refresh enabled).
 - Mounts source code so changes appear without rebuilds.
 - Separate from production image; smaller iteration cycle.
-- Mounting the material folder allows local material edits after pulling with `pull_material.py` to be reflected immediately.
+- Mounting the material folder allows local material edits after pulling with `yarn pullmat` to be reflected immediately.
 
 ## Troubleshooting
 
 - Port already in use: stop previous containers (`docker ps` / `docker compose down`).
 - Material not updating in production compose: you baked it into the image; rebuild with `--build` or move to dev compose.
 - Environment variables missing: ensure `.env` or secret injection is configured before `docker compose up`.
+- Docker compose uses its own database credentials (`postgres:super-secret-password` inside compose), which are different from the simple local `.env` default (`postgres:password@localhost:5432`).
 - - Editing code while using `docker compose up` and expecting live reload: switch to `docker-compose.dev.yml`.
-- Forgetting to pull material locally for dev: run the Python script before starting dev containers.
+- Forgetting to pull material locally for dev: run `yarn pullmat` before starting dev containers.
 - Long rebuild times: use dev compose unless you explicitly need production mode behavior.
 
 ## Next Steps

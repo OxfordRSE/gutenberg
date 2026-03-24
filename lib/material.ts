@@ -18,7 +18,7 @@ export type Excludes = {
   sections: string[]
 }
 
-export type Section = {
+export type MaterialSection = {
   id: string
   file: string
   course: string
@@ -34,13 +34,13 @@ export type Section = {
   learningOutcomes: string[]
 }
 
-export type Course = {
+export type MaterialCourse = {
   id: string
   theme: string
   name: string
   dependsOn: string[]
   markdown: string
-  sections: Section[]
+  sections: MaterialSection[]
   type: string
   attribution: Attribution[]
   summary: string
@@ -48,12 +48,12 @@ export type Course = {
   learningOutcomes: string[]
 }
 
-export type Theme = {
+export type MaterialTheme = {
   repo: string
   id: string
   name: string
   markdown: string
-  courses: Course[]
+  courses: MaterialCourse[]
   type: string
   summary?: string
 }
@@ -61,7 +61,7 @@ export type Theme = {
 export type Material = {
   name: string
   markdown: string
-  themes: Theme[]
+  themes: MaterialTheme[]
   type: string
   themeNames?: {}
   courseNames?: {}
@@ -88,7 +88,7 @@ async function loadMaterial(path: string): Promise<MaterialContent> {
 export const sectionSplit = (
   section: String,
   material: Material
-): { theme?: Theme; course?: Course; section?: Section; url?: string } => {
+): { theme?: MaterialTheme; course?: MaterialCourse; section?: MaterialSection; url?: string } => {
   const split = section.split(".")
   if (split.length === 4) {
     const theme = material.themes.find((theme) => theme.id === split[1])
@@ -124,11 +124,14 @@ export const sectionSplit = (
 export const eventItemSplit = (
   eventItem: EventItem,
   material: Material
-): { theme?: Theme; course?: Course; section?: Section; url?: string } => {
+): { theme?: MaterialTheme; course?: MaterialCourse; section?: MaterialSection; url?: string } => {
   return sectionSplit(eventItem.section, material)
 }
 
-export function removeMarkdown(material: Material, except: Material | Theme | Course | Section | undefined) {
+export function removeMarkdown(
+  material: Material,
+  except: Material | MaterialTheme | MaterialCourse | MaterialSection | undefined
+) {
   if (except === undefined || except.type !== "Material") {
     material.markdown = ""
   }
@@ -184,7 +187,7 @@ export async function getMaterial(no_markdown = false): Promise<Material> {
   if (!repos) {
     return { name: "", markdown: "", themes: [], type: "Material" }
   }
-  let allThemes: Theme[] = []
+  let allThemes: MaterialTheme[] = []
 
   for (const key of Object.keys(repos)) {
     const repo = repos[key].path
@@ -214,7 +217,7 @@ export async function getMaterial(no_markdown = false): Promise<Material> {
   return { name, markdown, themes: allThemes, type }
 }
 
-export async function getTheme(repo: string, theme: string, no_markdown = false): Promise<Theme> {
+export async function getTheme(repo: string, theme: string, no_markdown = false): Promise<MaterialTheme> {
   const dir = `${materialDir}/${repo}/${theme}`
   const themeObject = await loadMaterial(`${dir}/index.md`)
   // @ts-expect-error
@@ -234,7 +237,12 @@ export async function getTheme(repo: string, theme: string, no_markdown = false)
   return { repo, id, name, markdown, courses, type, summary }
 }
 
-export async function getCourse(repo: string, theme: string, course: string, no_markdown = false): Promise<Course> {
+export async function getCourse(
+  repo: string,
+  theme: string,
+  course: string,
+  no_markdown = false
+): Promise<MaterialCourse> {
   const dir = `${materialDir}/${repo}/${theme}/${course}`
   const courseObject = await loadMaterial(`${dir}/index.md`)
   // @ts-expect-error
@@ -281,7 +289,7 @@ export async function getSection(
   index: number,
   file: string,
   no_markdown = false
-): Promise<Section> {
+): Promise<MaterialSection> {
   const id = file.replace(/\.[^/.]+$/, "")
   const dir = `${materialDir}/${repo}/${theme}/${course}`
   const sectionObject = await loadMaterial(`${dir}/${file}`)

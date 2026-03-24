@@ -1,10 +1,23 @@
 import { defineConfig } from "cypress"
+import { existsSync } from "fs"
 import path from "path"
 import { fileURLToPath } from "url"
 import { dirname } from "path"
+import { config as loadEnv } from "dotenv"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
+
+const baseEnvPath = path.resolve(__dirname, ".env")
+const localEnvPath = path.resolve(__dirname, ".env.local")
+
+if (existsSync(baseEnvPath)) {
+  loadEnv({ path: baseEnvPath })
+}
+
+if (existsSync(localEnvPath)) {
+  loadEnv({ path: localEnvPath, override: true })
+}
 
 export default defineConfig({
   env: {

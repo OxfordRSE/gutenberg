@@ -32,10 +32,10 @@ function Textarea<T extends FieldValues>({ label, name, control, rules }: Props<
                 <Label
                   htmlFor={name}
                   value={!error ? label : error?.message || (error?.type === "required" ? "Required" : "")}
+                  className={error ? "text-red-600 dark:text-red-400" : undefined}
                 />
               </div>
               <FlowbiteTextarea
-                autoFocus={true}
                 name={name}
                 id={name}
                 value={value === undefined || value === null ? "" : value}

@@ -69,38 +69,38 @@ describe("EventSwitcher @ /", () => {
 
   // Helpers
   const openSwitcher = () => {
-    cy.get('section[aria-label="Active event selection"]').within(() => {
-      cy.contains("button", /select|swap/i)
-        .should("be.visible")
-        .click()
+    cy.get('section[aria-label="Active learning context selection"]').within(() => {
+      cy.get('[data-cy="toggle-learning-context"]').should("be.visible").click()
     })
-    cy.get('ul[role="listbox"]').should("be.visible")
+    cy.get('[data-cy="learning-context-options"]').should("be.visible")
   }
 
   const pickById = (id: number | string) => {
-    cy.get('ul[role="listbox"]').within(() => {
-      cy.get(`[data-value="${id}"]`).click()
-    })
+    cy.get(`[data-cy="context-event-option-${id}"]`).click()
     cy.wait(100)
-    cy.get('ul[role="listbox"]').should("not.exist") // menu closed
+    cy.get('[data-cy="learning-context-options"]').should("not.exist")
   }
 
   const pickNone = () => {
-    cy.get('ul[role="listbox"] [data-value=""]').click()
-    cy.get('ul[role="listbox"]').should("not.exist")
+    cy.get('[data-cy="clear-learning-context"]').click()
+    cy.get('[data-cy="learning-context-options"]').should("not.exist")
   }
 
   const expectLogoVisible = () => {
-    cy.get('section[aria-label="Active event selection"] img[alt]').should("be.visible")
+    cy.get('section[aria-label="Active learning context selection"] img[alt]').should("be.visible")
   }
 
-  const expectButtonText = (text: "Select" | "Swap") => {
-    cy.get('section[aria-label="Active event selection"] button').should("contain.text", text)
+  const expectButtonText = (text: "Change") => {
+    cy.get('section[aria-label="Active learning context selection"] [data-cy="toggle-learning-context"]').should(
+      "contain.text",
+      text
+    )
   }
 
   it("starts with no active event selected", () => {
-    expectButtonText("Select")
+    expectButtonText("Change")
     expectLogoVisible()
+    cy.get('[data-cy="learning-context-summary"]').should("contain.text", "No active learning context")
     cy.window().then((win) => {
       expect(win.localStorage.getItem("activeEvent")).to.be.null
     })
@@ -111,10 +111,11 @@ describe("EventSwitcher @ /", () => {
     pickById(1) // Introduction to C++
     cy.wait("@getEventById")
 
-    expectButtonText("Swap")
+    expectButtonText("Change")
     expectLogoVisible()
+    cy.get('[data-cy="learning-context-summary"]').should("contain.text", "Introduction to C++")
     cy.window().then((win) => {
-      expect(win.localStorage.getItem("activeEvent")).to.eq("1")
+      expect(win.localStorage.getItem("activeEvent")).to.eq("event:1")
     })
   })
 
@@ -123,10 +124,11 @@ describe("EventSwitcher @ /", () => {
     pickById(1)
     openSwitcher()
     pickById(2)
-    expectButtonText("Swap")
+    expectButtonText("Change")
     expectLogoVisible()
+    cy.get('[data-cy="learning-context-summary"]').should("contain.text", "Advanced Python")
     cy.window().then((win) => {
-      expect(win.localStorage.getItem("activeEvent")).to.eq("2")
+      expect(win.localStorage.getItem("activeEvent")).to.eq("event:2")
     })
   })
 
@@ -136,8 +138,9 @@ describe("EventSwitcher @ /", () => {
     openSwitcher()
     pickNone()
 
-    expectButtonText("Select")
+    expectButtonText("Change")
     expectLogoVisible()
+    cy.get('[data-cy="learning-context-summary"]').should("contain.text", "No active learning context")
     cy.window().then((win) => {
       expect(win.localStorage.getItem("activeEvent")).to.be.null
     })

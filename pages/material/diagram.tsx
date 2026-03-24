@@ -1,5 +1,4 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
-import prisma from "lib/prisma"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
 import { Material, getMaterial, removeMarkdown } from "lib/material"
@@ -7,6 +6,7 @@ import Content from "components/content/Content"
 import NavDiagram from "components/navdiagram/NavDiagram"
 import { EventFull as Event } from "lib/types"
 import { loadPageTemplate, PageTemplate } from "lib/pageTemplate"
+import { runBuildPrismaQuery } from "lib/buildPrisma"
 
 type HomeProps = {
   material: Material
@@ -25,13 +25,11 @@ const Home: NextPage<HomeProps> = ({ material, events, pageInfo }) => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const pageInfo = loadPageTemplate()
-  const events = await prisma.event
-    .findMany({
+  const events = await runBuildPrismaQuery("pages/material/diagram.tsx events", [], (prisma) =>
+    prisma.event.findMany({
       where: { hidden: false },
     })
-    .catch((e) => {
-      return []
-    })
+  )
   let material = await getMaterial()
   removeMarkdown(material, material)
 

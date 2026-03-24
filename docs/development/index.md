@@ -55,6 +55,18 @@ If it is your first time running the application, you will need to run the migra
 yarn prisma migrate dev
 ```
 
+If you want the local demo and test seed data as well, run:
+
+```bash
+npx prisma db seed
+```
+
+If you want to recreate the database from scratch and reseed it in one step, run:
+
+```bash
+yarn prisma migrate reset --force
+```
+
 ## Providing course material
 
 Course material is provided by git repositories defined by the "repos" in the [configuration yaml]({{ "/config/template" | relative_url }}).
