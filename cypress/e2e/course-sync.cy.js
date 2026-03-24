@@ -69,7 +69,7 @@ describe("course sync review flow", () => {
 
     loginAsAdmin()
     cy.visit("/courses")
-    cy.contains("button", "Review sync").click()
+    cy.contains("button", "Sync default courses").click()
 
     cy.get('[data-cy="sync-review-modal"]').should("be.visible")
     cy.get('[data-cy="sync-section-changed"]').within(() => {
@@ -104,7 +104,7 @@ describe("course sync review flow", () => {
 
     loginAsAdmin()
     cy.visit("/courses")
-    cy.contains("button", "Review sync").click()
+    cy.contains("button", "Sync default courses").click()
     cy.get('[data-cy="sync-review-modal"]').should("be.visible")
     cy.get('[data-cy="sync-section-changed"]').within(() => {
       cy.contains(targetCourses[1].name).should("exist")

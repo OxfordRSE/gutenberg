@@ -190,7 +190,7 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
             <Button size="sm" onClick={handleSyncDefaults} disabled={syncing}>
               <span className="flex items-center gap-2">
                 <HiRefresh className={syncing ? "animate-spin" : ""} />
-                {syncing ? "Reviewing…" : "Review sync"}
+                {syncing ? "Reviewing…" : "Sync default courses"}
               </span>
             </Button>
           </div>
@@ -250,7 +250,7 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
         )}
       </div>
       <Modal show={showSyncModal} onClose={() => setShowSyncModal(false)} size="4xl">
-        <Modal.Header>Review course sync</Modal.Header>
+        <Modal.Header>Review default course changes</Modal.Header>
         <Modal.Body data-cy="sync-review-modal">
           {syncSummary && (
             <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -316,9 +316,9 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
                             <div className="mt-3 space-y-3">
                               {course.diffs.map((diff) => (
                                 <div
-                                  key={`${course.externalId}-${diff.field}`}
+                                  key={`${course.externalId}-${diff.id}`}
                                   className="rounded border border-slate-200 p-3 dark:border-slate-700"
-                                  data-cy={`sync-diff-${course.externalId}-${diff.field}`}
+                                  data-cy={`sync-diff-${course.externalId}-${diff.id}`}
                                 >
                                   <div className="font-medium text-gray-900 dark:text-white">{diff.label}</div>
                                   <div className="mt-2 grid grid-cols-1 gap-3 lg:grid-cols-2">

@@ -9,10 +9,11 @@ type CourseSyncDiffField =
   | "prerequisites"
   | "tags"
   | "outcomes"
-  | "groups"
+  | "group"
   | "items"
 
 export type CourseSyncDiff = {
+  id: string
   field: CourseSyncDiffField
   label: string
   current: string
@@ -59,7 +60,7 @@ const fieldLabels: Record<CourseSyncDiffField, string> = {
   prerequisites: "Prerequisites",
   tags: "Tags",
   outcomes: "Outcomes",
-  groups: "Material groups",
+  group: "Material group",
   items: "Ungrouped material",
 }
 
@@ -81,6 +82,18 @@ const formatGroupedItems = (
       return `${group.order}. ${group.name || "Untitled"}${summary}\n${items}`
     })
     .join("\n\n")
+}
+
+const formatGroup = (group?: {
+  name: string
+  summary: string
+  order: number
+  items: { section: string; order: number }[]
+}): string => {
+  if (!group) return "—"
+  const summary = group.summary ? ` — ${group.summary}` : ""
+  const items = group.items.length > 0 ? group.items.map((item) => `  ${item.order}. ${item.section}`).join("\n") : "  —"
+  return `${group.order}. ${group.name || "Untitled"}${summary}\n${items}`
 }
 
 const formatItems = (items: { section: string; order: number }[]): string => {
@@ -106,7 +119,7 @@ const formatCourseField = (course: NormalizedCourseJson, field: CourseSyncDiffFi
       return formatStringList(course.base.tags)
     case "outcomes":
       return formatStringList(course.base.outcomes)
-    case "groups":
+    case "group":
       return formatGroupedItems(course.groups)
     case "items":
       return formatItems(course.items)
@@ -120,7 +133,7 @@ export const diffNormalizedCourses = (
   current: NormalizedCourseJson,
   incoming: NormalizedCourseJson
 ): CourseSyncDiff[] => {
-  const fields: CourseSyncDiffField[] = [
+  const fields: Exclude<CourseSyncDiffField, "group">[] = [
     "name",
     "summary",
     "level",
@@ -129,23 +142,52 @@ export const diffNormalizedCourses = (
     "prerequisites",
     "tags",
     "outcomes",
-    "groups",
     "items",
   ]
 
-  return fields
-    .map((field) => {
+  const scalarDiffs: CourseSyncDiff[] = fields.flatMap((field) => {
       const currentValue = formatCourseField(current, field)
       const incomingValue = formatCourseField(incoming, field)
-      if (currentValue === incomingValue) return null
-      return {
-        field,
-        label: fieldLabels[field],
-        current: currentValue,
-        incoming: incomingValue,
-      }
+      if (currentValue === incomingValue) return []
+      return [
+        {
+          id: field,
+          field,
+          label: fieldLabels[field],
+          current: currentValue,
+          incoming: incomingValue,
+        },
+      ]
     })
-    .filter((entry): entry is CourseSyncDiff => entry !== null)
+
+  const maxGroups = Math.max(current.groups.length, incoming.groups.length)
+  const groupDiffs: CourseSyncDiff[] = []
+
+  for (let index = 0; index < maxGroups; index += 1) {
+    const currentGroup = current.groups[index]
+    const incomingGroup = incoming.groups[index]
+
+    if (JSON.stringify(currentGroup) === JSON.stringify(incomingGroup)) {
+      continue
+    }
+
+    const groupName = incomingGroup?.name || currentGroup?.name || `Group ${index + 1}`
+    const label = !currentGroup
+      ? `New material group: ${groupName}`
+      : !incomingGroup
+        ? `Removed material group: ${groupName}`
+        : `Material group ${index + 1}: ${groupName}`
+
+    groupDiffs.push({
+      id: `group-${index + 1}`,
+      field: "group",
+      label,
+      current: formatGroup(currentGroup),
+      incoming: formatGroup(incomingGroup),
+    })
+  }
+
+  return [...scalarDiffs, ...groupDiffs]
 }
 
 export const reviewCourseDefaults = (defaults: CourseJsonInput[], courses: DbCourseShape[]): CourseSyncReview => {

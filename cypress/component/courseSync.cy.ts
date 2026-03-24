@@ -177,8 +177,79 @@ describe("course sync review", () => {
       "prerequisites",
       "tags",
       "outcomes",
-      "groups",
+      "group",
       "items",
     ])
+  })
+
+  it("splits grouped material diffs per changed group", () => {
+    const review = reviewCourseDefaults(
+      [
+        {
+          externalId: "grouped_course",
+          name: "Grouped Course",
+          summary: "Unchanged summary",
+          level: "intermediate",
+          hidden: false,
+          language: ["cpp"],
+          tags: ["programming"],
+          prerequisites: [],
+          outcomes: [],
+          groups: [
+            {
+              name: "Procedural Programming",
+              summary: "Variables and functions in C++.",
+              order: 1,
+              items: [
+                { section: "HPCu.software_architecture_and_design.procedural.variables_cpp", order: 1 },
+                { section: "HPCu.software_architecture_and_design.procedural.functions_cpp", order: 2 },
+              ],
+            },
+            {
+              name: "Functional Programming",
+              summary: "Recursion and higher-order functions in C++.",
+              order: 2,
+              items: [{ section: "HPCu.software_architecture_and_design.functional.recursion_cpp", order: 1 }],
+            },
+          ],
+        },
+      ],
+      [
+        {
+          externalId: "grouped_course",
+          name: "Grouped Course",
+          summary: "Unchanged summary",
+          level: "intermediate",
+          hidden: false,
+          language: ["cpp"],
+          prerequisites: [],
+          tags: ["programming"],
+          outcomes: [],
+          CourseGroup: [
+            {
+              name: "Procedural Programming",
+              summary: "Variables and functions in C++.",
+              order: 1,
+              CourseItem: [{ section: "HPCu.software_architecture_and_design.procedural.variables_cpp", order: 1 }],
+            },
+            {
+              name: "Functional Programming",
+              summary: "Recursion and higher-order functions in C++.",
+              order: 2,
+              CourseItem: [{ section: "HPCu.software_architecture_and_design.functional.side_effects_cpp", order: 1 }],
+            },
+          ],
+          CourseItem: [],
+        },
+      ]
+    )
+
+    expect(review.changedCourses).to.have.length(1)
+    expect(review.changedCourses[0].diffs.map((diff) => diff.id)).to.deep.eq(["group-1", "group-2"])
+    expect(review.changedCourses[0].diffs.map((diff) => diff.label)).to.deep.eq([
+      "Material group 1: Procedural Programming",
+      "Material group 2: Functional Programming",
+    ])
+    expect(review.changedCourses[0].diffs.every((diff) => diff.field === "group")).to.eq(true)
   })
 })
