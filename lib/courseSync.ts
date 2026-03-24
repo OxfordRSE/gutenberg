@@ -77,8 +77,7 @@ const formatGroupedItems = (
   return groups
     .map((group) => {
       const summary = group.summary ? ` — ${group.summary}` : ""
-      const items =
-        group.items.length > 0 ? group.items.map((item) => `${item.order}. ${item.section}`).join("; ") : "—"
+      const items = group.items.length > 0 ? group.items.map((item) => `  ${item.order}. ${item.section}`).join("\n") : "  —"
       return `${group.order}. ${group.name || "Untitled"}${summary}\n${items}`
     })
     .join("\n\n")

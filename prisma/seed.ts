@@ -461,7 +461,7 @@ async function main() {
   const course = await upsertCourseWithGroups(1, {
       externalId: "course_software_architecture_cpp",
       name: "Software Architecture in C++",
-      summary: "Build a stronger C++ design foundation through procedural, functional, and object orientated programming.",
+      summary: "Procedural, functional, and object orientated programming in C++.",
       level: "intermediate",
       hidden: false,
       language: ["cpp"],
@@ -475,7 +475,7 @@ async function main() {
       groups: [
         {
           name: "Procedural Programming",
-          summary: "Structure C++ programs around variables, functions, and containers.",
+          summary: "Variables, functions, and containers in C++.",
           order: 1,
           items: [
             { order: 1, section: "HPCu.software_architecture_and_design.procedural.variables_cpp" },
@@ -485,7 +485,7 @@ async function main() {
         },
         {
           name: "Functional Programming",
-          summary: "Use recursion, higher-order functions, and controlled side effects in C++.",
+          summary: "Recursion, higher-order functions, and side effects in C++.",
           order: 2,
           items: [
             { order: 1, section: "HPCu.software_architecture_and_design.functional.side_effects_cpp" },
@@ -495,7 +495,7 @@ async function main() {
         },
         {
           name: "Object Orientated Programming",
-          summary: "Model larger C++ systems using classes, inheritance, and polymorphism.",
+          summary: "Classes, inheritance, and polymorphism in C++.",
           order: 3,
           items: [
             { order: 1, section: "HPCu.software_architecture_and_design.object_orientated.classes_cpp" },
@@ -512,7 +512,7 @@ async function main() {
   const course2 = await upsertCourseWithGroups(2, {
       externalId: "course_software_architecture_python",
       name: "Software Architecture in Python",
-      summary: "Build maintainable Python software using procedural, functional, and object orientated design.",
+      summary: "Procedural, functional, and object orientated programming in Python.",
       level: "intermediate",
       hidden: false,
       language: ["python"],
@@ -526,7 +526,7 @@ async function main() {
       groups: [
         {
           name: "Procedural Programming",
-          summary: "Organise Python scripts around variables, data structures, and functions.",
+          summary: "Variables, data structures, and functions in Python.",
           order: 1,
           items: [
             { order: 1, section: "HPCu.software_architecture_and_design.procedural.variables_python" },
@@ -537,7 +537,7 @@ async function main() {
         },
         {
           name: "Functional Programming",
-          summary: "Use recursion, higher-order functions, and controlled side effects in Python.",
+          summary: "Recursion, higher-order functions, and side effects in Python.",
           order: 2,
           items: [
             { order: 1, section: "HPCu.software_architecture_and_design.functional.side_effects_python" },
@@ -547,7 +547,7 @@ async function main() {
         },
         {
           name: "Object Orientated Programming",
-          summary: "Model larger Python systems using classes, inheritance, and polymorphism.",
+          summary: "Classes, inheritance, and polymorphism in Python.",
           order: 3,
           items: [
             { order: 1, section: "HPCu.software_architecture_and_design.object_orientated.classes" },
@@ -595,7 +595,7 @@ async function main() {
   await upsertCourseWithGroups(3, {
       externalId: "course_intro_cpp",
       name: "Intro to C++",
-      summary: "Get started with the shell, your IDE, and core procedural C++ concepts.",
+      summary: "Shell basics, IDE setup, and core C++ concepts.",
       level: "beginner",
       hidden: false,
       language: ["cpp"],
@@ -609,7 +609,7 @@ async function main() {
       groups: [
         {
           name: "Shell Basics",
-          summary: "Learn the command-line skills used throughout the rest of the material.",
+          summary: "Command-line basics used in later material.",
           order: 1,
           items: [
             { order: 1, section: "HPCu.technology_and_tooling.bash_shell.01-intro" },
@@ -619,13 +619,13 @@ async function main() {
         },
         {
           name: "Development Environment",
-          summary: "Set up an editor and workflow for C++ coding.",
+          summary: "Editor setup for C++ work.",
           order: 2,
           items: [{ order: 1, section: "HPCu.technology_and_tooling.ide.cpp" }],
         },
         {
           name: "C++ Foundations",
-          summary: "Build a procedural programming foundation in C++.",
+          summary: "Core procedural programming in C++.",
           order: 3,
           items: [
             { order: 1, section: "HPCu.software_architecture_and_design.procedural.variables_cpp" },
@@ -639,7 +639,7 @@ async function main() {
   await upsertCourseWithGroups(4, {
       externalId: "course_intro_python",
       name: "Intro to Python",
-      summary: "Learn Python fundamentals for scripting, data work, and scientific computing.",
+      summary: "Python fundamentals for scripting and data work.",
       level: "beginner",
       hidden: false,
       language: ["python"],
@@ -653,7 +653,7 @@ async function main() {
       groups: [
         {
           name: "Getting Started",
-          summary: "Set up Python and learn the core language building blocks.",
+          summary: "Setup and core Python basics.",
           order: 1,
           items: [
             { order: 1, section: "HPCu.introductory_courses.python.01_running_python" },
@@ -665,7 +665,7 @@ async function main() {
         },
         {
           name: "Data and Control Flow",
-          summary: "Work with data, collections, loops, and conditionals.",
+          summary: "Data, lists, loops, and conditionals.",
           order: 2,
           items: [
             { order: 1, section: "HPCu.introductory_courses.python.06_analyzing_and_visualizing_data" },
@@ -679,7 +679,7 @@ async function main() {
         },
         {
           name: "Functions and Scope",
-          summary: "Write reusable code and finish with a small applied project.",
+          summary: "Functions, scope, and a small project.",
           order: 3,
           items: [
             { order: 1, section: "HPCu.introductory_courses.python.13_writing_functions" },
@@ -693,7 +693,7 @@ async function main() {
   await upsertCourseWithGroups(5, {
       externalId: "course_hpc_introduction",
       name: "HPC Introduction",
-      summary: "Understand how to connect to, work on, and use HPC systems responsibly.",
+      summary: "Getting started with HPC systems.",
       level: "beginner",
       hidden: false,
       language: [],
@@ -707,7 +707,7 @@ async function main() {
       groups: [
         {
           name: "Connecting to HPC",
-          summary: "Learn what HPC is and how to access a cluster.",
+          summary: "What HPC is and how to connect.",
           order: 1,
           items: [
             { order: 1, section: "HPCu.high_performance_computing.hpc_intro.01_hpc_intro" },
@@ -718,7 +718,7 @@ async function main() {
         },
         {
           name: "Working on a Cluster",
-          summary: "Use modules, move files, and request the right resources.",
+          summary: "Modules, file transfer, and job resources.",
           order: 2,
           items: [
             { order: 1, section: "HPCu.high_performance_computing.hpc_intro.05_modules" },
@@ -729,7 +729,7 @@ async function main() {
         },
         {
           name: "Responsible Usage",
-          summary: "Adopt good habits on shared infrastructure.",
+          summary: "Responsible use of shared systems.",
           order: 3,
           items: [{ order: 1, section: "HPCu.high_performance_computing.hpc_intro.09_responsibility" }],
         },

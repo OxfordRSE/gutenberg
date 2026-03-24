@@ -276,10 +276,11 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
                   <div className="mt-3 space-y-3">
                     {syncReview.newCourses.map((course) => (
                       <Card key={course.externalId} data-cy={`sync-course-${course.externalId}`}>
-                        <label className="flex cursor-pointer items-start gap-3">
+                        <div className="flex items-start gap-3">
                           <input
                             type="checkbox"
                             className="mt-1"
+                            aria-label={`Select ${course.name} for sync`}
                             data-cy={`sync-checkbox-${course.externalId}`}
                             checked={selectedSyncExternalIds.includes(course.externalId)}
                             onChange={() => toggleSyncExternalId(course.externalId)}
@@ -288,7 +289,7 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
                             <div className="font-semibold text-gray-900 dark:text-white">{course.name}</div>
                             <div className="text-sm text-gray-600 dark:text-gray-400">{course.externalId}</div>
                           </div>
-                        </label>
+                        </div>
                       </Card>
                     ))}
                   </div>
@@ -300,10 +301,11 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
                   <div className="mt-3 space-y-3">
                     {syncReview.changedCourses.map((course) => (
                       <Card key={course.externalId} data-cy={`sync-course-${course.externalId}`}>
-                        <label className="flex cursor-pointer items-start gap-3">
+                        <div className="flex items-start gap-3">
                           <input
                             type="checkbox"
                             className="mt-1"
+                            aria-label={`Select ${course.name} for sync`}
                             data-cy={`sync-checkbox-${course.externalId}`}
                             checked={selectedSyncExternalIds.includes(course.externalId)}
                             onChange={() => toggleSyncExternalId(course.externalId)}
@@ -324,7 +326,7 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
                                       <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
                                         Current
                                       </div>
-                                      <pre className="mt-1 whitespace-pre-wrap rounded bg-slate-100 p-2 text-xs text-gray-800 dark:bg-slate-900 dark:text-gray-200">
+                                      <pre className="mt-1 max-h-80 overflow-auto whitespace-pre-wrap break-all rounded bg-slate-100 p-2 text-xs text-gray-800 dark:bg-slate-900 dark:text-gray-200">
                                         {diff.current}
                                       </pre>
                                     </div>
@@ -332,7 +334,7 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
                                       <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
                                         Incoming
                                       </div>
-                                      <pre className="mt-1 whitespace-pre-wrap rounded bg-emerald-50 p-2 text-xs text-gray-800 dark:bg-emerald-950/30 dark:text-gray-200">
+                                      <pre className="mt-1 max-h-80 overflow-auto whitespace-pre-wrap break-all rounded bg-emerald-50 p-2 text-xs text-gray-800 dark:bg-emerald-950/30 dark:text-gray-200">
                                         {diff.incoming}
                                       </pre>
                                     </div>
@@ -341,7 +343,7 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
                               ))}
                             </div>
                           </div>
-                        </label>
+                        </div>
                       </Card>
                     ))}
                   </div>
