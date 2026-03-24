@@ -231,7 +231,7 @@ const AddCourse: NextPage<AddCourseProps> = ({ material, pageInfo }) => {
               className="min-h-[200px] w-full rounded-md border border-gray-300 bg-white p-2 text-sm text-gray-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
               value={jsonText}
               onChange={(event) => setJsonText(event.target.value)}
-              placeholder={`{\n  "name": "Intro to C++ (Self-paced)",\n  "summary": "Self-paced version of the C++ introduction",\n  "level": "beginner",\n  "hidden": false,\n  "language": ["cpp"],\n  "tags": ["cpp", "basics"],\n  "groups": [\n    {\n      "name": "Foundations",\n      "summary": "Core language fundamentals",\n      "order": 1,\n      "items": [\n        "HPCu.technology_and_tooling.bash_shell.bash",\n        "HPCu.technology_and_tooling.ide.cpp"\n      ]\n    }\n  ]\n}`}
+              placeholder={`{\n  "name": "Software Architecture in C++",\n  "summary": "Build a stronger C++ design foundation through procedural, functional, and object orientated programming.",\n  "level": "intermediate",\n  "hidden": false,\n  "language": ["cpp"],\n  "tags": ["programming", "software-design"],\n  "groups": [\n    {\n      "name": "Procedural Programming",\n      "summary": "Structure C++ programs around variables, functions, and containers.",\n      "order": 1,\n      "items": [\n        "HPCu.software_architecture_and_design.procedural.variables_cpp",\n        "HPCu.software_architecture_and_design.procedural.functions_cpp",\n        "HPCu.software_architecture_and_design.procedural.containers_cpp"\n      ]\n    }\n  ]\n}`}
             />
           </div>
           <div className="mt-4 flex justify-end">

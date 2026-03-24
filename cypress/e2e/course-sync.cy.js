@@ -3,16 +3,18 @@ describe("course sync review flow", () => {
 
   const targetCourses = [
     {
-      externalId: "course_intro_cpp",
-      name: "Intro to C++ (Self-paced)",
-      defaultSummary: "Self-paced version of the C++ introduction",
-      editedSummary: "Locally edited C++ summary for sync review",
+      externalId: "course_software_architecture_cpp",
+      name: "Software Architecture in C++",
+      defaultSummary:
+        "Build a stronger C++ design foundation through procedural, functional, and object orientated programming.",
+      editedSummary: "Locally edited C++ architecture summary for sync review",
     },
     {
-      externalId: "course_python_foundations",
-      name: "Python Foundations",
-      defaultSummary: "A practical intro to Python for research and automation.",
-      editedSummary: "Locally edited Python summary for sync review",
+      externalId: "course_software_architecture_python",
+      name: "Software Architecture in Python",
+      defaultSummary:
+        "Build maintainable Python software using procedural, functional, and object orientated design.",
+      editedSummary: "Locally edited Python architecture summary for sync review",
     },
   ]
 
