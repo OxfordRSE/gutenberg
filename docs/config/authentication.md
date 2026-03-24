@@ -1,6 +1,8 @@
 ---
 title: Authentication
 permalink: /config/authentication
+parent: Configuration
+nav_order: 3
 ---
 
 This project uses [NextAuth.js](https://next-auth.js.org/) for authentication, supporting multiple providers with a YAML-based configuration to style and enable each provider.

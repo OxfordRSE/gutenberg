@@ -1,6 +1,8 @@
 ---
 title: Environment Variables
 permalink: /config/vars
+parent: Configuration
+nav_order: 1
 ---
 
 This document describes the environment variables used in the project, please set theses as either an env file or as secrets on fly.io.

@@ -1,0 +1,3 @@
+{% if site.plausible and site.plausible.enabled and site.plausible.domain and site.plausible.script %}
+<script defer data-domain="{{ site.plausible.domain }}" src="{{ site.plausible.script }}"></script>
+{% endif %}

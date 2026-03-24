@@ -1,7 +1,40 @@
 ---
 title: Changelog
 permalink: /changelog
+nav_order: 8
 ---
+
+## v2.0
+
+Gutenberg v2.0 shifts the application from an event-heavy teaching site toward a fuller platform for both self-paced courses and scheduled cohort delivery.
+
+See [What's New in Gutenberg v2.0]({{ "/whats-new/v2-0/" | relative_url }}) for the broader release overview.
+
+### Courses
+
+- Added a real curated default course catalog based on current material rather than placeholder demo courses.
+- Added grouped one-page course editing and improved JSON import guidance around grouped material.
+- Added active course selection, enrolment-aware course actions, and better course surfaces on the home page and course list.
+- Added batched course progress fetching for list-style views.
+
+### Events
+
+- Added event creation from a course blueprint as well as blank-event creation.
+- Moved event-group material editing into the main event edit page so groups and material can be managed inline.
+- Improved event authoring consistency by aligning event editing more closely with the grouped course model.
+
+### Navigation and Learning Context
+
+- Added active learning context for courses and events.
+- Added material-page course hints and course-aware actions.
+- Added course-aware previous/next material navigation and return-to-course behavior.
+- Improved sidebar behavior so course and event context is surfaced more consistently while navigating.
+
+### Documentation, Testing, and Infrastructure
+
+- Replaced stale placeholder course docs with a guide structure that reflects the current product model.
+- Expanded component and end-to-end coverage around course, event, and sync workflows.
+- Improved local setup documentation for databases, seeds, and material checkout.
 
 ## v1.0
 

@@ -10,6 +10,8 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint .",
+    "docs": "BUNDLE_GEMFILE=docs/Gemfile bundle exec jekyll serve --source docs --destination docs/_site",
+    "docs:build": "BUNDLE_GEMFILE=docs/Gemfile bundle exec jekyll build --source docs --destination docs/_site",
     "cypress": "cypress open",
     "e2e": "start-server-and-test 'yarn dev' http://127.0.0.1:3000 \"dotenv -e .env.local -e .env cypress run --e2e\"",
     "ci:e2e": "start-server-and-test 'yarn start' http://127.0.0.1:3000 \"dotenv -e .env.local -e .env cypress run --e2e\"",

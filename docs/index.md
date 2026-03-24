@@ -1,24 +1,33 @@
+---
+title: Home
+nav_order: 1
+permalink: /
+---
+
 # Gutenberg
 
-This is the documentation for `Gutenberg`.
+Gutenberg is a teaching platform for working with authored learning material in two complementary ways:
 
-[About](/about.md)
+- **Self-paced courses** built from curated groups of material sections.
+- **Scheduled events** for live teaching, workshops, and cohort delivery.
 
-## Authentication
+The platform now supports both models as first-class workflows, including active learning context, progress tracking, structured course editing, and event creation from course blueprints.
 
-See the new [Authentication](config/authentication) page for configuring OAuth providers and secrets.
+## Start Here
 
-## Quick Start
+- [About Gutenberg]({{ "/about/" | relative_url }})
+- [Deploying Gutenberg]({{ "/deployment/" | relative_url }})
+- [Configuration]({{ "/config/" | relative_url }})
+- [User Guide]({{ "/guide/" | relative_url }})
 
-To get `Gutenberg` running follow our quick start guide to deploying and configuring the app.
-Once you are up and running, check out the user guide for instructions on how to use the application to deliver a course.
+## What To Read Next
 
-- [Deploying Gutenberg](/deployment.md)
-- [Configuring Gutenberg](config)
-- [User Guide](guide)
+- [What's New in Gutenberg v2.0]({{ "/whats-new/v2-0/" | relative_url }}) for a broad overview of the current release.
+- [Changelog]({{ "/changelog/" | relative_url }}) for version-by-version release summaries.
+- [Development Guide]({{ "/development/" | relative_url }}) if you want to work on or customise the application.
 
-## Development
+## Quick Product Overview
 
-If you wish to contribute to `Gutenberg` or simply want to customise the site further please refer to our [development guide](development).
+Use **courses** when you want a reusable, self-paced learning path with grouped material and tracked progress. Use **events** when you want to deliver the material to a cohort with dates, locations, enrolment, instructors, and event-specific structure.
 
-[A full change log can be found here](/changelog).
+Material still lives in one or more configured markdown repositories, but Gutenberg now layers richer teaching tools on top of that material: default courses, course sync, active course/event context, grouped navigation, and improved admin workflows.

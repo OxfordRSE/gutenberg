@@ -1,6 +1,7 @@
 ---
 title: Deployment
 permalink: /deployment/
+nav_order: 3
 ---
 
 On this page we will cover how to deploy the application to a production environment.
@@ -103,4 +104,4 @@ While we have touched on some key ones here, namely the database connection stri
 
 ## Using the site
 
-Once you are deployed, you can visit our [guide](/guide) for an overview of how to set up and manage a course event.
+Once you are deployed, you can visit our [guide]({{ "/guide/" | relative_url }}) for an overview of how to use courses and events in Gutenberg.

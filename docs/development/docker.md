@@ -1,6 +1,8 @@
 ---
-Title: Docker & Compose
+title: Docker & Compose
 permalink: /development/docker
+parent: Development
+nav_order: 1
 ---
 
 Gutenberg supports Docker workflows for both production deployment and active local development.:

@@ -1,6 +1,8 @@
 ---
 title: Development
 permalink: /development/
+nav_order: 6
+has_children: true
 ---
 
 `Gutenberg` is a node.js application built using Next.js and Prisma.
