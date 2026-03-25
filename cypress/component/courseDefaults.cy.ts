@@ -34,11 +34,9 @@ describe("course defaults config", () => {
     defaults.courses.forEach((course: any) => {
       expect(course.items ?? [], `${course.externalId} should not use ungrouped items`).to.have.length(0)
       expect(course.groups, `${course.externalId} should define groups`).to.be.an("array").and.not.be.empty
-
       ;(course.tags ?? []).forEach((tag: string) => {
         expect(allowedTags.has(tag), `${course.externalId} tag ${tag} should be in the curated vocabulary`).to.eq(true)
       })
-
       ;(course.groups ?? []).forEach((group: any) => {
         expect(group.items, `${course.externalId}/${group.name} should have grouped items`).to.be.an("array").and.not.be
           .empty

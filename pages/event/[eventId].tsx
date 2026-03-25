@@ -1,4 +1,5 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from "next"
+import Link from "next/link"
 import { getMaterial, Material, removeMarkdown } from "lib/material"
 import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
@@ -199,6 +200,13 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
   const pageTitle = pageInfo?.title ? `${currentEvent.name}: ${pageInfo.title}` : currentEvent.name
   return (
     <Layout material={material} pageInfo={pageInfo} pageTitle={pageTitle}>
+      {isAdmin && (
+        <div className="flex justify-end px-2 pt-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32">
+          <Link href={`/event/${currentEvent.id}/stats`}>
+            <Button color="light">View stats</Button>
+          </Link>
+        </div>
+      )}
       {eventData && isAdmin ? (
         <Tabs.Group style="underline" ref={tabsRef} onActiveTabChange={handleTabChange}>
           <Tabs.Item active={activeTabIndex === 0} icon={MdPreview} title="Event">

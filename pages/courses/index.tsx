@@ -182,6 +182,11 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
         <Title text="Courses" className="text-3xl font-bold text-center p-3" style={{ marginBottom: "0px" }} />
         {!profileLoading && userProfile?.admin && (
           <div className="flex items-center gap-2">
+            <Link href="/courses/stats">
+              <Button size="sm" color="light">
+                Stats
+              </Button>
+            </Link>
             <Link href="/courses/add">
               <Button size="sm" color="info">
                 Add course

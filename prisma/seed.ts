@@ -9,6 +9,38 @@ type SeedCourseGroup = {
   items: { order: number; section: string }[]
 }
 
+async function upsertProblem(data: {
+  userEmail: string
+  section: string
+  tag: string
+  complete: boolean
+  difficulty?: number
+  notes?: string
+}) {
+  await prisma.problem.upsert({
+    where: {
+      userEmail_tag_section: {
+        userEmail: data.userEmail,
+        tag: data.tag,
+        section: data.section,
+      },
+    },
+    update: {
+      complete: data.complete,
+      difficulty: data.difficulty ?? 5,
+      notes: data.notes ?? "",
+    },
+    create: {
+      userEmail: data.userEmail,
+      section: data.section,
+      tag: data.tag,
+      complete: data.complete,
+      difficulty: data.difficulty ?? 5,
+      notes: data.notes ?? "",
+    },
+  })
+}
+
 async function upsertCourseWithGroups(
   id: number,
   data: {
@@ -459,282 +491,342 @@ async function main() {
   })
 
   const course = await upsertCourseWithGroups(1, {
-      externalId: "course_software_architecture_cpp",
-      name: "Software Architecture in C++",
-      summary: "Procedural, functional, and object orientated programming in C++.",
-      level: "intermediate",
-      hidden: false,
-      language: ["cpp"],
-      prerequisites: ["Intro to C++"],
-      tags: ["programming", "software-design"],
-      outcomes: [
-        "Write clearer procedural C++ code",
-        "Apply functional techniques in C++",
-        "Design object orientated C++ programs",
-      ],
-      groups: [
-        {
-          name: "Procedural Programming",
-          summary: "Variables, functions, and containers in C++.",
-          order: 1,
-          items: [
-            { order: 1, section: "HPCu.software_architecture_and_design.procedural.variables_cpp" },
-            { order: 2, section: "HPCu.software_architecture_and_design.procedural.functions_cpp" },
-            { order: 3, section: "HPCu.software_architecture_and_design.procedural.containers_cpp" },
-          ],
-        },
-        {
-          name: "Functional Programming",
-          summary: "Recursion, higher-order functions, and side effects in C++.",
-          order: 2,
-          items: [
-            { order: 1, section: "HPCu.software_architecture_and_design.functional.side_effects_cpp" },
-            { order: 2, section: "HPCu.software_architecture_and_design.functional.recursion_cpp" },
-            { order: 3, section: "HPCu.software_architecture_and_design.functional.higher_order_functions_cpp" },
-          ],
-        },
-        {
-          name: "Object Orientated Programming",
-          summary: "Classes, inheritance, and polymorphism in C++.",
-          order: 3,
-          items: [
-            { order: 1, section: "HPCu.software_architecture_and_design.object_orientated.classes_cpp" },
-            {
-              order: 2,
-              section: "HPCu.software_architecture_and_design.object_orientated.inheritance_and_composition_cpp",
-            },
-            { order: 3, section: "HPCu.software_architecture_and_design.object_orientated.polymorphism_cpp" },
-          ],
-        },
-      ],
-    })
+    externalId: "course_software_architecture_cpp",
+    name: "Software Architecture in C++",
+    summary: "Procedural, functional, and object orientated programming in C++.",
+    level: "intermediate",
+    hidden: false,
+    language: ["cpp"],
+    prerequisites: ["Intro to C++"],
+    tags: ["programming", "software-design"],
+    outcomes: [
+      "Write clearer procedural C++ code",
+      "Apply functional techniques in C++",
+      "Design object orientated C++ programs",
+    ],
+    groups: [
+      {
+        name: "Procedural Programming",
+        summary: "Variables, functions, and containers in C++.",
+        order: 1,
+        items: [
+          { order: 1, section: "HPCu.software_architecture_and_design.procedural.variables_cpp" },
+          { order: 2, section: "HPCu.software_architecture_and_design.procedural.functions_cpp" },
+          { order: 3, section: "HPCu.software_architecture_and_design.procedural.containers_cpp" },
+        ],
+      },
+      {
+        name: "Functional Programming",
+        summary: "Recursion, higher-order functions, and side effects in C++.",
+        order: 2,
+        items: [
+          { order: 1, section: "HPCu.software_architecture_and_design.functional.side_effects_cpp" },
+          { order: 2, section: "HPCu.software_architecture_and_design.functional.recursion_cpp" },
+          { order: 3, section: "HPCu.software_architecture_and_design.functional.higher_order_functions_cpp" },
+        ],
+      },
+      {
+        name: "Object Orientated Programming",
+        summary: "Classes, inheritance, and polymorphism in C++.",
+        order: 3,
+        items: [
+          { order: 1, section: "HPCu.software_architecture_and_design.object_orientated.classes_cpp" },
+          {
+            order: 2,
+            section: "HPCu.software_architecture_and_design.object_orientated.inheritance_and_composition_cpp",
+          },
+          { order: 3, section: "HPCu.software_architecture_and_design.object_orientated.polymorphism_cpp" },
+        ],
+      },
+    ],
+  })
 
   const course2 = await upsertCourseWithGroups(2, {
-      externalId: "course_software_architecture_python",
-      name: "Software Architecture in Python",
-      summary: "Procedural, functional, and object orientated programming in Python.",
-      level: "intermediate",
-      hidden: false,
-      language: ["python"],
-      prerequisites: ["Intro to Python"],
-      tags: ["programming", "software-design"],
-      outcomes: [
-        "Write clearer procedural Python code",
-        "Apply functional techniques in Python",
-        "Design object orientated Python programs",
-      ],
-      groups: [
-        {
-          name: "Procedural Programming",
-          summary: "Variables, data structures, and functions in Python.",
-          order: 1,
-          items: [
-            { order: 1, section: "HPCu.software_architecture_and_design.procedural.variables_python" },
-            { order: 2, section: "HPCu.software_architecture_and_design.procedural.arrays_python" },
-            { order: 3, section: "HPCu.software_architecture_and_design.procedural.containers_python" },
-            { order: 4, section: "HPCu.software_architecture_and_design.procedural.functions_python" },
-          ],
-        },
-        {
-          name: "Functional Programming",
-          summary: "Recursion, higher-order functions, and side effects in Python.",
-          order: 2,
-          items: [
-            { order: 1, section: "HPCu.software_architecture_and_design.functional.side_effects_python" },
-            { order: 2, section: "HPCu.software_architecture_and_design.functional.recursion_python" },
-            { order: 3, section: "HPCu.software_architecture_and_design.functional.higher_order_functions_python" },
-          ],
-        },
-        {
-          name: "Object Orientated Programming",
-          summary: "Classes, inheritance, and polymorphism in Python.",
-          order: 3,
-          items: [
-            { order: 1, section: "HPCu.software_architecture_and_design.object_orientated.classes" },
-            {
-              order: 2,
-              section: "HPCu.software_architecture_and_design.object_orientated.inheritance_and_composition",
-            },
-            { order: 3, section: "HPCu.software_architecture_and_design.object_orientated.polymorphism" },
-          ],
-        },
-      ],
-    })
+    externalId: "course_software_architecture_python",
+    name: "Software Architecture in Python",
+    summary: "Procedural, functional, and object orientated programming in Python.",
+    level: "intermediate",
+    hidden: false,
+    language: ["python"],
+    prerequisites: ["Intro to Python"],
+    tags: ["programming", "software-design"],
+    outcomes: [
+      "Write clearer procedural Python code",
+      "Apply functional techniques in Python",
+      "Design object orientated Python programs",
+    ],
+    groups: [
+      {
+        name: "Procedural Programming",
+        summary: "Variables, data structures, and functions in Python.",
+        order: 1,
+        items: [
+          { order: 1, section: "HPCu.software_architecture_and_design.procedural.variables_python" },
+          { order: 2, section: "HPCu.software_architecture_and_design.procedural.arrays_python" },
+          { order: 3, section: "HPCu.software_architecture_and_design.procedural.containers_python" },
+          { order: 4, section: "HPCu.software_architecture_and_design.procedural.functions_python" },
+        ],
+      },
+      {
+        name: "Functional Programming",
+        summary: "Recursion, higher-order functions, and side effects in Python.",
+        order: 2,
+        items: [
+          { order: 1, section: "HPCu.software_architecture_and_design.functional.side_effects_python" },
+          { order: 2, section: "HPCu.software_architecture_and_design.functional.recursion_python" },
+          { order: 3, section: "HPCu.software_architecture_and_design.functional.higher_order_functions_python" },
+        ],
+      },
+      {
+        name: "Object Orientated Programming",
+        summary: "Classes, inheritance, and polymorphism in Python.",
+        order: 3,
+        items: [
+          { order: 1, section: "HPCu.software_architecture_and_design.object_orientated.classes" },
+          {
+            order: 2,
+            section: "HPCu.software_architecture_and_design.object_orientated.inheritance_and_composition",
+          },
+          { order: 3, section: "HPCu.software_architecture_and_design.object_orientated.polymorphism" },
+        ],
+      },
+    ],
+  })
 
   await prisma.userOnCourse.upsert({
     where: { userEmail_courseId: { userEmail: userStudentOnCourse.email || "", courseId: course.id } },
-    update: {},
+    update: {
+      status: "ENROLLED",
+      startedAt: new Date("2026-03-01T09:00:00Z"),
+      completedAt: null,
+    },
     create: {
       userEmail: userStudentOnCourse.email || "",
       courseId: course.id,
       status: "ENROLLED",
+      startedAt: new Date("2026-03-01T09:00:00Z"),
     },
   })
 
   await prisma.userOnCourse.upsert({
     where: { userEmail_courseId: { userEmail: userInstructorOnCourse.email || "", courseId: course.id } },
-    update: {},
+    update: {
+      status: "COMPLETED",
+      startedAt: new Date("2026-02-01T09:00:00Z"),
+      completedAt: new Date("2026-02-10T09:00:00Z"),
+    },
     create: {
       userEmail: userInstructorOnCourse.email || "",
       courseId: course.id,
-      status: "ENROLLED",
+      status: "COMPLETED",
+      startedAt: new Date("2026-02-01T09:00:00Z"),
+      completedAt: new Date("2026-02-10T09:00:00Z"),
     },
   })
 
   await prisma.userOnCourse.upsert({
     where: { userEmail_courseId: { userEmail: userStudentOnCourse.email || "", courseId: course2.id } },
-    update: {},
+    update: {
+      status: "COMPLETED",
+      startedAt: new Date("2026-01-10T09:00:00Z"),
+      completedAt: new Date("2026-01-17T09:00:00Z"),
+    },
     create: {
       userEmail: userStudentOnCourse.email || "",
       courseId: course2.id,
       status: "COMPLETED",
-      completedAt: new Date(),
+      startedAt: new Date("2026-01-10T09:00:00Z"),
+      completedAt: new Date("2026-01-17T09:00:00Z"),
     },
   })
 
-  await upsertCourseWithGroups(3, {
-      externalId: "course_intro_cpp",
-      name: "Intro to C++",
-      summary: "Shell basics, IDE setup, and core C++ concepts.",
-      level: "beginner",
-      hidden: false,
-      language: ["cpp"],
-      prerequisites: [],
-      tags: ["programming", "tooling"],
-      outcomes: [
-        "Work confidently at the command line",
-        "Use an IDE for C++ development",
-        "Understand core C++ variables, functions, and containers",
-      ],
-      groups: [
-        {
-          name: "Shell Basics",
-          summary: "Command-line basics used in later material.",
-          order: 1,
-          items: [
-            { order: 1, section: "HPCu.technology_and_tooling.bash_shell.01-intro" },
-            { order: 2, section: "HPCu.technology_and_tooling.bash_shell.02-filedir" },
-            { order: 3, section: "HPCu.technology_and_tooling.bash_shell.03-create" },
-          ],
-        },
-        {
-          name: "Development Environment",
-          summary: "Editor setup for C++ work.",
-          order: 2,
-          items: [{ order: 1, section: "HPCu.technology_and_tooling.ide.cpp" }],
-        },
-        {
-          name: "C++ Foundations",
-          summary: "Core procedural programming in C++.",
-          order: 3,
-          items: [
-            { order: 1, section: "HPCu.software_architecture_and_design.procedural.variables_cpp" },
-            { order: 2, section: "HPCu.software_architecture_and_design.procedural.functions_cpp" },
-            { order: 3, section: "HPCu.software_architecture_and_design.procedural.containers_cpp" },
-          ],
-        },
-      ],
+  await prisma.userOnCourse.upsert({
+    where: { userEmail_courseId: { userEmail: userNotOnCourse.email || "", courseId: course.id } },
+    update: {
+      status: "DROPPED",
+      startedAt: new Date("2026-03-05T09:00:00Z"),
+      completedAt: null,
+    },
+    create: {
+      userEmail: userNotOnCourse.email || "",
+      courseId: course.id,
+      status: "DROPPED",
+      startedAt: new Date("2026-03-05T09:00:00Z"),
+    },
+  })
+
+  for (const tag of ["scope", "pointers", "cpp_calculate_pi"]) {
+    await upsertProblem({
+      userEmail: userStudentOnCourse.email || "",
+      section: "HPCu.software_architecture_and_design.procedural.variables_cpp",
+      tag,
+      complete: true,
+      difficulty: 4,
     })
+  }
+
+  for (const [section, tags] of [
+    ["HPCu.software_architecture_and_design.procedural.variables_cpp", ["scope", "pointers", "cpp_calculate_pi"]],
+    ["HPCu.software_architecture_and_design.procedural.functions_cpp", ["swap_cpp", "dot_product", "dot_product_cont"]],
+    [
+      "HPCu.software_architecture_and_design.procedural.containers_cpp",
+      ["dot_product", "matrix_multiply", "data_analysis_containers"],
+    ],
+  ] as const) {
+    for (const tag of tags) {
+      await upsertProblem({
+        userEmail: userInstructorOnCourse.email || "",
+        section,
+        tag,
+        complete: true,
+        difficulty: 3,
+      })
+    }
+  }
+
+  await upsertCourseWithGroups(3, {
+    externalId: "course_intro_cpp",
+    name: "Intro to C++",
+    summary: "Shell basics, IDE setup, and core C++ concepts.",
+    level: "beginner",
+    hidden: false,
+    language: ["cpp"],
+    prerequisites: [],
+    tags: ["programming", "tooling"],
+    outcomes: [
+      "Work confidently at the command line",
+      "Use an IDE for C++ development",
+      "Understand core C++ variables, functions, and containers",
+    ],
+    groups: [
+      {
+        name: "Shell Basics",
+        summary: "Command-line basics used in later material.",
+        order: 1,
+        items: [
+          { order: 1, section: "HPCu.technology_and_tooling.bash_shell.01-intro" },
+          { order: 2, section: "HPCu.technology_and_tooling.bash_shell.02-filedir" },
+          { order: 3, section: "HPCu.technology_and_tooling.bash_shell.03-create" },
+        ],
+      },
+      {
+        name: "Development Environment",
+        summary: "Editor setup for C++ work.",
+        order: 2,
+        items: [{ order: 1, section: "HPCu.technology_and_tooling.ide.cpp" }],
+      },
+      {
+        name: "C++ Foundations",
+        summary: "Core procedural programming in C++.",
+        order: 3,
+        items: [
+          { order: 1, section: "HPCu.software_architecture_and_design.procedural.variables_cpp" },
+          { order: 2, section: "HPCu.software_architecture_and_design.procedural.functions_cpp" },
+          { order: 3, section: "HPCu.software_architecture_and_design.procedural.containers_cpp" },
+        ],
+      },
+    ],
+  })
 
   await upsertCourseWithGroups(4, {
-      externalId: "course_intro_python",
-      name: "Intro to Python",
-      summary: "Python fundamentals for scripting and data work.",
-      level: "beginner",
-      hidden: false,
-      language: ["python"],
-      prerequisites: [],
-      tags: ["programming"],
-      outcomes: [
-        "Run Python code confidently",
-        "Use core data types and control flow",
-        "Write functions and work with data",
-      ],
-      groups: [
-        {
-          name: "Getting Started",
-          summary: "Setup and core Python basics.",
-          order: 1,
-          items: [
-            { order: 1, section: "HPCu.introductory_courses.python.01_running_python" },
-            { order: 2, section: "HPCu.introductory_courses.python.02_variables_and_types" },
-            { order: 3, section: "HPCu.introductory_courses.python.03_writing_and_running_ide" },
-            { order: 4, section: "HPCu.introductory_courses.python.04_built_in_functions_and_help" },
-            { order: 5, section: "HPCu.introductory_courses.python.05_libraries" },
-          ],
-        },
-        {
-          name: "Data and Control Flow",
-          summary: "Data, lists, loops, and conditionals.",
-          order: 2,
-          items: [
-            { order: 1, section: "HPCu.introductory_courses.python.06_analyzing_and_visualizing_data" },
-            { order: 2, section: "HPCu.introductory_courses.python.07_pandas_dataframes" },
-            { order: 3, section: "HPCu.introductory_courses.python.08_lists" },
-            { order: 4, section: "HPCu.introductory_courses.python.09_for_loops" },
-            { order: 5, section: "HPCu.introductory_courses.python.10_conditionals" },
-            { order: 6, section: "HPCu.introductory_courses.python.11_looping_over_data_sets" },
-            { order: 7, section: "HPCu.introductory_courses.python.12_errors_and_exceptions" },
-          ],
-        },
-        {
-          name: "Functions and Scope",
-          summary: "Functions, scope, and a small project.",
-          order: 3,
-          items: [
-            { order: 1, section: "HPCu.introductory_courses.python.13_writing_functions" },
-            { order: 2, section: "HPCu.introductory_courses.python.14_variable_scope" },
-            { order: 3, section: "HPCu.introductory_courses.python.15_snake_game" },
-          ],
-        },
-      ],
-    })
+    externalId: "course_intro_python",
+    name: "Intro to Python",
+    summary: "Python fundamentals for scripting and data work.",
+    level: "beginner",
+    hidden: false,
+    language: ["python"],
+    prerequisites: [],
+    tags: ["programming"],
+    outcomes: [
+      "Run Python code confidently",
+      "Use core data types and control flow",
+      "Write functions and work with data",
+    ],
+    groups: [
+      {
+        name: "Getting Started",
+        summary: "Setup and core Python basics.",
+        order: 1,
+        items: [
+          { order: 1, section: "HPCu.introductory_courses.python.01_running_python" },
+          { order: 2, section: "HPCu.introductory_courses.python.02_variables_and_types" },
+          { order: 3, section: "HPCu.introductory_courses.python.03_writing_and_running_ide" },
+          { order: 4, section: "HPCu.introductory_courses.python.04_built_in_functions_and_help" },
+          { order: 5, section: "HPCu.introductory_courses.python.05_libraries" },
+        ],
+      },
+      {
+        name: "Data and Control Flow",
+        summary: "Data, lists, loops, and conditionals.",
+        order: 2,
+        items: [
+          { order: 1, section: "HPCu.introductory_courses.python.06_analyzing_and_visualizing_data" },
+          { order: 2, section: "HPCu.introductory_courses.python.07_pandas_dataframes" },
+          { order: 3, section: "HPCu.introductory_courses.python.08_lists" },
+          { order: 4, section: "HPCu.introductory_courses.python.09_for_loops" },
+          { order: 5, section: "HPCu.introductory_courses.python.10_conditionals" },
+          { order: 6, section: "HPCu.introductory_courses.python.11_looping_over_data_sets" },
+          { order: 7, section: "HPCu.introductory_courses.python.12_errors_and_exceptions" },
+        ],
+      },
+      {
+        name: "Functions and Scope",
+        summary: "Functions, scope, and a small project.",
+        order: 3,
+        items: [
+          { order: 1, section: "HPCu.introductory_courses.python.13_writing_functions" },
+          { order: 2, section: "HPCu.introductory_courses.python.14_variable_scope" },
+          { order: 3, section: "HPCu.introductory_courses.python.15_snake_game" },
+        ],
+      },
+    ],
+  })
 
   await upsertCourseWithGroups(5, {
-      externalId: "course_hpc_introduction",
-      name: "HPC Introduction",
-      summary: "Getting started with HPC systems.",
-      level: "beginner",
-      hidden: false,
-      language: [],
-      prerequisites: [],
-      tags: ["hpc", "cluster-computing", "tooling"],
-      outcomes: [
-        "Connect to an HPC system",
-        "Understand schedulers, modules, and resources",
-        "Use shared systems responsibly",
-      ],
-      groups: [
-        {
-          name: "Connecting to HPC",
-          summary: "What HPC is and how to connect.",
-          order: 1,
-          items: [
-            { order: 1, section: "HPCu.high_performance_computing.hpc_intro.01_hpc_intro" },
-            { order: 2, section: "HPCu.high_performance_computing.hpc_intro.02_connecting" },
-            { order: 3, section: "HPCu.high_performance_computing.hpc_intro.03_cluster" },
-            { order: 4, section: "HPCu.high_performance_computing.hpc_intro.04_scheduler" },
-          ],
-        },
-        {
-          name: "Working on a Cluster",
-          summary: "Modules, file transfer, and job resources.",
-          order: 2,
-          items: [
-            { order: 1, section: "HPCu.high_performance_computing.hpc_intro.05_modules" },
-            { order: 2, section: "HPCu.high_performance_computing.hpc_intro.06_transferring_files" },
-            { order: 3, section: "HPCu.high_performance_computing.hpc_intro.07_parallel" },
-            { order: 4, section: "HPCu.high_performance_computing.hpc_intro.08_resources" },
-          ],
-        },
-        {
-          name: "Responsible Usage",
-          summary: "Responsible use of shared systems.",
-          order: 3,
-          items: [{ order: 1, section: "HPCu.high_performance_computing.hpc_intro.09_responsibility" }],
-        },
-      ],
-    })
+    externalId: "course_hpc_introduction",
+    name: "HPC Introduction",
+    summary: "Getting started with HPC systems.",
+    level: "beginner",
+    hidden: false,
+    language: [],
+    prerequisites: [],
+    tags: ["hpc", "cluster-computing", "tooling"],
+    outcomes: [
+      "Connect to an HPC system",
+      "Understand schedulers, modules, and resources",
+      "Use shared systems responsibly",
+    ],
+    groups: [
+      {
+        name: "Connecting to HPC",
+        summary: "What HPC is and how to connect.",
+        order: 1,
+        items: [
+          { order: 1, section: "HPCu.high_performance_computing.hpc_intro.01_hpc_intro" },
+          { order: 2, section: "HPCu.high_performance_computing.hpc_intro.02_connecting" },
+          { order: 3, section: "HPCu.high_performance_computing.hpc_intro.03_cluster" },
+          { order: 4, section: "HPCu.high_performance_computing.hpc_intro.04_scheduler" },
+        ],
+      },
+      {
+        name: "Working on a Cluster",
+        summary: "Modules, file transfer, and job resources.",
+        order: 2,
+        items: [
+          { order: 1, section: "HPCu.high_performance_computing.hpc_intro.05_modules" },
+          { order: 2, section: "HPCu.high_performance_computing.hpc_intro.06_transferring_files" },
+          { order: 3, section: "HPCu.high_performance_computing.hpc_intro.07_parallel" },
+          { order: 4, section: "HPCu.high_performance_computing.hpc_intro.08_resources" },
+        ],
+      },
+      {
+        name: "Responsible Usage",
+        summary: "Responsible use of shared systems.",
+        order: 3,
+        items: [{ order: 1, section: "HPCu.high_performance_computing.hpc_intro.09_responsibility" }],
+      },
+    ],
+  })
 }
 
 main()

@@ -45,13 +45,7 @@ describe("<CreateEventModal />", () => {
   it("creates a blank event by default", () => {
     const onCreate = cy.stub().as("onCreate")
 
-    cy.mount(
-      <CreateEventModal
-        show={true}
-        onClose={() => undefined}
-        onCreate={onCreate}
-      />
-    )
+    cy.mount(<CreateEventModal show={true} onClose={() => undefined} onCreate={onCreate} />)
 
     cy.get('[data-cy="create-event-start-at"]').clear().type("2026-05-10T14:15")
     cy.get('[data-cy="confirm-create-event"]').should("contain.text", "Create blank event").click()
@@ -64,13 +58,7 @@ describe("<CreateEventModal />", () => {
   it("requires a course selection before creating from a course blueprint", () => {
     const onCreate = cy.stub().as("onCreate")
 
-    cy.mount(
-      <CreateEventModal
-        show={true}
-        onClose={() => undefined}
-        onCreate={onCreate}
-      />
-    )
+    cy.mount(<CreateEventModal show={true} onClose={() => undefined} onCreate={onCreate} />)
 
     cy.get('[data-cy="create-event-mode-course"]').click()
     cy.wait("@getCourses")

@@ -11,6 +11,8 @@ import { loadPageTemplate, PageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
 import { BreadcrumbItem } from "lib/breadcrumbs"
 import { hasBuildDatabase, runBuildPrismaQuery } from "lib/buildPrisma"
+import useProfile from "lib/hooks/useProfile"
+import Link from "next/link"
 
 type Props = {
   material: Material
@@ -20,6 +22,7 @@ type Props = {
 
 const EventsPage: NextPage<Props> = ({ material, events, pageInfo }) => {
   const { data: session } = useSession()
+  const { userProfile, isLoading: profileLoading } = useProfile()
   const breadcrumbs: BreadcrumbItem[] = [{ label: "Events" }]
 
   return (
@@ -27,6 +30,13 @@ const EventsPage: NextPage<Props> = ({ material, events, pageInfo }) => {
       <div className="px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32">
         <div className="flex items-center justify-between gap-3 p-3">
           <Title text="Events" className="text-3xl font-bold" style={{ marginBottom: "0px" }} />
+          {!profileLoading && userProfile?.admin && (
+            <Link href="/events/stats">
+              <Button size="sm" color="light">
+                Stats
+              </Button>
+            </Link>
+          )}
         </div>
         <Card>
           <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Course Events</h2>

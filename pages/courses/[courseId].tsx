@@ -594,97 +594,104 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
       breadcrumbs={breadcrumbs}
     >
       {userProfile?.admin ? (
-        <Tabs.Group style="underline" ref={tabsRef} onActiveTabChange={handleTabChange}>
-          <Tabs.Item title="Course" active={activeTabIndex === 0} icon={MdPreview}>
-            <CoursePreview
-              material={material}
-              course={courseData}
-              userOnCourse={userOnCourseState}
-              onEnrol={handleEnrol}
-              onUnenrol={handleUnenrol}
-              onComplete={handleComplete}
-              isUpdatingEnrolment={isUpdatingEnrolment}
-              isLoggedIn={!!userProfile}
-              sectionMap={sectionMap}
-              progressTotal={totalProgress}
-              progressCompleted={completedProgress}
-            />
-          </Tabs.Item>
-          <Tabs.Item title="Edit" active={activeTabIndex === 1} icon={MdEdit}>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Stack>
-                <Textfield label="Title" name="name" control={control} />
-                <Textarea label="Summary" name="summary" control={control} />
-                <SelectField
-                  label="Level"
-                  name="level"
-                  control={control}
-                  options={[
-                    { label: "", value: "" },
-                    { label: "Beginner", value: "beginner" },
-                    { label: "Intermediate", value: "intermediate" },
-                    { label: "Advanced", value: "advanced" },
-                  ]}
-                />
-                <Checkbox label="Hidden" name="hidden" control={control} />
-                <Textarea label="Language (one per line)" name="languageText" control={control} />
-                <Textarea label="Tags (one per line)" name="tagsText" control={control} />
-                <Textarea label="Outcomes (one per line)" name="outcomesText" control={control} />
-                <Textarea label="Prerequisites (one per line)" name="prerequisitesText" control={control} />
-
-                <Title text="Material Groups" />
-                {groups.length === 0 && (
-                  <MaterialGroupsNotice
-                    dataCy="course-groups-required"
-                    heading="Add a group before adding learning material"
-                    body="Courses organise material through groups. Create a material group first, then add sections to that group."
+        <div className="px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32">
+          <div className="mb-4 flex justify-end">
+            <Link href={`/courses/${courseData.id}/stats`}>
+              <Button color="light">View stats</Button>
+            </Link>
+          </div>
+          <Tabs.Group style="underline" ref={tabsRef} onActiveTabChange={handleTabChange}>
+            <Tabs.Item title="Course" active={activeTabIndex === 0} icon={MdPreview}>
+              <CoursePreview
+                material={material}
+                course={courseData}
+                userOnCourse={userOnCourseState}
+                onEnrol={handleEnrol}
+                onUnenrol={handleUnenrol}
+                onComplete={handleComplete}
+                isUpdatingEnrolment={isUpdatingEnrolment}
+                isLoggedIn={!!userProfile}
+                sectionMap={sectionMap}
+                progressTotal={totalProgress}
+                progressCompleted={completedProgress}
+              />
+            </Tabs.Item>
+            <Tabs.Item title="Edit" active={activeTabIndex === 1} icon={MdEdit}>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <Stack>
+                  <Textfield label="Title" name="name" control={control} />
+                  <Textarea label="Summary" name="summary" control={control} />
+                  <SelectField
+                    label="Level"
+                    name="level"
+                    control={control}
+                    options={[
+                      { label: "", value: "" },
+                      { label: "Beginner", value: "beginner" },
+                      { label: "Intermediate", value: "intermediate" },
+                      { label: "Advanced", value: "advanced" },
+                    ]}
                   />
-                )}
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  {groups.map((group, groupIndex) => (
-                    <Stack key={group.fieldId}>
-                      <input type="hidden" {...register(`CourseGroup.${groupIndex}.id`)} />
-                      <Textfield label="Group Name" name={`CourseGroup.${groupIndex}.name`} control={control} />
-                      <Textarea label="Group Summary" name={`CourseGroup.${groupIndex}.summary`} control={control} />
-                      <Textfield
-                        label="Group Order"
-                        name={`CourseGroup.${groupIndex}.order`}
-                        control={control}
-                        textfieldProps={{ type: "number" }}
-                      />
-                      <CourseGroupEditor
-                        control={control}
-                        register={register}
-                        groupIndex={groupIndex}
-                        sectionsOptions={sectionsOptions}
-                      />
-                      <Button type="button" color="warning" onClick={() => removeGroup(groupIndex)}>
-                        Delete Group
-                      </Button>
-                    </Stack>
-                  ))}
-                  <Button
-                    type="button"
-                    onClick={() =>
-                      appendGroup({ id: 0, name: "", summary: "", order: groups.length + 1, CourseItem: [] })
-                    }
-                  >
-                    Add Group
-                  </Button>
-                </div>
+                  <Checkbox label="Hidden" name="hidden" control={control} />
+                  <Textarea label="Language (one per line)" name="languageText" control={control} />
+                  <Textarea label="Tags (one per line)" name="tagsText" control={control} />
+                  <Textarea label="Outcomes (one per line)" name="outcomesText" control={control} />
+                  <Textarea label="Prerequisites (one per line)" name="prerequisitesText" control={control} />
 
-                <Title text="Export JSON" />
-                <div className="flex justify-end">
-                  <Button type="button" onClick={() => setShowExportModal(true)}>
-                    Export as JSON
-                  </Button>
-                </div>
+                  <Title text="Material Groups" />
+                  {groups.length === 0 && (
+                    <MaterialGroupsNotice
+                      dataCy="course-groups-required"
+                      heading="Add a group before adding learning material"
+                      body="Courses organise material through groups. Create a material group first, then add sections to that group."
+                    />
+                  )}
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    {groups.map((group, groupIndex) => (
+                      <Stack key={group.fieldId}>
+                        <input type="hidden" {...register(`CourseGroup.${groupIndex}.id`)} />
+                        <Textfield label="Group Name" name={`CourseGroup.${groupIndex}.name`} control={control} />
+                        <Textarea label="Group Summary" name={`CourseGroup.${groupIndex}.summary`} control={control} />
+                        <Textfield
+                          label="Group Order"
+                          name={`CourseGroup.${groupIndex}.order`}
+                          control={control}
+                          textfieldProps={{ type: "number" }}
+                        />
+                        <CourseGroupEditor
+                          control={control}
+                          register={register}
+                          groupIndex={groupIndex}
+                          sectionsOptions={sectionsOptions}
+                        />
+                        <Button type="button" color="warning" onClick={() => removeGroup(groupIndex)}>
+                          Delete Group
+                        </Button>
+                      </Stack>
+                    ))}
+                    <Button
+                      type="button"
+                      onClick={() =>
+                        appendGroup({ id: 0, name: "", summary: "", order: groups.length + 1, CourseItem: [] })
+                      }
+                    >
+                      Add Group
+                    </Button>
+                  </div>
 
-                <Button type="submit">Save Changes</Button>
-              </Stack>
-            </form>
-          </Tabs.Item>
-        </Tabs.Group>
+                  <Title text="Export JSON" />
+                  <div className="flex justify-end">
+                    <Button type="button" onClick={() => setShowExportModal(true)}>
+                      Export as JSON
+                    </Button>
+                  </div>
+
+                  <Button type="submit">Save Changes</Button>
+                </Stack>
+              </form>
+            </Tabs.Item>
+          </Tabs.Group>
+        </div>
       ) : (
         <CoursePreview
           material={material}

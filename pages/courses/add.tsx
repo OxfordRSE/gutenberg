@@ -223,7 +223,10 @@ const AddCourse: NextPage<AddCourseProps> = ({ material, pageInfo }) => {
           </div>
           {jsonError && <div className="mb-3 mt-3 text-sm text-red-600 dark:text-red-400">{jsonError}</div>}
           <div className="mt-3">
-            <label htmlFor="course-json-input" className="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">
+            <label
+              htmlFor="course-json-input"
+              className="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300"
+            >
               Course JSON
             </label>
             <textarea

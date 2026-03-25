@@ -12,8 +12,7 @@ describe("course sync review flow", () => {
     {
       externalId: "course_software_architecture_python",
       name: "Software Architecture in Python",
-      defaultSummary:
-        "Build maintainable Python software using procedural, functional, and object orientated design.",
+      defaultSummary: "Build maintainable Python software using procedural, functional, and object orientated design.",
       editedSummary: "Locally edited Python architecture summary for sync review",
     },
   ]

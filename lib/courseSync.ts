@@ -78,7 +78,8 @@ const formatGroupedItems = (
   return groups
     .map((group) => {
       const summary = group.summary ? ` — ${group.summary}` : ""
-      const items = group.items.length > 0 ? group.items.map((item) => `  ${item.order}. ${item.section}`).join("\n") : "  —"
+      const items =
+        group.items.length > 0 ? group.items.map((item) => `  ${item.order}. ${item.section}`).join("\n") : "  —"
       return `${group.order}. ${group.name || "Untitled"}${summary}\n${items}`
     })
     .join("\n\n")
@@ -92,7 +93,8 @@ const formatGroup = (group?: {
 }): string => {
   if (!group) return "—"
   const summary = group.summary ? ` — ${group.summary}` : ""
-  const items = group.items.length > 0 ? group.items.map((item) => `  ${item.order}. ${item.section}`).join("\n") : "  —"
+  const items =
+    group.items.length > 0 ? group.items.map((item) => `  ${item.order}. ${item.section}`).join("\n") : "  —"
   return `${group.order}. ${group.name || "Untitled"}${summary}\n${items}`
 }
 
@@ -146,19 +148,19 @@ export const diffNormalizedCourses = (
   ]
 
   const scalarDiffs: CourseSyncDiff[] = fields.flatMap((field) => {
-      const currentValue = formatCourseField(current, field)
-      const incomingValue = formatCourseField(incoming, field)
-      if (currentValue === incomingValue) return []
-      return [
-        {
-          id: field,
-          field,
-          label: fieldLabels[field],
-          current: currentValue,
-          incoming: incomingValue,
-        },
-      ]
-    })
+    const currentValue = formatCourseField(current, field)
+    const incomingValue = formatCourseField(incoming, field)
+    if (currentValue === incomingValue) return []
+    return [
+      {
+        id: field,
+        field,
+        label: fieldLabels[field],
+        current: currentValue,
+        incoming: incomingValue,
+      },
+    ]
+  })
 
   const maxGroups = Math.max(current.groups.length, incoming.groups.length)
   const groupDiffs: CourseSyncDiff[] = []
