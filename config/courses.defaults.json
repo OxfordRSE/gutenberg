@@ -845,6 +845,303 @@
           ]
         }
       ]
+    },
+    {
+      "externalId": "course_essential_maths",
+      "name": "Essential Maths",
+      "summary": "Core maths for scientific computing.",
+      "level": "beginner",
+      "hidden": false,
+      "language": [],
+      "prerequisites": [],
+      "tags": ["scientific-computing", "maths"],
+      "outcomes": [
+        "Work confidently with core calculus and linear algebra ideas",
+        "Understand systems of equations and differential equations",
+        "Use probability ideas that lead into scientific modelling"
+      ],
+      "groups": [
+        {
+          "name": "Functions and Calculus",
+          "summary": "Graphs, logarithms, differentiation, and integration.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.scientific_computing.essential_maths.01_graphs" },
+            { "order": 2, "section": "HPCu.scientific_computing.essential_maths.02_indices_and_logs" },
+            { "order": 3, "section": "HPCu.scientific_computing.essential_maths.03_differentiation_1" },
+            { "order": 4, "section": "HPCu.scientific_computing.essential_maths.04_differentiation_2" },
+            { "order": 5, "section": "HPCu.scientific_computing.essential_maths.05_differentiation_3" },
+            { "order": 6, "section": "HPCu.scientific_computing.essential_maths.06_integration_1" },
+            { "order": 7, "section": "HPCu.scientific_computing.essential_maths.07_integration_2" }
+          ]
+        },
+        {
+          "name": "Complex Numbers and Differential Equations",
+          "summary": "Complex numbers and ordinary differential equations.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.scientific_computing.essential_maths.08_complex_numbers" },
+            { "order": 2, "section": "HPCu.scientific_computing.essential_maths.09_differential_equations_1" },
+            { "order": 3, "section": "HPCu.scientific_computing.essential_maths.10_differential_equations_2" },
+            { "order": 4, "section": "HPCu.scientific_computing.essential_maths.11_differential_equations_3" }
+          ]
+        },
+        {
+          "name": "Linear Systems",
+          "summary": "Vectors, matrices, and systems of equations.",
+          "order": 3,
+          "items": [
+            { "order": 1, "section": "HPCu.scientific_computing.essential_maths.12_linear_algebra_1" },
+            { "order": 2, "section": "HPCu.scientific_computing.essential_maths.13_linear_algebra_2" },
+            { "order": 3, "section": "HPCu.scientific_computing.essential_maths.14_system_1" },
+            { "order": 4, "section": "HPCu.scientific_computing.essential_maths.15_system_2" },
+            { "order": 5, "section": "HPCu.scientific_computing.essential_maths.16_system_3" }
+          ]
+        },
+        {
+          "name": "Probability and Inference",
+          "summary": "Probability foundations and Bayesian inference.",
+          "order": 4,
+          "items": [
+            { "order": 1, "section": "HPCu.scientific_computing.essential_maths.17_probability_1" },
+            { "order": 2, "section": "HPCu.scientific_computing.essential_maths.18_probability_2" },
+            { "order": 3, "section": "HPCu.scientific_computing.essential_maths.19_probability_3" },
+            { "order": 4, "section": "HPCu.scientific_computing.bayesian_inference.01-AM" },
+            { "order": 5, "section": "HPCu.scientific_computing.bayesian_inference.02-PM" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_linear_algebra",
+      "name": "Linear Algebra",
+      "summary": "Solving systems of equations with matrices.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": [],
+      "prerequisites": ["Essential Maths"],
+      "tags": ["scientific-computing", "maths", "linear-algebra"],
+      "outcomes": [
+        "Write systems of equations in matrix form",
+        "Use elimination and factorisation methods",
+        "Choose appropriate matrix decompositions for a problem"
+      ],
+      "groups": [
+        {
+          "name": "Solving Linear Systems",
+          "summary": "Matrix form and elimination methods.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.scientific_computing.linear_algebra.01-matrix-form-of-equations" },
+            { "order": 2, "section": "HPCu.scientific_computing.linear_algebra.02-gaussian-elimination" }
+          ]
+        },
+        {
+          "name": "Matrix Factorisations",
+          "summary": "LU, Cholesky, and QR decompositions.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.scientific_computing.linear_algebra.04-LU-decomposition" },
+            { "order": 2, "section": "HPCu.scientific_computing.linear_algebra.06-Cholesky-decomposition" },
+            { "order": 3, "section": "HPCu.scientific_computing.linear_algebra.07-QR-decomposition" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_sparse_linear_algebra",
+      "name": "Sparse Linear Algebra",
+      "summary": "Sparse matrices and iterative methods.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": ["python"],
+      "prerequisites": ["Linear Algebra", "Intro to Python"],
+      "tags": ["scientific-computing", "linear-algebra"],
+      "outcomes": [
+        "Explain why sparse matrix representations matter",
+        "Work with sparse matrices in SciPy",
+        "Use iterative methods for sparse systems"
+      ],
+      "groups": [
+        {
+          "name": "Sparse Matrix Foundations",
+          "summary": "Sparse matrices, storage, and finite differences.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.scientific_computing.sparse_linear_algebra.01-sparse-matrices" },
+            { "order": 2, "section": "HPCu.scientific_computing.sparse_linear_algebra.02-coo-matrix" },
+            { "order": 3, "section": "HPCu.scientific_computing.sparse_linear_algebra.03-finite-difference" },
+            { "order": 4, "section": "HPCu.scientific_computing.sparse_linear_algebra.04-scipy-sparse" }
+          ]
+        },
+        {
+          "name": "Iterative Methods",
+          "summary": "Iterative solvers for sparse systems.",
+          "order": 2,
+          "items": [
+            {
+              "order": 1,
+              "section": "HPCu.scientific_computing.sparse_linear_algebra.06-jacobi-relaxation-methods"
+            },
+            {
+              "order": 2,
+              "section": "HPCu.scientific_computing.sparse_linear_algebra.07-conjugate-gradient-method"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_optimisation",
+      "name": "Optimisation",
+      "summary": "Core methods for nonlinear optimisation.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": [],
+      "prerequisites": ["Essential Maths"],
+      "tags": ["scientific-computing", "optimisation"],
+      "outcomes": [
+        "Explain the structure of nonlinear optimisation problems",
+        "Compare line-search and trust-region methods",
+        "Use derivative-free methods when gradients are unavailable"
+      ],
+      "groups": [
+        {
+          "name": "Optimisation Foundations",
+          "summary": "Nonlinear optimisation and line-search methods.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.scientific_computing.optimisation.01-nonlinear-optimisation" },
+            { "order": 2, "section": "HPCu.scientific_computing.optimisation.02-line-search-methods" }
+          ]
+        },
+        {
+          "name": "Algorithms in Practice",
+          "summary": "Trust regions, finite differences, and Nelder-Mead.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.scientific_computing.optimisation.03-trust-region-methods" },
+            { "order": 2, "section": "HPCu.scientific_computing.optimisation.05-finite-difference-method" },
+            { "order": 3, "section": "HPCu.scientific_computing.optimisation.06-nelder-mead" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_ode_solvers_numerical_methods",
+      "name": "ODE Solvers and Numerical Methods",
+      "summary": "A short introduction to ODE solvers.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": ["python"],
+      "prerequisites": ["Essential Maths", "Intro to Python"],
+      "tags": ["scientific-computing", "numerical-methods"],
+      "outcomes": [
+        "Explain the basic idea behind ODE solvers",
+        "Compare different numerical approaches",
+        "Connect theory to scientific computing workflows"
+      ],
+      "groups": [
+        {
+          "name": "ODE Solvers",
+          "summary": "Two short introductions to ODE solving methods.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.scientific_computing.ode_solvers.01-AM" },
+            { "order": 2, "section": "HPCu.scientific_computing.ode_solvers.02-PM" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_cloud_computing",
+      "name": "Cloud Computing",
+      "summary": "Moving applications and data into the cloud.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": [],
+      "prerequisites": [],
+      "tags": ["tooling", "cloud-computing"],
+      "outcomes": [
+        "Explain common reasons for moving workloads to the cloud",
+        "Understand storage and service choices",
+        "Plan a simple migration path for an application"
+      ],
+      "groups": [
+        {
+          "name": "Why Move to the Cloud",
+          "summary": "Use cases, limits of on-prem systems, and cloud services.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.cloud_computing.migrating_app_to_cloud.app_usecase" },
+            { "order": 2, "section": "HPCu.cloud_computing.migrating_app_to_cloud.app_onprem_limitation" },
+            { "order": 3, "section": "HPCu.cloud_computing.migrating_app_to_cloud.aws_services" }
+          ]
+        },
+        {
+          "name": "Storage and Migration",
+          "summary": "Storage choices and moving an application.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.cloud_computing.migrating_app_to_cloud.app_local_storage" },
+            { "order": 2, "section": "HPCu.cloud_computing.migrating_app_to_cloud.app_remote_storage" },
+            { "order": 3, "section": "HPCu.cloud_computing.migrating_app_to_cloud.app_migrate_to_aws" }
+          ]
+        },
+        {
+          "name": "Closing the Loop",
+          "summary": "Bringing the migration story together.",
+          "order": 3,
+          "items": [
+            { "order": 1, "section": "HPCu.cloud_computing.migrating_app_to_cloud.conclusion" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_computer_simulations_parallel_architectures",
+      "name": "Computer Simulations and Parallel Architectures",
+      "summary": "Computer simulations and the machines that run them.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": [],
+      "prerequisites": ["HPC Introduction"],
+      "tags": ["hpc", "parallel", "scientific-computing"],
+      "outcomes": [
+        "Explain how simulations motivate high-performance computing",
+        "Compare different parallel computer architectures",
+        "Connect machine design to practical scientific workloads"
+      ],
+      "groups": [
+        {
+          "name": "Computer Simulations",
+          "summary": "Simulation examples and practical context.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.high_performance_computing.computer_simulations.01_intro" },
+            {
+              "order": 2,
+              "section": "HPCu.high_performance_computing.computer_simulations.02_weather_simulations"
+            },
+            {
+              "order": 3,
+              "section": "HPCu.high_performance_computing.computer_simulations.03_towards_future"
+            },
+            { "order": 4, "section": "HPCu.high_performance_computing.computer_simulations.00_practical" }
+          ]
+        },
+        {
+          "name": "Parallel Architectures",
+          "summary": "Parallel computer basics and comparisons.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.high_performance_computing.parallel_computers.01_basics" },
+            { "order": 2, "section": "HPCu.high_performance_computing.parallel_computers.02_connecting" },
+            { "order": 3, "section": "HPCu.high_performance_computing.parallel_computers.03_comparison" },
+            { "order": 4, "section": "HPCu.high_performance_computing.parallel_computers.04_practical" }
+          ]
+        }
+      ]
     }
   ]
 }

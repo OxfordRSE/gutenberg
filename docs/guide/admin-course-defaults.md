@@ -5,11 +5,11 @@ parent: User Guide
 nav_order: 5
 ---
 
-Gutenberg now supports a curated set of **default courses** that can be synced into the database by an admin.
+Gutenberg has a curated set of **default courses** that can be synced into the database by an admin.
 
 ## Where defaults live
 
-The current default course catalog lives in `config/courses.defaults.json`. It contains real grouped courses built from material sections rather than placeholder demo entries.
+The current default course catalog lives in `config/courses.defaults.json`. It contains grouped courses built from material sections.
 
 Examples in the current catalog include:
 
@@ -42,6 +42,6 @@ This is useful when:
 
 ## Seed data and defaults
 
-The seed data is intended to align with the current default course set so that a fresh local database reflects the same public-facing proof-of-concept catalog.
+The seed data is intended to align with the current default course set so that a fresh local database reflects the same public-facing course catalog.
 
-The defaults file is now the editorial source for the curated course list, while the seed data exists to make local development and demos start in a sensible state.
+The defaults file is the editorial source for the curated course list, while the seed data keeps local development and demos aligned with that catalog.

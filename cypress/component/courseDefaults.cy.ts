@@ -21,10 +21,15 @@ describe("course defaults config", () => {
     "collaboration",
     "supercomputing",
     "profiling",
+    "maths",
+    "linear-algebra",
+    "optimisation",
+    "numerical-methods",
+    "cloud-computing",
   ])
 
   it("uses grouped-only courses with curated tags and real HPCu section refs", () => {
-    expect(defaults.courses).to.have.length(19)
+    expect(defaults.courses).to.have.length(26)
 
     defaults.courses.forEach((course: any) => {
       expect(course.items ?? [], `${course.externalId} should not use ungrouped items`).to.have.length(0)

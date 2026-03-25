@@ -41,4 +41,4 @@ Once a course or event is active, Gutenberg uses that state while you click arou
 - event pages and assigned material
 - the sidebar and section pages
 
-The goal is that the interface reflects the teaching context the learner is actually in.
+This keeps the interface aligned with the teaching context the learner is actually in.
