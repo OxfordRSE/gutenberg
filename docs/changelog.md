@@ -29,6 +29,7 @@ See [What's New in Gutenberg v2.0]({{ "/whats-new/v2-0/" | relative_url }}) for 
 - Added default-course sync with review of unchanged, new, and changed courses.
 - Added Course-aware previous/next material navigation and return-to-course behavior.
 - Added Material-page course hints and course-aware actions.
+- Added admin stats pages for courses and events, including overview and per-item progress summaries.
 
 ### Fixed in 2.0
 
