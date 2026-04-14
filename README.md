@@ -95,7 +95,7 @@ With the database available, we then need to create the various tables etc. that
 If you also want the local demo and test seed data, run:
 
 ```shell
-npx prisma db seed
+yarn prisma db seed
 ```
 
 If you want to recreate the database from scratch and reseed it in one step, run:
