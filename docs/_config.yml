@@ -41,6 +41,16 @@ plugins:
   - jekyll-toc
   - jekyll-sitemap
 
+defaults:
+  - scope:
+      path: "assets"
+    values:
+      layout: null
+  - scope:
+      path: ""
+    values:
+      layout: default
+
 # Exclude from processing.
 # The following items will not be processed, by default.
 # Any item listed under the `exclude:` key here will be automatically added to

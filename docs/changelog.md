@@ -6,9 +6,9 @@ nav_order: 10
 
 ## v2.0
 
-Gutenberg v2.0 is a substantial rewrite: Events are no longer the only teaching model with this release adding courses as a separate self-paced model while keeping events for scheduled cohort delivery.
+Gutenberg v2.0 is a substantial rewrite: Events are no longer the only teaching model. This release adds courses as a separate self-paced model while keeping events for scheduled cohort delivery.
 
-See [What's New in Gutenberg v2.0]({{ "/whats-new/v2-0/" | relative_url }}) for the broader release overview.
+See [What's New in Gutenberg v2.0]({{ "/whats-new/v2-0/" | relative_url }}) for an overview of what has changed in 2.0.
 
 ### New in 2.0
 
@@ -29,15 +29,14 @@ See [What's New in Gutenberg v2.0]({{ "/whats-new/v2-0/" | relative_url }}) for 
 - Added default-course sync with review of unchanged, new, and changed courses.
 - Added Course-aware previous/next material navigation and return-to-course behavior.
 - Added Material-page course hints and course-aware actions.
-- Added admin stats pages for courses and events, including overview and per-item progress summaries.
+- Added admin stats pages for courses and events, including overview and per-event/course progress summaries.
+- Added Event creation from a course blueprint.
 
 ### Fixed in 2.0
 
-- Event creation from a course blueprint as well as blank-event creation.
 - Event-group material editing moved into the main event edit page so groups and material can be managed inline.
 - Event authoring made more consistent with the grouped course model.
 - Active learning context for courses and events.
-
 - Sidebar behavior improved so course and event context is surfaced more consistently while navigating.
 - Seed data was replaced with more realistic course content.
 - Course APIs, slug handling, and add-course error handling were tightened up.

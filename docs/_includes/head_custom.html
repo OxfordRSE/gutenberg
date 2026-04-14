@@ -1,3 +1,103 @@
+<script>
+;(function () {
+  var storageKey = 'gutenberg-docs-theme';
+  var themeCssBase = "{{ '/assets/css/just-the-docs-' | relative_url }}";
+  var systemDarkQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+
+  function getStoredTheme() {
+    try {
+      var storedTheme = window.localStorage.getItem(storageKey);
+      if (storedTheme === 'light' || storedTheme === 'dark') {
+        return storedTheme;
+      }
+    } catch (error) {}
+
+    return 'auto';
+  }
+
+  function setStoredTheme(theme) {
+    try {
+      if (theme === 'auto') {
+        window.localStorage.removeItem(storageKey);
+        return;
+      }
+
+      window.localStorage.setItem(storageKey, theme);
+    } catch (error) {}
+  }
+
+  function resolveTheme(theme) {
+    if (theme === 'light' || theme === 'dark') {
+      return theme;
+    }
+
+    return systemDarkQuery && systemDarkQuery.matches ? 'dark' : 'light';
+  }
+
+  function applyTheme(theme) {
+    var resolvedTheme = resolveTheme(theme);
+    var themeStylesheet = document.querySelector('link[rel="stylesheet"][href*="just-the-docs-"]:not(#jtd-head-nav-stylesheet)');
+
+    if (themeStylesheet) {
+      themeStylesheet.setAttribute('href', themeCssBase + resolvedTheme + '.css');
+    }
+
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme');
+    } else {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+
+    document.documentElement.setAttribute('data-theme-mode', theme);
+    document.documentElement.setAttribute('data-resolved-theme', resolvedTheme);
+  }
+
+  function updateThemeButtons(theme) {
+    var themeButtons = document.querySelectorAll('.docs-theme-toggle-button[data-theme-mode]');
+
+    themeButtons.forEach(function (button) {
+      var isActive = button.getAttribute('data-theme-mode') === theme;
+      button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+  }
+
+  function setThemePreference(theme) {
+    setStoredTheme(theme);
+    applyTheme(theme);
+    updateThemeButtons(theme);
+  }
+
+  applyTheme(getStoredTheme());
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var savedTheme = getStoredTheme();
+
+    updateThemeButtons(savedTheme);
+
+    document.querySelectorAll('.docs-theme-toggle-button[data-theme-mode]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        setThemePreference(button.getAttribute('data-theme-mode'));
+      });
+    });
+  });
+
+  if (systemDarkQuery) {
+    var handleSystemThemeChange = function () {
+      if (getStoredTheme() === 'auto') {
+        applyTheme('auto');
+        updateThemeButtons('auto');
+      }
+    };
+
+    if (systemDarkQuery.addEventListener) {
+      systemDarkQuery.addEventListener('change', handleSystemThemeChange);
+    } else if (systemDarkQuery.addListener) {
+      systemDarkQuery.addListener(handleSystemThemeChange);
+    }
+  }
+})();
+</script>
+<link rel="stylesheet" href="{{ '/assets/css/custom.css' | relative_url }}">
 {% if site.plausible and site.plausible.enabled and site.plausible.domain and site.plausible.script %}
 <script defer data-domain="{{ site.plausible.domain }}" src="{{ site.plausible.script }}"></script>
 {% endif %}
