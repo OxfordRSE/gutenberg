@@ -92,6 +92,12 @@ The instructions for doing so are [on the Docker support pages](https://docs.doc
 With the database available, we then need to create the various tables etc. that Gutenberg uses with
 `yarn prisma migrate dev`.
 
+Seed the database with:
+`yarn prisma db seed`
+
+or do the whole thing in one command with:
+`yarn prisma migrate reset --force`
+
 ### 6. Start the development server
 
 The local development server can be started with `yarn dev`.
