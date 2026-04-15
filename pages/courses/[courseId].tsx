@@ -52,6 +52,7 @@ import {
 import { CSS } from "@dnd-kit/utilities"
 import { BreadcrumbItem } from "lib/breadcrumbs"
 import MaterialGroupsNotice from "components/ui/MaterialGroupsNotice"
+import { deleteCourse } from "lib/actions/deleteCourse"
 
 type CourseFull = Prisma.CourseGetPayload<{
   include: {
@@ -425,6 +426,9 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
   const [userOnCourseState, setUserOnCourseState] = useState<PublicUserOnCourse | null>(userOnCourse)
   const [isUpdatingEnrolment, setIsUpdatingEnrolment] = useState(false)
   const [showExportModal, setShowExportModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [isDeletingCourse, setIsDeletingCourse] = useState(false)
+  const [deleteCourseError, setDeleteCourseError] = useState<string | null>(null)
   const tabsRef = useRef<{ setActiveTab: (idx: number) => void } | null>(null)
   const [activeTabIndex, setActiveTabIndex] = useState(0)
 
@@ -581,6 +585,24 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
     }
   }
 
+  const handleDeleteCourse = async () => {
+    setDeleteCourseError(null)
+    setIsDeletingCourse(true)
+    try {
+      const response = await deleteCourse(courseData.id)
+      if ("error" in response && response.error) {
+        throw new Error(response.error)
+      }
+      if (typeof window !== "undefined") {
+        window.location.assign(`${basePath}/courses`)
+        return
+      }
+    } catch (error) {
+      setDeleteCourseError(error instanceof Error ? error.message : "Problem deleting course")
+      setIsDeletingCourse(false)
+    }
+  }
+
   const breadcrumbs: BreadcrumbItem[] = [
     { label: "Courses", href: "/courses" },
     { label: courseData.name || "Course", maxLength: 22 },
@@ -686,6 +708,18 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
                     </Button>
                   </div>
 
+                  <Title text="Danger Zone" />
+                  <div className="flex justify-end">
+                    <Button
+                      type="button"
+                      color="failure"
+                      onClick={() => setShowDeleteModal(true)}
+                      data-cy="delete-course-button"
+                    >
+                      Delete Course
+                    </Button>
+                  </div>
+
                   <Button type="submit">Save Changes</Button>
                 </Stack>
               </form>
@@ -714,6 +748,31 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={() => setShowExportModal(false)}>Close</Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal dismissible show={showDeleteModal} onClose={() => setShowDeleteModal(false)} size="lg">
+        <Modal.Header>Delete Course</Modal.Header>
+        <Modal.Body>
+          <div className="space-y-3">
+            <p>
+              Are you sure you wish to delete <b className="text-gray-900 dark:text-slate-300">{courseData.name}</b>?
+            </p>
+            <p className="text-red-600 dark:text-red-400">Warning: this action cannot be undone.</p>
+            {deleteCourseError && <p className="text-sm text-red-600 dark:text-red-400">{deleteCourseError}</p>}
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button color="gray" onClick={() => setShowDeleteModal(false)} disabled={isDeletingCourse}>
+            Cancel
+          </Button>
+          <Button
+            color="failure"
+            onClick={handleDeleteCourse}
+            disabled={isDeletingCourse}
+            data-cy="confirm-course-delete"
+          >
+            {isDeletingCourse ? "Deleting…" : "Delete Course"}
+          </Button>
         </Modal.Footer>
       </Modal>
     </Layout>

@@ -108,4 +108,40 @@ describe("course detail edit flow", () => {
       cy.request("DELETE", `/api/course/${courseId}`)
     })
   })
+
+  it("deletes a course from the edit tab", () => {
+    const suffix = Date.now()
+    const initialCourse = {
+      externalId: `course_delete_${suffix}`,
+      name: `Course Delete ${suffix}`,
+      summary: "To be deleted",
+      level: "beginner",
+      hidden: false,
+      language: ["python"],
+      tags: ["basics"],
+      outcomes: [],
+      groups: [],
+    }
+
+    cy.request("POST", "/api/course", initialCourse).then((createResponse) => {
+      const courseId = createResponse.body.course.id
+
+      cy.visit(`/courses/${courseId}#edit`)
+      cy.contains("button", "Delete Course").should("be.visible").click()
+      cy.get('[role="dialog"]').within(() => {
+        cy.contains("Delete Course").should("be.visible")
+        cy.get('[data-cy="confirm-course-delete"]').click()
+      })
+
+      cy.location("pathname").should("eq", "/courses")
+
+      cy.request({
+        method: "GET",
+        url: `/api/course/${courseId}`,
+        failOnStatusCode: false,
+      }).then((response) => {
+        expect(response.status).to.eq(404)
+      })
+    })
+  })
 })
