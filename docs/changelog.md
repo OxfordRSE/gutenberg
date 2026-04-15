@@ -31,6 +31,7 @@ See [What's New in Gutenberg v2.0]({{ "/whats-new/v2-0/" | relative_url }}) for 
 - Added Material-page course hints and course-aware actions.
 - Added admin stats pages for courses and events, including overview and per-event/course progress summaries.
 - Added Event creation from a course blueprint.
+- Added Individual Event Breadcrumbing.
 
 ### Fixed in 2.0
 
@@ -44,6 +45,7 @@ See [What's New in Gutenberg v2.0]({{ "/whats-new/v2-0/" | relative_url }}) for 
 - Accessibility fixes landed across the new course and event UI, including component roles and related interaction tests.
 - The docs were rewritten to represent the new course model.
 - Local setup documentation improved for databases, seeds, and material checkout.
+- Fixed TOC title from floating over the rest of the layout.
 
 ## v1.2
 

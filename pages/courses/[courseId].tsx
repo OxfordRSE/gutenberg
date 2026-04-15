@@ -8,9 +8,8 @@ import { makeSerializable } from "lib/utils"
 import { PageTemplate, loadPageTemplate } from "lib/pageTemplate"
 import Title from "components/ui/Title"
 import { Prisma } from "@prisma/client"
-import { Badge, Button, Card, Modal, Tabs } from "flowbite-react"
+import { Button, Card, Modal, Tabs } from "flowbite-react"
 import CourseLevelBadge from "components/courses/CourseLevelBadge"
-import { getTagColor } from "lib/tagColors"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "pages/api/auth/[...nextauth]"
 import useProfile from "lib/hooks/useProfile"
@@ -29,7 +28,6 @@ import CourseEnrolment from "components/courses/CourseEnrolment"
 import CourseSectionLink from "components/courses/CourseSectionLink"
 import useCourseProgress from "lib/hooks/useCourseProgress"
 import { HiShieldCheck } from "react-icons/hi"
-import { formatTagLabel } from "lib/tagLabels"
 import { courseToJson } from "lib/courseJson"
 import CodeBlock from "components/content/CodeBlock"
 import CourseActiveActions from "components/courses/CourseActiveActions"
@@ -53,6 +51,7 @@ import { CSS } from "@dnd-kit/utilities"
 import { BreadcrumbItem } from "lib/breadcrumbs"
 import MaterialGroupsNotice from "components/ui/MaterialGroupsNotice"
 import { deleteCourse } from "lib/actions/deleteCourse"
+import TagChip from "components/ui/TagChip"
 
 type CourseFull = Prisma.CourseGetPayload<{
   include: {
@@ -220,12 +219,7 @@ const CoursePreview = ({
             <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
               <span className="font-semibold text-gray-800 dark:text-gray-200">{languageLabel}</span>
               {(course.language ?? []).map((language) => {
-                const color = getTagColor(language)
-                return (
-                  <Badge key={language} style={{ backgroundColor: color.background, color: color.text }}>
-                    {language}
-                  </Badge>
-                )
+                return <TagChip key={language} tag={language} />
               })}
             </div>
           )}
@@ -233,12 +227,7 @@ const CoursePreview = ({
             <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
               <span className="font-semibold text-gray-800 dark:text-gray-200">Tags:</span>
               {course.tags.map((tag) => {
-                const color = getTagColor(tag)
-                return (
-                  <Badge key={tag} style={{ backgroundColor: color.background, color: color.text }}>
-                    {formatTagLabel(tag)}
-                  </Badge>
-                )
+                return <TagChip key={tag} tag={tag} />
               })}
             </div>
           )}

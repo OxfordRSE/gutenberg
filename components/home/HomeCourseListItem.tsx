@@ -1,14 +1,12 @@
 import Link from "next/link"
-import { Badge } from "flowbite-react"
 import { HiShieldCheck } from "react-icons/hi"
-import { getTagColor } from "lib/tagColors"
-import { formatTagLabel } from "lib/tagLabels"
 import type { Course } from "pages/api/course"
 import useCourseProgress from "lib/hooks/useCourseProgress"
 import CourseProgressBar from "components/courses/CourseProgressBar"
 import type { CourseProgress } from "lib/courseProgress"
 import useActiveCourse from "lib/hooks/useActiveCourse"
 import CourseActiveActions from "components/courses/CourseActiveActions"
+import TagChip from "components/ui/TagChip"
 
 type Props = {
   course: Course
@@ -46,12 +44,7 @@ const HomeCourseListItem: React.FC<Props> = ({ course, progress: providedProgres
             <h3 className="flex flex-wrap items-center gap-2 text-lg font-semibold text-gray-900 dark:text-white">
               <span className="truncate">{course.name}</span>
               {displayLanguages.map((language) => {
-                const color = getTagColor(language)
-                return (
-                  <Badge key={language} style={{ backgroundColor: color.background, color: color.text }}>
-                    {formatTagLabel(language)}
-                  </Badge>
-                )
+                return <TagChip key={language} tag={language} />
               })}
               {isCompleted && <HiShieldCheck className="h-5 w-5 flex-none text-emerald-500" />}
             </h3>
@@ -59,12 +52,7 @@ const HomeCourseListItem: React.FC<Props> = ({ course, progress: providedProgres
           {displayTags.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-2">
               {displayTags.map((tag) => {
-                const color = getTagColor(tag)
-                return (
-                  <Badge key={tag} style={{ backgroundColor: color.background, color: color.text }}>
-                    {formatTagLabel(tag)}
-                  </Badge>
-                )
+                return <TagChip key={tag} tag={tag} />
               })}
             </div>
           )}

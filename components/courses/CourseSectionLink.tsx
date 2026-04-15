@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Material, sectionSplit } from "lib/material"
 import { formatTagLabel } from "lib/tagLabels"
+import TagChip from "components/ui/TagChip"
 
 type Depth = "theme" | "course" | "section"
 
@@ -41,12 +42,7 @@ const CourseSectionLink: React.FC<Props> = ({
       {tagLabels.length > 0 && (
         <span className="flex flex-wrap gap-1" data-cy="course-section-link-tags">
           {tagLabels.map((tag) => (
-            <span
-              key={tag}
-              className="rounded-full border border-slate-300/80 bg-white/70 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-slate-700 dark:border-slate-600 dark:bg-slate-800/70 dark:text-slate-200"
-            >
-              {tag}
-            </span>
+            <TagChip key={tag} tag={tag} variant="subtle" />
           ))}
         </span>
       )}

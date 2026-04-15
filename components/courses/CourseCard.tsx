@@ -1,15 +1,14 @@
-import { Card, Badge } from "flowbite-react"
+import { Card } from "flowbite-react"
 import CourseLevelBadge from "./CourseLevelBadge"
 import Link from "next/link"
-import { getTagColor } from "lib/tagColors"
 import type { Course } from "pages/api/course"
 import { Button } from "flowbite-react"
 import useCourseProgress from "lib/hooks/useCourseProgress"
 import CourseProgressBar from "components/courses/CourseProgressBar"
-import { HiShieldCheck } from "react-icons/hi"
-import { formatTagLabel } from "lib/tagLabels"
+import { HiArrowNarrowRight, HiShieldCheck } from "react-icons/hi"
 import CourseActiveActions from "./CourseActiveActions"
 import type { CourseProgress } from "lib/courseProgress"
+import TagChip from "components/ui/TagChip"
 
 type Props = {
   course: Course
@@ -57,18 +56,14 @@ const CourseCard: React.FC<Props> = ({ course, progress: providedProgress }) => 
       <div className="mt-3 flex flex-wrap items-center gap-2">
         {course.tags.length > 0 &&
           course.tags.map((tag) => {
-            const color = getTagColor(tag)
-            return (
-              <Badge key={tag} style={{ backgroundColor: color.background, color: color.text }}>
-                {formatTagLabel(tag)}
-              </Badge>
-            )
+            return <TagChip key={tag} tag={tag} />
           })}
         <div className="ml-auto flex items-center gap-2">
           <CourseActiveActions courseExternalId={course.externalId} status={enrolment?.status ?? null} />
           <Link href={`/courses/${course.id}`}>
-            <Button size="xs" color="info">
+            <Button size="sm" color="info">
               View course
+              <HiArrowNarrowRight className="ml-2 h-4 w-4 self-center" />
             </Button>
           </Link>
         </div>
@@ -77,12 +72,7 @@ const CourseCard: React.FC<Props> = ({ course, progress: providedProgress }) => 
         <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
           <span className="font-semibold text-gray-800 dark:text-gray-200">{languageLabel}</span>
           {(course.language ?? []).map((language) => {
-            const color = getTagColor(language)
-            return (
-              <Badge key={language} style={{ backgroundColor: color.background, color: color.text }}>
-                {formatTagLabel(language)}
-              </Badge>
-            )
+            return <TagChip key={language} tag={language} />
           })}
         </div>
       )}

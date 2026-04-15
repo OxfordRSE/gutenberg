@@ -27,6 +27,7 @@ import EventViewPane from "components/event/EventViewPane"
 import { runBuildPrismaQuery } from "lib/buildPrisma"
 import EventGroupEditor, { buildSectionsOptions, EventForm } from "components/event/EventGroupEditor"
 import MaterialGroupsNotice from "components/ui/MaterialGroupsNotice"
+import { BreadcrumbItem } from "lib/breadcrumbs"
 
 type EventProps = {
   material: Material
@@ -198,8 +199,12 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
   )
 
   const pageTitle = pageInfo?.title ? `${currentEvent.name}: ${pageInfo.title}` : currentEvent.name
+  const breadcrumbs: BreadcrumbItem[] = [
+    { label: "Events", href: "/events" },
+    { label: currentEvent.name || "Event", maxLength: 22 },
+  ]
   return (
-    <Layout material={material} pageInfo={pageInfo} pageTitle={pageTitle}>
+    <Layout material={material} pageInfo={pageInfo} pageTitle={pageTitle} breadcrumbs={breadcrumbs}>
       {isAdmin && (
         <div className="flex justify-end px-2 pt-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32">
           <Link href={`/event/${currentEvent.id}/stats`}>

@@ -5,6 +5,7 @@ import { Tooltip } from "@mui/material"
 import useWindowSize from "lib/hooks/useWindowSize"
 import Link from "next/link"
 import { formatTagLabel } from "lib/tagLabels"
+import TagChip from "./TagChip"
 
 export type SectionLink = {
   theme?: String
@@ -125,12 +126,7 @@ export const LinkedSection = (sectionLink: SectionLink) => {
                   {sectionLink.tags && sectionLink.tags.length > 0 && (
                     <div className="flex flex-wrap gap-1" data-cy="linked-section-tags">
                       {sectionLink.tags.map((tag) => (
-                        <span
-                          key={String(tag)}
-                          className="rounded-full border border-slate-300/80 bg-white/70 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-slate-700 dark:border-slate-600 dark:bg-slate-800/70 dark:text-slate-200"
-                        >
-                          {formatTagLabel(String(tag))}
-                        </span>
+                        <TagChip key={String(tag)} tag={String(tag)} variant="subtle" />
                       ))}
                     </div>
                   )}

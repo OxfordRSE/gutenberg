@@ -108,7 +108,7 @@ const HomeEventsPanel: React.FC<Props> = ({ events: _events }) => {
 
         <div className="mt-2 flex gap-3">
           <Link href="/events">
-            <Button color="gray">Browse all events</Button>
+            <Button color="info">Browse all events</Button>
           </Link>
         </div>
       </div>

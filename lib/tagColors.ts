@@ -1,5 +1,12 @@
 type TagColor = {
   background: string
+  border?: string
+  text: string
+}
+
+type SubtleTagColor = {
+  background: string
+  border: string
   text: string
 }
 
@@ -38,4 +45,13 @@ export function getTagColor(tag: string): TagColor {
   const index = hashString(tag.trim().toLowerCase()) % palette.length
   const background = palette[index]
   return { background, text: getTextColor(background) }
+}
+
+export function getSubtleTagColor(tag: string): SubtleTagColor {
+  const { background } = getTagColor(tag)
+  return {
+    background: `${background}1A`,
+    border: `${background}55`,
+    text: background,
+  }
 }

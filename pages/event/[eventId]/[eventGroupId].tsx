@@ -43,6 +43,7 @@ import { loadPageTemplate, PageTemplate } from "lib/pageTemplate"
 import revalidateTimeout from "lib/revalidateTimeout"
 import { HiArrowNarrowRight, HiArrowNarrowLeft } from "react-icons/hi"
 import { runBuildPrismaQuery } from "lib/buildPrisma"
+import { BreadcrumbItem } from "lib/breadcrumbs"
 
 type EventGroupProps = {
   material: Material
@@ -351,8 +352,13 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
   )
 
   const pageTitle = pageInfo?.title ? `${eventGroup.name}: ${pageInfo.title}` : eventGroup.name
+  const breadcrumbs: BreadcrumbItem[] = [
+    { label: "Events", href: "/events" },
+    { label: event.name, href: `/event/${event.id}`, maxLength: 22 },
+    { label: eventGroup.name || "Event group", maxLength: 22 },
+  ]
   return (
-    <Layout material={material} pageInfo={pageInfo} pageTitle={pageTitle}>
+    <Layout material={material} pageInfo={pageInfo} pageTitle={pageTitle} breadcrumbs={breadcrumbs}>
       {isAdmin ? (
         <Tabs.Group style="underline">
           <Tabs.Item active icon={MdPreview} title="Event">
