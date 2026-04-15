@@ -32,6 +32,7 @@ See [What's New in Gutenberg v2.0]({{ "/whats-new/v2-0/" | relative_url }}) for 
 - Added admin stats pages for courses and events, including overview and per-event/course progress summaries.
 - Added Event creation from a course blueprint.
 - Added Individual Event Breadcrumbing.
+- Added Course views to the profile page
 
 ### Fixed in 2.0
 
@@ -46,6 +47,7 @@ See [What's New in Gutenberg v2.0]({{ "/whats-new/v2-0/" | relative_url }}) for 
 - The docs were rewritten to represent the new course model.
 - Local setup documentation improved for databases, seeds, and material checkout.
 - Fixed TOC title from floating over the rest of the layout.
+- Improved presentation of the event table on profile view.
 
 ## v1.2
 
