@@ -48,10 +48,10 @@ const CourseEnrolment: React.FC<Props> = ({
           ) : status === "ENROLLED" || status === "COMPLETED" ? (
             <span>No trackable problems</span>
           ) : (
-            <span>{status ? `Status: ${statusLabel}` : "Not enrolled"}</span>
+            <span>{status ? `Status: ${statusLabel}` : "Not started"}</span>
           )
         ) : (
-          <span>Sign in to enrol</span>
+          <span>Sign in to start this course</span>
         )}
       </div>
       {isLoggedIn && (
@@ -61,7 +61,7 @@ const CourseEnrolment: React.FC<Props> = ({
           onClick={status === "ENROLLED" ? onUnenrol : onEnrol}
           disabled={isUpdating}
         >
-          {status === "ENROLLED" ? "Unenrol" : "Enrol"}
+          {status === "ENROLLED" ? "Leave course" : "Start course"}
         </Button>
       )}
     </div>

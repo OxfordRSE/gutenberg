@@ -47,9 +47,9 @@ describe("course enrolment flow", () => {
       cy.login(learner)
       cy.visit(`/courses/${courseId}`)
 
-      cy.contains("Sign in to enrol").should("not.exist")
-      cy.contains("button", "Enrol").should("be.visible").click()
-      cy.contains("button", "Unenrol").should("be.visible")
+      cy.contains("Sign in to start this course").should("not.exist")
+      cy.contains("button", "Start course").should("be.visible").click()
+      cy.contains("button", "Leave course").should("be.visible")
       cy.contains("No trackable problems").should("be.visible")
 
       cy.request("GET", `/api/course/${courseId}`).then((response) => {
@@ -70,8 +70,8 @@ describe("course enrolment flow", () => {
         })
 
       cy.visit(`/courses/${courseId}`)
-      cy.contains("button", "Unenrol").click()
-      cy.contains("button", "Enrol").should("be.visible")
+      cy.contains("button", "Leave course").click()
+      cy.contains("button", "Start course").should("be.visible")
       cy.contains("Status: Dropped").should("be.visible")
 
       cy.request("GET", `/api/course/${courseId}`).then((response) => {
@@ -108,7 +108,7 @@ describe("course enrolment flow", () => {
       clearAuthState()
       cy.request("/api/auth/session").its("body.user").should("not.exist")
       cy.visit(`/courses/${courseId}`)
-      cy.contains("button", "Enrol").should("not.exist")
+      cy.contains("button", "Start course").should("not.exist")
 
       cy.request({
         method: "POST",
