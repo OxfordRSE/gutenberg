@@ -9,6 +9,7 @@ import { HiArrowNarrowRight, HiShieldCheck } from "react-icons/hi"
 import CourseActiveActions from "./CourseActiveActions"
 import type { CourseProgress } from "lib/courseProgress"
 import TagChip from "components/ui/TagChip"
+import useActiveCourse from "lib/hooks/useActiveCourse"
 
 type Props = {
   course: Course
@@ -20,6 +21,8 @@ const CourseCard: React.FC<Props> = ({ course, progress: providedProgress }) => 
   const languageLabel = languageCount === 1 ? "Language:" : "Languages:"
   const enrolment = course.UserOnCourse?.[0]
   const isCompleted = enrolment?.status === "COMPLETED"
+  const [activeCourseExternalId] = useActiveCourse()
+  const isActiveCourse = activeCourseExternalId === course.externalId
   const showProgress = enrolment?.status === "ENROLLED" || isCompleted
   const { progress: fetchedProgress } = useCourseProgress(providedProgress || !showProgress ? undefined : course.id)
   const progress = providedProgress ?? fetchedProgress
@@ -34,9 +37,11 @@ const CourseCard: React.FC<Props> = ({ course, progress: providedProgress }) => 
   return (
     <Card
       className={
-        isCompleted
-          ? "border-2 border-emerald-400 shadow-sm shadow-emerald-200/40 dark:border-emerald-500 dark:shadow-emerald-500/20"
-          : undefined
+        isActiveCourse
+          ? "border-cyan-300 bg-cyan-50/70 dark:border-cyan-700 dark:bg-cyan-950/20"
+          : isCompleted
+            ? "border-2 border-emerald-400 shadow-sm shadow-emerald-200/40 dark:border-emerald-500 dark:shadow-emerald-500/20"
+            : undefined
       }
     >
       <div className="flex items-start justify-between gap-3">
