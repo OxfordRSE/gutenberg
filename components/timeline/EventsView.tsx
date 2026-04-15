@@ -157,10 +157,12 @@ const EventsView: React.FC<EventsProps> = ({ material: _material, events }) => {
                 )}
               </div>
 
-              <Link href={`/event/${event.id}`}>
-                <Timeline.Title>{event.name}</Timeline.Title>
-                <Timeline.Body>{event.summary}</Timeline.Body>
-              </Link>
+              <Timeline.Title>
+                <Link href={`/event/${event.id}`} className="hover:underline">
+                  {event.name}
+                </Link>
+              </Timeline.Title>
+              <Timeline.Body>{event.summary}</Timeline.Body>
 
               <EventActions event={event} />
             </Timeline.Content>
