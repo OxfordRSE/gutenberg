@@ -6082,7 +6082,7 @@ __metadata:
     cypress: ^15.8.1
     cypress-real-events: ^1.15.0
     cypress-terminal-report: ^5.3.12
-    dompurify: ^3.3.2
+    dompurify: ^3.4.0
     dotenv: ^16.6.1
     dotenv-cli: ^7.4.4
     elkjs: ^0.8.2
