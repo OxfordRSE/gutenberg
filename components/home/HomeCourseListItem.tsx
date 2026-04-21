@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { HiShieldCheck } from "react-icons/hi"
+import { Button } from "flowbite-react"
+import { HiArrowNarrowRight, HiShieldCheck } from "react-icons/hi"
 import type { Course } from "pages/api/course"
 import useCourseProgress from "lib/hooks/useCourseProgress"
 import CourseProgressBar from "components/courses/CourseProgressBar"
@@ -11,9 +12,10 @@ import TagChip from "components/ui/TagChip"
 type Props = {
   course: Course
   progress?: CourseProgress
+  showStartButton?: boolean
 }
 
-const HomeCourseListItem: React.FC<Props> = ({ course, progress: providedProgress }) => {
+const HomeCourseListItem: React.FC<Props> = ({ course, progress: providedProgress, showStartButton = false }) => {
   const enrolment = course.UserOnCourse?.[0]
   const isCompleted = enrolment?.status === "COMPLETED"
   const isEnrolled = enrolment?.status === "ENROLLED"
@@ -58,6 +60,14 @@ const HomeCourseListItem: React.FC<Props> = ({ course, progress: providedProgres
           )}
         </div>
         <div className="flex flex-none flex-col items-end gap-2">
+          {showStartButton && (
+            <Link href={`/courses/${course.id}`}>
+              <Button color="info" size="xs" className="[&>span]:items-center">
+                Start
+                <HiArrowNarrowRight className="ml-2 h-3 w-3" />
+              </Button>
+            </Link>
+          )}
           <CourseActiveActions courseExternalId={course.externalId} status={enrolment?.status ?? null} size="xs" />
           {showProgress && total > 0 && (
             <div className="w-24 flex-none">

@@ -100,7 +100,7 @@ const HomeCoursesPanel: React.FC<Props> = ({ initialCourses }) => {
                 </div>
                 <ul className="space-y-3">
                   {displayedOtherCourses.map((course) => (
-                    <HomeCourseListItem key={course.id} course={course} />
+                    <HomeCourseListItem key={course.id} course={course} showStartButton={hasMyCourses} />
                   ))}
                 </ul>
               </section>

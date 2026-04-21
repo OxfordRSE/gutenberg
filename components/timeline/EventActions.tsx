@@ -62,18 +62,18 @@ const EventActions: React.FC<EventActionsProps> = ({ event, verbose }) => {
   return (
     <div className="flex flex-row gap-2">
       {isActiveEvent ? (
-        <Button color="gray" onClick={handleDeactivate(event)} style={{ zIndex: 1 }}>
+        <Button color="gray" className="[&>span]:items-center" onClick={handleDeactivate(event)} style={{ zIndex: 1 }}>
           {verbose ? "Deselect as active event" : "Unselect"}
           <HiArrowNarrowRight className="ml-2 h-3 w-3" />
         </Button>
       ) : isMyEvent ? (
-        <Button color="gray" onClick={handleActivate(event)} style={{ zIndex: 1 }}>
+        <Button color="gray" className="[&>span]:items-center" onClick={handleActivate(event)} style={{ zIndex: 1 }}>
           {verbose ? "Select as your active event" : "Select"}
           <HiArrowNarrowRight className="ml-2 h-3 w-3" />
         </Button>
       ) : isRequested ? (
         <>
-          <Button color="gray" onClick={handleEnrol(event)} style={{ zIndex: 1 }}>
+          <Button color="gray" className="[&>span]:items-center" onClick={handleEnrol(event)} style={{ zIndex: 1 }}>
             {verbose ? "Enrolment has been requested" : "Requested"}
             <HiArrowNarrowRight className="ml-2 h-3 w-3" />
           </Button>
@@ -82,7 +82,13 @@ const EventActions: React.FC<EventActionsProps> = ({ event, verbose }) => {
       ) : (
         session && (
           <>
-            <Button color="gray" data-cy={`event-enrol-${event.id}`} onClick={handleEnrol(event)} style={{ zIndex: 1 }}>
+            <Button
+              color="gray"
+              className="[&>span]:items-center"
+              data-cy={`event-enrol-${event.id}`}
+              onClick={handleEnrol(event)}
+              style={{ zIndex: 1 }}
+            >
               {verbose ? "Enrol onto this event" : "Enrol"}
               <HiArrowNarrowRight className="ml-2 h-3 w-3" />
             </Button>

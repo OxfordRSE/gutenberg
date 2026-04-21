@@ -23,6 +23,7 @@ See [What's New in Gutenberg v2.0]({{ "/whats-new/v2-0/" | relative_url }}) for 
 - Added course enrolment, unenrolment, completion, and better progress handling.
 - Added course sorting and filtering by search, level, tags, and languages.
 - Added active course selection, enrolment-aware course actions, and better course surfaces on the home page and course list.
+- Added a Start button to front-page course cards for quicker access to new courses.
 - Added active course state in local storage and course switching alongside events.
 - Added course-aware sidebar views and material-page hints when a section belongs to a course.
 - Added batched course progress fetching for list-style views.
@@ -48,6 +49,7 @@ See [What's New in Gutenberg v2.0]({{ "/whats-new/v2-0/" | relative_url }}) for 
 - Local setup documentation improved for databases, seeds, and material checkout.
 - Fixed TOC title from floating over the rest of the layout.
 - Improved presentation of the event table on profile view.
+- Fixed icon alignment on event and course active-action buttons.
 
 ## v1.2
 

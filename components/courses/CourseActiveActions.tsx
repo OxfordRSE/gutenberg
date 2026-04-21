@@ -25,6 +25,7 @@ const CourseActiveActions: React.FC<Props> = ({ courseExternalId, status, verbos
     <Button
       size={size}
       color="gray"
+      className="[&>span]:items-center"
       onClick={() => {
         setActiveCourseExternalId(undefined)
         setLearningContext(undefined)
@@ -38,6 +39,7 @@ const CourseActiveActions: React.FC<Props> = ({ courseExternalId, status, verbos
     <Button
       size={size}
       color="gray"
+      className="[&>span]:items-center"
       onClick={() => {
         setActiveCourseExternalId(courseExternalId)
         setLearningContext({ type: "course", externalId: courseExternalId })

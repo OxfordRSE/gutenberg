@@ -115,6 +115,7 @@ describe("<HomeCoursesPanel />", () => {
       .within(() => {
         cy.contains("Python for Data").should("be.visible")
         cy.contains("Intro to C++").should("not.exist")
+        cy.contains("button", "Start").should("be.visible")
         cy.contains("button", "Select").should("not.exist")
       })
     cy.contains("Functional C++").should("not.exist")
