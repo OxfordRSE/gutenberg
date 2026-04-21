@@ -323,11 +323,8 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
                   container
                   alignItems="center"
                   spacing={2}
-                  className="bg-slate-200 dark:bg-gray-800"
+                  className="mb-1.5 rounded border border-slate-300 bg-slate-200 dark:border-slate-700 dark:bg-gray-800"
                   sx={{
-                    border: "1px solid",
-                    marginBottom: "6px",
-                    borderRadius: "4px",
                     paddingTop: "0px",
                   }}
                 >

@@ -3,7 +3,10 @@ import CodeBlock from "components/content/CodeBlock"
 
 const stubClipboard = (alias: string) => {
   cy.window().then((win) => {
-    const writeText = cy.stub().callsFake(() => Promise.resolve()).as(alias)
+    const writeText = cy
+      .stub()
+      .callsFake(() => Promise.resolve())
+      .as(alias)
     Object.defineProperty(win.navigator, "clipboard", {
       value: { writeText },
       configurable: true,

@@ -46,11 +46,11 @@ const HomeEventsPanel: React.FC<Props> = ({ events: _events }) => {
         </div>
 
         {!session ? (
-          <div className="rounded-lg border border-gray-100 bg-gray-50 p-4 text-sm text-gray-600 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
+          <div className="rounded-lg border border-gray-300 bg-gray-50 p-4 text-sm text-gray-600 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
             Sign in to see the events you are enrolled on.
           </div>
         ) : isLoading ? (
-          <div className="rounded-lg border border-gray-100 bg-gray-50 p-4 text-sm text-gray-600 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
+          <div className="rounded-lg border border-gray-300 bg-gray-50 p-4 text-sm text-gray-600 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
             Loading your events...
           </div>
         ) : displayedEvents.length > 0 ? (
@@ -61,7 +61,7 @@ const HomeEventsPanel: React.FC<Props> = ({ events: _events }) => {
                 className={`rounded-lg border p-4 ${
                   activeEvent?.id === event.id
                     ? "border-cyan-300 bg-cyan-50/70 dark:border-cyan-700 dark:bg-cyan-950/20"
-                    : "border-gray-100 bg-gray-50 dark:border-gray-700 dark:bg-gray-900"
+                    : "border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900"
                 }`}
               >
                 <div className="flex items-start justify-between gap-4">
@@ -101,7 +101,7 @@ const HomeEventsPanel: React.FC<Props> = ({ events: _events }) => {
             ))}
           </div>
         ) : (
-          <div className="rounded-lg border border-gray-100 bg-gray-50 p-4 text-sm text-gray-600 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
+          <div className="rounded-lg border border-gray-300 bg-gray-50 p-4 text-sm text-gray-600 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
             You are not currently enrolled on any events.
           </div>
         )}

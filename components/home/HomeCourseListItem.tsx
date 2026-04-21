@@ -37,7 +37,7 @@ const HomeCourseListItem: React.FC<Props> = ({ course, progress: providedProgres
           ? "border-cyan-300 bg-cyan-50/70 dark:border-cyan-700 dark:bg-cyan-950/20"
           : isCompleted
             ? "border-emerald-300 bg-emerald-50/70 dark:border-emerald-700 dark:bg-emerald-950/30"
-            : "border-gray-100 bg-gray-50 dark:border-gray-700 dark:bg-gray-900"
+            : "border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900"
       }`}
     >
       <div className="flex items-start justify-between gap-4">

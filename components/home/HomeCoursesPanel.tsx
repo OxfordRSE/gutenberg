@@ -65,11 +65,11 @@ const HomeCoursesPanel: React.FC<Props> = ({ initialCourses }) => {
         </div>
 
         {isLoading ? (
-          <div className="rounded-lg border border-gray-100 bg-gray-50 p-4 text-sm text-gray-600 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
+          <div className="rounded-lg border border-gray-300 bg-gray-50 p-4 text-sm text-gray-600 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
             Loading courses...
           </div>
         ) : previewCourses.length === 0 ? (
-          <div className="rounded-lg border border-gray-100 bg-gray-50 p-4 text-sm text-gray-600 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
+          <div className="rounded-lg border border-gray-300 bg-gray-50 p-4 text-sm text-gray-600 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
             No courses are available yet.
           </div>
         ) : (

@@ -12,11 +12,16 @@ const pathParams = (url: string) => {
   return { section, tag }
 }
 
-describe("<Challenge /> ProblemSubmitModal", () => {
-  const section = "HPCu.software_architecture_and_design.procedural.containers_cpp"
-  const tag = "dot_product"
-  const userEmail = "testUser@testUser.com"
+const section = "HPCu.software_architecture_and_design.procedural.containers_cpp"
+const tag = "dot_product"
+const userEmail = "testUser@testUser.com"
 
+const mountChallenge = () =>
+  cy.mount(<Challenge title="Sample Challenge" content={<div>Challenge body</div>} id={tag} section={section} />)
+
+const headerSel = () => cy.get(`#${tag} > div`).first()
+
+describe("<Challenge /> ProblemSubmitModal", () => {
   const problemInitial = {
     id: 9,
     tag,
@@ -63,7 +68,7 @@ describe("<Challenge /> ProblemSubmitModal", () => {
       if (s === section && t === tag) {
         req.reply({ statusCode: 200, body: { problem: serverProblem } })
       } else {
-        req.reply({ statusCode: 404, body: { error: "Problem not found for this user" } })
+        req.reply({ statusCode: 200, body: {} })
       }
     }).as("getProblem")
 
@@ -105,11 +110,9 @@ describe("<Challenge /> ProblemSubmitModal", () => {
       req.reply({ statusCode: 200, body: { problem: serverProblem } })
     }).as("putProblem")
 
-    cy.mount(<Challenge title="Sample Challenge" content={<div>Challenge body</div>} id={tag} section={section} />)
+    mountChallenge()
     cy.wait("@getProblem")
   })
-
-  const headerSel = () => cy.get(`#${tag} > div`).first()
 
   it("clicking the tickbox opens the modal", () => {
     // modal should not be present initially
@@ -269,5 +272,61 @@ describe("<Challenge /> ProblemSubmitModal", () => {
     cy.wait(100)
     cy.wait("@putProblem").its("request.body.problem.complete").should("eq", false)
     headerSel().should("not.have.class", "bg-green-600")
+  })
+})
+
+describe("<Challenge /> with no saved problem", () => {
+  beforeEach(() => {
+    cy.window().then((win) => {
+      win.localStorage.clear()
+      win.sessionStorage.clear()
+    })
+
+    cy.login({ name: "Student", email: userEmail })
+
+    cy.intercept("GET", "**/api/problems/**", (req) => {
+      const { section: s, tag: t } = pathParams(req.url)
+      if (s === section && t === tag) {
+        req.reply({ statusCode: 200, body: {} })
+      } else {
+        req.reply({ statusCode: 200, body: {} })
+      }
+    }).as("getProblem")
+
+    cy.intercept("PUT", "**/api/problems/**", (req) => {
+      const { section: s, tag: t } = pathParams(req.url)
+      expect(s).to.eq(section)
+      expect(t).to.eq(tag)
+
+      req.reply({
+        statusCode: 200,
+        body: {
+          problem: {
+            id: 10,
+            tag,
+            section,
+            createdAt: "2024-04-26T13:13:41.602Z",
+            userEmail,
+            complete: req.body.problem.complete,
+            solution: req.body.problem.solution ?? "",
+            difficulty: req.body.problem.difficulty ?? 5,
+            notes: req.body.problem.notes ?? "",
+          },
+        },
+      })
+    }).as("putProblem")
+
+    mountChallenge()
+    cy.wait("@getProblem")
+  })
+
+  it("treats a missing saved problem as a normal empty state", () => {
+    cy.get('[data-cy="challenge-edit-open"]').should("not.exist")
+    headerSel().should("not.have.class", "bg-green-600")
+
+    cy.get('[data-cy="challenge-complete-toggle"]').click()
+
+    cy.wait("@putProblem").its("request.body.problem.complete").should("eq", true)
+    cy.get('[data-cy="challenge-edit-modal"]').should("be.visible")
   })
 })

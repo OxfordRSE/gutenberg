@@ -94,7 +94,8 @@ export const authOptions: NextAuthOptions = {
       }
 
       const avatarUrl = getOAuthAvatarUrl(account?.provider, user.image, profile)
-      const userEmail = user.email ?? (isRecord(profile) && typeof profile.email === "string" ? profile.email : undefined)
+      const userEmail =
+        user.email ?? (isRecord(profile) && typeof profile.email === "string" ? profile.email : undefined)
 
       if (account?.type === "oauth" && userEmail && avatarUrl) {
         await prisma.user.updateMany({
