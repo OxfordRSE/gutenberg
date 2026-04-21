@@ -5,6 +5,26 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import prisma from "lib/prisma"
 import { getProviderConfig, providerEnabled } from "lib/authConfig"
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null
+}
+
+function getOAuthAvatarUrl(
+  provider: string | undefined,
+  userImage: string | null | undefined,
+  profile: unknown
+): string | undefined {
+  if (provider === "github" && isRecord(profile) && typeof profile.avatar_url === "string") {
+    return profile.avatar_url
+  }
+
+  if (isRecord(profile) && typeof profile.picture === "string") {
+    return profile.picture
+  }
+
+  return userImage ?? undefined
+}
+
 function warn(msg: string) {
   if (process.env.NODE_ENV !== "production") {
     // eslint-disable-next-line no-console
@@ -67,11 +87,22 @@ export const authOptions: NextAuthOptions = {
     colorScheme: "light",
   },
   callbacks: {
-    async signIn({ user, account, profile, email }) {
+    async signIn({ user, account, profile }) {
       // Remove ext_expires_in before it gets saved to database
       if (account) {
         delete (account as any).ext_expires_in
       }
+
+      const avatarUrl = getOAuthAvatarUrl(account?.provider, user.image, profile)
+      const userEmail = user.email ?? (isRecord(profile) && typeof profile.email === "string" ? profile.email : undefined)
+
+      if (account?.type === "oauth" && userEmail && avatarUrl) {
+        await prisma.user.updateMany({
+          where: { email: userEmail },
+          data: { image: avatarUrl },
+        })
+      }
+
       return true
     },
     async jwt({ token }) {

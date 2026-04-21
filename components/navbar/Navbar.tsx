@@ -508,6 +508,7 @@ const Navbar: React.FC<Props> = ({
             }
             arrowIcon={false}
             inline={true}
+            className="z-[60]"
           >
             {session ? (
               <Dropdown.Header>

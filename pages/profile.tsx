@@ -1,8 +1,8 @@
 import type { NextPage, GetStaticProps } from "next"
-import Image from "next/image"
 import useSWR, { Fetcher } from "swr"
 import { Card } from "flowbite-react"
 import { signIn, useSession } from "next-auth/react"
+import Avatar from "@mui/material/Avatar"
 import { CourseStatus, Problem } from "@prisma/client"
 import Layout from "components/Layout"
 import HomeCourseListItem from "components/home/HomeCourseListItem"
@@ -91,12 +91,12 @@ const Profile: NextPage<ProfileProps> = ({ material, pageInfo }) => {
         <Card className="mb-6">
           <div className="flex items-center gap-4">
             <div className="shrink-0">
-              <Image
-                width={56}
-                height={56}
+              <Avatar
+                src={userProfile?.image ?? undefined}
+                alt={userProfile?.name || "User Avatar"}
+                imgProps={{ referrerPolicy: "no-referrer" }}
                 className="rounded-full"
-                src={userProfile?.image ?? "avatar"}
-                alt="User Avatar"
+                sx={{ width: 56, height: 56 }}
               />
             </div>
             <div className="min-w-0">
