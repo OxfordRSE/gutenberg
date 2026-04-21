@@ -76,4 +76,18 @@ describe("<HomeEventsPanel />", () => {
     cy.contains("Current Event").closest("article").contains("button", "Unselect").should("be.visible")
     cy.contains("Older Event").closest("article").contains("button", "Select").should("be.visible")
   })
+
+  it("shows the empty state when the user has no enrolled events", () => {
+    cy.intercept("PUT", "**/api/user/userEvents/", {
+      statusCode: 200,
+      body: { userEvents: [], userOnEvents: [], problems: [] },
+    }).as("getEmptyUserEvents")
+
+    cy.mount(<HomeEventsPanel events={[]} />)
+
+    cy.wait("@getEmptyUserEvents")
+    cy.contains("Loading your events...").should("not.exist")
+    cy.contains("You are not currently enrolled on any events.").should("be.visible")
+    cy.contains("Browse all events").should("be.visible")
+  })
 })
