@@ -50,6 +50,7 @@ See [What's New in Gutenberg v2.0]({{ "/whats-new/v2-0/" | relative_url }}) for 
 - Fixed TOC title from floating over the rest of the layout.
 - Improved presentation of the event table on profile view.
 - Fixed icon alignment on event and course active-action buttons.
+- Fixed copy-to-clipboard design to avoid nested-button hydration errors on Headings/CodeBlocks.
 
 ## v1.2
 

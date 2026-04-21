@@ -63,6 +63,9 @@ export default defineConfig({
       framework: "next",
       bundler: "webpack",
       webpackConfig: {
+        devServer: {
+          allowedHosts: "all",
+        },
         resolve: {
           alias: {
             "@components": path.resolve(__dirname, "./src/components"),

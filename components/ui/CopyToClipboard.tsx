@@ -1,37 +1,42 @@
-import React, { useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 
 interface CopyToClipboardProps {
   text: string
   onCopy?: () => void
-  children: React.ReactNode
+  children: (props: { copy: () => Promise<void>; copied: boolean }) => React.ReactNode
 }
 
 const CopyToClipboard: React.FC<CopyToClipboardProps> = ({ text, onCopy, children }) => {
   const [copied, setCopied] = useState(false)
+  const resetTimeoutRef = useRef<number | null>(null)
 
-  const handleCopy = async () => {
+  const hideCopied = () => {
+    setCopied(false)
+  }
+
+  useEffect(() => {
+    return () => {
+      if (resetTimeoutRef.current !== null) {
+        window.clearTimeout(resetTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  const copy = async () => {
     try {
       await navigator.clipboard.writeText(text)
+      if (resetTimeoutRef.current !== null) {
+        window.clearTimeout(resetTimeoutRef.current)
+      }
       setCopied(true)
       if (onCopy) onCopy()
-      setTimeout(() => setCopied(false), 2000) // Reset after 2 seconds
+      resetTimeoutRef.current = window.setTimeout(hideCopied, 2000)
     } catch (error) {
       console.error("Failed to copy text:", error)
     }
   }
 
-  return (
-    <div>
-      <button
-        type="button"
-        onClick={handleCopy}
-        style={{ display: "inline-block", cursor: "pointer", background: "none", border: 0, padding: 0 }}
-      >
-        {children}
-      </button>
-      {copied && <span className="text-xs text-green-500 ml-3">Copied to clipboard!</span>}
-    </div>
-  )
+  return <>{children({ copy, copied })}</>
 }
 
 export default CopyToClipboard
