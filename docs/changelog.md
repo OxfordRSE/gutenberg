@@ -51,6 +51,7 @@ See [What's New in Gutenberg v2.0]({{ "/whats-new/v2-0/" | relative_url }}) for 
 - Improved presentation of the event table on profile view.
 - Fixed icon alignment on event and course active-action buttons.
 - Fixed copy-to-clipboard design to avoid nested-button hydration errors on Headings/CodeBlocks.
+- Fixed progress fetches on material to returning an empty success response when no saved problem state exists, instead of a 404.
 
 ## v1.2
 
