@@ -45,7 +45,7 @@ jobs:
       AZURE_CLIENT_ID: "placeholder_azure_client_id"
       AZURE_CLIENT_SECRET: "placeholder_azure_client_secret"
       AZURE_TENANT_ID: "placeholder_azure_tenant_id"
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/gutenberg
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/gutenberg_test
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -69,6 +69,10 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
       - name: Install dependencies
         run: ${{ env.MANAGER }} install
+      - name: Create test database
+        env:
+          PGPASSWORD: postgres
+        run: psql -h localhost -U postgres -tc "SELECT 1 FROM pg_database WHERE datname = 'gutenberg_test'" | grep -q 1 || psql -h localhost -U postgres -c "CREATE DATABASE gutenberg_test"
       - name: Migrate database
         run: ${{ env.MANAGER }} prisma migrate deploy
       - name: Seed database with test data

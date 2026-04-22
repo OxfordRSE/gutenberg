@@ -27,8 +27,21 @@ export default defineConfig({
   viewportHeight: 1080,
   e2e: {
     async setupNodeEvents(on, config) {
+      process.env.CYPRESS = "true"
       const { default: installLogsPrinter } = await import("cypress-terminal-report/src/installLogsPrinter")
+      const { resetTestDb: resetTestDatabase } = await import("./prisma/resetTestDb")
       installLogsPrinter(on)
+
+      on("task", {
+        async resetTestDb() {
+          await resetTestDatabase()
+          return null
+        },
+      })
+
+      on("before:spec", async () => {
+        await resetTestDatabase()
+      })
 
       on("before:browser:launch", (browser, launchOptions) => {
         const width = 1920

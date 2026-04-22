@@ -1,6 +1,21 @@
 describe("event detail edit flow", () => {
+  let createdEventId
+
   beforeEach(() => {
     cy.login({ name: "admin", email: "admin@localhost" })
+    createdEventId = undefined
+  })
+
+  afterEach(() => {
+    if (createdEventId) {
+      cy.request({
+        method: "DELETE",
+        url: `/api/event/${createdEventId}`,
+        failOnStatusCode: false,
+      }).then(() => {
+        createdEventId = undefined
+      })
+    }
   })
 
   it("edits event groups and their material inline on the main event page", () => {
@@ -19,6 +34,7 @@ describe("event detail edit flow", () => {
 
     cy.request("POST", "/api/event", initialEvent).then((createResponse) => {
       const eventId = createResponse.body.event.id
+      createdEventId = eventId
 
       cy.request("PUT", "/api/event/" + eventId, {
         event: {
@@ -66,13 +82,12 @@ describe("event detail edit flow", () => {
       cy.get("#EventGroup\\.0\\.location").clear().type("Room B")
       cy.get("#EventGroup\\.0\\.summary").clear().type("Edited group summary")
 
-      cy.contains("button", "Remove").click()
-      cy.contains("Containers and Arrays in C++").should("not.exist")
+      cy.contains("Containers [Python]]").should("not.exist")
 
       cy.get('input[placeholder="Choose Sections"]').last().type("Containers")
-      cy.contains("li", "Containers and Arrays in C++").click()
+      cy.contains("li", "Containers [Python]").click()
       cy.contains("button", "Add Sections").click()
-      cy.contains("Containers and Arrays in C++").should("be.visible")
+      cy.contains("Containers [Python]").should("be.visible")
 
       cy.contains("button", "Save Changes").click()
 
@@ -81,7 +96,7 @@ describe("event detail edit flow", () => {
       cy.get("#EventGroup\\.0\\.name").should("have.value", "Edited Group")
       cy.get("#EventGroup\\.0\\.location").should("have.value", "Room B")
       cy.get("#EventGroup\\.0\\.summary").should("have.value", "Edited group summary")
-      cy.contains("Containers and Arrays in C++").should("be.visible")
+      cy.contains("Containers [Python]").should("be.visible")
 
       cy.reload()
       cy.location("hash").should("eq", "#edit")
@@ -90,7 +105,7 @@ describe("event detail edit flow", () => {
       cy.get("#EventGroup\\.0\\.name").should("have.value", "Edited Group")
       cy.get("#EventGroup\\.0\\.location").should("have.value", "Room B")
       cy.get("#EventGroup\\.0\\.summary").should("have.value", "Edited group summary")
-      cy.contains("Containers and Arrays in C++").should("be.visible")
+      cy.contains("Containers [Python]").should("be.visible")
 
       cy.request("GET", "/api/event/" + eventId).then((response) => {
         expect(response.body.event.name).to.eq("Edited Event " + suffix)
@@ -101,11 +116,9 @@ describe("event detail edit flow", () => {
         expect(response.body.event.EventGroup[0].summary).to.eq("Edited group summary")
         expect(response.body.event.EventGroup[0].EventItem).to.have.length(1)
         expect(response.body.event.EventGroup[0].EventItem[0].section).to.eq(
-          "HPCu.software_architecture_and_design.procedural.containers_cpp"
+          "HPCu.software_architecture_and_design.procedural.containers_python"
         )
       })
-
-      cy.request("DELETE", "/api/event/" + eventId)
     })
   })
 })
