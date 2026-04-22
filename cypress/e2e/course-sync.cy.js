@@ -1,18 +1,22 @@
+const courseDefaults = require("../../config/courses.defaults.json")
+
 describe("course sync review flow", () => {
   const admin = { name: "admin", email: "admin@localhost" }
+  const defaultCoursesByExternalId = Object.fromEntries(
+    courseDefaults.courses.map((course) => [course.externalId, course])
+  )
 
   const targetCourses = [
     {
       externalId: "course_software_architecture_cpp",
       name: "Software Architecture in C++",
-      defaultSummary:
-        "Build a stronger C++ design foundation through procedural, functional, and object orientated programming.",
+      defaultSummary: defaultCoursesByExternalId.course_software_architecture_cpp.summary,
       editedSummary: "Locally edited C++ architecture summary for sync review",
     },
     {
       externalId: "course_software_architecture_python",
       name: "Software Architecture in Python",
-      defaultSummary: "Build maintainable Python software using procedural, functional, and object orientated design.",
+      defaultSummary: defaultCoursesByExternalId.course_software_architecture_python.summary,
       editedSummary: "Locally edited Python architecture summary for sync review",
     },
   ]

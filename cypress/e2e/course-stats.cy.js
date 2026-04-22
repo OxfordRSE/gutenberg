@@ -9,7 +9,11 @@ describe("course stats pages", () => {
     cy.contains("button", "Stats").should("be.visible").click()
     cy.location("pathname").should("eq", "/courses/stats")
 
-    cy.get('[data-cy="course-stats-total-courses"]').should("contain.text", "26")
+    cy.request("/api/course").its("body.courses").then((courses) => {
+      const expectedCourseCount = courses.length
+      cy.get('[data-cy="course-stats-table"] tbody tr').should("have.length", expectedCourseCount)
+      cy.get('[data-cy="course-stats-total-courses"]').should("contain.text", String(expectedCourseCount))
+    })
     cy.get('[data-cy="course-stats-total-learners"]').should("contain.text", "4")
     cy.get('[data-cy="course-stats-total-enrolled"]').should("contain.text", "1")
     cy.get('[data-cy="course-stats-total-completed"]').should("contain.text", "2")
