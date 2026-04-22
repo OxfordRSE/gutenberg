@@ -39,14 +39,10 @@ function getDatabaseUrl() {
 
 function ensureExecutionContextIsSafe() {
   const isAllowedContext =
-    process.env.NODE_ENV === "test" ||
-    process.env.CYPRESS === "true" ||
-    process.env.ALLOW_E2E_DB_RESET === "1"
+    process.env.NODE_ENV === "test" || process.env.CYPRESS === "true" || process.env.ALLOW_E2E_DB_RESET === "1"
 
   if (!isAllowedContext) {
-    throw new Error(
-      "resetTestDb refused to run: requires NODE_ENV=test, CYPRESS=true, or ALLOW_E2E_DB_RESET=1."
-    )
+    throw new Error("resetTestDb refused to run: requires NODE_ENV=test, CYPRESS=true, or ALLOW_E2E_DB_RESET=1.")
   }
 }
 

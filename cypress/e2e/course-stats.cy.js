@@ -9,11 +9,13 @@ describe("course stats pages", () => {
     cy.contains("button", "Stats").should("be.visible").click()
     cy.location("pathname").should("eq", "/courses/stats")
 
-    cy.request("/api/course").its("body.courses").then((courses) => {
-      const expectedCourseCount = courses.length
-      cy.get('[data-cy="course-stats-table"] tbody tr').should("have.length", expectedCourseCount)
-      cy.get('[data-cy="course-stats-total-courses"]').should("contain.text", String(expectedCourseCount))
-    })
+    cy.request("/api/course")
+      .its("body.courses")
+      .then((courses) => {
+        const expectedCourseCount = courses.length
+        cy.get('[data-cy="course-stats-table"] tbody tr').should("have.length", expectedCourseCount)
+        cy.get('[data-cy="course-stats-total-courses"]').should("contain.text", String(expectedCourseCount))
+      })
     cy.get('[data-cy="course-stats-total-learners"]').should("contain.text", "4")
     cy.get('[data-cy="course-stats-total-enrolled"]').should("contain.text", "1")
     cy.get('[data-cy="course-stats-total-completed"]').should("contain.text", "2")
@@ -34,12 +36,13 @@ describe("course stats pages", () => {
     cy.get('[data-cy="course-detail-stats-enrolled"]').should("contain.text", "1")
     cy.get('[data-cy="course-detail-stats-completed"]').should("contain.text", "1")
     cy.get('[data-cy="course-detail-stats-dropped"]').should("contain.text", "1")
-    cy.get('[data-cy="course-detail-stats-progress"]').should("not.contain.text", "N/A")
+    cy.get('[data-cy="course-detail-stats-progress"]').should("contain.text", "19.1%") // (14.3 + 42.9 + 0.0) / 3 = 19.1
     cy.get('[data-cy="course-learner-stats-table"]').should("contain.text", "onCourse@localhost")
     cy.get('[data-cy="course-learner-stats-table"]').should("contain.text", "instructorOnCourse@localhost")
     cy.get('[data-cy="course-learner-stats-table"]').should("contain.text", "notOnCourse@localhost")
-    cy.get('[data-cy="course-learner-stats-table"]').should("contain.text", "33.3%")
-    cy.get('[data-cy="course-learner-stats-table"]').should("contain.text", "100.0%")
+    cy.get('[data-cy="course-learner-stats-table"]').should("contain.text", "14.3%") // 3 / 21 completed problems
+    cy.get('[data-cy="course-learner-stats-table"]').should("contain.text", "42.9%") // 9 / 21 completed problems
+    cy.get('[data-cy="course-learner-stats-table"]').should("contain.text", "0.0%") // 0 / 21 completed problems
   })
 
   it("redirects non-admin users away from course stats", () => {

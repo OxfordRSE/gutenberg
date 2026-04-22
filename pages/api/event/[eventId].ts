@@ -31,6 +31,10 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
   const isAdmin = !!currentUser?.admin
   const eventId = parseInt(req.query.eventId as string, 10)
 
+  if (!Number.isInteger(eventId)) {
+    return res.status(400).json({ error: "Invalid event id" })
+  }
+
   if (req.method === "GET") {
     const event = await prisma.event.findUnique({
       where: { id: eventId },

@@ -53,10 +53,12 @@ describe("add course flows", () => {
           name: "Foundations",
           summary: "Core language fundamentals",
           order: 1,
-          items: [{ section: "HPCu.technology_and_tooling.bash_shell.bash", order: 1 }],
+          items: [
+            { section: "HPCu.technology_and_tooling.bash_shell.bash", order: 1 },
+            { section: "HPCu.software_architecture_and_design.procedural.containers_cpp", order: 2 },
+          ],
         },
       ],
-      items: [{ section: "HPCu.software_architecture_and_design.procedural.containers_cpp", order: 1 }],
     }
 
     cy.visit("/courses/add")
@@ -86,7 +88,8 @@ describe("add course flows", () => {
         })
         cy.request("GET", `/api/course/${courseId}`).then((response) => {
           expect(response.body.course.CourseGroup).to.have.length(1)
-          expect(response.body.course.CourseItem).to.have.length(1)
+          expect(response.body.course.CourseItem).to.have.length(0)
+          expect(response.body.course.CourseGroup[0].CourseItem).to.have.length(2)
         })
         cy.request("DELETE", `/api/course/${courseId}`)
       })
