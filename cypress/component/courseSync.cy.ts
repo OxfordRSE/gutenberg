@@ -177,8 +177,8 @@ describe("course sync review", () => {
       "prerequisites",
       "tags",
       "outcomes",
-      "group",
       "items",
+      "group",
     ])
   })
 
