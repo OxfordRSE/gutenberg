@@ -106,7 +106,14 @@ describe("course enrolment flow", () => {
       const courseId = course.id
 
       clearAuthState()
-      cy.request("/api/auth/session").its("body.user").should("not.exist")
+      cy.request({
+        url: "/api/auth/session",
+        headers: {
+          cookie: "",
+        },
+      })
+        .its("body.user")
+        .should("not.exist")
       cy.visit(`/courses/${courseId}`)
       cy.contains("button", "Start course").should("not.exist")
 
