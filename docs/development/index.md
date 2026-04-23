@@ -47,9 +47,15 @@ npm install
 
 ## Providing a database
 
-You will also need a postgres database that you can use, this can be hosted locally or remotely. If remote, you can either access directly or proxy the connection, either way you will need to set the `DATABASE_URL` environment variable in `.env.local` to the connection string for the database. We leave it up to you how you wish to do this.
+You will also need a postgres database, this can be hosted locally or remotely. If remote, you can either access directly or proxy the connection, either way you will need to set the `DATABASE_URL` environment variable in `.env.local` to the connection string for the database. We leave the choice of this up to you but, for development, you could use a docker based postgres container with,
 
-Use a different database than your live site, **_do not_** connect your development environment to your production DB.
+```bash
+docker run -d --name gutenberg-postgres -e POSTGRES_PASSWORD=password -p 5432:5432 postgres:17
+```
+
+and then set `DATABASE_URL=postgres://postgres:password@localhost:5432`.
+
+Use a different database than your live site, **_do not_** connect your development environment to your production DB. NOTE: if you wish to run the e2e tests, we enforce a local database called `*_test`, e.g. `gutenberg_test`, to prevent any accidental damage to production data, so you will need to create a local database with that name.
 
 If it is your first time running the application, you will need to run the migrations to set up the database schema. This can be done with:
 

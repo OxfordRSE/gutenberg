@@ -8,7 +8,7 @@ This page explains the main ideas behind Gutenberg.
 
 ## Material repositories
 
-Gutenberg renders authored markdown learning material from one or more configured material repositories. Those repositories provide the underlying themes, courses, and sections that appear under `/material`.
+Gutenberg renders authored markdown learning material from one or more configured material repositories. Those repositories provide the underlying course material and metadata that appear under `/material`.
 
 Gutenberg adds teaching tools on top of that material rather than replacing it.
 
