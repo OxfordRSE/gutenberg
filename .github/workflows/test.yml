@@ -126,7 +126,11 @@ jobs:
           echo "Checking for broken links..."
           OUTPUT=$(npx broken-link-checker http://localhost:3000/ -rof \
             --exclude "github.com" \
+            --exclude "discuss.python.org" \
             --exclude "intel.com" \
+            --exclude "modelingcommons.org" \
+            --exclude "cs.uoregon.edu" \
+            --exclude "science.uottawa.ca" \
             --exclude "visualstudio.com" \
             --exclude "pixabay.com" \
             --exclude "doi.org" \
