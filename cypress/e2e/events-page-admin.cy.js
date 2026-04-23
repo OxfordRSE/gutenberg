@@ -126,6 +126,7 @@ describe("admin events page", () => {
       outcomes: [],
     }).then((response) => {
       createdCourseId = response.body.course.id
+      cy.wrap(createdCourseId).as("createdCourseId")
 
       return cy.request("PUT", `/api/course/${createdCourseId}`, {
         course: {
@@ -222,6 +223,8 @@ describe("admin events page", () => {
     cy.get("@createdEventId").then((eventId) => {
       cy.request("DELETE", `/api/event/${eventId}`)
     })
-    cy.request("DELETE", `/api/course/${createdCourseId}`)
+    cy.get("@createdCourseId").then((courseId) => {
+      cy.request("DELETE", `/api/course/${courseId}`)
+    })
   })
 })
