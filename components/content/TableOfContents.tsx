@@ -103,11 +103,6 @@ const TableOfContents: FC<TableOfContentsProps> = ({ markdown, tocTitle }: Table
   const [collapsed, setCollapsed] = useState(isSmallScreen)
 
   let maxHeightClass = "max-h-72"
-
-  let marginTopClass = "mt-6"
-  if (tocTitle.length >= 22) {
-    marginTopClass = "mt-12"
-  }
   // auto-update collapse when screen size changes
   useEffect(() => {
     setCollapsed(isSmallScreen)
@@ -136,12 +131,20 @@ const TableOfContents: FC<TableOfContentsProps> = ({ markdown, tocTitle }: Table
         collapsed ? "w-10" : "w-64"
       }`}
     >
-      <div className="flex flex-col h-full relative">
+      <div className="flex h-full flex-col">
         {/* Header with collapse toggle */}
         <div
-          className="flex items-center mb-4 absolute top-0 z-50 p-1 bg-transparent"
+          className="flex items-start gap-2 p-1 bg-transparent"
           style={{ cursor: "pointer", pointerEvents: "auto" }}
+          role="button"
+          tabIndex={0}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault()
+              window.scrollTo({ top: 0, behavior: "smooth" })
+            }
+          }}
         >
           {collapsed ? (
             <button
@@ -151,37 +154,26 @@ const TableOfContents: FC<TableOfContentsProps> = ({ markdown, tocTitle }: Table
                 setCollapsed(false)
               }}
             >
-              {" "}
-              <button
-                className="ml-auto p-1"
-                style={{ width: "2.25rem", height: "2.25rem" }}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setCollapsed(false)
-                }}
-                aria-label="Expand Table of Contents"
-              >
-                <span className="flex items-center justify-center">
-                  <Toc className="w-6 h-6 mr-" />
-                  <KeyboardArrowLeftIcon className="w-4 h-4  hover:text-purple-600 dark:hover:text-purple-600" />
-                </span>
-              </button>
+              <span className="flex items-center justify-center">
+                <Toc className="w-6 h-6" />
+                <KeyboardArrowLeftIcon className="w-4 h-4 hover:text-purple-600 dark:hover:text-purple-600" />
+              </span>
             </button>
           ) : (
             <>
-              <Toc className="w-6 h-6 mr-2 mb-1" />
-              <span className="text-sm font-bold mb-1 hover:text-purple-600 dark:hover:text-purple-600">
+              <Toc className="mt-0.5 h-6 w-6 shrink-0" />
+              <span className="flex-1 text-sm font-bold leading-tight hover:text-purple-600 dark:hover:text-purple-600">
                 {tocTitle}
               </span>
               <button
-                className="ml-auto p-1"
+                className="ml-auto p-1 shrink-0"
                 onClick={(e) => {
                   e.stopPropagation()
                   setCollapsed(true)
                 }}
                 aria-label="Collapse Table of Contents"
               >
-                <KeyboardArrowRightIcon className="w-4 h-4 mb-1 hover:text-purple-600 dark:hover:text-purple-600" />
+                <KeyboardArrowRightIcon className="w-4 h-4 hover:text-purple-600 dark:hover:text-purple-600" />
               </button>
             </>
           )}
@@ -189,9 +181,7 @@ const TableOfContents: FC<TableOfContentsProps> = ({ markdown, tocTitle }: Table
 
         {/* TOC content (only when not collapsed) */}
         {!collapsed && (
-          <nav
-            className={`${maxHeightClass} mt-8 overflow-y-auto font-bold pointer-events-auto bg-transparent ${marginTopClass}`}
-          >
+          <nav className={`${maxHeightClass} mt-2 overflow-y-auto font-bold pointer-events-auto bg-transparent`}>
             <ul>
               <ReactMarkdown components={markdownComponents}>{markdown || ""}</ReactMarkdown>
             </ul>

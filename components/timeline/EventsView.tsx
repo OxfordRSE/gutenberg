@@ -3,7 +3,6 @@ import router from "next/router"
 import { Material } from "lib/material"
 import { Event } from "lib/types"
 import { Button, Timeline } from "flowbite-react"
-import { BiArrowToBottom, BiArrowToTop } from "react-icons/bi"
 import EventActions from "./EventActions"
 import Link from "next/link"
 import useEvents from "lib/hooks/useEvents"
@@ -17,13 +16,14 @@ import { duplicateEventModalState, duplicateEventIdState } from "components/dial
 import { Tooltip } from "@mui/material"
 import Stack from "components/ui/Stack"
 import EventsToolbar from "components/timeline/EventsToolbar"
+import CreateEventModal, { EventCreationValues } from "components/event/CreateEventModal"
 
 type EventsProps = {
   material: Material
   events: Event[]
 }
 
-const EventsView: React.FC<EventsProps> = ({ material, events }) => {
+const EventsView: React.FC<EventsProps> = ({ material: _material, events }) => {
   // avoid hydration mismatch for date formatting
   const [showDateTime, setShowDateTime] = useState(false)
 
@@ -31,15 +31,14 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
   const [query, setQuery] = useState("")
   const [debouncedQuery, setDebouncedQuery] = useState("")
 
-  // user-controlled override for hidden-older count; null means "use derived"
-  const [userOldEvents, setUserOldEvents] = useState<number | null>(null)
-
   const [activeEvent] = useActiveEvent()
   const [showDeleteEventModal, setShowDeleteEventModal] = useAtom(deleteEventModalState)
   const [deleteEventId, setDeleteEventId] = useAtom(deleteEventIdState)
   const [showDuplicateEventModal, setShowDuplicateEventModal] = useAtom(duplicateEventModalState)
   const [duplicateEventId, setDuplicateEventId] = useAtom(duplicateEventIdState)
-  const { events: currentEvents, mutate } = useEvents()
+  const [showCreateEventModal, setShowCreateEventModal] = useState(false)
+  const [isCreatingEvent, setIsCreatingEvent] = useState(false)
+  const { events: currentEvents } = useEvents()
   const { userProfile } = useProfile()
   const isAdmin = userProfile?.admin
 
@@ -51,7 +50,7 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
       start: new Date(e.start as any),
       end: new Date(e.end as any),
     }))
-    normalized.sort((a, b) => (a.start < b.start ? -1 : a.start > b.start ? 1 : 0))
+    normalized.sort((a, b) => (a.start > b.start ? -1 : a.start < b.start ? 1 : 0))
     return normalized
   }, [currentEvents, events])
 
@@ -68,28 +67,6 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
     })
   }, [baseEvents, debouncedQuery, activeEvent?.id])
 
-  // Are we actively filtering?
-  const isFiltering = useMemo(() => debouncedQuery.trim().length > 0, [debouncedQuery])
-
-  const cutOffDate = useMemo(() => {
-    const d = new Date()
-    d.setMonth(d.getMonth() - 2)
-    return d
-  }, [])
-
-  // Derive counts every time the filtered list changes
-  const { olderCount, newerCount } = useMemo(() => {
-    const older = filteredEvents.filter((e) => e.start < cutOffDate).length
-    return { olderCount: older, newerCount: filteredEvents.length - older }
-  }, [filteredEvents, cutOffDate])
-
-  // Effective hidden-older count:
-  // - while filtering: show all (0 hidden)
-  // - otherwise: use user override if any, else derived olderCount
-  const effectiveOldEvents = isFiltering ? 0 : (userOldEvents ?? olderCount)
-  const toolbarOld = isFiltering ? 0 : effectiveOldEvents
-  const toolbarNew = isFiltering ? filteredEvents.length : newerCount
-
   // Hydration guard for date formatting, prevent dom mismatch
   useEffect(() => {
     setShowDateTime(true)
@@ -98,12 +75,16 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
   const getFormattedDate = (date: Date) =>
     showDateTime ? date.toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) : date.toUTCString()
 
-  const handleCreateEvent = async () => {
+  const createAndOpenEvent = async (payload?: { sourceCourseId?: number; startAt?: string }) => {
     try {
-      const event = await postEvent()
+      setIsCreatingEvent(true)
+      const event = await postEvent(payload)
+      setShowCreateEventModal(false)
       router.push(`/event/${event.id}#edit`)
     } catch (err) {
       console.error("Failed to create event:", err)
+    } finally {
+      setIsCreatingEvent(false)
     }
   }
 
@@ -117,35 +98,18 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
     setDuplicateEventId(eventId)
   }
 
-  // Paging helpers: no-op during filtering
-  const loadMoreEvents = () => {
-    if (isFiltering) return
-    setUserOldEvents((prev) => {
-      const base = prev ?? olderCount
-      return Math.max(base - 3, 0)
-    })
-  }
-
-  const hideMoreEvents = () => {
-    if (isFiltering) return
-    setUserOldEvents((prev) => {
-      const base = prev ?? olderCount
-      const maxHideable = Math.max(0, filteredEvents.length - newerCount)
-      return Math.min(base + 3, maxHideable)
-    })
+  const handleCreateEvent = async ({ mode, startAt, courseId }: EventCreationValues) => {
+    await createAndOpenEvent(mode === "course" ? { sourceCourseId: courseId, startAt } : { startAt })
   }
 
   return (
     <>
-      <EventsToolbar
-        oldEvents={toolbarOld}
-        newEvents={toolbarNew}
-        filteredLength={filteredEvents.length}
-        query={query}
-        onQueryChange={setQuery}
-        onDebouncedQueryChange={setDebouncedQuery}
-        onLoadMore={loadMoreEvents}
-        onHideMore={hideMoreEvents}
+      <EventsToolbar query={query} onQueryChange={setQuery} onDebouncedQueryChange={setDebouncedQuery} />
+      <CreateEventModal
+        show={showCreateEventModal}
+        isSubmitting={isCreatingEvent}
+        onClose={() => setShowCreateEventModal(false)}
+        onCreate={handleCreateEvent}
       />
       <Timeline>
         {/* Empty state when filter finds nothing */}
@@ -154,66 +118,63 @@ const EventsView: React.FC<EventsProps> = ({ material, events }) => {
         )}
 
         {/* Render the filtered list */}
-        {filteredEvents.map((event, idx) => {
-          if (idx - effectiveOldEvents >= 0 || event.id === activeEvent?.id) {
-            return (
-              <Timeline.Item key={event.id}>
-                <Timeline.Point />
-                <Timeline.Content>
-                  <div className="flex justify-between">
-                    <Link href={`/event/${event.id}`} className="text-gray-600 dark:text-gray-200">
-                      <Timeline.Time dateTime={event.start.toISOString()}>
-                        {getFormattedDate(event.start as unknown as Date)}
-                      </Timeline.Time>
-                    </Link>
+        {filteredEvents.map((event) => (
+          <Timeline.Item key={event.id}>
+            <Timeline.Point />
+            <Timeline.Content>
+              <div className="flex justify-between">
+                <Link href={`/event/${event.id}`} className="text-gray-600 dark:text-gray-200">
+                  <Timeline.Time dateTime={event.start.toISOString()}>
+                    {getFormattedDate(event.start as unknown as Date)}
+                  </Timeline.Time>
+                </Link>
 
-                    {isAdmin && (
-                      <Stack direction="row">
-                        <Tooltip id={`duplicate-event-${event.id}`} title={`Duplicate Event: ${event.id}`}>
-                          <MdContentCopy
-                            role="button"
-                            tabIndex={0}
-                            aria-labelledby={`duplicate-event-${event.id}`}
-                            className="ml-2 flex cursor-pointer"
-                            data-cy={`duplicate-event-${event.id}`}
-                            size={18}
-                            onClick={() => openDuplicateEventModal(event.id)}
-                          />
-                        </Tooltip>
-                        <Tooltip id={`delete-event-${event.id}`} title={`Delete Event: ${event.id}`}>
-                          <MdDelete
-                            role="button"
-                            tabIndex={0}
-                            aria-labelledby={`delete-event-${event.id}`}
-                            className="ml-2 text-red-500 flex cursor-pointer"
-                            data-cy={`delete-event-${event.id}`}
-                            size={18}
-                            onClick={() => openDeleteEventModal(event.id)}
-                          />
-                        </Tooltip>
-                      </Stack>
-                    )}
-                  </div>
+                {isAdmin && (
+                  <Stack direction="row">
+                    <Tooltip id={`duplicate-event-${event.id}`} title={`Duplicate Event: ${event.id}`}>
+                      <MdContentCopy
+                        role="button"
+                        tabIndex={0}
+                        aria-labelledby={`duplicate-event-${event.id}`}
+                        className="ml-2 flex cursor-pointer"
+                        data-cy={`duplicate-event-${event.id}`}
+                        size={18}
+                        onClick={() => openDuplicateEventModal(event.id)}
+                      />
+                    </Tooltip>
+                    <Tooltip id={`delete-event-${event.id}`} title={`Delete Event: ${event.id}`}>
+                      <MdDelete
+                        role="button"
+                        tabIndex={0}
+                        aria-labelledby={`delete-event-${event.id}`}
+                        className="ml-2 text-red-500 flex cursor-pointer"
+                        data-cy={`delete-event-${event.id}`}
+                        size={18}
+                        onClick={() => openDeleteEventModal(event.id)}
+                      />
+                    </Tooltip>
+                  </Stack>
+                )}
+              </div>
 
-                  <Link href={`/event/${event.id}`}>
-                    <Timeline.Title>{event.name}</Timeline.Title>
-                    <Timeline.Body>{event.summary}</Timeline.Body>
-                  </Link>
+              <Timeline.Title>
+                <Link href={`/event/${event.id}`} className="hover:underline">
+                  {event.name}
+                </Link>
+              </Timeline.Title>
+              <Timeline.Body>{event.summary}</Timeline.Body>
 
-                  <EventActions event={event} />
-                </Timeline.Content>
-              </Timeline.Item>
-            )
-          }
-          return null
-        })}
+              <EventActions event={event} />
+            </Timeline.Content>
+          </Timeline.Item>
+        ))}
 
         {isAdmin && (
           <Timeline.Item>
             <Timeline.Point />
             <Timeline.Content>
               <Timeline.Title>
-                <Button size="sm" onClick={handleCreateEvent}>
+                <Button size="sm" data-cy="create-event-button" onClick={() => setShowCreateEventModal(true)}>
                   Create new Event
                 </Button>
               </Timeline.Title>

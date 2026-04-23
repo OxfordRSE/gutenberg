@@ -1,9 +1,10 @@
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "../auth/[...nextauth]"
 import prisma from "lib/prisma"
+import type { EventFull } from "lib/types"
 
 import type { NextApiRequest, NextApiResponse } from "next"
-import { Prisma, UserOnEvent, Problem, Event } from "@prisma/client"
+import { Prisma, UserOnEvent, Problem } from "@prisma/client"
 
 export type User = Prisma.UserGetPayload<{}>
 
@@ -16,13 +17,18 @@ export type UserPublic = Prisma.UserGetPayload<{
 }>
 
 export type Data = {
-  userEvents?: Event[]
+  userEvents?: EventFull[]
   problems?: Problem[]
   userOnEvents?: UserOnEvent[]
   error?: string
 }
 
-const commentHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
+const userEventsHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
+  if (req.method !== "PUT") {
+    res.status(405).json({ error: "Method not allowed" })
+    return
+  }
+
   const session = await getServerSession(req, res, authOptions)
   if (!session) {
     res.status(401).json({ error: "Unauthorized" })
@@ -30,52 +36,47 @@ const commentHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) =
   }
 
   const userEmail = session.user?.email || undefined
+  const reqEmail = req.body?.userEmail as string | undefined
+  if (!reqEmail) {
+    res.status(400).json({ error: "No email provided" })
+    return
+  }
 
   const currentUser = await prisma.user.findUnique({
     where: { email: userEmail },
   })
 
   const isAdmin = currentUser?.admin
-  const reqEmail = req.body.userEmail as string
-  if (!reqEmail) {
-    res.status(400).json({ error: "No email provided" })
+  if (!isAdmin && reqEmail !== userEmail) {
+    res.status(403).json({ error: "Forbidden" })
     return
   }
-  let userEvents: Event[] = []
-  if (req.method === "PUT") {
-    if (isAdmin || reqEmail === userEmail) {
-      prisma.userOnEvent
-        .findMany({
-          where: { userEmail: reqEmail },
+
+  const [userOnEvents, problems] = await Promise.all([
+    prisma.userOnEvent.findMany({
+      where: { userEmail: reqEmail },
+    }),
+    prisma.problem.findMany({
+      where: { userEmail: reqEmail },
+    }),
+  ])
+
+  const eventIds = userOnEvents.map((userOnEvent) => userOnEvent.eventId)
+  const events: EventFull[] =
+    eventIds.length === 0
+      ? []
+      : await prisma.event.findMany({
+          where: { id: { in: eventIds } },
+          include: { EventGroup: { include: { EventItem: true } } },
         })
-        .catch((e) => [])
-        .then((userOnEvents) => {
-          for (const event of userOnEvents) {
-            prisma.event
-              .findUnique({
-                where: { id: event.eventId },
-                include: { EventGroup: { include: { EventItem: true } } },
-              })
-              .then((e) => {
-                if (e) {
-                  userEvents.push(e)
-                }
-              })
-              .then(() => {
-                prisma.problem
-                  .findMany({
-                    where: { userEmail: reqEmail },
-                  })
-                  .then((problems) => {
-                    res.status(200).json({ userEvents, problems, userOnEvents })
-                  })
-              })
-          }
-        })
-    }
-  } else {
-    res.status(405).json({ error: "Method not allowed" })
-  }
+
+  const eventsById = new Map(events.map((event) => [event.id, event]))
+  const userEvents = eventIds.flatMap((eventId) => {
+    const event = eventsById.get(eventId)
+    return event ? [event] : []
+  })
+
+  res.status(200).json({ userEvents, problems, userOnEvents })
 }
 
-export default commentHandler
+export default userEventsHandler

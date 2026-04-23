@@ -1,6 +1,8 @@
 ---
 title: Configuration
 permalink: /config/
+nav_order: 4
+has_children: true
 ---
 
 There are three configuration steps required for getting the deployed application fully configured:

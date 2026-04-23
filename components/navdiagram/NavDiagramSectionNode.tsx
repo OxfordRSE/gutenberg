@@ -1,6 +1,7 @@
 import Link from "next/link"
 import React, { memo } from "react"
 import { Handle, Position } from "reactflow"
+import { formatTagLabel } from "lib/tagLabels"
 import { NodeData } from "./NavDiagram"
 
 type NodeProps = {
@@ -18,7 +19,7 @@ function NavDiagramSectionNode({ data }: NodeProps) {
           <div className="self-end justify-self-end">
             {data.section?.tags.map((tag, i) => (
               <div key={i} className="px-2 pb-1 text-[9px] bg-indigo-500 rounded-lg">
-                {tag}
+                {formatTagLabel(tag)}
               </div>
             ))}
           </div>

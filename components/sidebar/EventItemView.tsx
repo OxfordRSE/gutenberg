@@ -1,9 +1,8 @@
 import React from "react"
-import { Material } from "lib/material"
-import { Problem } from "lib/types"
-import { basePath } from "lib/basePath"
 import { EventItem } from "@prisma/client"
-import Link from "next/link"
+import CourseSectionLink from "components/courses/CourseSectionLink"
+import { Material, sectionSplit } from "lib/material"
+import { Problem } from "lib/types"
 
 type EventItemProps = {
   material: Material
@@ -11,36 +10,25 @@ type EventItemProps = {
   problems?: Problem[]
 }
 
+const indentByDepth: Record<number, string> = {
+  2: "ml-2",
+  3: "ml-4",
+  4: "ml-6",
+}
+
+const depthByLength: Record<number, "theme" | "course" | "section"> = {
+  2: "theme",
+  3: "course",
+  4: "section",
+}
+
 const EventItemView: React.FC<EventItemProps> = ({ material, item, problems }) => {
   const split = item.section.split(".")
-  let url = ""
-  let name = `Error: ${item.section}`
-  let key = item.id
-  let indent = 0
-  let itemProblems: string[] = []
-  if (split.length === 4) {
-    const [repo, theme, course, section] = split
-    const themeData = material.themes.find((t) => t.id === theme)
-    const courseData = themeData?.courses.find((c) => c.id === course)
-    const sectionData = courseData?.sections.find((s) => s.id === section)
-    url = `${basePath}/material/${repo}/${theme}/${course}/${section}`
-    name = sectionData?.name || `Error: ${item.section}`
-    indent = 6
-    itemProblems = sectionData?.problems || []
-  } else if (split.length === 3) {
-    const [repo, theme, course] = split
-    const themeData = material.themes.find((t) => t.id === theme)
-    const courseData = themeData?.courses.find((c) => c.id === course)
-    url = `${basePath}/material/${repo}/${theme}/${course}`
-    name = courseData?.name || `Error: ${item.section}`
-    indent = 4
-  } else if (split.length === 2) {
-    const [repo, theme] = split
-    const themeData = material.themes.find((t) => t.id === theme)
-    url = `${basePath}/material/${repo}/${theme}`
-    name = themeData?.name || `Error: ${item.section}`
-    indent = 2
-  }
+  const indentClass = indentByDepth[split.length] ?? "ml-0"
+  const depth = depthByLength[split.length] ?? "section"
+  const { section } = sectionSplit(item.section, material)
+  const itemProblems = section?.problems ?? []
+
   let isCompleted = false
   let completedLabel = ""
   const uniqueUsers = new Set()
@@ -52,18 +40,15 @@ const EventItemView: React.FC<EventItemProps> = ({ material, item, problems }) =
     const completedProblems = problems.filter(
       (p) => p.section === item.section && itemProblems.includes(p.tag) && p.complete
     )
-    uniqueUsersCount = Math.max(1, uniqueUsers.size) // to deal with =0
-    // instructors see total completed by all students / total problems available to all students
+    uniqueUsersCount = Math.max(1, uniqueUsers.size)
     completedLabel = `[${completedProblems.length}/${itemProblems.length * uniqueUsersCount}]`
     isCompleted = completedProblems.length === itemProblems.length * uniqueUsersCount
   }
 
   return (
-    <li key={key} className={`${isCompleted ? "text-green-500" : "text-inherit"} ml-${indent}`}>
-      {completedLabel}{" "}
-      <Link href={url} className={`hover:underline`}>
-        {name}
-      </Link>
+    <li className={`${isCompleted ? "text-green-500" : "text-inherit"} ${indentClass}`}>
+      {completedLabel && <span className="mr-1">{completedLabel}</span>}
+      <CourseSectionLink material={material} sectionRef={item.section} depth={depth} />
     </li>
   )
 }

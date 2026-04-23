@@ -1,10 +1,6 @@
 import React, { JSX, ReactNode, useRef } from "react"
 import ReactMarkdown, { ExtraProps, Components } from "react-markdown"
-import { Prism, SyntaxHighlighterProps } from "react-syntax-highlighter"
-import CopyToClipboard from "components/ui/CopyToClipboard"
-import { FaClipboard } from "react-icons/fa"
-
-import { lucario as codeStyle } from "react-syntax-highlighter/dist/cjs/styles/prism"
+import CodeBlock from "components/content/CodeBlock"
 
 import directive from "remark-directive"
 import { visit } from "unist-util-visit"
@@ -17,13 +13,11 @@ import "katex/dist/katex.min.css" // `rehype-katex` does not import the CSS for 
 import Challenge from "./Challenge"
 import Solution from "./Solution"
 import Callout from "./Callout"
-import { Course, Section, Theme } from "lib/material"
+import { MaterialCourse, MaterialSection, MaterialTheme } from "lib/material"
 import Paragraph from "./Paragraph"
 import Heading from "./Heading"
 import { reduceRepeatingPatterns, extractTextValues } from "lib/utils"
 import Link from "next/link"
-
-const SyntaxHighlighter = Prism as any as React.FC<SyntaxHighlighterProps>
 
 type ReactMarkdownProps = React.JSX.IntrinsicElements["p"] & ExtraProps
 type HeadingProps = React.JSX.IntrinsicElements["h2"] & ExtraProps
@@ -111,42 +105,7 @@ function code({ node, className, children, ...props }: CodeProps): React.JSX.Ele
   const isBlockCode = Boolean(className && /language-(\w+)/.test(className))
 
   if (isBlockCode) {
-    if (match) {
-      return (
-        <div className="relative m-0">
-          <CopyToClipboard text={code}>
-            <button className="group absolute top-0 right-0 bg-transparent text-xs text-grey-700 hover:bg-grey-900 px-2 py-1 rounded flex items-center space-x-1">
-              <FaClipboard className="group-hover:text-white" />
-              <span className="group-hover:text-white">Copy</span>
-            </button>
-          </CopyToClipboard>
-          <SyntaxHighlighter
-            {...(props as any)}
-            language={match[1]}
-            PreTag="div"
-            style={codeStyle}
-            codeTagProps={{ className: "text-sm" }}
-            customStyle={{ margin: 0 }}
-          >
-            {code}
-          </SyntaxHighlighter>
-        </div>
-      )
-    } else {
-      return (
-        <div className="p-3 relative">
-          <CopyToClipboard text={code}>
-            <button className="group absolute top-0 right-0 bg-transparent text-xs text-grey-700 hover:text-grey-900 px-2 py-1 rounded flex items-center space-x-1">
-              <FaClipboard className="group-hover:text-white" />
-              <span className="group-hover:text-white">Copy</span>
-            </button>
-          </CopyToClipboard>
-          <code className={className} {...props}>
-            {children}
-          </code>
-        </div>
-      )
-    }
+    return <CodeBlock code={code} language={match?.[1]} className={className} />
   } else {
     return (
       <code className={className} {...props}>
@@ -158,9 +117,9 @@ function code({ node, className, children, ...props }: CodeProps): React.JSX.Ele
 
 type Props = {
   markdown: string
-  theme?: Theme
-  course?: Course
-  section?: Section
+  theme?: MaterialTheme
+  course?: MaterialCourse
+  section?: MaterialSection
 }
 
 const Content: React.FC<Props> = ({ markdown, theme, course, section }) => {

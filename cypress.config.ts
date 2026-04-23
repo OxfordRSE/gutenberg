@@ -1,10 +1,23 @@
 import { defineConfig } from "cypress"
+import { existsSync } from "fs"
 import path from "path"
 import { fileURLToPath } from "url"
 import { dirname } from "path"
+import { config as loadEnv } from "dotenv"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
+
+const baseEnvPath = path.resolve(__dirname, ".env")
+const localEnvPath = path.resolve(__dirname, ".env.local")
+
+if (existsSync(baseEnvPath)) {
+  loadEnv({ path: baseEnvPath })
+}
+
+if (existsSync(localEnvPath)) {
+  loadEnv({ path: localEnvPath, override: true })
+}
 
 export default defineConfig({
   env: {
@@ -14,8 +27,21 @@ export default defineConfig({
   viewportHeight: 1080,
   e2e: {
     async setupNodeEvents(on, config) {
+      process.env.CYPRESS = "true"
       const { default: installLogsPrinter } = await import("cypress-terminal-report/src/installLogsPrinter")
+      const { resetTestDb: resetTestDatabase } = await import("./prisma/resetTestDb")
       installLogsPrinter(on)
+
+      on("task", {
+        async resetTestDb() {
+          await resetTestDatabase()
+          return null
+        },
+      })
+
+      on("before:spec", async () => {
+        await resetTestDatabase()
+      })
 
       on("before:browser:launch", (browser, launchOptions) => {
         const width = 1920
@@ -50,6 +76,9 @@ export default defineConfig({
       framework: "next",
       bundler: "webpack",
       webpackConfig: {
+        devServer: {
+          allowedHosts: "all",
+        },
         resolve: {
           alias: {
             "@components": path.resolve(__dirname, "./src/components"),

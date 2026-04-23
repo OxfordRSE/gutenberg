@@ -9,6 +9,7 @@ import { Button } from "flowbite-react"
 import { useUserOnEvent } from "lib/hooks/useUserOnEvent"
 import useActiveEvent from "lib/hooks/useActiveEvents"
 import useEvent from "lib/hooks/useEvent"
+import useLearningContext from "lib/hooks/useLearningContext"
 
 type EventActionsProps = {
   event: Event
@@ -19,6 +20,7 @@ const userOnEventFetcher: Fetcher<UserOnEvent, string> = (url) => fetch(url).the
 
 const EventActions: React.FC<EventActionsProps> = ({ event, verbose }) => {
   const [activeEvent, setActiveEvent] = useActiveEvent()
+  const [learningContext, setLearningContext] = useLearningContext()
 
   const { data: session } = useSession()
   const [showEvent, setShowEvent] = React.useState<Event | null>(null)
@@ -26,6 +28,9 @@ const EventActions: React.FC<EventActionsProps> = ({ event, verbose }) => {
 
   const handleDeactivate = (event: Event) => () => {
     setActiveEvent(undefined)
+    if (learningContext?.type === "event" && learningContext.id === event.id) {
+      setLearningContext(undefined)
+    }
   }
   const handleEnrol = (event: Event) => () => {
     setShowEvent(event)
@@ -50,24 +55,25 @@ const EventActions: React.FC<EventActionsProps> = ({ event, verbose }) => {
   const handleActivate = (event: Event) => () => {
     if (eventData) {
       setActiveEvent(eventData)
+      setLearningContext({ type: "event", id: event.id })
     }
   }
 
   return (
     <div className="flex flex-row gap-2">
       {isActiveEvent ? (
-        <Button color="gray" onClick={handleDeactivate(event)} style={{ zIndex: 1 }}>
+        <Button color="gray" className="[&>span]:items-center" onClick={handleDeactivate(event)} style={{ zIndex: 1 }}>
           {verbose ? "Deselect as active event" : "Unselect"}
           <HiArrowNarrowRight className="ml-2 h-3 w-3" />
         </Button>
       ) : isMyEvent ? (
-        <Button color="gray" onClick={handleActivate(event)} style={{ zIndex: 1 }}>
+        <Button color="gray" className="[&>span]:items-center" onClick={handleActivate(event)} style={{ zIndex: 1 }}>
           {verbose ? "Select as your active event" : "Select"}
           <HiArrowNarrowRight className="ml-2 h-3 w-3" />
         </Button>
       ) : isRequested ? (
         <>
-          <Button color="gray" onClick={handleEnrol(event)} style={{ zIndex: 1 }}>
+          <Button color="gray" className="[&>span]:items-center" onClick={handleEnrol(event)} style={{ zIndex: 1 }}>
             {verbose ? "Enrolment has been requested" : "Requested"}
             <HiArrowNarrowRight className="ml-2 h-3 w-3" />
           </Button>
@@ -76,7 +82,13 @@ const EventActions: React.FC<EventActionsProps> = ({ event, verbose }) => {
       ) : (
         session && (
           <>
-            <Button color="gray" data-cy={`event-enrol-${event.id}`} onClick={handleEnrol(event)} style={{ zIndex: 1 }}>
+            <Button
+              color="gray"
+              className="[&>span]:items-center"
+              data-cy={`event-enrol-${event.id}`}
+              onClick={handleEnrol(event)}
+              style={{ zIndex: 1 }}
+            >
               {verbose ? "Enrol onto this event" : "Enrol"}
               <HiArrowNarrowRight className="ml-2 h-3 w-3" />
             </Button>

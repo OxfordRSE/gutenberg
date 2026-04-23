@@ -1,8 +1,15 @@
 import { basePath } from "lib/basePath"
 import { Event } from "pages/api/event/[eventId]"
 
+export type EventCreatePayload =
+  | Partial<Event>
+  | {
+      sourceCourseId?: number
+      startAt?: string
+    }
+
 // POST /api/events
-export const postEvent = async (data?: Event): Promise<Event> => {
+export const postEvent = async (data?: EventCreatePayload): Promise<Event> => {
   const apiPath = `${basePath}/api/event`
   const requestOptions = {
     method: "POST",

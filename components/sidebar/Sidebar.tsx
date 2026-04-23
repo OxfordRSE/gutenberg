@@ -4,8 +4,10 @@ import type { EventFull } from "lib/types"
 import EventSwitcher from "./EventSwitcher"
 import { Fetcher } from "swr"
 import EventView from "./EventView"
+import CourseView from "./CourseView"
 import { MdKeyboardArrowLeft } from "react-icons/md"
 import type { PageTemplate } from "lib/pageTemplate"
+import useLearningContext from "lib/hooks/useLearningContext"
 
 type SidebarProps = {
   material: Material
@@ -19,6 +21,7 @@ const fetcher: Fetcher<EventFull[], string> = (url) => fetch(url).then((r) => r.
 
 const MySidebar: React.FC<SidebarProps> = ({ material, activeEvent, sidebarOpen, handleClose, pageInfo }) => {
   const sidebarRef = useRef<HTMLDivElement>(null)
+  const [learningContext] = useLearningContext()
 
   useEffect(() => {
     const componentId = "sidebar" // Unique identifier for this component
@@ -55,10 +58,14 @@ const MySidebar: React.FC<SidebarProps> = ({ material, activeEvent, sidebarOpen,
           <div id="sidebar" ref={sidebarRef} className="p-1 overflow-y-auto h-full">
             <EventSwitcher pageInfo={pageInfo} />
 
-            {activeEvent ? (
+            {learningContext?.type === "event" && activeEvent ? (
               <EventView material={material} event={activeEvent} />
+            ) : learningContext?.type === "course" ? (
+              <CourseView material={material} externalId={learningContext.externalId} />
             ) : (
-              <div className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">No active event selected</div>
+              <div className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                No active learning context
+              </div>
             )}
 
             <button

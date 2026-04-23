@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import Link from "next/link"
-import { Course, Material, Section, Theme, eventItemSplit } from "lib/material"
+import { Material, eventItemSplit } from "lib/material"
 import { EventFull, Event, Problem } from "lib/types"
 import { Table } from "flowbite-react"
 import Avatar from "@mui/material/Avatar"

@@ -1,0 +1,1147 @@
+{
+  "courses": [
+    {
+      "externalId": "course_software_architecture_cpp",
+      "name": "Software Architecture in C++",
+      "summary": "Procedural, functional, and object orientated programming in C++.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": ["cpp"],
+      "prerequisites": ["Intro to C++"],
+      "tags": ["programming", "software-design"],
+      "outcomes": [
+        "Write clearer procedural C++ code",
+        "Apply functional techniques in C++",
+        "Design object orientated C++ programs"
+      ],
+      "groups": [
+        {
+          "name": "Procedural Programming",
+          "summary": "Variables, functions, and containers in C++.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.software_architecture_and_design.procedural.variables_cpp" },
+            { "order": 2, "section": "HPCu.software_architecture_and_design.procedural.functions_cpp" },
+            { "order": 3, "section": "HPCu.software_architecture_and_design.procedural.containers_cpp" }
+          ]
+        },
+        {
+          "name": "Functional Programming",
+          "summary": "Recursion, higher-order functions, and side effects in C++.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.software_architecture_and_design.functional.side_effects_cpp" },
+            { "order": 2, "section": "HPCu.software_architecture_and_design.functional.recursion_cpp" },
+            { "order": 3, "section": "HPCu.software_architecture_and_design.functional.higher_order_functions_cpp" }
+          ]
+        },
+        {
+          "name": "Object Orientated Programming",
+          "summary": "Classes, inheritance, and polymorphism in C++.",
+          "order": 3,
+          "items": [
+            { "order": 1, "section": "HPCu.software_architecture_and_design.object_orientated.classes_cpp" },
+            {
+              "order": 2,
+              "section": "HPCu.software_architecture_and_design.object_orientated.inheritance_and_composition_cpp"
+            },
+            { "order": 3, "section": "HPCu.software_architecture_and_design.object_orientated.polymorphism_cpp" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_software_architecture_python",
+      "name": "Software Architecture in Python",
+      "summary": "Procedural, functional, and object orientated programming in Python.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": ["python"],
+      "prerequisites": ["Intro to Python"],
+      "tags": ["programming", "software-design"],
+      "outcomes": [
+        "Write clearer procedural Python code",
+        "Apply functional techniques in Python",
+        "Design object orientated Python programs"
+      ],
+      "groups": [
+        {
+          "name": "Procedural Programming",
+          "summary": "Variables, data structures, and functions in Python.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.software_architecture_and_design.procedural.variables_python" },
+            { "order": 2, "section": "HPCu.software_architecture_and_design.procedural.arrays_python" },
+            { "order": 3, "section": "HPCu.software_architecture_and_design.procedural.containers_python" },
+            { "order": 4, "section": "HPCu.software_architecture_and_design.procedural.functions_python" }
+          ]
+        },
+        {
+          "name": "Functional Programming",
+          "summary": "Recursion, higher-order functions, and side effects in Python.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.software_architecture_and_design.functional.side_effects_python" },
+            { "order": 2, "section": "HPCu.software_architecture_and_design.functional.recursion_python" },
+            {
+              "order": 3,
+              "section": "HPCu.software_architecture_and_design.functional.higher_order_functions_python"
+            }
+          ]
+        },
+        {
+          "name": "Object Orientated Programming",
+          "summary": "Classes, inheritance, and polymorphism in Python.",
+          "order": 3,
+          "items": [
+            { "order": 1, "section": "HPCu.software_architecture_and_design.object_orientated.classes" },
+            {
+              "order": 2,
+              "section": "HPCu.software_architecture_and_design.object_orientated.inheritance_and_composition"
+            },
+            { "order": 3, "section": "HPCu.software_architecture_and_design.object_orientated.polymorphism" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_intro_cpp",
+      "name": "Intro to C++",
+      "summary": "Shell basics, IDE setup, and core C++ concepts.",
+      "level": "beginner",
+      "hidden": false,
+      "language": ["cpp"],
+      "prerequisites": [],
+      "tags": ["programming", "tooling"],
+      "outcomes": [
+        "Work confidently at the command line",
+        "Use an IDE for C++ development",
+        "Understand core C++ variables, functions, and containers"
+      ],
+      "groups": [
+        {
+          "name": "Shell Basics",
+          "summary": "Command-line basics used in later material.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.technology_and_tooling.bash_shell.01-intro" },
+            { "order": 2, "section": "HPCu.technology_and_tooling.bash_shell.02-filedir" },
+            { "order": 3, "section": "HPCu.technology_and_tooling.bash_shell.03-create" }
+          ]
+        },
+        {
+          "name": "Development Environment",
+          "summary": "Editor setup for C++ work.",
+          "order": 2,
+          "items": [{ "order": 1, "section": "HPCu.technology_and_tooling.ide.cpp" }]
+        },
+        {
+          "name": "C++ Foundations",
+          "summary": "Core procedural programming in C++.",
+          "order": 3,
+          "items": [
+            { "order": 1, "section": "HPCu.software_architecture_and_design.procedural.variables_cpp" },
+            { "order": 2, "section": "HPCu.software_architecture_and_design.procedural.functions_cpp" },
+            { "order": 3, "section": "HPCu.software_architecture_and_design.procedural.containers_cpp" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_intro_python",
+      "name": "Intro to Python",
+      "summary": "Python fundamentals for scripting and data work.",
+      "level": "beginner",
+      "hidden": false,
+      "language": ["python"],
+      "prerequisites": [],
+      "tags": ["programming"],
+      "outcomes": [
+        "Run Python code confidently",
+        "Use core data types and control flow",
+        "Write functions and work with data"
+      ],
+      "groups": [
+        {
+          "name": "Getting Started",
+          "summary": "Setup and core Python basics.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.introductory_courses.python.01_running_python" },
+            { "order": 2, "section": "HPCu.introductory_courses.python.02_variables_and_types" },
+            { "order": 3, "section": "HPCu.introductory_courses.python.03_writing_and_running_ide" },
+            { "order": 4, "section": "HPCu.introductory_courses.python.04_built_in_functions_and_help" },
+            { "order": 5, "section": "HPCu.introductory_courses.python.05_libraries" }
+          ]
+        },
+        {
+          "name": "Data and Control Flow",
+          "summary": "Data, lists, loops, and conditionals.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.introductory_courses.python.06_analyzing_and_visualizing_data" },
+            { "order": 2, "section": "HPCu.introductory_courses.python.07_pandas_dataframes" },
+            { "order": 3, "section": "HPCu.introductory_courses.python.08_lists" },
+            { "order": 4, "section": "HPCu.introductory_courses.python.09_for_loops" },
+            { "order": 5, "section": "HPCu.introductory_courses.python.10_conditionals" },
+            { "order": 6, "section": "HPCu.introductory_courses.python.11_looping_over_data_sets" },
+            { "order": 7, "section": "HPCu.introductory_courses.python.12_errors_and_exceptions" }
+          ]
+        },
+        {
+          "name": "Functions and Scope",
+          "summary": "Functions, scope, and a small project.",
+          "order": 3,
+          "items": [
+            { "order": 1, "section": "HPCu.introductory_courses.python.13_writing_functions" },
+            { "order": 2, "section": "HPCu.introductory_courses.python.14_variable_scope" },
+            { "order": 3, "section": "HPCu.introductory_courses.python.15_snake_game" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_hpc_introduction",
+      "name": "HPC Introduction",
+      "summary": "Getting started with HPC systems.",
+      "level": "beginner",
+      "hidden": false,
+      "language": [],
+      "prerequisites": [],
+      "tags": ["hpc", "cluster-computing", "tooling"],
+      "outcomes": [
+        "Connect to an HPC system",
+        "Understand schedulers, modules, and resources",
+        "Use shared systems responsibly"
+      ],
+      "groups": [
+        {
+          "name": "Connecting to HPC",
+          "summary": "What HPC is and how to connect.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.high_performance_computing.hpc_intro.01_hpc_intro" },
+            { "order": 2, "section": "HPCu.high_performance_computing.hpc_intro.02_connecting" },
+            { "order": 3, "section": "HPCu.high_performance_computing.hpc_intro.03_cluster" },
+            { "order": 4, "section": "HPCu.high_performance_computing.hpc_intro.04_scheduler" }
+          ]
+        },
+        {
+          "name": "Working on a Cluster",
+          "summary": "Modules, file transfer, and job resources.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.high_performance_computing.hpc_intro.05_modules" },
+            { "order": 2, "section": "HPCu.high_performance_computing.hpc_intro.06_transferring_files" },
+            { "order": 3, "section": "HPCu.high_performance_computing.hpc_intro.07_parallel" },
+            { "order": 4, "section": "HPCu.high_performance_computing.hpc_intro.08_resources" }
+          ]
+        },
+        {
+          "name": "Responsible Usage",
+          "summary": "Responsible use of shared systems.",
+          "order": 3,
+          "items": [{ "order": 1, "section": "HPCu.high_performance_computing.hpc_intro.09_responsibility" }]
+        }
+      ]
+    },
+    {
+      "externalId": "course_openmp_parallel_programming",
+      "name": "OpenMP Parallel Programming",
+      "summary": "An introduction to shared-memory parallel programming with OpenMP.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": ["cpp"],
+      "prerequisites": ["HPC Introduction", "Intro to C++"],
+      "tags": ["hpc", "parallel", "cluster-computing"],
+      "outcomes": [
+        "Explain shared-memory parallelism",
+        "Use the core OpenMP API",
+        "Reason about synchronisation and hybrid parallelism"
+      ],
+      "groups": [
+        {
+          "name": "Parallel Concepts",
+          "summary": "Parallel programming background and OpenMP basics.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.high_performance_computing.hpc_parallel_intro.01_introduction" },
+            { "order": 2, "section": "HPCu.high_performance_computing.hpc_openmp.02_intro_openmp" }
+          ]
+        },
+        {
+          "name": "OpenMP APIs",
+          "summary": "Core OpenMP directives and synchronisation.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.high_performance_computing.hpc_openmp.03_parallel_api" },
+            { "order": 2, "section": "HPCu.high_performance_computing.hpc_openmp.04_synchronisation" }
+          ]
+        },
+        {
+          "name": "Hybrid Parallelism",
+          "summary": "Hybrid and wider OpenMP workflows.",
+          "order": 3,
+          "items": [{ "order": 1, "section": "HPCu.high_performance_computing.hpc_openmp.05_hybrid_parallelism" }]
+        }
+      ]
+    },
+    {
+      "externalId": "course_mpi_parallel_programming",
+      "name": "MPI Parallel Programming",
+      "summary": "An introduction to message-passing parallel programming with MPI.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": ["cpp"],
+      "prerequisites": ["HPC Introduction", "Intro to C++"],
+      "tags": ["hpc", "parallel", "cluster-computing"],
+      "outcomes": [
+        "Use the MPI programming model",
+        "Write point-to-point and collective communication code",
+        "Reason about scaling and communication patterns"
+      ],
+      "groups": [
+        {
+          "name": "Parallel Concepts",
+          "summary": "Distributed-memory parallel programming basics.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.high_performance_computing.hpc_parallel_intro.01_introduction" },
+            { "order": 2, "section": "HPCu.high_performance_computing.hpc_mpi.02_mpi_api" },
+            { "order": 3, "section": "HPCu.high_performance_computing.hpc_mpi.03_communicating_data" },
+            { "order": 4, "section": "HPCu.high_performance_computing.hpc_mpi.04_point_to_point_communication" }
+          ]
+        },
+        {
+          "name": "MPI Coordination",
+          "summary": "Collectives, non-blocking communication, and derived types.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.high_performance_computing.hpc_mpi.05_collective_communication" },
+            { "order": 2, "section": "HPCu.high_performance_computing.hpc_mpi.06_non_blocking_communication" },
+            { "order": 3, "section": "HPCu.high_performance_computing.hpc_mpi.07-derived-data-types" }
+          ]
+        },
+        {
+          "name": "Performance and Patterns",
+          "summary": "MPI program structure and performance.",
+          "order": 3,
+          "items": [
+            { "order": 1, "section": "HPCu.high_performance_computing.hpc_mpi.08_porting_serial_to_mpi" },
+            { "order": 2, "section": "HPCu.high_performance_computing.hpc_mpi.09_optimising_mpi" },
+            { "order": 3, "section": "HPCu.high_performance_computing.hpc_mpi.10_communication_patterns" },
+            { "order": 4, "section": "HPCu.high_performance_computing.hpc_mpi.11_advanced_communication" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_version_control_git",
+      "name": "Version Control with Git",
+      "summary": "Version control with Git for day-to-day work.",
+      "level": "beginner",
+      "hidden": false,
+      "language": [],
+      "prerequisites": [],
+      "tags": ["tooling", "git", "workflows"],
+      "outcomes": [
+        "Create and manage Git repositories",
+        "Inspect history and recover work",
+        "Collaborate through branches and remotes"
+      ],
+      "groups": [
+        {
+          "name": "Getting Started",
+          "summary": "Why version control matters and how to set up Git.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.technology_and_tooling.version_control.01-background" },
+            { "order": 2, "section": "HPCu.technology_and_tooling.version_control.02-setup" },
+            { "order": 3, "section": "HPCu.technology_and_tooling.version_control.03-create" }
+          ]
+        },
+        {
+          "name": "Everyday Workflow",
+          "summary": "Changes, history, and remotes.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.technology_and_tooling.version_control.04-changes" },
+            { "order": 2, "section": "HPCu.technology_and_tooling.version_control.05-history" },
+            { "order": 3, "section": "HPCu.technology_and_tooling.version_control.06-remote" }
+          ]
+        },
+        {
+          "name": "Branches and Collaboration",
+          "summary": "Branches, ignore rules, and collaboration.",
+          "order": 3,
+          "items": [
+            { "order": 1, "section": "HPCu.technology_and_tooling.version_control.07-branches" },
+            { "order": 2, "section": "HPCu.technology_and_tooling.version_control.08-ignore" },
+            { "order": 3, "section": "HPCu.technology_and_tooling.version_control.09-practice" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_docker_basics",
+      "name": "Docker Basics",
+      "summary": "Docker basics for containers and reproducibility.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": [],
+      "prerequisites": [],
+      "tags": ["tooling", "docker", "reproducibility"],
+      "outcomes": [
+        "Explain what containers are for",
+        "Run and manage containers",
+        "Build, share, and reuse container images"
+      ],
+      "groups": [
+        {
+          "name": "Getting Started",
+          "summary": "Docker setup and core ideas.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.technology_and_tooling.docker.setup" },
+            { "order": 2, "section": "HPCu.technology_and_tooling.docker.introduction" },
+            { "order": 3, "section": "HPCu.technology_and_tooling.docker.meet-docker" }
+          ]
+        },
+        {
+          "name": "Working with Containers",
+          "summary": "Running and managing containers.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.technology_and_tooling.docker.running-containers" },
+            { "order": 2, "section": "HPCu.technology_and_tooling.docker.managing-containers" }
+          ]
+        },
+        {
+          "name": "Images and Reproducibility",
+          "summary": "Building and sharing images.",
+          "order": 3,
+          "items": [
+            { "order": 1, "section": "HPCu.technology_and_tooling.docker.creating-container-images" },
+            { "order": 2, "section": "HPCu.technology_and_tooling.docker.docker-image-examples" },
+            { "order": 3, "section": "HPCu.technology_and_tooling.docker.docker-hub" },
+            { "order": 4, "section": "HPCu.technology_and_tooling.docker.reproducibility" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_snakemake_workflows",
+      "name": "Snakemake Workflows",
+      "summary": "Building workflows with Snakemake.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": ["python"],
+      "prerequisites": ["Intro to Python"],
+      "tags": ["tooling", "workflows", "hpc"],
+      "outcomes": [
+        "Set up and run a Snakemake workflow",
+        "Model workflow dependencies",
+        "Scale workflows to larger compute environments"
+      ],
+      "groups": [
+        {
+          "name": "Getting Started",
+          "summary": "Setup and first workflows.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.technology_and_tooling.snakemake.setup" },
+            { "order": 2, "section": "HPCu.technology_and_tooling.snakemake.basics" },
+            { "order": 3, "section": "HPCu.technology_and_tooling.snakemake.short" }
+          ]
+        },
+        {
+          "name": "Building Better Workflows",
+          "summary": "More advanced workflow features.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.technology_and_tooling.snakemake.advanced" },
+            { "order": 2, "section": "HPCu.technology_and_tooling.snakemake.additional_features" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_software_testing_python",
+      "name": "Software Testing in Python",
+      "summary": "Writing and organising automated tests in Python.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": ["python"],
+      "prerequisites": ["Intro to Python"],
+      "tags": ["programming", "testing", "tooling"],
+      "outcomes": [
+        "Write automated tests for Python code",
+        "Use fixtures and mocking effectively",
+        "Diagnose failures and grow a test suite"
+      ],
+      "groups": [
+        {
+          "name": "Testing Foundations",
+          "summary": "Testing setup and basic ideas.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.technology_and_tooling.unit_testing.introduction" },
+            { "order": 2, "section": "HPCu.technology_and_tooling.unit_testing.setup" },
+            { "order": 3, "section": "HPCu.technology_and_tooling.unit_testing.unit_testing_python" }
+          ]
+        },
+        {
+          "name": "Writing Better Tests",
+          "summary": "Fixtures, mocking, and test design.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.technology_and_tooling.testing.testable_code_fixtures" },
+            { "order": 2, "section": "HPCu.technology_and_tooling.testing.automated_testing" },
+            { "order": 3, "section": "HPCu.technology_and_tooling.testing.mocking" }
+          ]
+        },
+        {
+          "name": "Debugging and Scale",
+          "summary": "Debugging and scaling up tests.",
+          "order": 3,
+          "items": [
+            { "order": 1, "section": "HPCu.technology_and_tooling.testing.diagnosing_issues" },
+            { "order": 2, "section": "HPCu.technology_and_tooling.testing.scaling_up" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_continuous_integration",
+      "name": "Continuous Integration",
+      "summary": "Continuous integration with GitHub-based workflows.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": [],
+      "prerequisites": ["Version Control with Git"],
+      "tags": ["tooling", "testing", "ci", "github"],
+      "outcomes": [
+        "Explain the purpose of continuous integration",
+        "Use GitHub-based collaboration with CI checks",
+        "Understand how GitHub Actions fit into delivery workflows"
+      ],
+      "groups": [
+        {
+          "name": "GitHub Foundations",
+          "summary": "GitHub basics for collaboration.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.software_project_management.collaboration.github" }
+          ]
+        },
+        {
+          "name": "Continuous Integration Basics",
+          "summary": "How CI checks run during development.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.technology_and_tooling.unit_testing.continuous_integration" }
+          ]
+        },
+        {
+          "name": "GitHub Actions in Practice",
+          "summary": "A simple GitHub Actions example.",
+          "order": 3,
+          "items": [
+            { "order": 1, "section": "HPCu.technology_and_tooling.docker.e01-github-actions" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_packaging_dependency_management_python",
+      "name": "Packaging and Dependency Management in Python",
+      "summary": "Packaging and dependency management in Python.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": ["python"],
+      "prerequisites": ["Intro to Python"],
+      "tags": ["tooling", "packaging", "workflows"],
+      "outcomes": [
+        "Create and structure Python packages",
+        "Manage environments and dependencies",
+        "Reuse and share packages effectively"
+      ],
+      "groups": [
+        {
+          "name": "Environments and Packaging Basics",
+          "summary": "Environments and packaging basics.",
+          "order": 1,
+          "items": [
+            {
+              "order": 1,
+              "section": "HPCu.technology_and_tooling.packaging_dependency_management.virtual_environments_python"
+            },
+            {
+              "order": 2,
+              "section": "HPCu.technology_and_tooling.packaging_dependency_management.pack_python_01intro"
+            }
+          ]
+        },
+        {
+          "name": "Building and Reusing Packages",
+          "summary": "Creating and reusing packages.",
+          "order": 2,
+          "items": [
+            {
+              "order": 1,
+              "section": "HPCu.technology_and_tooling.packaging_dependency_management.pack_python_02making"
+            },
+            {
+              "order": 2,
+              "section": "HPCu.technology_and_tooling.packaging_dependency_management.pack_python_03reusing"
+            }
+          ]
+        },
+        {
+          "name": "Sharing Packages",
+          "summary": "Preparing packages to share.",
+          "order": 3,
+          "items": [
+            {
+              "order": 1,
+              "section": "HPCu.technology_and_tooling.packaging_dependency_management.pack_python_04sharing"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_collaboration_github",
+      "name": "Collaboration with GitHub",
+      "summary": "Using GitHub for collaborative development.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": [],
+      "prerequisites": ["Version Control with Git"],
+      "tags": ["tooling", "collaboration", "github", "workflows"],
+      "outcomes": [
+        "Use GitHub features to support team work",
+        "Manage issues and pull requests",
+        "Apply collaborative branching workflows"
+      ],
+      "groups": [
+        {
+          "name": "Refresher",
+          "summary": "A short Git refresher.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.software_project_management.collaboration.refresher" }
+          ]
+        },
+        {
+          "name": "GitHub Essentials",
+          "summary": "Issues and pull requests on GitHub.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.software_project_management.collaboration.github" },
+            { "order": 2, "section": "HPCu.software_project_management.collaboration.issues" }
+          ]
+        },
+        {
+          "name": "Collaborative Workflows",
+          "summary": "Collaborative workflows for teams.",
+          "order": 3,
+          "items": [
+            { "order": 1, "section": "HPCu.software_project_management.collaboration.workflows" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_supercomputing_fundamentals",
+      "name": "Supercomputing Fundamentals",
+      "summary": "An introduction to supercomputing.",
+      "level": "beginner",
+      "hidden": false,
+      "language": [],
+      "prerequisites": ["HPC Introduction"],
+      "tags": ["hpc", "supercomputing", "parallel"],
+      "outcomes": [
+        "Explain what makes a system a supercomputer",
+        "Understand the broader supercomputing landscape",
+        "Connect ideas to practical HPC usage"
+      ],
+      "groups": [
+        {
+          "name": "Understanding Supercomputing",
+          "summary": "Supercomputing basics.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.high_performance_computing.supercomputing.01_intro" },
+            {
+              "order": 2,
+              "section": "HPCu.high_performance_computing.supercomputing.02_understanding_supercomputing"
+            }
+          ]
+        },
+        {
+          "name": "The Supercomputing Landscape",
+          "summary": "The wider supercomputing landscape.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.high_performance_computing.supercomputing.03_supercomputing_world" }
+          ]
+        },
+        {
+          "name": "Practical Context",
+          "summary": "A practical supercomputing session.",
+          "order": 3,
+          "items": [
+            { "order": 1, "section": "HPCu.high_performance_computing.supercomputing.04_practical" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_scalability_profiling",
+      "name": "Scalability and Profiling",
+      "summary": "Scalability and profiling on parallel systems.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": [],
+      "prerequisites": ["HPC Introduction"],
+      "tags": ["hpc", "parallel", "profiling"],
+      "outcomes": [
+        "Explain core scalability ideas",
+        "Interpret profiling and scaling results",
+        "Connect performance analysis to parallel program design"
+      ],
+      "groups": [
+        {
+          "name": "Performance Foundations",
+          "summary": "Performance and scalability basics.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.high_performance_computing.parallel_computing.03_parallel_performance" },
+            {
+              "order": 2,
+              "section": "HPCu.high_performance_computing.hpc_scalability_profiling.01_understanding_scalability"
+            }
+          ]
+        },
+        {
+          "name": "Profiling in Practice",
+          "summary": "Profiling and scaling in practice.",
+          "order": 2,
+          "items": [
+            {
+              "order": 1,
+              "section": "HPCu.high_performance_computing.hpc_scalability_profiling.02_scalability_profiling"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_pybamm_foundations",
+      "name": "PyBaMM Foundations",
+      "summary": "Getting started with PyBaMM.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": ["python"],
+      "prerequisites": ["Intro to Python"],
+      "tags": ["scientific-computing", "pybamm"],
+      "outcomes": [
+        "Run and configure PyBaMM models",
+        "Work with experiments and parameter values",
+        "Inspect outputs and extend models with submodels"
+      ],
+      "groups": [
+        {
+          "name": "Running Models",
+          "summary": "Running models and setting experiments.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.libraries.pybamm.01_running_pybamm" },
+            { "order": 2, "section": "HPCu.libraries.pybamm.02_experiments" },
+            { "order": 3, "section": "HPCu.libraries.pybamm.03_parameter_values" }
+          ]
+        },
+        {
+          "name": "Analysing and Extending Models",
+          "summary": "Outputs and submodels.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.libraries.pybamm.04_outputs" },
+            { "order": 2, "section": "HPCu.libraries.pybamm.05_using_submodels" },
+            { "order": 3, "section": "HPCu.libraries.pybamm.06_final_exercises" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_pybamm_developer",
+      "name": "PyBaMM Developer",
+      "summary": "A more detailed look at how PyBaMM models are built.",
+      "level": "advanced",
+      "hidden": false,
+      "language": ["python"],
+      "prerequisites": ["PyBaMM Foundations"],
+      "tags": ["scientific-computing", "pybamm", "software-design"],
+      "outcomes": [
+        "Understand the model-building internals of PyBaMM",
+        "Work with ODE, PDE, and SPM examples",
+        "Extend models with classes and submodels"
+      ],
+      "groups": [
+        {
+          "name": "Model Building Foundations",
+          "summary": "ODE, PDE, and SPM examples.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.libraries.pybamm-developer.01_ode" },
+            { "order": 2, "section": "HPCu.libraries.pybamm-developer.02_pde" },
+            { "order": 3, "section": "HPCu.libraries.pybamm-developer.03_spm" }
+          ]
+        },
+        {
+          "name": "Extending the Model",
+          "summary": "Classes, chemistry, and submodels.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.libraries.pybamm-developer.04_spm_class" },
+            { "order": 2, "section": "HPCu.libraries.pybamm-developer.05_spm_acid" },
+            { "order": 3, "section": "HPCu.libraries.pybamm-developer.06_submodels" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_parallel_computing_concepts",
+      "name": "Parallel Computing Concepts",
+      "summary": "Core ideas in parallel computing.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": [],
+      "prerequisites": ["HPC Introduction"],
+      "tags": ["hpc", "parallel"],
+      "outcomes": [
+        "Explain core parallel computing ideas",
+        "Understand different parallel programming approaches",
+        "Connect concepts to practical examples"
+      ],
+      "groups": [
+        {
+          "name": "Parallel Computing Foundations",
+          "summary": "Parallel computing foundations.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.high_performance_computing.parallel_computing.01_intro" },
+            { "order": 2, "section": "HPCu.high_performance_computing.parallel_computing.02_programming" }
+          ]
+        },
+        {
+          "name": "Performance and Practice",
+          "summary": "Performance and practical exercises.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.high_performance_computing.parallel_computing.03_parallel_performance" },
+            { "order": 2, "section": "HPCu.high_performance_computing.parallel_computing.04_practical" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_essential_maths",
+      "name": "Essential Maths",
+      "summary": "Core maths for scientific computing.",
+      "level": "beginner",
+      "hidden": false,
+      "language": [],
+      "prerequisites": [],
+      "tags": ["scientific-computing", "maths"],
+      "outcomes": [
+        "Work confidently with core calculus and linear algebra ideas",
+        "Understand systems of equations and differential equations",
+        "Use probability ideas that lead into scientific modelling"
+      ],
+      "groups": [
+        {
+          "name": "Functions and Calculus",
+          "summary": "Graphs, logarithms, differentiation, and integration.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.scientific_computing.essential_maths.01_graphs" },
+            { "order": 2, "section": "HPCu.scientific_computing.essential_maths.02_indices_and_logs" },
+            { "order": 3, "section": "HPCu.scientific_computing.essential_maths.03_differentiation_1" },
+            { "order": 4, "section": "HPCu.scientific_computing.essential_maths.04_differentiation_2" },
+            { "order": 5, "section": "HPCu.scientific_computing.essential_maths.05_differentiation_3" },
+            { "order": 6, "section": "HPCu.scientific_computing.essential_maths.06_integration_1" },
+            { "order": 7, "section": "HPCu.scientific_computing.essential_maths.07_integration_2" }
+          ]
+        },
+        {
+          "name": "Complex Numbers and Differential Equations",
+          "summary": "Complex numbers and ordinary differential equations.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.scientific_computing.essential_maths.08_complex_numbers" },
+            { "order": 2, "section": "HPCu.scientific_computing.essential_maths.09_differential_equations_1" },
+            { "order": 3, "section": "HPCu.scientific_computing.essential_maths.10_differential_equations_2" },
+            { "order": 4, "section": "HPCu.scientific_computing.essential_maths.11_differential_equations_3" }
+          ]
+        },
+        {
+          "name": "Linear Systems",
+          "summary": "Vectors, matrices, and systems of equations.",
+          "order": 3,
+          "items": [
+            { "order": 1, "section": "HPCu.scientific_computing.essential_maths.12_linear_algebra_1" },
+            { "order": 2, "section": "HPCu.scientific_computing.essential_maths.13_linear_algebra_2" },
+            { "order": 3, "section": "HPCu.scientific_computing.essential_maths.14_system_1" },
+            { "order": 4, "section": "HPCu.scientific_computing.essential_maths.15_system_2" },
+            { "order": 5, "section": "HPCu.scientific_computing.essential_maths.16_system_3" }
+          ]
+        },
+        {
+          "name": "Probability and Inference",
+          "summary": "Probability foundations and Bayesian inference.",
+          "order": 4,
+          "items": [
+            { "order": 1, "section": "HPCu.scientific_computing.essential_maths.17_probability_1" },
+            { "order": 2, "section": "HPCu.scientific_computing.essential_maths.18_probability_2" },
+            { "order": 3, "section": "HPCu.scientific_computing.essential_maths.19_probability_3" },
+            { "order": 4, "section": "HPCu.scientific_computing.bayesian_inference.01-AM" },
+            { "order": 5, "section": "HPCu.scientific_computing.bayesian_inference.02-PM" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_linear_algebra",
+      "name": "Linear Algebra",
+      "summary": "Solving systems of equations with matrices.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": [],
+      "prerequisites": ["Essential Maths"],
+      "tags": ["scientific-computing", "maths", "linear-algebra"],
+      "outcomes": [
+        "Write systems of equations in matrix form",
+        "Use elimination and factorisation methods",
+        "Choose appropriate matrix decompositions for a problem"
+      ],
+      "groups": [
+        {
+          "name": "Solving Linear Systems",
+          "summary": "Matrix form and elimination methods.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.scientific_computing.linear_algebra.01-matrix-form-of-equations" },
+            { "order": 2, "section": "HPCu.scientific_computing.linear_algebra.02-gaussian-elimination" }
+          ]
+        },
+        {
+          "name": "Matrix Factorisations",
+          "summary": "LU, Cholesky, and QR decompositions.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.scientific_computing.linear_algebra.04-LU-decomposition" },
+            { "order": 2, "section": "HPCu.scientific_computing.linear_algebra.06-Cholesky-decomposition" },
+            { "order": 3, "section": "HPCu.scientific_computing.linear_algebra.07-QR-decomposition" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_sparse_linear_algebra",
+      "name": "Sparse Linear Algebra",
+      "summary": "Sparse matrices and iterative methods.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": ["python"],
+      "prerequisites": ["Linear Algebra", "Intro to Python"],
+      "tags": ["scientific-computing", "linear-algebra"],
+      "outcomes": [
+        "Explain why sparse matrix representations matter",
+        "Work with sparse matrices in SciPy",
+        "Use iterative methods for sparse systems"
+      ],
+      "groups": [
+        {
+          "name": "Sparse Matrix Foundations",
+          "summary": "Sparse matrices, storage, and finite differences.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.scientific_computing.sparse_linear_algebra.01-sparse-matrices" },
+            { "order": 2, "section": "HPCu.scientific_computing.sparse_linear_algebra.02-coo-matrix" },
+            { "order": 3, "section": "HPCu.scientific_computing.sparse_linear_algebra.03-finite-difference" },
+            { "order": 4, "section": "HPCu.scientific_computing.sparse_linear_algebra.04-scipy-sparse" }
+          ]
+        },
+        {
+          "name": "Iterative Methods",
+          "summary": "Iterative solvers for sparse systems.",
+          "order": 2,
+          "items": [
+            {
+              "order": 1,
+              "section": "HPCu.scientific_computing.sparse_linear_algebra.06-jacobi-relaxation-methods"
+            },
+            {
+              "order": 2,
+              "section": "HPCu.scientific_computing.sparse_linear_algebra.07-conjugate-gradient-method"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_optimisation",
+      "name": "Optimisation",
+      "summary": "Core methods for nonlinear optimisation.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": [],
+      "prerequisites": ["Essential Maths"],
+      "tags": ["scientific-computing", "optimisation"],
+      "outcomes": [
+        "Explain the structure of nonlinear optimisation problems",
+        "Compare line-search and trust-region methods",
+        "Use derivative-free methods when gradients are unavailable"
+      ],
+      "groups": [
+        {
+          "name": "Optimisation Foundations",
+          "summary": "Nonlinear optimisation and line-search methods.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.scientific_computing.optimisation.01-nonlinear-optimisation" },
+            { "order": 2, "section": "HPCu.scientific_computing.optimisation.02-line-search-methods" }
+          ]
+        },
+        {
+          "name": "Algorithms in Practice",
+          "summary": "Trust regions, finite differences, and Nelder-Mead.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.scientific_computing.optimisation.03-trust-region-methods" },
+            { "order": 2, "section": "HPCu.scientific_computing.optimisation.05-finite-difference-method" },
+            { "order": 3, "section": "HPCu.scientific_computing.optimisation.06-nelder-mead" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_ode_solvers_numerical_methods",
+      "name": "ODE Solvers and Numerical Methods",
+      "summary": "A short introduction to ODE solvers.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": ["python"],
+      "prerequisites": ["Essential Maths", "Intro to Python"],
+      "tags": ["scientific-computing", "numerical-methods"],
+      "outcomes": [
+        "Explain the basic idea behind ODE solvers",
+        "Compare different numerical approaches",
+        "Connect theory to scientific computing workflows"
+      ],
+      "groups": [
+        {
+          "name": "ODE Solvers",
+          "summary": "Two short introductions to ODE solving methods.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.scientific_computing.ode_solvers.01-AM" },
+            { "order": 2, "section": "HPCu.scientific_computing.ode_solvers.02-PM" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_cloud_computing",
+      "name": "Cloud Computing",
+      "summary": "Moving applications and data into the cloud.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": [],
+      "prerequisites": [],
+      "tags": ["tooling", "cloud-computing"],
+      "outcomes": [
+        "Explain common reasons for moving workloads to the cloud",
+        "Understand storage and service choices",
+        "Plan a simple migration path for an application"
+      ],
+      "groups": [
+        {
+          "name": "Why Move to the Cloud",
+          "summary": "Use cases, limits of on-prem systems, and cloud services.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.cloud_computing.migrating_app_to_cloud.app_usecase" },
+            { "order": 2, "section": "HPCu.cloud_computing.migrating_app_to_cloud.app_onprem_limitation" },
+            { "order": 3, "section": "HPCu.cloud_computing.migrating_app_to_cloud.aws_services" }
+          ]
+        },
+        {
+          "name": "Storage and Migration",
+          "summary": "Storage choices and moving an application.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.cloud_computing.migrating_app_to_cloud.app_local_storage" },
+            { "order": 2, "section": "HPCu.cloud_computing.migrating_app_to_cloud.app_remote_storage" },
+            { "order": 3, "section": "HPCu.cloud_computing.migrating_app_to_cloud.app_migrate_to_aws" }
+          ]
+        },
+        {
+          "name": "Closing the Loop",
+          "summary": "Bringing the migration story together.",
+          "order": 3,
+          "items": [
+            { "order": 1, "section": "HPCu.cloud_computing.migrating_app_to_cloud.conclusion" }
+          ]
+        }
+      ]
+    },
+    {
+      "externalId": "course_computer_simulations_parallel_architectures",
+      "name": "Computer Simulations and Parallel Architectures",
+      "summary": "Computer simulations and the machines that run them.",
+      "level": "intermediate",
+      "hidden": false,
+      "language": [],
+      "prerequisites": ["HPC Introduction"],
+      "tags": ["hpc", "parallel", "scientific-computing"],
+      "outcomes": [
+        "Explain how simulations motivate high-performance computing",
+        "Compare different parallel computer architectures",
+        "Connect machine design to practical scientific workloads"
+      ],
+      "groups": [
+        {
+          "name": "Computer Simulations",
+          "summary": "Simulation examples and practical context.",
+          "order": 1,
+          "items": [
+            { "order": 1, "section": "HPCu.high_performance_computing.computer_simulations.01_intro" },
+            {
+              "order": 2,
+              "section": "HPCu.high_performance_computing.computer_simulations.02_weather_simulations"
+            },
+            {
+              "order": 3,
+              "section": "HPCu.high_performance_computing.computer_simulations.03_towards_future"
+            },
+            { "order": 4, "section": "HPCu.high_performance_computing.computer_simulations.00_practical" }
+          ]
+        },
+        {
+          "name": "Parallel Architectures",
+          "summary": "Parallel computer basics and comparisons.",
+          "order": 2,
+          "items": [
+            { "order": 1, "section": "HPCu.high_performance_computing.parallel_computers.01_basics" },
+            { "order": 2, "section": "HPCu.high_performance_computing.parallel_computers.02_connecting" },
+            { "order": 3, "section": "HPCu.high_performance_computing.parallel_computers.03_comparison" },
+            { "order": 4, "section": "HPCu.high_performance_computing.parallel_computers.04_practical" }
+          ]
+        }
+      ]
+    }
+  ]
+}

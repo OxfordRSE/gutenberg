@@ -1,6 +1,8 @@
 ---
 title: Template Configuration
 permalink: /config/template
+parent: Configuration
+nav_order: 2
 ---
 
 The config yaml file has the following structure:

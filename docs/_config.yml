@@ -24,7 +24,12 @@ description: >- # this means to ignore newlines until "baseurl:"
   Gutenberg is a research and teaching platform developed by the Oxford Research Engineering Group
   at the University of Oxford.
 baseurl: "/gutenberg" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://blog.oxrse.uk" # the base hostname & protocol for your site, e.g. http://example.com
+
+plausible:
+  enabled: true
+  domain: "blog.oxrse.uk"
+  script: "https://plausible-oxrse.fly.dev/js/script.outbound-links.js"
 
 # Build settings
 markdown: kramdown
@@ -35,6 +40,16 @@ plugins:
   - jekyll-feed
   - jekyll-toc
   - jekyll-sitemap
+
+defaults:
+  - scope:
+      path: "assets"
+    values:
+      layout: null
+  - scope:
+      path: ""
+    values:
+      layout: default
 
 # Exclude from processing.
 # The following items will not be processed, by default.

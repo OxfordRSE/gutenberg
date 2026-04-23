@@ -4,7 +4,6 @@ import prisma from "lib/prisma"
 
 import type { NextApiRequest, NextApiResponse } from "next"
 import { Prisma } from "@prisma/client"
-import { Event } from "cypress/types/jquery"
 
 export type Event = Prisma.EventGetPayload<{
   include: { EventGroup: { include: { EventItem: true } }; UserOnEvent: { include: { user: true } } }
@@ -32,6 +31,10 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
   const isAdmin = !!currentUser?.admin
   const eventId = parseInt(req.query.eventId as string, 10)
 
+  if (!Number.isInteger(eventId)) {
+    return res.status(400).json({ error: "Invalid event id" })
+  }
+
   if (req.method === "GET") {
     const event = await prisma.event.findUnique({
       where: { id: eventId },
@@ -42,7 +45,6 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     })
 
     if (!event) return res.status(404).json({ error: "Event not found" })
-    // REDACT KEYS for non-admins
     if (!isAdmin) {
       delete (event as any).enrolKey
       delete (event as any).instructorKey
@@ -56,7 +58,6 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     }
 
     if (isStudent) {
-      // remove all userOnEvent that are not the current user
       event.UserOnEvent = event.UserOnEvent.filter((u) => u.user?.email === userEmail)
     }
 
@@ -67,12 +68,7 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     if (!isAdmin) return res.status(401).json({ error: "Unauthorized" })
 
     const { name, enrol, content, enrolKey, instructorKey, start, end, summary, hidden } = req.body.event
-    const eventGroupData: EventGroup[] = req.body.event.EventGroup
-
-    if (!isAdmin) {
-      res.status(401).json({ error: "Unauthorized" })
-      return
-    }
+    const eventGroupData: EventGroup[] = req.body.event.EventGroup ?? []
 
     await prisma.event.update({
       where: { id: eventId },
@@ -88,13 +84,13 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
         hidden,
       },
     })
-    // Update UserOnEvent statuses
-    for (const user of req.body.event.UserOnEvent) {
+
+    for (const user of req.body.event.UserOnEvent ?? []) {
       if (user.userEmail && user.status) {
         await prisma.userOnEvent.updateMany({
           where: {
             userEmail: user.userEmail,
-            eventId: eventId,
+            eventId,
           },
           data: {
             status: user.status,
@@ -104,13 +100,13 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     }
 
     const existingGroups = await prisma.eventGroup.findMany({
-      where: { eventId: eventId },
+      where: { eventId },
       select: { id: true },
     })
-    const existingGroupIds = new Set(existingGroups.map((g) => g.id))
-    const submittedGroupIds = new Set(eventGroupData.filter((g) => g.id).map((g) => g.id))
+    const existingGroupIds = new Set(existingGroups.map((group) => group.id))
+    const submittedGroupIds = new Set(eventGroupData.filter((group) => group.id).map((group) => group.id))
     const deletedGroupIds = [...existingGroupIds].filter((id) => !submittedGroupIds.has(id))
-    // Delete groups that were removed in the form
+
     if (deletedGroupIds.length > 0) {
       try {
         await prisma.eventGroup.deleteMany({ where: { id: { in: deletedGroupIds } } })
@@ -119,7 +115,7 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
         return
       }
     }
-    // Save or update each event group
+
     for (const group of eventGroupData) {
       let savedGroup
       if (group.id && existingGroupIds.has(group.id)) {
@@ -147,28 +143,20 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
           },
         })
       }
-      // Update or create EventItems for the group
-      for (const item of group.EventItem) {
-        if (item.id) {
-          await prisma.eventItem.update({
-            where: { id: item.id },
-            data: {
-              order: item.order,
-              section: item.section,
-            },
-          })
-        } else {
-          await prisma.eventItem.create({
-            data: {
-              order: item.order,
-              section: item.section,
-              group: { connect: { id: savedGroup.id } },
-            },
-          })
-        }
+
+      await prisma.eventItem.deleteMany({ where: { groupId: savedGroup.id } })
+
+      if (group.EventItem.length > 0) {
+        await prisma.eventItem.createMany({
+          data: group.EventItem.map((item) => ({
+            order: typeof item.order === "string" ? parseInt(item.order, 10) : item.order,
+            section: item.section,
+            groupId: savedGroup.id,
+          })),
+        })
       }
     }
-    // Fetch the updated event with all groups and items
+
     const event = await prisma.event.findUnique({
       where: { id: eventId },
       include: {
@@ -183,12 +171,12 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     }
 
     res.status(200).json({ event })
+    return
   }
 
   if (req.method === "DELETE") {
     if (!isAdmin) return res.status(401).json({ error: "Unauthorized" })
-    // delete the event
-    const deletedEvent = prisma.event
+    prisma.event
       .delete({
         where: { id: eventId },
         include: { EventGroup: { include: { EventItem: true } }, UserOnEvent: { include: { user: true } } },
@@ -197,11 +185,10 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
         res.status(200).json({ event: deletedEvent })
         return
       })
-      .catch((error) => {
+      .catch(() => {
         res.status(500).json({ error: "Problem deleting event" })
         return
       })
-    // user not authorized
   } else {
     res.status(405).json({ error: "Method not allowed" })
     return

@@ -61,7 +61,7 @@ This means you need to copy some source material before you have anything to dis
 The HPC materials are already listed as a source under `material` in the configuration yaml file in the `config` directory.
 
 To download those materials, so we have something to work with, run `yarn pullmat` and they will be cloned into
-a local `.materials` directory.
+a local `.material` directory.
 
 ### 5. (Setting up a postgres database)
 
@@ -92,11 +92,17 @@ The instructions for doing so are [on the Docker support pages](https://docs.doc
 With the database available, we then need to create the various tables etc. that Gutenberg uses with
 `yarn prisma migrate dev`.
 
-Seed the database with:
-`yarn prisma db seed`
+If you also want the local demo and test seed data, run:
 
-or do the whole thing in one command with:
-`yarn prisma migrate reset --force`
+```shell
+yarn prisma db seed
+```
+
+If you want to recreate the database from scratch and reseed it in one step, run:
+
+```shell
+yarn prisma migrate reset --force
+```
 
 ### 6. Start the development server
 

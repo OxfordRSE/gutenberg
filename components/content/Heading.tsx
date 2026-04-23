@@ -1,7 +1,7 @@
-import React, { useState } from "react"
+import React from "react"
 import CopyToClipboard from "components/ui/CopyToClipboard"
 import { FaLink } from "react-icons/fa"
-import { reduceRepeatingPatterns, extractTextValues } from "lib/utils"
+import { reduceRepeatingPatterns } from "lib/utils"
 
 interface HeadingProps {
   content: React.ReactNode
@@ -12,36 +12,31 @@ interface HeadingProps {
 
 const Heading: React.FC<HeadingProps> = ({ content, section, tag, spanId }) => {
   const Tag = tag as keyof React.JSX.IntrinsicElements
+
+  const extractHeadingText = (node: React.ReactNode): string => {
+    if (typeof node === "string" || typeof node === "number") {
+      return String(node)
+    }
+
+    if (Array.isArray(node)) {
+      return node.map((child) => extractHeadingText(child)).join("")
+    }
+
+    if (React.isValidElement<{ children?: React.ReactNode }>(node)) {
+      return extractHeadingText(node.props.children)
+    }
+
+    return ""
+  }
+
   const generateHeadingContent = () => {
-    if (typeof content === "string") {
-      // NOTE(ADW): I think the behaviour here has been changed in react 19 and we often a string instead of an object
-      return content.replace(/#/g, "").trim().replace(/ /g, "-").replace(/:/g, "").replace(/`/g, "").replace(/$/g, "")
-    }
-    let headingContent = ""
-    if (typeof content === "object") {
-      React.Children.forEach(content, (child) => {
-        if (typeof child === "string") {
-          headingContent += child
-        }
-        if (
-          child &&
-          typeof child === "object" &&
-          "props" in child &&
-          child.props &&
-          typeof child.props === "object" &&
-          "children" in child.props
-        ) {
-          headingContent += child.props.children
-        }
-      })
-      return headingContent
-        .replace(/#/g, "")
-        .trim()
-        .replace(/ /g, "-")
-        .replace(/:/g, "")
-        .replace(/`/g, "")
-        .replace(/\$/g, "")
-    }
+    return reduceRepeatingPatterns(extractHeadingText(content))
+      .replace(/#/g, "")
+      .trim()
+      .replace(/ /g, "-")
+      .replace(/:/g, "")
+      .replace(/`/g, "")
+      .replace(/\$/g, "")
   }
 
   const generateHeadingURL = () => {
@@ -54,9 +49,23 @@ const Heading: React.FC<HeadingProps> = ({ content, section, tag, spanId }) => {
       <Tag id={generateHeadingContent()} className="inline-flex items-center space-x-2">
         <span id={spanId}>{content}</span>
         <CopyToClipboard text={generateHeadingURL()}>
-          <button className="text-xs flex items-center space-x-1">
-            <FaLink className="group-hover:text-white" />
-          </button>
+          {({ copy, copied }) => (
+            <span className="relative inline-flex">
+              <button type="button" className="text-xs flex items-center space-x-1" onClick={() => void copy()}>
+                <FaLink className="group-hover:text-white" />
+              </button>
+              {copied && (
+                <span
+                  data-cy="copy-feedback"
+                  role="status"
+                  aria-live="polite"
+                  className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-900 px-2 py-1 text-xs font-medium text-white shadow-lg dark:bg-gray-100 dark:text-gray-900"
+                >
+                  Copied to clipboard!
+                </span>
+              )}
+            </span>
+          )}
         </CopyToClipboard>
       </Tag>
     </>

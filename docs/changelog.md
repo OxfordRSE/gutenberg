@@ -1,11 +1,125 @@
 ---
 title: Changelog
 permalink: /changelog
+nav_order: 10
 ---
+
+## v2.0
+
+Gutenberg v2.0 is a substantial rewrite: Events are no longer the only teaching model. This release adds courses as a separate self-paced model while keeping events for scheduled cohort delivery.
+
+See [What's New in Gutenberg v2.0]({{ "/whats-new/v2-0/" | relative_url }}) for an overview of what has changed in 2.0.
+
+### New in 2.0
+
+- Added self-paced courses as a new teaching model alongside events.
+- Added new course database tables and API routes.
+- Added a new EventSwitcher component, improving on the previous dropdown and making it reusable for courses as well as events.
+- Added a `/courses` area for browsing all courses, including admin handling for hidden courses.
+- Added a curated default course catalog based on current material.
+- Added course detail pages with enrolment-aware views, progress, tags, languages, breadcrumbs, and front-page course surfaces.
+- Added grouped one-page course editing and improved JSON import guidance around grouped material.
+- Added course import and export as JSON.
+- Added course enrolment, unenrolment, completion, and better progress handling.
+- Added course sorting and filtering by search, level, tags, and languages.
+- Added active course selection, enrolment-aware course actions, and better course surfaces on the home page and course list.
+- Added a Start button to front-page course cards for quicker access to new courses.
+- Added active course state in local storage and course switching alongside events.
+- Added course-aware sidebar views and material-page hints when a section belongs to a course.
+- Added batched course progress fetching for list-style views.
+- Added default-course sync with review of unchanged, new, and changed courses.
+- Added Course-aware previous/next material navigation and return-to-course behavior.
+- Added Material-page course hints and course-aware actions.
+- Added admin stats pages for courses and events, including overview and per-event/course progress summaries.
+- Added Event creation from a course blueprint.
+- Added Individual Event Breadcrumbing.
+- Added Course views to the profile page
+
+### Fixed in 2.0
+
+- Event-group material editing moved into the main event edit page so groups and material can be managed inline.
+- Event authoring made more consistent with the grouped course model.
+- Active learning context for courses and events.
+- Sidebar behavior improved so course and event context is surfaced more consistently while navigating.
+- Seed data was replaced with more realistic course content.
+- Course APIs, slug handling, and add-course error handling were tightened up.
+- Course access, enrolment, sync, export, filter, and progress test coverage was expanded substantially.
+- Accessibility fixes landed across the new course and event UI, including component roles and related interaction tests.
+- The docs were rewritten to represent the new course model.
+- Local setup documentation improved for databases, seeds, and material checkout.
+- Fixed TOC title from floating over the rest of the layout.
+- Improved presentation of the event table on profile view.
+- Fixed icon alignment on event and course active-action buttons.
+- Fixed copy-to-clipboard design to avoid nested-button hydration errors on Headings/CodeBlocks.
+- Fixed progress fetches on material to returning an empty success response when no saved problem state exists, instead of a 404.
+
+## v1.2
+
+### New in 1.2
+
+- Added dynamic internal links [#329](https://github.com/OxfordRSE/gutenberg/pull/329)
+- Added support for relative links in markdown [#347](https://github.com/OxfordRSE/gutenberg/pull/347)
+- Improved the table of contents and previous/next links on small devices [#343](https://github.com/OxfordRSE/gutenberg/pull/343)
+- Added unique page titles [#358](https://github.com/OxfordRSE/gutenberg/pull/358)
+- Adopted Flowbite CSS to improve page loads [#361](https://github.com/OxfordRSE/gutenberg/pull/361)
+- Added enrolment buttons to the event page [#363](https://github.com/OxfordRSE/gutenberg/pull/363)
+- Added active event selection and toggle actions to the sidebar [#364](https://github.com/OxfordRSE/gutenberg/pull/364)
+- Added problem view and submission modals [#390](https://github.com/OxfordRSE/gutenberg/pull/390)
+- Improved cron runs with startup execution and status reporting [#393](https://github.com/OxfordRSE/gutenberg/pull/393)
+- Added event filtering in the event timeline [#396](https://github.com/OxfordRSE/gutenberg/pull/396)
+- Added Oxford SSO as an OAuth provider [#431](https://github.com/OxfordRSE/gutenberg/pull/431)
+- Added navigation to the new event after creation [#415](https://github.com/OxfordRSE/gutenberg/pull/415)
+- Added anchor links to the event page [#438](https://github.com/OxfordRSE/gutenberg/pull/438)
+- Added more logos to the breadcrumb, sidebar, and main page [#440](https://github.com/OxfordRSE/gutenberg/pull/440)
+- Added README visits badge [#452](https://github.com/OxfordRSE/gutenberg/pull/452)
+- Added event page navigation [#459](https://github.com/OxfordRSE/gutenberg/pull/459)
+
+### Fixed in 1.2
+
+- Fixed recursive Prisma typing so `tsc` passes cleanly [#336](https://github.com/OxfordRSE/gutenberg/pull/336)
+- Fixed download links being detected as domain names [#349](https://github.com/OxfordRSE/gutenberg/pull/349)
+- Fixed home page heading structure for accessibility [#360](https://github.com/OxfordRSE/gutenberg/pull/360)
+- Pre-rendered event times for WAVE accessibility checks [#359](https://github.com/OxfordRSE/gutenberg/pull/359)
+- Fixed event timeline buttons for accessibility [#362](https://github.com/OxfordRSE/gutenberg/pull/362)
+- Adjusted relative URL handling for diagram mode and cleaned up link handling [#354](https://github.com/OxfordRSE/gutenberg/pull/354)
+- Added built-site link checking in CI and made broken-link parsing more robust [#352](https://github.com/OxfordRSE/gutenberg/pull/352), [#365](https://github.com/OxfordRSE/gutenberg/pull/365), [#381](https://github.com/OxfordRSE/gutenberg/pull/381)
+- Preserved event group ids on edit [#377](https://github.com/OxfordRSE/gutenberg/pull/377)
+- Saved `UserOnEvent` statuses on event edit [#380](https://github.com/OxfordRSE/gutenberg/pull/380)
+- Fixed broken solution ids [#388](https://github.com/OxfordRSE/gutenberg/pull/388)
+- Updated the search system to comply with OpenAI changes [#392](https://github.com/OxfordRSE/gutenberg/pull/392)
+- Moved `mat.json` to a temporary path [#394](https://github.com/OxfordRSE/gutenberg/pull/394)
+- Hid login text when a session is active [#398](https://github.com/OxfordRSE/gutenberg/pull/398)
+- Stopped older events being hidden when an active filter is applied [#399](https://github.com/OxfordRSE/gutenberg/pull/399)
+- Changed enrolment key checking to use a new API route [#401](https://github.com/OxfordRSE/gutenberg/pull/401)
+- Fixed the user account menu for accessibility [#404](https://github.com/OxfordRSE/gutenberg/pull/404)
+- Used client-side routing from the sidebar and content pages [#410](https://github.com/OxfordRSE/gutenberg/pull/410)
+- Cleaned up `TableOfContents` accessibility [#412](https://github.com/OxfordRSE/gutenberg/pull/412)
+- Removed `NEXT_PUBLIC_MATERIAL_URL` environment variable [#417](https://github.com/OxfordRSE/gutenberg/pull/417)
+- Cached material data to improve build speed [#418](https://github.com/OxfordRSE/gutenberg/pull/418)
+- Reworked string similarity and reverted the first replacement attempt [#422](https://github.com/OxfordRSE/gutenberg/pull/422), [#449](https://github.com/OxfordRSE/gutenberg/pull/449), [#450](https://github.com/OxfordRSE/gutenberg/pull/450)
+- Updated dependencies and documentation gems, including Next.js, NextAuth, `@babel/runtime`, `nokogiri`, `rexml`, `js-yaml`, `mdast-util-to-hast`, and `preact` [#334](https://github.com/OxfordRSE/gutenberg/pull/334), [#330](https://github.com/OxfordRSE/gutenberg/pull/330), [#338](https://github.com/OxfordRSE/gutenberg/pull/338), [#366](https://github.com/OxfordRSE/gutenberg/pull/366), [#376](https://github.com/OxfordRSE/gutenberg/pull/376), [#368](https://github.com/OxfordRSE/gutenberg/pull/368), [#378](https://github.com/OxfordRSE/gutenberg/pull/378), [#384](https://github.com/OxfordRSE/gutenberg/pull/384), [#389](https://github.com/OxfordRSE/gutenberg/pull/389), [#405](https://github.com/OxfordRSE/gutenberg/pull/405), [#407](https://github.com/OxfordRSE/gutenberg/pull/407), [#423](https://github.com/OxfordRSE/gutenberg/pull/423), [#430](https://github.com/OxfordRSE/gutenberg/pull/430), [#444](https://github.com/OxfordRSE/gutenberg/pull/444), [#446](https://github.com/OxfordRSE/gutenberg/pull/446), [#451](https://github.com/OxfordRSE/gutenberg/pull/451), [#458](https://github.com/OxfordRSE/gutenberg/pull/458)
+- Updated build and deploy workflows, moved Corepack earlier in deploy, and moved to standalone Next builds on Node 24 [#427](https://github.com/OxfordRSE/gutenberg/pull/427), [#428](https://github.com/OxfordRSE/gutenberg/pull/428), [#436](https://github.com/OxfordRSE/gutenberg/pull/436)
+- Improved comment thread accessibility and moved comment popovers to the popover API [#429](https://github.com/OxfordRSE/gutenberg/pull/429), [#441](https://github.com/OxfordRSE/gutenberg/pull/441)
+- Updated Docker workflow docs and cleaned up link excludes and dead SVG handling [#432](https://github.com/OxfordRSE/gutenberg/pull/432), [#435](https://github.com/OxfordRSE/gutenberg/pull/435)
+- Fixed text selections containing DOM nodes [#443](https://github.com/OxfordRSE/gutenberg/pull/443)
+- Handled null comment threads to prevent crashes [#453](https://github.com/OxfordRSE/gutenberg/pull/453)
+- Fixed security alerts, including the `qs` upgrade [#454](https://github.com/OxfordRSE/gutenberg/pull/454), [#457](https://github.com/OxfordRSE/gutenberg/pull/457)
+
+## v1.1
+
+### New in 1.1
+
+- Updated the package ecosystem for Node 22 [#298](https://github.com/OxfordRSE/gutenberg/pull/298)
+
+### Fixed in 1.1
+
+- Ran DB migrations correctly in the Docker dev image [#319](https://github.com/OxfordRSE/gutenberg/pull/319)
+- Fixed Cypress async configuration [#331](https://github.com/OxfordRSE/gutenberg/pull/331)
+- Fixed the lockfile [#335](https://github.com/OxfordRSE/gutenberg/pull/335)
 
 ## v1.0
 
-### Added
+### New in 1.0
 
 - Added automatically generated, interactive table of contents on section pages [#252](https://github.com/OxfordRSE/gutenberg/pull/252)
 - Added completely new interactive comment table on events page [#271](https://github.com/OxfordRSE/gutenberg/pull/271)
@@ -47,7 +161,7 @@ permalink: /changelog
 - Tags when choosing items from event group [#52](https://github.com/OxfordRSE/gutenberg/pull/52)
 - Top-level material reorganization to cards instead of React Flow [#47](https://github.com/OxfordRSE/gutenberg/pull/47)
 
-### Fixed
+### Fixed in 1.0
 
 - Fixed various Next.js hydration errors [#254](https://github.com/OxfordRSE/gutenberg/pull/254)
 - Fixed broken CSS on system default light mode and background colors in `_document.tsx` [#267](https://github.com/OxfordRSE/gutenberg/pull/267)

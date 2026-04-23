@@ -6,6 +6,7 @@
 .pnp.js
 .yarn
 _site
+.sass-cache/
 
 # Yarn 3 files
 .pnp.*
