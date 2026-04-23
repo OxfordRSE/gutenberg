@@ -17,6 +17,14 @@ const isBuildDatabaseConnectionError = (error: unknown): boolean => {
   return /can't reach database server|connection refused|timed out/i.test(error.message)
 }
 
+const isBuildDatabaseSchemaError = (error: unknown): boolean => {
+  if (!(error instanceof Prisma.PrismaClientKnownRequestError)) {
+    return false
+  }
+
+  return ["P2021", "P2022"].includes(error.code)
+}
+
 const getBuildPrisma = async (): Promise<PrismaClient | null> => {
   if (!hasBuildDatabase()) {
     return null
@@ -38,7 +46,7 @@ export const runBuildPrismaQuery = async <T>(
   try {
     return await query(prisma)
   } catch (error) {
-    if (!isBuildDatabaseConnectionError(error)) {
+    if (!isBuildDatabaseConnectionError(error) && !isBuildDatabaseSchemaError(error)) {
       throw error
     }
 
