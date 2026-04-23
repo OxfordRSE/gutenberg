@@ -112,7 +112,6 @@ describe("admin events page", () => {
   it("admin can create an event from a course blueprint", () => {
     const courseName = `Blueprint Course ${Date.now()}`
     const eventStart = "2026-04-01T09:30"
-    const storedEventStart = "2026-04-01T08:30:00.000Z"
     let createdCourseId
     let createdEventId
 
@@ -177,6 +176,10 @@ describe("admin events page", () => {
     cy.get('[data-cy="create-event-start-at"]').clear().type(eventStart)
     cy.get('[data-cy="confirm-create-event"]').click()
 
+    cy.window().then((win) => {
+      cy.wrap(new win.Date(eventStart).toISOString()).as("storedEventStart")
+    })
+
     cy.location("pathname", { timeout: 10000 })
       .should((pathname) => {
         expect(pathname).to.match(/\/event\/\d+$/)
@@ -194,23 +197,25 @@ describe("admin events page", () => {
     cy.get('[data-cy="textfield-EventGroup.0.name"]').find("input").should("have.value", "Foundations")
     cy.get('[data-cy="textfield-EventGroup.1.name"]').find("input").should("have.value", "Advanced")
 
-    cy.get("@createdEventId").then((eventId) => {
-      cy.request("GET", `/api/event/${eventId}`).then((response) => {
-        expect(response.body.event.start).to.eq(storedEventStart)
-        expect(response.body.event.end).to.eq(storedEventStart)
-        expect(response.body.event.EventGroup).to.have.length(2)
-        expect(response.body.event.EventGroup[0].name).to.eq("Foundations")
-        expect(response.body.event.EventGroup[0].start).to.eq(storedEventStart)
-        expect(response.body.event.EventGroup[0].end).to.eq(storedEventStart)
-        expect(response.body.event.EventGroup[0].EventItem[0].section).to.eq(
-          "HPCu.software_architecture_and_design.procedural.intro"
-        )
-        expect(response.body.event.EventGroup[1].name).to.eq("Advanced")
-        expect(response.body.event.EventGroup[1].start).to.eq(storedEventStart)
-        expect(response.body.event.EventGroup[1].end).to.eq(storedEventStart)
-        expect(response.body.event.EventGroup[1].EventItem[0].section).to.eq(
-          "HPCu.software_architecture_and_design.procedural.loops"
-        )
+    cy.get("@storedEventStart").then((storedEventStart) => {
+      cy.get("@createdEventId").then((eventId) => {
+        cy.request("GET", `/api/event/${eventId}`).then((response) => {
+          expect(response.body.event.start).to.eq(storedEventStart)
+          expect(response.body.event.end).to.eq(storedEventStart)
+          expect(response.body.event.EventGroup).to.have.length(2)
+          expect(response.body.event.EventGroup[0].name).to.eq("Foundations")
+          expect(response.body.event.EventGroup[0].start).to.eq(storedEventStart)
+          expect(response.body.event.EventGroup[0].end).to.eq(storedEventStart)
+          expect(response.body.event.EventGroup[0].EventItem[0].section).to.eq(
+            "HPCu.software_architecture_and_design.procedural.intro"
+          )
+          expect(response.body.event.EventGroup[1].name).to.eq("Advanced")
+          expect(response.body.event.EventGroup[1].start).to.eq(storedEventStart)
+          expect(response.body.event.EventGroup[1].end).to.eq(storedEventStart)
+          expect(response.body.event.EventGroup[1].EventItem[0].section).to.eq(
+            "HPCu.software_architecture_and_design.procedural.loops"
+          )
+        })
       })
     })
 
