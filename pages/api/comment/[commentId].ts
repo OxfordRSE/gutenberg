@@ -4,7 +4,6 @@ import prisma from "lib/prisma"
 
 import type { NextApiRequest, NextApiResponse } from "next"
 import { Prisma } from "@prisma/client"
-import { Event } from "cypress/types/jquery"
 
 export type Event = Prisma.EventGetPayload<{}>
 

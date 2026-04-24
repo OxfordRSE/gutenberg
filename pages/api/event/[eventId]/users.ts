@@ -4,7 +4,6 @@ import { EventFull, Problem } from "lib/types"
 import prisma from "lib/prisma"
 
 import type { NextApiRequest, NextApiResponse } from "next"
-import _, { sortBy } from "cypress/types/lodash"
 import { Prisma } from "@prisma/client"
 import useProfile from "lib/hooks/useProfile"
 

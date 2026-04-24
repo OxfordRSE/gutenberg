@@ -4,9 +4,6 @@ import prisma from "lib/prisma"
 
 import type { NextApiRequest, NextApiResponse } from "next"
 import { Prisma } from "@prisma/client"
-import { event } from "cypress/types/jquery"
-import { is } from "cypress/types/bluebird"
-import { max } from "cypress/types/lodash"
 
 export type Comment = Prisma.CommentGetPayload<{}>
 
