@@ -6,7 +6,6 @@ import { EventFull, Problem } from "lib/types"
 import prisma from "lib/prisma"
 
 import type { NextApiRequest, NextApiResponse } from "next"
-import _ from "cypress/types/lodash"
 
 export type Data = {
   problems?: Problem[]
