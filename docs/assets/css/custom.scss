@@ -216,6 +216,8 @@ body {
 
 .main-content-wrap {
   max-width: 72rem;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 .main-content {
@@ -387,5 +389,17 @@ body {
     flex: 0 0 auto;
     align-items: center;
     padding: 0 2rem 0 0;
+  }
+}
+
+@media (min-width: 66.5rem) {
+  .side-bar {
+    width: 16.5rem;
+    min-width: 16.5rem;
+  }
+
+  .side-bar + .main {
+    max-width: none;
+    margin-left: 16.5rem;
   }
 }
