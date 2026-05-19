@@ -52,6 +52,8 @@ import { BreadcrumbItem } from "lib/breadcrumbs"
 import MaterialGroupsNotice from "components/ui/MaterialGroupsNotice"
 import { deleteCourse } from "lib/actions/deleteCourse"
 import TagChip from "components/ui/TagChip"
+import SaveChangesAction from "components/ui/SaveChangesAction"
+import useTransientSaveFeedback from "lib/hooks/useTransientSaveFeedback"
 
 type CourseFull = Prisma.CourseGetPayload<{
   include: {
@@ -420,10 +422,24 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
   const [deleteCourseError, setDeleteCourseError] = useState<string | null>(null)
   const tabsRef = useRef<{ setActiveTab: (idx: number) => void } | null>(null)
   const [activeTabIndex, setActiveTabIndex] = useState(0)
+  const {
+    error: saveError,
+    showSuccess: showSaveSuccess,
+    begin,
+    succeed,
+    fail,
+    dismissSuccess,
+  } = useTransientSaveFeedback()
 
   const defaultValues = useMemo(() => courseToForm(courseData), [courseData])
   const exportJson = useMemo(() => JSON.stringify(courseToJson(courseData), null, 2), [courseData])
-  const { control, handleSubmit, reset, register } = useForm<CourseForm>({ defaultValues })
+  const {
+    control,
+    handleSubmit,
+    reset,
+    register,
+    formState: { isDirty, isSubmitting },
+  } = useForm<CourseForm>({ defaultValues })
   const { progress } = useCourseProgress(userProfile ? courseData.id : undefined)
   const sectionMap = useMemo(() => {
     const sectionProgress = progress && "sections" in progress ? progress.sections : []
@@ -477,6 +493,12 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
   useEffect(() => {
     reset(defaultValues)
   }, [defaultValues, reset])
+
+  useEffect(() => {
+    if (isDirty && showSaveSuccess) {
+      dismissSuccess()
+    }
+  }, [dismissSuccess, isDirty, showSaveSuccess])
 
   useEffect(() => {
     if (typeof window === "undefined") return
@@ -540,6 +562,8 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
   }
 
   const onSubmit = async (form: CourseForm) => {
+    begin()
+
     const payload: CourseUpdatePayload = {
       ...courseData,
       name: form.name,
@@ -567,10 +591,17 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
       CourseItem: [],
     }
 
-    const response = await putCourse(payload)
-    if ("course" in response && response.course) {
+    try {
+      const response = await putCourse(payload)
+      if (response.error || !response.course) {
+        throw new Error(response.error || "Failed to save course")
+      }
+
       setCourseData(response.course)
       reset(courseToForm(response.course))
+      succeed()
+    } catch (error) {
+      fail(error instanceof Error ? error.message : "Failed to save course")
     }
   }
 
@@ -709,7 +740,13 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
                     </Button>
                   </div>
 
-                  <Button type="submit">Save Changes</Button>
+                  <SaveChangesAction
+                    isSubmitting={isSubmitting}
+                    error={saveError}
+                    showSuccess={showSaveSuccess}
+                    submitDataCy="course-save-button"
+                    feedbackDataCy="course-save-feedback"
+                  />
                 </Stack>
               </form>
             </Tabs.Item>
