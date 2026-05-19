@@ -24,27 +24,29 @@ const SaveChangesAction: React.FC<Props> = ({
   feedbackDataCy,
 }) => {
   return (
-    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-      <div aria-live="polite" className="min-h-6 text-sm" data-cy={feedbackDataCy}>
-        {error ? (
-          <span className="text-red-600 dark:text-red-400">{error}</span>
-        ) : showSuccess ? (
-          <span className="inline-flex items-center gap-2 text-green-600 dark:text-green-400">
-            <HiCheckCircle className="h-5 w-5" />
-            {successLabel}
-          </span>
-        ) : null}
+    <div className="flex justify-end">
+      <div className="flex flex-col items-end gap-2 sm:flex-row sm:items-center">
+        <div aria-live="polite" className="min-h-6 text-right text-sm" data-cy={feedbackDataCy}>
+          {error ? (
+            <span className="text-red-600 dark:text-red-400">{error}</span>
+          ) : showSuccess ? (
+            <span className="inline-flex items-center gap-2 text-green-600 dark:text-green-400">
+              <HiCheckCircle className="h-5 w-5" />
+              {successLabel}
+            </span>
+          ) : null}
+        </div>
+        <Button type="submit" disabled={isSubmitting} data-cy={submitDataCy}>
+          {isSubmitting ? (
+            <span className="inline-flex items-center gap-2">
+              <Spinner size="sm" />
+              {savingLabel}
+            </span>
+          ) : (
+            submitLabel
+          )}
+        </Button>
       </div>
-      <Button type="submit" disabled={isSubmitting} data-cy={submitDataCy}>
-        {isSubmitting ? (
-          <span className="inline-flex items-center gap-2">
-            <Spinner size="sm" />
-            {savingLabel}
-          </span>
-        ) : (
-          submitLabel
-        )}
-      </Button>
     </div>
   )
 }

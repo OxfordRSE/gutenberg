@@ -721,6 +721,14 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
                     </Button>
                   </div>
 
+                  <SaveChangesAction
+                    isSubmitting={isSubmitting}
+                    error={saveError}
+                    showSuccess={showSaveSuccess}
+                    submitDataCy="course-save-button"
+                    feedbackDataCy="course-save-feedback"
+                  />
+
                   <Title text="Export JSON" />
                   <div className="flex justify-end">
                     <Button type="button" onClick={() => setShowExportModal(true)}>
@@ -739,14 +747,6 @@ const CourseDetail: NextPage<CourseDetailProps> = ({ material, course, userOnCou
                       Delete Course
                     </Button>
                   </div>
-
-                  <SaveChangesAction
-                    isSubmitting={isSubmitting}
-                    error={saveError}
-                    showSuccess={showSaveSuccess}
-                    submitDataCy="course-save-button"
-                    feedbackDataCy="course-save-feedback"
-                  />
                 </Stack>
               </form>
             </Tabs.Item>
