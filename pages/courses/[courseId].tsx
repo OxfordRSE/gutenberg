@@ -140,12 +140,12 @@ function courseToForm(course: CourseFull): CourseForm {
     tagsText: listToText(course.tags ?? []),
     outcomesText: listToText(course.outcomes ?? []),
     prerequisitesText: listToText(course.prerequisites ?? []),
-    CourseGroup: course.CourseGroup.map((group) => ({
+    CourseGroup: course.CourseGroup.map((group: CourseFull["CourseGroup"][number]) => ({
       id: group.id,
       name: group.name ?? "",
       summary: group.summary ?? "",
       order: group.order ?? 0,
-      CourseItem: group.CourseItem.map((item) => ({
+      CourseItem: group.CourseItem.map((item: CourseFull["CourseGroup"][number]["CourseItem"][number]) => ({
         id: item.id,
         order: item.order ?? 0,
         section: item.section ?? "",
@@ -218,7 +218,7 @@ const CoursePreview = ({
           {languageCount > 0 && (
             <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
               <span className="font-semibold text-gray-800 dark:text-gray-200">{languageLabel}</span>
-              {(course.language ?? []).map((language) => {
+              {(course.language ?? []).map((language: string) => {
                 return <TagChip key={language} tag={language} />
               })}
             </div>
@@ -226,7 +226,7 @@ const CoursePreview = ({
           {course.tags.length > 0 && (
             <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
               <span className="font-semibold text-gray-800 dark:text-gray-200">Tags:</span>
-              {course.tags.map((tag) => {
+              {course.tags.map((tag: string) => {
                 return <TagChip key={tag} tag={tag} />
               })}
             </div>
@@ -250,9 +250,16 @@ const CoursePreview = ({
       </div>
       <div className="px-2 md:px-10 lg:px-10 xl:px-20 2xl:px-32 mt-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {course.CourseGroup.sort((a, b) => a.order - b.order).map((group) => {
-            const groupItems = group.CourseItem.sort((a, b) => a.order - b.order)
-            const groupCompleted = groupItems.every((item) => {
+          {course.CourseGroup.sort(
+            (a: CourseFull["CourseGroup"][number], b: CourseFull["CourseGroup"][number]) => a.order - b.order
+          ).map((group: CourseFull["CourseGroup"][number]) => {
+            const groupItems = group.CourseItem.sort(
+              (
+                a: CourseFull["CourseGroup"][number]["CourseItem"][number],
+                b: CourseFull["CourseGroup"][number]["CourseItem"][number]
+              ) => a.order - b.order
+            )
+            const groupCompleted = groupItems.every((item: CourseFull["CourseGroup"][number]["CourseItem"][number]) => {
               const entry = sectionMap.get(item.section)
               return entry ? entry.total > 0 && entry.completed >= entry.total : false
             })
@@ -278,7 +285,7 @@ const CoursePreview = ({
                 </h2>
                 {group.summary && <p className="text-gray-700 dark:text-gray-300">{group.summary}</p>}
                 <ul className="mt-2 space-y-1">
-                  {groupItems.map((item) => {
+                  {groupItems.map((item: CourseFull["CourseGroup"][number]["CourseItem"][number]) => {
                     const entry = sectionMap.get(item.section)
                     const isComplete = entry ? entry.total > 0 && entry.completed >= entry.total : false
                     return (

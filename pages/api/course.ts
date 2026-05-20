@@ -18,6 +18,8 @@ export type Course = Prisma.CourseGetPayload<{
   include: { UserOnCourse: { select: typeof userOnCourseSelect } }
 }>
 
+type PublicCourse = Prisma.CourseGetPayload<{}>
+
 export type Data = {
   courses?: Course[]
   course?: Course
@@ -67,7 +69,8 @@ const Courses = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
           res.status(201).json({ course })
           return
         } catch (error) {
-          if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+          const knownRequestError = error as Prisma.PrismaClientKnownRequestError
+          if (error instanceof Prisma.PrismaClientKnownRequestError && knownRequestError.code === "P2002") {
             await resetCourseSequence()
             const course = await createCourse({})
             res.status(201).json({ course })
@@ -158,7 +161,8 @@ const Courses = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
         res.status(201).json({ course })
         return
       } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+        const knownRequestError = error as Prisma.PrismaClientKnownRequestError
+        if (error instanceof Prisma.PrismaClientKnownRequestError && knownRequestError.code === "P2002") {
           if (resolvedExternalId) {
             const course = await prisma.course.findUnique({
               where: { externalId: resolvedExternalId },
@@ -198,7 +202,7 @@ const Courses = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
         const courses = await prisma.course.findMany({
           where: isAdmin ? {} : { hidden: false },
         })
-        const publicCourses = courses.map((course) => ({ ...course, UserOnCourse: [] }))
+        const publicCourses = courses.map((course: PublicCourse) => ({ ...course, UserOnCourse: [] }))
         res.status(200).json({ courses: sortCourses(publicCourses) })
         return
       }

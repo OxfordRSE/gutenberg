@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form"
 import { putEvent } from "lib/actions/putEvent"
 import DateTimeField from "../forms/DateTimeField"
 import { Stack } from "@mui/material"
+import { EventGroup } from "pages/api/event/[eventId]"
 import { EventItem } from "pages/api/eventGroup/[eventGroupId]"
 import { Toast } from "flowbite-react"
 
@@ -75,7 +76,7 @@ export const DuplicateEventModal: React.FC<DuplicateEventProps> = ({ onClose }) 
     postEvent(eventDuplicate).then((newEvent) => {
       // here we take the newly saved event and add copies of the eventgroups and items
       newEvent.EventGroup = []
-      event.EventGroup.map((eg) => {
+      event.EventGroup.map((eg: EventGroup) => {
         const newEg = duplicateEventGroup(eg, dateOffset)
         newEvent.EventGroup.push(newEg)
       })

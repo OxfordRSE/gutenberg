@@ -13,14 +13,18 @@ export async function calculateCourseProgress(
   userEmail: string,
   courses: CourseWithItems[]
 ): Promise<Record<number, CourseProgress>> {
+  type CourseGroupWithItems = CourseWithItems["CourseGroup"][number]
+  type CourseItem = CourseWithItems["CourseItem"][number]
+  type ProblemSummary = { complete: boolean; section: string; tag: string }
+
   if (courses.length === 0) return {}
 
   const courseSections = new Map<number, string[]>()
 
   for (const course of courses) {
-    const groupedItems = course.CourseGroup.flatMap((group) => group.CourseItem)
+    const groupedItems = course.CourseGroup.flatMap((group: CourseGroupWithItems) => group.CourseItem)
     const allItems = [...course.CourseItem, ...groupedItems]
-    const sections = allItems.map((item) => item.section).filter((section) => section.length > 0)
+    const sections = allItems.map((item: CourseItem) => item.section).filter((section: string) => section.length > 0)
     courseSections.set(course.id, Array.from(new Set(sections)))
   }
 
@@ -44,13 +48,16 @@ export async function calculateCourseProgress(
     select: { complete: true, section: true, tag: true },
   })
 
-  const completedBySection = problems.reduce<Record<string, number>>((acc, problem) => {
-    if (!problem.complete) return acc
-    const sectionTags = sectionProblemMap.get(problem.section)
-    if (!sectionTags || !sectionTags.has(problem.tag)) return acc
-    acc[problem.section] = (acc[problem.section] || 0) + 1
-    return acc
-  }, {})
+  const completedBySection: Record<string, number> = problems.reduce<Record<string, number>>(
+    (acc: Record<string, number>, problem: ProblemSummary) => {
+      if (!problem.complete) return acc
+      const sectionTags = sectionProblemMap.get(problem.section)
+      if (!sectionTags || !sectionTags.has(problem.tag)) return acc
+      acc[problem.section] = (acc[problem.section] || 0) + 1
+      return acc
+    },
+    {}
+  )
 
   const progressByCourseId: Record<number, CourseProgress> = {}
 

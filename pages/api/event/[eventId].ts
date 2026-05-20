@@ -50,15 +50,17 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
       delete (event as any).instructorKey
     }
 
-    const isInstructor = event.UserOnEvent.some((u) => u.user?.email === userEmail && u.status === "INSTRUCTOR")
-    const isStudent = event.UserOnEvent.some((u) => u.user?.email === userEmail && u.status === "STUDENT")
+    const isInstructor = event.UserOnEvent.some(
+      (u: UserOnEvent) => u.user?.email === userEmail && u.status === "INSTRUCTOR"
+    )
+    const isStudent = event.UserOnEvent.some((u: UserOnEvent) => u.user?.email === userEmail && u.status === "STUDENT")
 
     if (!isAdmin && !isInstructor && !isStudent) {
       return res.status(401).json({ error: "Unauthorized" })
     }
 
     if (isStudent) {
-      event.UserOnEvent = event.UserOnEvent.filter((u) => u.user?.email === userEmail)
+      event.UserOnEvent = event.UserOnEvent.filter((u: UserOnEvent) => u.user?.email === userEmail)
     }
 
     return res.status(200).json({ event })
@@ -103,7 +105,7 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
       where: { eventId },
       select: { id: true },
     })
-    const existingGroupIds = new Set(existingGroups.map((group) => group.id))
+    const existingGroupIds = new Set(existingGroups.map((group: { id: number }) => group.id))
     const submittedGroupIds = new Set(eventGroupData.filter((group) => group.id).map((group) => group.id))
     const deletedGroupIds = [...existingGroupIds].filter((id) => !submittedGroupIds.has(id))
 
@@ -148,7 +150,7 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
 
       if (group.EventItem.length > 0) {
         await prisma.eventItem.createMany({
-          data: group.EventItem.map((item) => ({
+          data: group.EventItem.map((item: EventGroup["EventItem"][number]) => ({
             order: typeof item.order === "string" ? parseInt(item.order, 10) : item.order,
             section: item.section,
             groupId: savedGroup.id,

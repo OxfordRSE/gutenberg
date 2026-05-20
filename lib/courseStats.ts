@@ -98,9 +98,12 @@ const emptyProgressBands = (): ProgressBands => ({
 })
 
 function uniqueCourseSections(course: CourseForStats): string[] {
-  const groupedItems = course.CourseGroup.flatMap((group) => group.CourseItem)
+  type CourseGroupWithItems = CourseForStats["CourseGroup"][number]
+  type CourseItem = CourseForStats["CourseItem"][number]
+
+  const groupedItems = course.CourseGroup.flatMap((group: CourseGroupWithItems) => group.CourseItem)
   const allItems = [...course.CourseItem, ...groupedItems]
-  return Array.from(new Set(allItems.map((item) => item.section).filter(Boolean)))
+  return Array.from(new Set(allItems.map((item: CourseItem) => item.section).filter(Boolean)))
 }
 
 function progressBand(totalProblems: number, completedProblems: number): ProgressBandKey {
@@ -116,6 +119,8 @@ function progressBand(totalProblems: number, completedProblems: number): Progres
 }
 
 export async function calculateCourseStats(courses: CourseForStats[]): Promise<CourseStats[]> {
+  type Enrolment = CourseForStats["UserOnCourse"][number]
+
   if (courses.length === 0) return []
 
   const courseSections = new Map<number, string[]>()
@@ -125,7 +130,7 @@ export async function calculateCourseStats(courses: CourseForStats[]): Promise<C
 
   const allSections = Array.from(new Set(Array.from(courseSections.values()).flat()))
   const allUserEmails = Array.from(
-    new Set(courses.flatMap((course) => course.UserOnCourse.map((enrolment) => enrolment.userEmail)))
+    new Set(courses.flatMap((course) => course.UserOnCourse.map((enrolment: Enrolment) => enrolment.userEmail)))
   )
 
   const material = await getMaterial(true)
@@ -164,7 +169,7 @@ export async function calculateCourseStats(courses: CourseForStats[]): Promise<C
       (sum, sectionRef) => sum + (sectionProblemMap.get(sectionRef)?.size ?? 0),
       0
     )
-    const learners = course.UserOnCourse.map((enrolment) => {
+    const learners = course.UserOnCourse.map((enrolment: Enrolment) => {
       const totalProblems = trackableProblems
       const completedProblems = sections.reduce(
         (sum, sectionRef) => sum + (completedByUserSection.get(`${enrolment.userEmail}::${sectionRef}`) ?? 0),
@@ -190,25 +195,25 @@ export async function calculateCourseStats(courses: CourseForStats[]): Promise<C
       }
     })
 
-    const progressBands = learners.reduce<ProgressBands>((acc, learner) => {
+    const progressBands = learners.reduce<ProgressBands>((acc: ProgressBands, learner: LearnerCourseStats) => {
       acc[learner.progressBand] += 1
       return acc
     }, emptyProgressBands())
 
     const completionDays = learners
-      .map((learner) => learner.completionDays)
-      .filter((value): value is number => value !== null)
+      .map((learner: LearnerCourseStats) => learner.completionDays)
+      .filter((value: number | null): value is number => value !== null)
     const progressPercents = learners
-      .map((learner) => learner.completionPercent)
-      .filter((value): value is number => value !== null)
+      .map((learner: LearnerCourseStats) => learner.completionPercent)
+      .filter((value: number | null): value is number => value !== null)
 
     const sectionsStats = sections.map((sectionRef) => {
       const totalProblems = sectionProblemMap.get(sectionRef)?.size ?? 0
-      const perLearner = learners.map((learner) => {
+      const perLearner = learners.map((learner: LearnerCourseStats) => {
         const completed = completedByUserSection.get(`${learner.userEmail}::${sectionRef}`) ?? 0
         return totalProblems > 0 ? (completed / totalProblems) * 100 : null
       })
-      const usable = perLearner.filter((value): value is number => value !== null)
+      const usable = perLearner.filter((value: number | null): value is number => value !== null)
       return {
         sectionRef,
         title: sectionMeta.get(sectionRef)?.title ?? sectionRef,
@@ -216,14 +221,20 @@ export async function calculateCourseStats(courses: CourseForStats[]): Promise<C
         totalProblems,
         learnerCount: learners.length,
         averageCompletionPercent: round(mean(usable)),
-        fullyCompletedLearners: usable.filter((value) => value >= 100).length,
+        fullyCompletedLearners: usable.filter((value: number) => value >= 100).length,
       }
     })
 
     const totalLearners = learners.length
-    const enrolledCount = learners.filter((learner) => learner.status === CourseStatus.ENROLLED).length
-    const completedCount = learners.filter((learner) => learner.status === CourseStatus.COMPLETED).length
-    const droppedCount = learners.filter((learner) => learner.status === CourseStatus.DROPPED).length
+    const enrolledCount = learners.filter(
+      (learner: LearnerCourseStats) => learner.status === CourseStatus.ENROLLED
+    ).length
+    const completedCount = learners.filter(
+      (learner: LearnerCourseStats) => learner.status === CourseStatus.COMPLETED
+    ).length
+    const droppedCount = learners.filter(
+      (learner: LearnerCourseStats) => learner.status === CourseStatus.DROPPED
+    ).length
 
     return {
       courseId: course.id,

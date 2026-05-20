@@ -61,7 +61,7 @@ const userEventsHandler = async (req: NextApiRequest, res: NextApiResponse<Data>
     }),
   ])
 
-  const eventIds = userOnEvents.map((userOnEvent) => userOnEvent.eventId)
+  const eventIds = userOnEvents.map((userOnEvent: UserOnEvent) => userOnEvent.eventId)
   const events: EventFull[] =
     eventIds.length === 0
       ? []
@@ -71,7 +71,7 @@ const userEventsHandler = async (req: NextApiRequest, res: NextApiResponse<Data>
         })
 
   const eventsById = new Map(events.map((event) => [event.id, event]))
-  const userEvents = eventIds.flatMap((eventId) => {
+  const userEvents = eventIds.flatMap((eventId: number) => {
     const event = eventsById.get(eventId)
     return event ? [event] : []
   })

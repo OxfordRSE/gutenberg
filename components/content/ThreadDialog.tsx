@@ -66,7 +66,7 @@ const ThreadDialog: FC<ThreadDialogProps> = ({
 
   const sortedComments = useMemo(() => {
     if (!commentThread) return []
-    return commentThread.Comment.sort((a, b) => a.index - b.index)
+    return commentThread.Comment.sort((a: Comment, b: Comment) => a.index - b.index)
   }, [commentThread])
 
   const savePlaceholder = (placeholder: Comment) => {
@@ -75,7 +75,7 @@ const ThreadDialog: FC<ThreadDialogProps> = ({
 
   const mutateComment = (comment: Comment) => {
     if (!commentThread) return
-    const updatedComments: Comment[] = commentThread.Comment.map((c) => {
+    const updatedComments: Comment[] = commentThread.Comment.map((c: Comment) => {
       if (c?.id === comment.id) {
         return comment
       } else {
@@ -87,7 +87,7 @@ const ThreadDialog: FC<ThreadDialogProps> = ({
 
   const deleteComment = (comment: Comment) => {
     if (!commentThread) return
-    mutate({ ...commentThread, Comment: commentThread.Comment.filter((c) => c.id !== comment.id) })
+    mutate({ ...commentThread, Comment: commentThread.Comment.filter((c: Comment) => c.id !== comment.id) })
   }
 
   const handleDialogKeyDown = (e: React.KeyboardEvent) => {
@@ -221,7 +221,7 @@ const ThreadDialog: FC<ThreadDialogProps> = ({
         </Stack>
       </div>
       {isPlaceholder &&
-        sortedComments.map((comment) => (
+        sortedComments.map((comment: Comment) => (
           <Provider key={comment.id}>
             <CommentView
               key={comment.id}
@@ -236,7 +236,7 @@ const ThreadDialog: FC<ThreadDialogProps> = ({
           </Provider>
         ))}
       {!isPlaceholder &&
-        sortedComments.map((comment) => (
+        sortedComments.map((comment: Comment) => (
           <Provider key={comment.id}>
             <CommentView
               key={comment.id}

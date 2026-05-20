@@ -5,6 +5,7 @@ import Layout from "components/Layout"
 import { makeSerializable } from "lib/utils"
 import Title from "components/ui/Title"
 import type { Event as PublicEvent } from "lib/types"
+import type { UserOnEvent } from "pages/api/event/[eventId]"
 import { basePath } from "lib/basePath"
 import { Button, Tabs } from "flowbite-react"
 import Avatar from "@mui/material/Avatar"
@@ -64,13 +65,9 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
     keyName: "fieldId",
   })
 
-  const { fields: eventUsers } = useFieldArray({
-    control,
-    name: "UserOnEvent",
-    keyName: "fieldId",
-  })
-
-  const myUserOnEvent = eventData?.UserOnEvent.find((userOnEvent) => userOnEvent.userEmail === session?.user?.email)
+  const myUserOnEvent = eventData?.UserOnEvent.find(
+    (userOnEvent: UserOnEvent) => userOnEvent.userEmail === session?.user?.email
+  )
   const isInstructor = myUserOnEvent?.status === "INSTRUCTOR"
   const isAdmin = !!userProfile?.admin
   const sectionsOptions = useMemo(() => buildSectionsOptions(material), [material])
@@ -157,14 +154,14 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
         <Checkbox label="Hidden" name="hidden" control={control} />
         <Title text="Users" />
         <div className="grid grid-cols-4 gap-4">
-          {eventUsers.map((user, index) => (
-            <div key={user.fieldId} className="flex items-center space-x-4">
+          {(eventData?.UserOnEvent ?? []).map((userOnEvent: UserOnEvent, index: number) => (
+            <div key={`${userOnEvent.userEmail}-${index}`} className="flex items-center space-x-4">
               <div className="shrink-0">
-                <Avatar src={user.user?.image || undefined} alt={user.user?.name || undefined} />
+                <Avatar src={userOnEvent.user?.image || undefined} alt={userOnEvent.user?.name || undefined} />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-gray-900 dark:text-white">{user.user?.name}</p>
-                <p className="truncate text-sm text-gray-500 dark:text-gray-400">{user.user?.email}</p>
+                <p className="truncate text-sm font-medium text-gray-900 dark:text-white">{userOnEvent.user?.name}</p>
+                <p className="truncate text-sm text-gray-500 dark:text-gray-400">{userOnEvent.user?.email}</p>
               </div>
               <SelectField control={control} name={`UserOnEvent.${index}.status`} options={statusOptions} />
             </div>
@@ -229,7 +226,7 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const events = await runBuildPrismaQuery("pages/event/[eventId].tsx paths", [], (prisma) =>
+  const events = await runBuildPrismaQuery<PublicEvent[]>("pages/event/[eventId].tsx paths", [], (prisma) =>
     prisma.event.findMany({
       where: { hidden: false },
     })

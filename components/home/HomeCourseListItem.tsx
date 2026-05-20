@@ -45,7 +45,7 @@ const HomeCourseListItem: React.FC<Props> = ({ course, progress: providedProgres
           <Link href={`/courses/${course.id}`} className="hover:underline">
             <h3 className="flex flex-wrap items-center gap-2 text-lg font-semibold text-gray-900 dark:text-white">
               <span className="truncate">{course.name}</span>
-              {displayLanguages.map((language) => {
+              {displayLanguages.map((language: string) => {
                 return <TagChip key={language} tag={language} />
               })}
               {isCompleted && <HiShieldCheck className="h-5 w-5 flex-none text-emerald-500" />}
@@ -53,7 +53,7 @@ const HomeCourseListItem: React.FC<Props> = ({ course, progress: providedProgres
           </Link>
           {displayTags.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-2">
-              {displayTags.map((tag) => {
+              {displayTags.map((tag: string) => {
                 return <TagChip key={tag} tag={tag} />
               })}
             </div>
