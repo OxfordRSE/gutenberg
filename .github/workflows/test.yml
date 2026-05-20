@@ -145,7 +145,7 @@ jobs:
             --exclude "mpich.org" \
             --exclude "medium.com" \
             --exclude "unsplash.com" \
-            --exclude " https://en.cppreference.com" \
+            --exclude "en.cppreference.com" \
           ; true)
           echo "$OUTPUT"
 
