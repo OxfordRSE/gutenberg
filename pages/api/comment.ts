@@ -6,6 +6,9 @@ import type { NextApiRequest, NextApiResponse } from "next"
 import { Prisma } from "@prisma/client"
 
 export type Comment = Prisma.CommentGetPayload<{}>
+type CommentThreadWithComments = Prisma.CommentThreadGetPayload<{
+  include: { Comment: true }
+}>
 
 export type Event = Prisma.EventGetPayload<{}>
 
@@ -59,7 +62,7 @@ const commentHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) =
       return
     }
 
-    const maxIndex = thread?.Comment?.reduce((max, comment) => {
+    const maxIndex = thread?.Comment?.reduce((max: number, comment: CommentThreadWithComments["Comment"][number]) => {
       return comment.index > max ? comment.index : max
     }, 0)
     const comment = await prisma.comment.create({

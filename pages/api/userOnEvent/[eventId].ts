@@ -98,7 +98,7 @@ const UserOnEvent = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
           res.status(200).json({ userOnEvent: deletedUserOnEvent })
           return
         })
-        .catch((error) => {
+        .catch((error: unknown) => {
           res.status(500).json({ error: "Problem deleting userOnEvent" })
           return
         })

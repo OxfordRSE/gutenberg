@@ -5,7 +5,7 @@ import { Timeline } from "flowbite-react"
 import { Material } from "lib/material"
 import { basePath } from "lib/basePath"
 import CourseSectionLink from "components/courses/CourseSectionLink"
-import type { Data } from "pages/api/course/byExternal/[externalId]"
+import type { CourseByExternal, Data } from "pages/api/course/byExternal/[externalId]"
 
 type Props = {
   material: Material
@@ -15,6 +15,9 @@ type Props = {
 const courseFetcher: Fetcher<Data, string> = (url) => fetch(url).then((r) => r.json())
 
 const CourseView: React.FC<Props> = ({ material, externalId }) => {
+  type CourseGroupWithItems = CourseByExternal["CourseGroup"][number]
+  type CourseItem = CourseByExternal["CourseItem"][number]
+
   const { data } = useSWR(`${basePath}/api/course/byExternal/${externalId}`, courseFetcher)
   const course = data?.course
 
@@ -42,7 +45,7 @@ const CourseView: React.FC<Props> = ({ material, externalId }) => {
 
       {course.CourseGroup.length > 0 ? (
         <Timeline>
-          {course.CourseGroup.map((group) => (
+          {course.CourseGroup.map((group: CourseGroupWithItems) => (
             <Timeline.Item key={group.id}>
               <Timeline.Point />
               <Timeline.Content>
@@ -51,7 +54,7 @@ const CourseView: React.FC<Props> = ({ material, externalId }) => {
                   {group.summary && <p className="text-gray-700 dark:text-gray-400">{group.summary}</p>}
                   {group.CourseItem.length > 0 && (
                     <ul className="ml-4 mt-2 list-disc space-y-1">
-                      {group.CourseItem.map((item) => (
+                      {group.CourseItem.map((item: CourseItem) => (
                         <li key={item.id}>
                           <CourseSectionLink material={material} sectionRef={item.section} depth="section" />
                         </li>
@@ -67,7 +70,7 @@ const CourseView: React.FC<Props> = ({ material, externalId }) => {
         <div className="mt-3">
           <p className="font-bold text-gray-800 dark:text-gray-300">Material</p>
           <ul className="ml-4 mt-2 list-disc space-y-1">
-            {course.CourseItem.map((item) => (
+            {course.CourseItem.map((item: CourseItem) => (
               <li key={item.id}>
                 <CourseSectionLink material={material} sectionRef={item.section} depth="section" />
               </li>

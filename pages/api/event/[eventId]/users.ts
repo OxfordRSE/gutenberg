@@ -48,7 +48,8 @@ const EventUsers = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   })
 
   const isInstructor = event?.UserOnEvent.some(
-    (userOnEvent) => userOnEvent?.user?.name === user?.name && userOnEvent.status === "INSTRUCTOR"
+    (userOnEvent: UsersWithUserOnEvents) =>
+      userOnEvent?.user?.name === user?.name && userOnEvent.status === "INSTRUCTOR"
   )
   const isAdmin = currentUser?.admin === true
 
@@ -57,7 +58,7 @@ const EventUsers = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     case "GET":
       if (isInstructor || isAdmin) {
         const onEvent = event?.UserOnEvent
-        const emails = onEvent.map((userOnEvent) => userOnEvent?.userEmail || "")
+        const emails = onEvent.map((userOnEvent: UsersWithUserOnEvents) => userOnEvent?.userEmail || "")
         users = await prisma.userOnEvent.findMany({
           where: { userEmail: { in: emails }, eventId },
           include: { user: true },
@@ -91,7 +92,11 @@ const EventUsers = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
         return updatedUserOnEvent
       })
       const updatedUsersWithUserOnEvents = await await Promise.all(updatePromises)
-      if (updatedUsersWithUserOnEvents.some((user) => user === "UserOnEvent not found")) {
+      if (
+        updatedUsersWithUserOnEvents.some(
+          (user: UsersWithUserOnEvents | "UserOnEvent not found") => user === "UserOnEvent not found"
+        )
+      ) {
         res.status(404).json({ error: "UserOnEvent not found" })
       } else {
         res.status(200).json({ users: updatedUsersWithUserOnEvents as UsersWithUserOnEvents[] })

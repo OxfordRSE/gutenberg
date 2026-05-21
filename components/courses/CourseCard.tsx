@@ -60,7 +60,7 @@ const CourseCard: React.FC<Props> = ({ course, progress: providedProgress }) => 
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-2">
         {course.tags.length > 0 &&
-          course.tags.map((tag) => {
+          course.tags.map((tag: string) => {
             return <TagChip key={tag} tag={tag} />
           })}
         <div className="ml-auto flex items-center gap-2">
@@ -76,7 +76,7 @@ const CourseCard: React.FC<Props> = ({ course, progress: providedProgress }) => 
       {languageCount > 0 && (
         <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
           <span className="font-semibold text-gray-800 dark:text-gray-200">{languageLabel}</span>
-          {(course.language ?? []).map((language) => {
+          {(course.language ?? []).map((language: string) => {
             return <TagChip key={language} tag={language} />
           })}
         </div>

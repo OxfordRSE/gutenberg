@@ -64,11 +64,13 @@ export const getStaticProps: GetStaticProps = async () => {
     })
   )
 
-  const courses = await runBuildPrismaQuery("pages/index.tsx courses", [], (prisma) =>
-    prisma.course.findMany({
+  const courses = await runBuildPrismaQuery<Course[]>("pages/index.tsx courses", [], async (prisma) => {
+    const rawCourses = await prisma.course.findMany({
       where: { hidden: false },
     })
-  ).then((courses) => courses.map((course) => ({ ...course, UserOnCourse: [] })))
+
+    return rawCourses.map((course) => ({ ...course, UserOnCourse: [] }))
+  })
 
   return {
     props: {

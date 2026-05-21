@@ -19,6 +19,9 @@ type Props = {
 }
 
 const UserEventProblems: React.FC<Props> = ({ userProblems, event, material }) => {
+  type EventGroupWithItems = EventFull["EventGroup"][number]
+  type EventItem = EventGroupWithItems["EventItem"][number]
+
   // Modal state (unchanged)
   const [open, setOpen] = useState(false)
   const [selectedTitle, setSelectedTitle] = useState<string>("")
@@ -47,9 +50,9 @@ const UserEventProblems: React.FC<Props> = ({ userProblems, event, material }) =
     }> = []
 
     const sortedGroups = [...event.EventGroup].sort((a, b) => a.id - b.id)
-    sortedGroups.forEach((group) => {
+    sortedGroups.forEach((group: EventGroupWithItems) => {
       if (group.EventItem.length === 0) return
-      group.EventItem.forEach((item) => {
+      group.EventItem.forEach((item: EventItem) => {
         const { section, url } = eventItemSplit(item, material)
         if (!section) return
         out.push({

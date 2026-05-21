@@ -6,6 +6,7 @@ import { EventFull, Problem } from "lib/types"
 import prisma from "lib/prisma"
 
 import type { NextApiRequest, NextApiResponse } from "next"
+import type { UserOnEvent as UserOnEventWithUser } from "pages/api/event/[eventId]"
 
 export type Data = {
   problems?: Problem[]
@@ -33,26 +34,31 @@ const Problems = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     return res.status(404).json({ error: "Event not Found" })
   }
 
+  type EventGroupWithItems = (typeof event.EventGroup)[number]
+  type EventItem = EventGroupWithItems["EventItem"][number]
+
   const eventItemTags = event.EventGroup.reduce(
-    (acc: string[], eventGroup) => {
-      return [...acc, ...eventGroup.EventItem.map((eventItem) => eventItem.section)]
+    (acc: string[], eventGroup: EventGroupWithItems) => {
+      return [...acc, ...eventGroup.EventItem.map((eventItem: EventItem) => eventItem.section)]
     },
     [""]
   )
 
   const isStudent = event?.UserOnEvent.some(
-    (userOnEvent) => userOnEvent?.user?.name === user?.name && userOnEvent.status === "STUDENT"
+    (userOnEvent: UserOnEventWithUser) => userOnEvent?.user?.name === user?.name && userOnEvent.status === "STUDENT"
   )
   const isInstructor = event?.UserOnEvent.some(
-    (userOnEvent) => userOnEvent?.user?.name === user?.name && userOnEvent.status === "INSTRUCTOR"
+    (userOnEvent: UserOnEventWithUser) => userOnEvent?.user?.name === user?.name && userOnEvent.status === "INSTRUCTOR"
   )
 
   let problems: Problem[] = []
   if (isInstructor) {
-    const students = event?.UserOnEvent.filter((userOnEvent) => userOnEvent.status === "STUDENT").map(
-      (userOnEvent) => userOnEvent.user
+    const students = event?.UserOnEvent.filter(
+      (userOnEvent: UserOnEventWithUser) => userOnEvent.status === "STUDENT"
+    ).map((userOnEvent: UserOnEventWithUser) => userOnEvent.user)
+    const studentEmails = students.map(
+      (student: UserOnEventWithUser["user"] | null | undefined) => student?.email || ""
     )
-    const studentEmails = students.map((student) => student?.email || "")
     problems = await prisma.problem.findMany({
       where: { section: { in: eventItemTags }, userEmail: { in: studentEmails } },
     })

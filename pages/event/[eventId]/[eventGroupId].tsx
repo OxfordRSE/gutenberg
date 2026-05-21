@@ -53,6 +53,8 @@ type EventGroupProps = {
   pageInfo: PageTemplate
 }
 
+type EventWithGroupIds = Event & { EventGroup: Array<Pick<EventGroup, "id">> }
+
 const generateId = () => Math.random().toString(36).substr(2, 9)
 
 const SortableItem = ({ id = "", children }: { id?: string; children: React.ReactNode }) => {
@@ -102,6 +104,7 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
   } = useFieldArray({
     control,
     name: "EventItem",
+    keyName: "fieldId",
   })
 
   const handleAddItem = () => {
@@ -128,8 +131,8 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
     const { active, over } = event
 
     if (active.id !== over?.id) {
-      const oldIndex = eventItems.findIndex((item) => item.id === active.id)
-      const newIndex = eventItems.findIndex((item) => item.id === over?.id)
+      const oldIndex = eventItems.findIndex((item) => String(item.fieldId) === String(active.id))
+      const newIndex = eventItems.findIndex((item) => String(item.fieldId) === String(over?.id))
 
       const reorderedItems = arrayMove(eventItems, oldIndex, newIndex).map((item, index) => ({
         ...item,
@@ -256,7 +259,7 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
       <Content markdown={eventGroup.content} />
       <SubTitle text="Material" />
       <ul className="text-center">
-        {eventGroup.EventItem.map((item, index) => {
+        {eventGroup.EventItem.map((item: EventGroup["EventItem"][number], index: number) => {
           const { theme, course, section, url } = eventItemSplit(item, material)
           let label = theme?.name
           if (course) {
@@ -316,9 +319,9 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
         />
         {eventItems.length > 0 && <Title text="Material Sections (drag to reorder)" />}
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <SortableContext items={eventItems.map((item) => item.id)} strategy={verticalListSortingStrategy}>
+          <SortableContext items={eventItems.map((item) => item.fieldId)} strategy={verticalListSortingStrategy}>
             {eventItems.map((item, index) => (
-              <SortableItem key={item.id} id={item.id}>
+              <SortableItem key={item.fieldId} id={item.fieldId}>
                 <Grid
                   container
                   alignItems="center"
@@ -373,8 +376,10 @@ const EventGroupPage: NextPage<EventGroupProps> = ({ material, event, eventGroup
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const events = await runBuildPrismaQuery("pages/event/[eventId]/[eventGroupId].tsx paths", [], (prisma) =>
-    prisma.event.findMany({ include: { EventGroup: true } })
+  const events = await runBuildPrismaQuery<EventWithGroupIds[]>(
+    "pages/event/[eventId]/[eventGroupId].tsx paths",
+    [],
+    (prisma) => prisma.event.findMany({ include: { EventGroup: true } })
   )
   let paths = []
   for (let event of events) {

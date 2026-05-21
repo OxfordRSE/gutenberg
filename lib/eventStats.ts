@@ -67,12 +67,21 @@ export type EventStatsOverview = {
 }
 
 function uniqueEventSections(event: EventForStats): string[] {
+  type EventGroupWithItems = EventForStats["EventGroup"][number]
+  type EventItem = EventGroupWithItems["EventItem"][number]
+
   return Array.from(
-    new Set(event.EventGroup.flatMap((group) => group.EventItem.map((item) => item.section)).filter(Boolean))
+    new Set(
+      event.EventGroup.flatMap((group: EventGroupWithItems) =>
+        group.EventItem.map((item: EventItem) => item.section)
+      ).filter(Boolean)
+    )
   )
 }
 
 export async function calculateEventStats(events: EventForStats[]): Promise<EventStats[]> {
+  type UserOnEvent = EventForStats["UserOnEvent"][number]
+
   if (events.length === 0) return []
 
   const eventSections = new Map<number, string[]>()
@@ -84,7 +93,9 @@ export async function calculateEventStats(events: EventForStats[]): Promise<Even
   const studentEmails = Array.from(
     new Set(
       events.flatMap((event) =>
-        event.UserOnEvent.filter((entry) => entry.status === EventStatus.STUDENT).map((entry) => entry.userEmail)
+        event.UserOnEvent.filter((entry: UserOnEvent) => entry.status === EventStatus.STUDENT).map(
+          (entry: UserOnEvent) => entry.userEmail
+        )
       )
     )
   )
@@ -124,8 +135,8 @@ export async function calculateEventStats(events: EventForStats[]): Promise<Even
       (sum, sectionRef) => sum + (sectionProblemMap.get(sectionRef)?.size ?? 0),
       0
     )
-    const students = event.UserOnEvent.filter((entry) => entry.status === EventStatus.STUDENT)
-    const learnerStats = event.UserOnEvent.map((entry) => {
+    const students = event.UserOnEvent.filter((entry: UserOnEvent) => entry.status === EventStatus.STUDENT)
+    const learnerStats = event.UserOnEvent.map((entry: UserOnEvent) => {
       const totalProblems = entry.status === EventStatus.STUDENT ? trackableProblems : 0
       const completedProblems =
         entry.status === EventStatus.STUDENT
@@ -147,24 +158,24 @@ export async function calculateEventStats(events: EventForStats[]): Promise<Even
     })
 
     const studentProgress = learnerStats
-      .filter((learner) => learner.status === EventStatus.STUDENT)
-      .map((learner) => learner.completionPercent)
-      .filter((value): value is number => value !== null)
+      .filter((learner: EventLearnerStats) => learner.status === EventStatus.STUDENT)
+      .map((learner: EventLearnerStats) => learner.completionPercent)
+      .filter((value: number | null): value is number => value !== null)
 
     const sectionStats = sections.map((sectionRef) => {
       const totalProblems = sectionProblemMap.get(sectionRef)?.size ?? 0
-      const completions = students.map((student) => {
+      const completions = students.map((student: UserOnEvent) => {
         const completed = completedByUserSection.get(`${student.userEmail}::${sectionRef}`) ?? 0
         return totalProblems > 0 ? (completed / totalProblems) * 100 : null
       })
-      const usable = completions.filter((value): value is number => value !== null)
+      const usable = completions.filter((value: number | null): value is number => value !== null)
       return {
         sectionRef,
         title: sectionMeta.get(sectionRef)?.title ?? sectionRef,
         url: sectionMeta.get(sectionRef)?.url ?? null,
         totalProblems,
         averageCompletionPercent: round(mean(usable)),
-        fullyCompletedLearners: usable.filter((value) => value >= 100).length,
+        fullyCompletedLearners: usable.filter((value: number) => value >= 100).length,
       }
     })
 
@@ -175,11 +186,14 @@ export async function calculateEventStats(events: EventForStats[]): Promise<Even
       start: new Date(event.start),
       end: new Date(event.end),
       groupCount: event.EventGroup.length,
-      itemCount: event.EventGroup.reduce((sum, group) => sum + group.EventItem.length, 0),
-      studentCount: event.UserOnEvent.filter((entry) => entry.status === EventStatus.STUDENT).length,
-      instructorCount: event.UserOnEvent.filter((entry) => entry.status === EventStatus.INSTRUCTOR).length,
-      requestCount: event.UserOnEvent.filter((entry) => entry.status === EventStatus.REQUEST).length,
-      rejectedCount: event.UserOnEvent.filter((entry) => entry.status === EventStatus.REJECTED).length,
+      itemCount: event.EventGroup.reduce(
+        (sum: number, group: EventForStats["EventGroup"][number]) => sum + group.EventItem.length,
+        0
+      ),
+      studentCount: event.UserOnEvent.filter((entry: UserOnEvent) => entry.status === EventStatus.STUDENT).length,
+      instructorCount: event.UserOnEvent.filter((entry: UserOnEvent) => entry.status === EventStatus.INSTRUCTOR).length,
+      requestCount: event.UserOnEvent.filter((entry: UserOnEvent) => entry.status === EventStatus.REQUEST).length,
+      rejectedCount: event.UserOnEvent.filter((entry: UserOnEvent) => entry.status === EventStatus.REJECTED).length,
       trackableProblems,
       averageProgressPercent: round(mean(studentProgress)),
       learnerStats,
@@ -191,9 +205,9 @@ export async function calculateEventStats(events: EventForStats[]): Promise<Even
 export function summarizeEventStats(eventStats: EventStats[]): EventStatsOverview {
   const progressPercents = eventStats
     .flatMap((event) => event.learnerStats)
-    .filter((learner) => learner.status === EventStatus.STUDENT)
-    .map((learner) => learner.completionPercent)
-    .filter((value): value is number => value !== null)
+    .filter((learner: EventLearnerStats) => learner.status === EventStatus.STUDENT)
+    .map((learner: EventLearnerStats) => learner.completionPercent)
+    .filter((value: number | null): value is number => value !== null)
 
   const totalEvents = eventStats.length
   const visibleEvents = eventStats.filter((event) => !event.hidden).length

@@ -150,7 +150,7 @@ describe("CommentThread component", () => {
       cy.get('[data-cy="Comment:2:Delete"]').should("be.visible")
       const deletedCommentThread: CommentThread = {
         ...updatedThread,
-        Comment: [...updatedThread.Comment.filter((c) => c.id !== newComment.id)],
+        Comment: [...updatedThread.Comment.filter((c: Comment) => c.id !== newComment.id)],
       }
       cy.intercept(`/api/commentThread/${threadId}`, { commentThread: deletedCommentThread }).as("thread")
       cy.get('[data-cy="Comment:2:Delete"]').click()

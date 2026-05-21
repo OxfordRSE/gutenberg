@@ -1,6 +1,7 @@
 import { Button } from "flowbite-react"
 import { ReactNode, Ref, useRef } from "react"
 import { CommentThread, Comment } from "pages/api/commentThread"
+import type { UserOnEvent } from "pages/api/event/[eventId]"
 import { BiCommentCheck, BiCommentDetail } from "react-icons/bi"
 
 import useCommentThread from "lib/hooks/useCommentThread"
@@ -99,7 +100,9 @@ const Thread = ({ thread, active, setActive, onDelete, finaliseThread }: ThreadP
 
   if (commentThreadIsLoading || userIsLoading || profileLoading) return null
 
-  const myUserOnEvent = eventData?.UserOnEvent.find((e) => e.userEmail == userProfile?.email)
+  const myUserOnEvent = eventData?.UserOnEvent.find(
+    (userOnEvent: UserOnEvent) => userOnEvent.userEmail === userProfile?.email
+  )
   const isInstructor = myUserOnEvent?.status === "INSTRUCTOR" || false
   const isAdmin = userProfile?.admin
 

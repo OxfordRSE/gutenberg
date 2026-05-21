@@ -52,7 +52,9 @@ const courseHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) =>
       if (!course) return res.status(404).json({ error: "Course not found" })
 
       if (!isAdmin) {
-        course.UserOnCourse = course.UserOnCourse.filter((u) => u.userEmail === userEmail)
+        course.UserOnCourse = course.UserOnCourse.filter(
+          (u: CourseFull["UserOnCourse"][number]) => u.userEmail === userEmail
+        )
       }
 
       return res.status(200).json({ course })
@@ -76,7 +78,7 @@ const courseHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) =>
         where: { courseId },
         select: { id: true },
       })
-      const existingGroupIds = new Set(existingGroups.map((g) => g.id))
+      const existingGroupIds = new Set(existingGroups.map((g: { id: number }) => g.id))
       const submittedGroupIds = new Set(submittedGroups.filter((g) => g.id).map((g) => g.id))
       const deletedGroupIds = [...existingGroupIds].filter((id) => !submittedGroupIds.has(id))
 

@@ -393,10 +393,10 @@ export const getStaticProps: GetStaticProps = async () => {
     }
   }
 
-  const courses = await runBuildPrismaQuery("pages/courses/index.tsx courses", [], (prisma) =>
-    prisma.course.findMany({ where: { hidden: false } })
-  )
-  const coursesWithUser = courses.map((course) => ({ ...course, UserOnCourse: [] }))
+  const coursesWithUser = await runBuildPrismaQuery<Course[]>("pages/courses/index.tsx courses", [], async (prisma) => {
+    const courses = await prisma.course.findMany({ where: { hidden: false } })
+    return courses.map((course) => ({ ...course, UserOnCourse: [] }))
+  })
 
   return {
     props: makeSerializable({ material, courses: sortCourses(coursesWithUser), pageInfo }),

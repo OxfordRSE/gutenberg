@@ -17,6 +17,9 @@ type Props = {
 
 // a table of eventItems vs users showing which users have completed which problems
 const EventProblems: React.FC<Props> = ({ material, event }) => {
+  type EventGroupWithItems = EventFull["EventGroup"][number]
+  type EventItem = EventGroupWithItems["EventItem"][number]
+
   const { users, error: usersError } = useUsersOnEvent(event.id)
   const { problems, error: problemsError } = useProblems(event.id)
   const [selectedTitle, setSelectedTitle] = useState<string>("")
@@ -84,69 +87,71 @@ const EventProblems: React.FC<Props> = ({ material, event }) => {
         </Table.Head>
 
         <Table.Body className="divide-y">
-          {event.EventGroup.filter((g) => g.EventItem.length > 0).map((group) => (
-            <React.Fragment key={group.id}>
-              <Table.Row>
-                <Table.Cell colSpan={1 + students.length} className="font-semibold">
-                  {group.name}
-                </Table.Cell>
-              </Table.Row>
+          {event.EventGroup.filter((g: EventGroupWithItems) => g.EventItem.length > 0).map(
+            (group: EventGroupWithItems) => (
+              <React.Fragment key={group.id}>
+                <Table.Row>
+                  <Table.Cell colSpan={1 + students.length} className="font-semibold">
+                    {group.name}
+                  </Table.Cell>
+                </Table.Row>
 
-              {group.EventItem.map((item) => {
-                const { section, url } = eventItemSplit(item, material)
-                if (!section) return null
+                {group.EventItem.map((item: EventItem) => {
+                  const { section, url } = eventItemSplit(item, material)
+                  if (!section) return null
 
-                return section.problems.map((problemTag) => {
-                  const rowKey = `${item.id}-${problemTag}`
+                  return section.problems.map((problemTag) => {
+                    const rowKey = `${item.id}-${problemTag}`
 
-                  return (
-                    <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800" key={rowKey}>
-                      {/* Problem title cell */}
-                      <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white p-1 m-0">
-                        {url ? <Link href={`${url}#${problemTag}`}>{problemTag}</Link> : <span>{problemTag}</span>}
-                      </Table.Cell>
+                    return (
+                      <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800" key={rowKey}>
+                        {/* Problem title cell */}
+                        <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white p-1 m-0">
+                          {url ? <Link href={`${url}#${problemTag}`}>{problemTag}</Link> : <span>{problemTag}</span>}
+                        </Table.Cell>
 
-                      {/* Status cells per student */}
-                      {students.map((user) => {
-                        const p = userProblems[user.userEmail]?.find(
-                          (pp) => pp.tag === problemTag && pp.section === item.section
-                        )
-                        const tooltipText = p ? `difficulty: ${p.difficulty}  notes: ${p.notes}` : "No submission yet"
+                        {/* Status cells per student */}
+                        {students.map((user) => {
+                          const p = userProblems[user.userEmail]?.find(
+                            (pp) => pp.tag === problemTag && pp.section === item.section
+                          )
+                          const tooltipText = p ? `difficulty: ${p.difficulty}  notes: ${p.notes}` : "No submission yet"
 
-                        return (
-                          <Table.Cell
-                            key={`${user.userEmail}-${rowKey}`}
-                            align="center"
-                            className="whitespace-nowrap font-medium text-gray-900 dark:text-white p-0"
-                          >
-                            <Tooltip title={tooltipText} placement="top">
-                              <button
-                                type="button"
-                                className="px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-400"
-                                onClick={() =>
-                                  openModalFor({
-                                    userEmail: user.userEmail,
-                                    userName: user.user?.name,
-                                    sectionId: item.section,
-                                    problemTag,
-                                  })
-                                }
-                                aria-label={`View ${user.user?.name ?? user.userEmail}'s submission for ${problemTag}`}
-                              >
-                                <span role="img" aria-hidden>
-                                  {p && p.complete ? "✅" : "❌"}
-                                </span>
-                              </button>
-                            </Tooltip>
-                          </Table.Cell>
-                        )
-                      })}
-                    </Table.Row>
-                  )
-                })
-              })}
-            </React.Fragment>
-          ))}
+                          return (
+                            <Table.Cell
+                              key={`${user.userEmail}-${rowKey}`}
+                              align="center"
+                              className="whitespace-nowrap font-medium text-gray-900 dark:text-white p-0"
+                            >
+                              <Tooltip title={tooltipText} placement="top">
+                                <button
+                                  type="button"
+                                  className="px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-400"
+                                  onClick={() =>
+                                    openModalFor({
+                                      userEmail: user.userEmail,
+                                      userName: user.user?.name,
+                                      sectionId: item.section,
+                                      problemTag,
+                                    })
+                                  }
+                                  aria-label={`View ${user.user?.name ?? user.userEmail}'s submission for ${problemTag}`}
+                                >
+                                  <span role="img" aria-hidden>
+                                    {p && p.complete ? "✅" : "❌"}
+                                  </span>
+                                </button>
+                              </Tooltip>
+                            </Table.Cell>
+                          )
+                        })}
+                      </Table.Row>
+                    )
+                  })
+                })}
+              </React.Fragment>
+            )
+          )}
         </Table.Body>
       </Table>
 

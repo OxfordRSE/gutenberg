@@ -19,17 +19,20 @@ type Data = {
 const problemsFetcher: Fetcher<Data, string> = (url) => fetch(url).then((r) => r.json())
 
 const EventView: React.FC<EventsProps> = ({ material, event }) => {
+  type EventGroupWithItems = EventFull["EventGroup"][number]
+  type EventItem = EventGroupWithItems["EventItem"][number]
+
   const { data, error, mutate } = useSWR(`${basePath}/api/event/${event.id}/problems`, problemsFetcher)
   const problems = data?.problems
 
   for (let i = 0; i < event.EventGroup.length; i++) {
     event.EventGroup[i].start = new Date(event.EventGroup[i].start)
     event.EventGroup[i].end = new Date(event.EventGroup[i].end)
-    event.EventGroup[i].EventItem.sort((a, b) => {
+    event.EventGroup[i].EventItem.sort((a: EventItem, b: EventItem) => {
       return a.order - b.order
     })
   }
-  event.EventGroup.sort((a, b) => {
+  event.EventGroup.sort((a: EventGroupWithItems, b: EventGroupWithItems) => {
     return a.start > b.start ? 1 : -1
   })
 
@@ -45,7 +48,7 @@ const EventView: React.FC<EventsProps> = ({ material, event }) => {
         <span className="font-bold">Description:</span> {event.summary}
       </p>
       <Timeline>
-        {event.EventGroup.map((group) => (
+        {event.EventGroup.map((group: EventGroupWithItems) => (
           <Timeline.Item key={group.id}>
             <Timeline.Point />
             <Timeline.Content>
@@ -75,7 +78,7 @@ const EventView: React.FC<EventsProps> = ({ material, event }) => {
                       </p>
                       <div className="flex">
                         <ul>
-                          {group.EventItem.map((item) => (
+                          {group.EventItem.map((item: EventItem) => (
                             <EventItemView key={item.id} item={item} material={material} problems={problems} />
                           ))}
                         </ul>

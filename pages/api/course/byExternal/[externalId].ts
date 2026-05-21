@@ -62,7 +62,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   }
 
   if (!isAdmin) {
-    course.UserOnCourse = course.UserOnCourse.filter((u) => u.userEmail === userEmail)
+    course.UserOnCourse = course.UserOnCourse.filter(
+      (u: CourseByExternal["UserOnCourse"][number]) => u.userEmail === userEmail
+    )
   }
 
   res.status(200).json({ course })
