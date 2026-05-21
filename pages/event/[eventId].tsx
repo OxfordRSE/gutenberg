@@ -29,6 +29,8 @@ import { runBuildPrismaQuery } from "lib/buildPrisma"
 import EventGroupEditor, { buildSectionsOptions, EventForm } from "components/event/EventGroupEditor"
 import MaterialGroupsNotice from "components/ui/MaterialGroupsNotice"
 import { BreadcrumbItem } from "lib/breadcrumbs"
+import SaveChangesAction from "components/ui/SaveChangesAction"
+import useTransientSaveFeedback from "lib/hooks/useTransientSaveFeedback"
 
 type EventProps = {
   material: Material
@@ -39,6 +41,14 @@ type EventProps = {
 const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
   const [activeTabIndex, setActiveTabIndex] = useState(0)
   const tabsRef = useRef<{ setActiveTab: (idx: number) => void } | null>(null)
+  const {
+    error: saveError,
+    showSuccess: showSaveSuccess,
+    begin,
+    succeed,
+    fail,
+    dismissSuccess,
+  } = useTransientSaveFeedback()
 
   const { event: eventData, isLoading: eventIsLoading, mutate: mutateEvent } = useEvent(event.id)
   const currentEvent = eventData ?? event
@@ -53,7 +63,13 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
       }) satisfies EventForm,
     [event]
   )
-  const { control, handleSubmit, reset, register } = useForm<EventForm>({ defaultValues: initialValues })
+  const {
+    control,
+    handleSubmit,
+    reset,
+    register,
+    formState: { isDirty, isSubmitting },
+  } = useForm<EventForm>({ defaultValues: initialValues })
 
   const {
     fields: eventGroups,
@@ -72,12 +88,20 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
   const isAdmin = !!userProfile?.admin
   const sectionsOptions = useMemo(() => buildSectionsOptions(material), [material])
 
-  const onSubmit = (data: EventForm) => {
-    putEvent(data).then((response) => {
-      if (response.event) {
-        mutateEvent(response.event)
+  const onSubmit = async (data: EventForm) => {
+    begin()
+
+    try {
+      const response = await putEvent(data)
+      if (response.error || !response.event) {
+        throw new Error(response.error || "Failed to save event")
       }
-    })
+
+      mutateEvent(response.event)
+      succeed()
+    } catch (error) {
+      fail(error instanceof Error ? error.message : "Failed to save event")
+    }
   }
 
   useEffect(() => {
@@ -85,6 +109,12 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
       reset(eventData)
     }
   }, [eventData, reset])
+
+  useEffect(() => {
+    if (isDirty && showSaveSuccess) {
+      dismissSuccess()
+    }
+  }, [dismissSuccess, isDirty, showSaveSuccess])
 
   useEffect(() => {
     const syncFromHash = () => {
@@ -190,7 +220,13 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
             Add Group
           </Button>
         </div>
-        <Button type="submit">Save Changes</Button>
+        <SaveChangesAction
+          isSubmitting={isSubmitting}
+          error={saveError}
+          showSuccess={showSaveSuccess}
+          submitDataCy="event-save-button"
+          feedbackDataCy="event-save-feedback"
+        />
       </Stack>
     </form>
   )
