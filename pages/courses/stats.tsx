@@ -1,12 +1,13 @@
 import type { GetServerSideProps, NextPage } from "next"
 import Link from "next/link"
-import { Badge, Button, Table } from "flowbite-react"
+import { Badge, Button } from "flowbite-react"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "pages/api/auth/[...nextauth]"
 import prisma from "lib/prisma"
 import Layout from "components/Layout"
 import Title from "components/ui/Title"
 import StatCard from "components/ui/StatCard"
+import SortableTable, { Column } from "components/ui/SortableTable"
 import { Material, getMaterial, removeMarkdown } from "lib/material"
 import { makeSerializable } from "lib/utils"
 import { loadPageTemplate, PageTemplate } from "lib/pageTemplate"
@@ -30,9 +31,17 @@ type CourseStatsPageProps = {
 const breadcrumbs: BreadcrumbItem[] = [{ label: "Courses", href: "/courses" }, { label: "Stats" }]
 
 const CourseStatsPage: NextPage<CourseStatsPageProps> = ({ material, pageInfo, overview, courseStats }) => {
-  const sortedCourses = [...courseStats].sort(
-    (a, b) => b.totalLearners - a.totalLearners || a.name.localeCompare(b.name)
-  )
+  const courseColumns: Column<CourseStats>[] = [
+    { key: "name", label: "Course", sortable: true, getValue: (c) => c.name, render: (c) => (<><Link href={`/courses/${c.courseId}/stats`} className="hover:underline font-medium text-gray-900 dark:text-white">{c.name}</Link>{c.hidden && <Badge color="gray" className="ml-2 inline-flex">Hidden</Badge>}</>) },
+    { key: "level", label: "Level", sortable: true, getValue: (c) => c.level || "", render: (c) => c.level || "N/A" },
+    { key: "people", label: "People", sortable: true, getValue: (c) => c.totalLearners, render: (c) => c.totalLearners },
+    { key: "inProgress", label: "In progress", sortable: true, getValue: (c) => c.enrolledCount, render: (c) => c.enrolledCount },
+    { key: "completed", label: "Completed", sortable: true, getValue: (c) => c.completedCount, render: (c) => c.completedCount },
+    { key: "dropped", label: "Dropped", sortable: true, getValue: (c) => c.droppedCount, render: (c) => c.droppedCount },
+    { key: "completionRate", label: "Completion rate", sortable: true, getValue: (c) => c.completionRate, render: (c) => formatPercent(c.completionRate) },
+    { key: "avgCompletion", label: "Avg completion", sortable: true, getValue: (c) => c.averageCompletionDays, render: (c) => formatDays(c.averageCompletionDays) },
+    { key: "avgProgress", label: "Avg progress", sortable: true, getValue: (c) => c.averageProgressPercent, render: (c) => formatPercent(c.averageProgressPercent) },
+  ]
 
   return (
     <Layout
@@ -89,45 +98,13 @@ const CourseStatsPage: NextPage<CourseStatsPageProps> = ({ material, pageInfo, o
 
         <div className="mt-8">
           <Title text="By Course" className="text-2xl font-bold" style={{ marginBottom: "0px" }} />
-          <div className="mt-3 overflow-x-auto">
-            <Table data-cy="course-stats-table">
-              <Table.Head>
-                <Table.HeadCell>Course</Table.HeadCell>
-                <Table.HeadCell>Level</Table.HeadCell>
-                <Table.HeadCell>People</Table.HeadCell>
-                <Table.HeadCell>In progress</Table.HeadCell>
-                <Table.HeadCell>Completed</Table.HeadCell>
-                <Table.HeadCell>Dropped</Table.HeadCell>
-                <Table.HeadCell>Completion rate</Table.HeadCell>
-                <Table.HeadCell>Avg completion</Table.HeadCell>
-                <Table.HeadCell>Avg progress</Table.HeadCell>
-              </Table.Head>
-              <Table.Body className="divide-y">
-                {sortedCourses.map((course) => (
-                  <Table.Row key={course.courseId}>
-                    <Table.Cell className="font-medium text-gray-900 dark:text-white">
-                      <Link href={`/courses/${course.courseId}/stats`} className="hover:underline">
-                        {course.name}
-                      </Link>
-                      {course.hidden && (
-                        <Badge color="gray" className="ml-2 inline-flex">
-                          Hidden
-                        </Badge>
-                      )}
-                    </Table.Cell>
-                    <Table.Cell>{course.level || "N/A"}</Table.Cell>
-                    <Table.Cell>{course.totalLearners}</Table.Cell>
-                    <Table.Cell>{course.enrolledCount}</Table.Cell>
-                    <Table.Cell>{course.completedCount}</Table.Cell>
-                    <Table.Cell>{course.droppedCount}</Table.Cell>
-                    <Table.Cell>{formatPercent(course.completionRate)}</Table.Cell>
-                    <Table.Cell>{formatDays(course.averageCompletionDays)}</Table.Cell>
-                    <Table.Cell>{formatPercent(course.averageProgressPercent)}</Table.Cell>
-                  </Table.Row>
-                ))}
-              </Table.Body>
-            </Table>
-          </div>
+          <SortableTable
+            columns={courseColumns}
+            data={courseStats}
+            rowKey={(c) => String(c.courseId)}
+            dataCy="course-stats-table"
+            defaultSort={{ key: "people", direction: "desc" }}
+          />
         </div>
       </div>
     </Layout>

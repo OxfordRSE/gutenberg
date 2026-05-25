@@ -1,12 +1,13 @@
 import type { GetServerSideProps, NextPage } from "next"
 import Link from "next/link"
-import { Button, Table } from "flowbite-react"
+import { Button } from "flowbite-react"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "pages/api/auth/[...nextauth]"
 import prisma from "lib/prisma"
 import Layout from "components/Layout"
 import Title from "components/ui/Title"
 import StatCard from "components/ui/StatCard"
+import SortableTable, { Column } from "components/ui/SortableTable"
 import { Material, getMaterial, removeMarkdown } from "lib/material"
 import { makeSerializable } from "lib/utils"
 import { loadPageTemplate, PageTemplate } from "lib/pageTemplate"
@@ -21,6 +22,22 @@ type EventStatsDetailPageProps = {
 }
 
 const EventStatsDetailPage: NextPage<EventStatsDetailPageProps> = ({ material, pageInfo, eventStats }) => {
+  const totalProblemsSolved = eventStats.learnerStats.reduce((sum, l) => sum + l.completedProblems, 0)
+  const totalProblemsAvailable = eventStats.learnerStats.reduce((sum, l) => sum + l.totalProblems, 0)
+
+  const sectionColumns: Column<(typeof eventStats.sectionStats)[number]>[] = [
+    { key: "title", label: "Section", sortable: true, getValue: (s) => s.title, render: (s) => s.url ? <Link href={s.url} className="hover:underline">{s.title}</Link> : s.title },
+    { key: "problems", label: "Problems", sortable: true, getValue: (s) => s.totalProblems, render: (s) => s.totalProblems },
+    { key: "avgCompletion", label: "Avg completion", sortable: true, getValue: (s) => s.averageCompletionPercent, render: (s) => formatPercent(s.averageCompletionPercent) },
+    { key: "fullyComplete", label: "Fully complete", sortable: true, getValue: (s) => s.fullyCompletedLearners, render: (s) => s.fullyCompletedLearners },
+  ]
+
+  const learnerColumns: Column<(typeof eventStats.learnerStats)[number]>[] = [
+    { key: "user", label: "User", sortable: true, getValue: (l) => l.userName || l.userEmail, cellClassName: "px-2 py-2", headCellClassName: "px-2 py-2", render: (l) => (<><div className="font-medium leading-tight text-gray-900 dark:text-white">{l.userName || l.userEmail}</div><div className="text-xs leading-tight text-gray-500 dark:text-gray-400">{l.userEmail}</div></>) },
+    { key: "status", label: "Status", sortable: true, getValue: (l) => l.status, cellClassName: "px-2 py-2 whitespace-nowrap", headCellClassName: "px-2 py-2", render: (l) => l.status },
+    { key: "progress", label: "Progress", sortable: true, getValue: (l) => l.completionPercent, cellClassName: "px-2 py-2 whitespace-nowrap", headCellClassName: "px-2 py-2", render: (l) => formatPercent(l.completionPercent) },
+    { key: "problems", label: "Problems", sortable: true, getValue: (l) => l.completedProblems, cellClassName: "px-2 py-2 whitespace-nowrap", headCellClassName: "px-2 py-2", render: (l) => l.totalProblems > 0 ? `${l.completedProblems}/${l.totalProblems}` : "N/A" },
+  ]
   const breadcrumbs: BreadcrumbItem[] = [
     { label: "Events", href: "/events" },
     { label: "Stats", href: "/events/stats" },
@@ -65,74 +82,35 @@ const EventStatsDetailPage: NextPage<EventStatsDetailPageProps> = ({ material, p
             value={eventStats.trackableProblems}
             dataCy="event-detail-stats-trackable-problems"
           />
+          <StatCard
+            label="Total problems solved"
+            value={`${totalProblemsSolved}/${totalProblemsAvailable}`}
+            dataCy="event-detail-stats-total-solved"
+          />
         </div>
 
         <div className="mt-8 grid grid-cols-1 gap-6 xl:grid-cols-2">
           <div>
             <Title text="Sections" className="text-2xl font-bold" style={{ marginBottom: "0px" }} />
-            <div className="mt-3 overflow-x-auto">
-              <Table data-cy="event-section-stats-table">
-                <Table.Head>
-                  <Table.HeadCell>Section</Table.HeadCell>
-                  <Table.HeadCell>Problems</Table.HeadCell>
-                  <Table.HeadCell>Avg completion</Table.HeadCell>
-                  <Table.HeadCell>Fully complete</Table.HeadCell>
-                </Table.Head>
-                <Table.Body className="divide-y">
-                  {eventStats.sectionStats.map((section) => (
-                    <Table.Row key={section.sectionRef}>
-                      <Table.Cell>
-                        {section.url ? (
-                          <Link href={section.url} className="hover:underline">
-                            {section.title}
-                          </Link>
-                        ) : (
-                          section.title
-                        )}
-                      </Table.Cell>
-                      <Table.Cell>{section.totalProblems}</Table.Cell>
-                      <Table.Cell>{formatPercent(section.averageCompletionPercent)}</Table.Cell>
-                      <Table.Cell>{section.fullyCompletedLearners}</Table.Cell>
-                    </Table.Row>
-                  ))}
-                </Table.Body>
-              </Table>
-            </div>
+            <SortableTable
+              columns={sectionColumns}
+              data={eventStats.sectionStats}
+              rowKey={(s) => s.sectionRef}
+              dataCy="event-section-stats-table"
+              wrapperClassName="mt-3 max-h-[600px] overflow-y-auto overflow-x-auto"
+            />
           </div>
 
           <div>
             <Title text="Users" className="text-2xl font-bold" style={{ marginBottom: "0px" }} />
-            <div className="mt-3 overflow-x-auto">
-              <Table data-cy="event-learner-stats-table" className="text-sm">
-                <Table.Head>
-                  <Table.HeadCell className="px-2 py-2">User</Table.HeadCell>
-                  <Table.HeadCell className="px-2 py-2">Status</Table.HeadCell>
-                  <Table.HeadCell className="px-2 py-2">Progress</Table.HeadCell>
-                  <Table.HeadCell className="px-2 py-2">Problems</Table.HeadCell>
-                </Table.Head>
-                <Table.Body className="divide-y">
-                  {eventStats.learnerStats.map((learner) => (
-                    <Table.Row key={`${learner.userEmail}-${learner.status}`}>
-                      <Table.Cell className="px-2 py-2">
-                        <div className="font-medium leading-tight text-gray-900 dark:text-white">
-                          {learner.userName || learner.userEmail}
-                        </div>
-                        <div className="text-xs leading-tight text-gray-500 dark:text-gray-400">
-                          {learner.userEmail}
-                        </div>
-                      </Table.Cell>
-                      <Table.Cell className="px-2 py-2 whitespace-nowrap">{learner.status}</Table.Cell>
-                      <Table.Cell className="px-2 py-2 whitespace-nowrap">
-                        {formatPercent(learner.completionPercent)}
-                      </Table.Cell>
-                      <Table.Cell className="px-2 py-2 whitespace-nowrap">
-                        {learner.totalProblems > 0 ? `${learner.completedProblems}/${learner.totalProblems}` : "N/A"}
-                      </Table.Cell>
-                    </Table.Row>
-                  ))}
-                </Table.Body>
-              </Table>
-            </div>
+            <SortableTable
+              columns={learnerColumns}
+              data={eventStats.learnerStats}
+              rowKey={(l) => `${l.userEmail}-${l.status}`}
+              dataCy="event-learner-stats-table"
+              tableClassName="text-sm"
+              defaultSort={{ key: "progress", direction: "desc" }}
+            />
           </div>
         </div>
       </div>
