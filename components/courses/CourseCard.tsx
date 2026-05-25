@@ -61,7 +61,7 @@ const CourseCard: React.FC<Props> = ({ course, progress: providedProgress }) => 
       <div className="mt-3 flex flex-wrap items-center gap-2">
         {course.tags.length > 0 &&
           course.tags.map((tag: string) => {
-            return <TagChip key={tag} tag={tag} />
+            return <TagChip key={tag} tag={tag} linkToFilter />
           })}
         <div className="ml-auto flex items-center gap-2">
           <CourseActiveActions courseExternalId={course.externalId} status={enrolment?.status ?? null} />

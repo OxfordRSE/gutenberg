@@ -229,7 +229,7 @@ const CoursePreview = ({
             <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
               <span className="font-semibold text-gray-800 dark:text-gray-200">Tags:</span>
               {course.tags.map((tag: string) => {
-                return <TagChip key={tag} tag={tag} />
+                return <TagChip key={tag} tag={tag} linkToFilter />
               })}
             </div>
           )}

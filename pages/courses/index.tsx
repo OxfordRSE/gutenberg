@@ -8,7 +8,8 @@ import { Button, Card } from "flowbite-react"
 import { Modal } from "flowbite-react"
 import CourseGrid from "components/courses/CourseGrid"
 import useProfile from "lib/hooks/useProfile"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { useRouter } from "next/router"
 import { basePath } from "lib/basePath"
 import { HiRefresh } from "react-icons/hi"
 import Link from "next/link"
@@ -67,6 +68,36 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
   const [selectedLevel, setSelectedLevel] = useState("")
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([])
+  const router = useRouter()
+  const initialized = useRef(false)
+  const selfUpdate = useRef(false)
+
+  // Read filters from URL query params (on mount and on navigation)
+  useEffect(() => {
+    if (!router.isReady || selfUpdate.current) {
+      selfUpdate.current = false
+      return
+    }
+    const { tag, level, q, lang } = router.query
+    setSelectedTags(tag ? (Array.isArray(tag) ? tag : [tag]) : [])
+    setSelectedLevel(level && typeof level === "string" ? level : "")
+    setSearch(q && typeof q === "string" ? q : "")
+    setSelectedLanguages(lang ? (Array.isArray(lang) ? lang : [lang]) : [])
+    initialized.current = true
+  }, [router.isReady, router.query])
+
+  // Sync filter state to URL
+  useEffect(() => {
+    if (!initialized.current) return
+    const query: Record<string, string | string[]> = {}
+    if (selectedTags.length > 0) query.tag = selectedTags
+    if (selectedLevel) query.level = selectedLevel
+    if (search.trim()) query.q = search.trim()
+    if (selectedLanguages.length > 0) query.lang = selectedLanguages
+    selfUpdate.current = true
+    router.replace({ pathname: router.pathname, query }, undefined, { shallow: true })
+  }, [selectedTags, selectedLevel, search, selectedLanguages])
+
   const { data, isLoading, mutate } = useSWR(`${basePath}/api/course`, coursesFetcher, {
     fallbackData: { courses: initialCourses },
   })
