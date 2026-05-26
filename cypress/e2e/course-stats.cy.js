@@ -2,6 +2,23 @@ describe("course stats pages", () => {
   const admin = { name: "admin", email: "admin@localhost" }
   const learner = { name: "onCourse", email: "onCourse@localhost" }
 
+  const getColumnTexts = (tableCy, columnIndex) =>
+    cy
+      .get(`[data-cy="${tableCy}"] tbody tr`)
+      .then(($rows) => Cypress._.map($rows, (row) => row.children[columnIndex].innerText.trim()))
+
+  const getColumnNumbers = (tableCy, columnIndex) =>
+    getColumnTexts(tableCy, columnIndex).then((values) =>
+      values.map((value) => Number(value.match(/-?\d+(?:\.\d+)?/)?.[0] ?? Number.NaN))
+    )
+
+  const expectNumbersSorted = (values, direction) => {
+    const expected = [...values].sort((left, right) => (direction === "asc" ? left - right : right - left))
+    expect(values).to.deep.equal(expected)
+  }
+
+  const getSortButton = (tableCy, label) => cy.contains(`[data-cy="${tableCy}"] button`, label)
+
   it("shows the global course stats page for admins", () => {
     cy.login(admin)
     cy.visit("/courses")
@@ -25,6 +42,24 @@ describe("course stats pages", () => {
     cy.get('[data-cy="course-stats-table"]').should("contain.text", "Software Architecture in C++")
   })
 
+  it("sorts the global course stats table when headers are clicked", () => {
+    cy.login(admin)
+    cy.visit("/courses/stats")
+
+    getSortButton("course-stats-table", "Completed").click()
+    getSortButton("course-stats-table", "Completed").should("have.attr", "data-sort-direction", "desc")
+    getColumnNumbers("course-stats-table", 4).then((descendingValues) => {
+      expectNumbersSorted(descendingValues, "desc")
+
+      getSortButton("course-stats-table", "Completed").click()
+      getSortButton("course-stats-table", "Completed").should("have.attr", "data-sort-direction", "asc")
+      getColumnNumbers("course-stats-table", 4).then((ascendingValues) => {
+        expectNumbersSorted(ascendingValues, "asc")
+        expect(ascendingValues).to.not.deep.equal(descendingValues)
+      })
+    })
+  })
+
   it("shows the per-course stats page for admins", () => {
     cy.login(admin)
     cy.visit("/courses/1")
@@ -43,6 +78,37 @@ describe("course stats pages", () => {
     cy.get('[data-cy="course-learner-stats-table"]').should("contain.text", "14.3%") // 3 / 21 completed problems
     cy.get('[data-cy="course-learner-stats-table"]').should("contain.text", "42.9%") // 9 / 21 completed problems
     cy.get('[data-cy="course-learner-stats-table"]').should("contain.text", "0.0%") // 0 / 21 completed problems
+  })
+
+  it("sorts the per-course sections and learners tables", () => {
+    cy.login(admin)
+    cy.visit("/courses/1/stats")
+
+    getSortButton("course-section-stats-table", "Problems").click()
+    getSortButton("course-section-stats-table", "Problems").should("have.attr", "data-sort-direction", "desc")
+    getColumnNumbers("course-section-stats-table", 1).then((descendingSectionValues) => {
+      expectNumbersSorted(descendingSectionValues, "desc")
+
+      getSortButton("course-section-stats-table", "Problems").click()
+      getSortButton("course-section-stats-table", "Problems").should("have.attr", "data-sort-direction", "asc")
+      getColumnNumbers("course-section-stats-table", 1).then((ascendingSectionValues) => {
+        expectNumbersSorted(ascendingSectionValues, "asc")
+        expect(ascendingSectionValues).to.not.deep.equal(descendingSectionValues)
+      })
+    })
+
+    getSortButton("course-learner-stats-table", "Problems").click()
+    getSortButton("course-learner-stats-table", "Problems").should("have.attr", "data-sort-direction", "desc")
+    getColumnNumbers("course-learner-stats-table", 4).then((descendingLearnerValues) => {
+      expectNumbersSorted(descendingLearnerValues, "desc")
+
+      getSortButton("course-learner-stats-table", "Problems").click()
+      getSortButton("course-learner-stats-table", "Problems").should("have.attr", "data-sort-direction", "asc")
+      getColumnNumbers("course-learner-stats-table", 4).then((ascendingLearnerValues) => {
+        expectNumbersSorted(ascendingLearnerValues, "asc")
+        expect(ascendingLearnerValues).to.not.deep.equal(descendingLearnerValues)
+      })
+    })
   })
 
   it("redirects non-admin users away from course stats", () => {

@@ -50,6 +50,7 @@ export type EventStats = {
   requestCount: number
   rejectedCount: number
   trackableProblems: number
+  totalSolvedProblems: number
   averageProgressPercent: number | null
   learnerStats: EventLearnerStats[]
   sectionStats: EventSectionStats[]
@@ -61,6 +62,7 @@ export type EventStatsOverview = {
   totalStudents: number
   totalInstructors: number
   totalRequests: number
+  totalSolvedProblems: number
   averageStudentsPerEvent: number | null
   averageProgressPercent: number | null
   mostPopularEvent: { name: string; studentCount: number } | null
@@ -161,6 +163,10 @@ export async function calculateEventStats(events: EventForStats[]): Promise<Even
       .filter((learner: EventLearnerStats) => learner.status === EventStatus.STUDENT)
       .map((learner: EventLearnerStats) => learner.completionPercent)
       .filter((value: number | null): value is number => value !== null)
+    const totalSolvedProblems = learnerStats.reduce(
+      (sum, learner) => sum + (learner.status === EventStatus.STUDENT ? learner.completedProblems : 0),
+      0
+    )
 
     const sectionStats = sections.map((sectionRef) => {
       const totalProblems = sectionProblemMap.get(sectionRef)?.size ?? 0
@@ -195,6 +201,7 @@ export async function calculateEventStats(events: EventForStats[]): Promise<Even
       requestCount: event.UserOnEvent.filter((entry: UserOnEvent) => entry.status === EventStatus.REQUEST).length,
       rejectedCount: event.UserOnEvent.filter((entry: UserOnEvent) => entry.status === EventStatus.REJECTED).length,
       trackableProblems,
+      totalSolvedProblems,
       averageProgressPercent: round(mean(studentProgress)),
       learnerStats,
       sectionStats,
@@ -214,6 +221,7 @@ export function summarizeEventStats(eventStats: EventStats[]): EventStatsOvervie
   const totalStudents = eventStats.reduce((sum, event) => sum + event.studentCount, 0)
   const totalInstructors = eventStats.reduce((sum, event) => sum + event.instructorCount, 0)
   const totalRequests = eventStats.reduce((sum, event) => sum + event.requestCount, 0)
+  const totalSolvedProblems = eventStats.reduce((sum, event) => sum + event.totalSolvedProblems, 0)
   const mostPopularEvent =
     eventStats.length === 0
       ? null
@@ -225,6 +233,7 @@ export function summarizeEventStats(eventStats: EventStats[]): EventStatsOvervie
     totalStudents,
     totalInstructors,
     totalRequests,
+    totalSolvedProblems,
     averageStudentsPerEvent: round(mean(eventStats.map((event) => event.studentCount))),
     averageProgressPercent: round(mean(progressPercents)),
     mostPopularEvent: mostPopularEvent

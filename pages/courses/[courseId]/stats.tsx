@@ -7,10 +7,13 @@ import prisma from "lib/prisma"
 import Layout from "components/Layout"
 import Title from "components/ui/Title"
 import StatCard from "components/ui/StatCard"
+import SortableHeadCell from "components/ui/SortableHeadCell"
+import SortableTable from "components/ui/SortableTable"
 import { Material, getMaterial, removeMarkdown } from "lib/material"
 import { makeSerializable } from "lib/utils"
 import { loadPageTemplate, PageTemplate } from "lib/pageTemplate"
 import { BreadcrumbItem } from "lib/breadcrumbs"
+import useSortableRows from "lib/hooks/useSortableRows"
 import { calculateCourseStats, courseStatsInclude, type CourseStats } from "lib/courseStats"
 import { formatCountWithPercent, formatDays, formatPercent } from "lib/stats"
 
@@ -20,8 +23,18 @@ type CourseStatsDetailPageProps = {
   courseStats: CourseStats
 }
 
+type SectionSortKey = "title" | "totalProblems" | "averageCompletionPercent"
+type LearnerSortKey = "userName" | "status" | "startedAt" | "completionPercent" | "completedProblems"
+
 function formatDate(value: Date | null): string {
-  return value ? new Date(value).toLocaleDateString() : "—"
+  if (!value) return "—"
+
+  const date = new Date(value)
+  const day = String(date.getUTCDate()).padStart(2, "0")
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0")
+  const year = date.getUTCFullYear()
+
+  return `${day}/${month}/${year}`
 }
 
 const progressBandLabels: Record<keyof CourseStats["progressBands"], string> = {
@@ -35,6 +48,45 @@ const progressBandLabels: Record<keyof CourseStats["progressBands"], string> = {
 }
 
 const CourseStatsDetailPage: NextPage<CourseStatsDetailPageProps> = ({ material, pageInfo, courseStats }) => {
+  const {
+    sortedRows: sortedSections,
+    sortKey: sectionSortKey,
+    sortDirection: sectionSortDirection,
+    updateSort: updateSectionSort,
+  } = useSortableRows<CourseStats["sections"][number], SectionSortKey>({
+    rows: courseStats.sections,
+    initialSortKey: null,
+    initialDirection: "desc",
+    getDefaultDirection: (key) => (key === "title" ? "asc" : "desc"),
+    compareMap: {
+      title: (left, right) => left.title.localeCompare(right.title),
+      totalProblems: (left, right) => left.totalProblems - right.totalProblems,
+      averageCompletionPercent: (left, right) =>
+        (left.averageCompletionPercent ?? -1) - (right.averageCompletionPercent ?? -1),
+    },
+    tieBreaker: (left, right) => left.title.localeCompare(right.title),
+  })
+
+  const {
+    sortedRows: sortedLearners,
+    sortKey: learnerSortKey,
+    sortDirection: learnerSortDirection,
+    updateSort: updateLearnerSort,
+  } = useSortableRows<CourseStats["learners"][number], LearnerSortKey>({
+    rows: courseStats.learners,
+    initialSortKey: null,
+    initialDirection: "desc",
+    getDefaultDirection: (key) => (key === "userName" || key === "status" ? "asc" : "desc"),
+    compareMap: {
+      userName: (left, right) => (left.userName || left.userEmail).localeCompare(right.userName || right.userEmail),
+      status: (left, right) => left.status.localeCompare(right.status),
+      startedAt: (left, right) => left.startedAt.getTime() - right.startedAt.getTime(),
+      completionPercent: (left, right) => (left.completionPercent ?? -1) - (right.completionPercent ?? -1),
+      completedProblems: (left, right) => left.completedProblems - right.completedProblems,
+    },
+    tieBreaker: (left, right) => left.userEmail.localeCompare(right.userEmail),
+  })
+
   const breadcrumbs: BreadcrumbItem[] = [
     { label: "Courses", href: "/courses" },
     { label: "Stats", href: "/courses/stats" },
@@ -101,99 +153,136 @@ const CourseStatsDetailPage: NextPage<CourseStatsDetailPageProps> = ({ material,
         <div className="mt-8 grid grid-cols-1 gap-6 xl:grid-cols-2">
           <div>
             <Title text="Progress Bands" className="text-2xl font-bold" style={{ marginBottom: "0px" }} />
-            <div className="mt-3 overflow-x-auto">
-              <Table data-cy="course-progress-bands-table">
-                <Table.Head>
-                  <Table.HeadCell>Band</Table.HeadCell>
-                  <Table.HeadCell>Learners</Table.HeadCell>
-                </Table.Head>
-                <Table.Body className="divide-y">
-                  {Object.entries(courseStats.progressBands).map(([band, count]) => (
-                    <Table.Row key={band}>
-                      <Table.Cell>{progressBandLabels[band as keyof CourseStats["progressBands"]]}</Table.Cell>
-                      <Table.Cell>{count}</Table.Cell>
-                    </Table.Row>
-                  ))}
-                </Table.Body>
-              </Table>
-            </div>
+            <SortableTable dataCy="course-progress-bands-table">
+              <Table.Head>
+                <Table.HeadCell>Band</Table.HeadCell>
+                <Table.HeadCell>Learners</Table.HeadCell>
+              </Table.Head>
+              <Table.Body className="divide-y">
+                {Object.entries(courseStats.progressBands).map(([band, count]) => (
+                  <Table.Row key={band}>
+                    <Table.Cell>{progressBandLabels[band as keyof CourseStats["progressBands"]]}</Table.Cell>
+                    <Table.Cell>{count}</Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </SortableTable>
           </div>
 
           <div>
             <Title text="Sections" className="text-2xl font-bold" style={{ marginBottom: "0px" }} />
-            <div className="mt-3 overflow-x-auto">
-              <Table data-cy="course-section-stats-table">
-                <Table.Head>
-                  <Table.HeadCell>Section</Table.HeadCell>
-                  <Table.HeadCell>Problems</Table.HeadCell>
-                  <Table.HeadCell>Avg completion</Table.HeadCell>
-                  <Table.HeadCell>Fully complete</Table.HeadCell>
-                </Table.Head>
-                <Table.Body className="divide-y">
-                  {courseStats.sections.map((section) => (
-                    <Table.Row key={section.sectionRef}>
-                      <Table.Cell>
-                        {section.url ? (
-                          <Link href={section.url} className="hover:underline">
-                            {section.title}
-                          </Link>
-                        ) : (
-                          section.title
-                        )}
-                      </Table.Cell>
-                      <Table.Cell>{section.totalProblems}</Table.Cell>
-                      <Table.Cell>{formatPercent(section.averageCompletionPercent)}</Table.Cell>
-                      <Table.Cell>{section.fullyCompletedLearners}</Table.Cell>
-                    </Table.Row>
-                  ))}
-                </Table.Body>
-              </Table>
-            </div>
+            <SortableTable dataCy="course-section-stats-table">
+              <Table.Head>
+                <SortableHeadCell
+                  label="Section"
+                  active={sectionSortKey === "title"}
+                  direction={sectionSortDirection}
+                  onClick={() => updateSectionSort("title")}
+                />
+                <SortableHeadCell
+                  label="Problems"
+                  active={sectionSortKey === "totalProblems"}
+                  direction={sectionSortDirection}
+                  onClick={() => updateSectionSort("totalProblems")}
+                />
+                <SortableHeadCell
+                  label="Avg completion"
+                  active={sectionSortKey === "averageCompletionPercent"}
+                  direction={sectionSortDirection}
+                  onClick={() => updateSectionSort("averageCompletionPercent")}
+                />
+              </Table.Head>
+              <Table.Body className="divide-y">
+                {sortedSections.map((section) => (
+                  <Table.Row key={section.sectionRef}>
+                    <Table.Cell>
+                      {section.url ? (
+                        <Link href={section.url} className="hover:underline">
+                          {section.title}
+                        </Link>
+                      ) : (
+                        section.title
+                      )}
+                    </Table.Cell>
+                    <Table.Cell>{section.totalProblems}</Table.Cell>
+                    <Table.Cell>{formatPercent(section.averageCompletionPercent)}</Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </SortableTable>
           </div>
         </div>
 
         <div className="mt-8">
           <Title text="Learners" className="text-2xl font-bold" style={{ marginBottom: "0px" }} />
-          <div className="mt-3 overflow-x-auto">
-            <Table data-cy="course-learner-stats-table" className="text-sm">
-              <Table.Head>
-                <Table.HeadCell className="px-2 py-2">User</Table.HeadCell>
-                <Table.HeadCell className="px-2 py-2">Status</Table.HeadCell>
-                <Table.HeadCell className="px-2 py-2">Dates</Table.HeadCell>
-                <Table.HeadCell className="px-2 py-2">Progress</Table.HeadCell>
-                <Table.HeadCell className="px-2 py-2">Problems</Table.HeadCell>
-              </Table.Head>
-              <Table.Body className="divide-y">
-                {courseStats.learners.map((learner) => (
-                  <Table.Row key={`${learner.userEmail}-${learner.status}`}>
-                    <Table.Cell className="px-2 py-2">
-                      <div className="font-medium leading-tight text-gray-900 dark:text-white">
-                        {learner.userName || learner.userEmail}
-                      </div>
-                      <div className="text-xs leading-tight text-gray-500 dark:text-gray-400">{learner.userEmail}</div>
-                    </Table.Cell>
-                    <Table.Cell className="px-2 py-2 whitespace-nowrap">{learner.status}</Table.Cell>
-                    <Table.Cell className="px-2 py-2 text-xs leading-tight whitespace-nowrap">
-                      <div>
-                        <span className="font-medium text-gray-700 dark:text-gray-300">Start:</span>{" "}
-                        {formatDate(learner.startedAt)}
-                      </div>
-                      <div>
-                        <span className="font-medium text-gray-700 dark:text-gray-300">Done:</span>{" "}
-                        {formatDate(learner.completedAt)}
-                      </div>
-                    </Table.Cell>
-                    <Table.Cell className="px-2 py-2 whitespace-nowrap">
-                      {formatPercent(learner.completionPercent)}
-                    </Table.Cell>
-                    <Table.Cell className="px-2 py-2 whitespace-nowrap">
-                      {learner.totalProblems > 0 ? `${learner.completedProblems}/${learner.totalProblems}` : "N/A"}
-                    </Table.Cell>
-                  </Table.Row>
-                ))}
-              </Table.Body>
-            </Table>
-          </div>
+          <SortableTable dataCy="course-learner-stats-table" className="text-sm">
+            <Table.Head>
+              <SortableHeadCell
+                label="User"
+                active={learnerSortKey === "userName"}
+                direction={learnerSortDirection}
+                onClick={() => updateLearnerSort("userName")}
+                className="px-2 py-2"
+              />
+              <SortableHeadCell
+                label="Status"
+                active={learnerSortKey === "status"}
+                direction={learnerSortDirection}
+                onClick={() => updateLearnerSort("status")}
+                className="px-2 py-2"
+              />
+              <SortableHeadCell
+                label="Dates"
+                active={learnerSortKey === "startedAt"}
+                direction={learnerSortDirection}
+                onClick={() => updateLearnerSort("startedAt")}
+                className="px-2 py-2"
+              />
+              <SortableHeadCell
+                label="Progress"
+                active={learnerSortKey === "completionPercent"}
+                direction={learnerSortDirection}
+                onClick={() => updateLearnerSort("completionPercent")}
+                className="px-2 py-2"
+              />
+              <SortableHeadCell
+                label="Problems"
+                active={learnerSortKey === "completedProblems"}
+                direction={learnerSortDirection}
+                onClick={() => updateLearnerSort("completedProblems")}
+                className="px-2 py-2"
+              />
+            </Table.Head>
+            <Table.Body className="divide-y">
+              {sortedLearners.map((learner) => (
+                <Table.Row key={`${learner.userEmail}-${learner.status}`}>
+                  <Table.Cell className="px-2 py-2">
+                    <div className="font-medium leading-tight text-gray-900 dark:text-white">
+                      {learner.userName || learner.userEmail}
+                    </div>
+                    <div className="text-xs leading-tight text-gray-500 dark:text-gray-400">{learner.userEmail}</div>
+                  </Table.Cell>
+                  <Table.Cell className="px-2 py-2 whitespace-nowrap">{learner.status}</Table.Cell>
+                  <Table.Cell className="px-2 py-2 text-xs leading-tight whitespace-nowrap">
+                    <div>
+                      <span className="font-medium text-gray-700 dark:text-gray-300">Start:</span>{" "}
+                      {formatDate(learner.startedAt)}
+                    </div>
+                    <div>
+                      <span className="font-medium text-gray-700 dark:text-gray-300">Done:</span>{" "}
+                      {formatDate(learner.completedAt)}
+                    </div>
+                  </Table.Cell>
+                  <Table.Cell className="px-2 py-2 whitespace-nowrap">
+                    {formatPercent(learner.completionPercent)}
+                  </Table.Cell>
+                  <Table.Cell className="px-2 py-2 whitespace-nowrap">
+                    {learner.totalProblems > 0 ? `${learner.completedProblems}/${learner.totalProblems}` : "N/A"}
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </SortableTable>
         </div>
       </div>
     </Layout>
