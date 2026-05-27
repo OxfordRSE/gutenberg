@@ -41,6 +41,18 @@ type CourseSortKey =
   | "averageCompletionDays"
   | "averageProgressPercent"
 
+const courseTableColumns: Array<{ label: string; sortKey: CourseSortKey }> = [
+  { label: "Course", sortKey: "name" },
+  { label: "Level", sortKey: "level" },
+  { label: "People", sortKey: "totalLearners" },
+  { label: "In progress", sortKey: "enrolledCount" },
+  { label: "Completed", sortKey: "completedCount" },
+  { label: "Dropped", sortKey: "droppedCount" },
+  { label: "Completion rate", sortKey: "completionRate" },
+  { label: "Avg completion", sortKey: "averageCompletionDays" },
+  { label: "Avg progress", sortKey: "averageProgressPercent" },
+]
+
 const breadcrumbs: BreadcrumbItem[] = [{ label: "Courses", href: "/courses" }, { label: "Stats" }]
 
 const CourseStatsPage: NextPage<CourseStatsPageProps> = ({ material, pageInfo, overview, courseStats }) => {
@@ -126,60 +138,15 @@ const CourseStatsPage: NextPage<CourseStatsPageProps> = ({ material, pageInfo, o
           <Title text="By Course" className="text-2xl font-bold" style={{ marginBottom: "0px" }} />
           <SortableTable dataCy="course-stats-table">
             <Table.Head>
-              <SortableHeadCell
-                label="Course"
-                active={sortKey === "name"}
-                direction={sortDirection}
-                onClick={() => updateSort("name")}
-              />
-              <SortableHeadCell
-                label="Level"
-                active={sortKey === "level"}
-                direction={sortDirection}
-                onClick={() => updateSort("level")}
-              />
-              <SortableHeadCell
-                label="People"
-                active={sortKey === "totalLearners"}
-                direction={sortDirection}
-                onClick={() => updateSort("totalLearners")}
-              />
-              <SortableHeadCell
-                label="In progress"
-                active={sortKey === "enrolledCount"}
-                direction={sortDirection}
-                onClick={() => updateSort("enrolledCount")}
-              />
-              <SortableHeadCell
-                label="Completed"
-                active={sortKey === "completedCount"}
-                direction={sortDirection}
-                onClick={() => updateSort("completedCount")}
-              />
-              <SortableHeadCell
-                label="Dropped"
-                active={sortKey === "droppedCount"}
-                direction={sortDirection}
-                onClick={() => updateSort("droppedCount")}
-              />
-              <SortableHeadCell
-                label="Completion rate"
-                active={sortKey === "completionRate"}
-                direction={sortDirection}
-                onClick={() => updateSort("completionRate")}
-              />
-              <SortableHeadCell
-                label="Avg completion"
-                active={sortKey === "averageCompletionDays"}
-                direction={sortDirection}
-                onClick={() => updateSort("averageCompletionDays")}
-              />
-              <SortableHeadCell
-                label="Avg progress"
-                active={sortKey === "averageProgressPercent"}
-                direction={sortDirection}
-                onClick={() => updateSort("averageProgressPercent")}
-              />
+              {courseTableColumns.map((column) => (
+                <SortableHeadCell
+                  key={column.sortKey}
+                  label={column.label}
+                  active={sortKey === column.sortKey}
+                  direction={sortDirection}
+                  onClick={() => updateSort(column.sortKey)}
+                />
+              ))}
             </Table.Head>
             <Table.Body className="divide-y">
               {sortedCourses.map((course) => (

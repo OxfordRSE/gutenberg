@@ -41,6 +41,16 @@ type EventSortKey =
   | "itemCount"
   | "totalSolvedProblems"
 
+const eventTableColumns: Array<{ label: string; sortKey: EventSortKey }> = [
+  { label: "Event", sortKey: "name" },
+  { label: "Students", sortKey: "studentCount" },
+  { label: "Instructors", sortKey: "instructorCount" },
+  { label: "Requests", sortKey: "requestCount" },
+  { label: "Groups", sortKey: "groupCount" },
+  { label: "Items", sortKey: "itemCount" },
+  { label: "Solved", sortKey: "totalSolvedProblems" },
+]
+
 const EventStatsPage: NextPage<EventStatsPageProps> = ({ material, pageInfo, overview, eventStats }) => {
   const {
     sortedRows: sortedEvents,
@@ -119,48 +129,15 @@ const EventStatsPage: NextPage<EventStatsPageProps> = ({ material, pageInfo, ove
           <Title text="By Event" className="text-2xl font-bold" style={{ marginBottom: "0px" }} />
           <SortableTable dataCy="event-stats-table">
             <Table.Head>
-              <SortableHeadCell
-                label="Event"
-                active={sortKey === "name"}
-                direction={sortDirection}
-                onClick={() => updateSort("name")}
-              />
-              <SortableHeadCell
-                label="Students"
-                active={sortKey === "studentCount"}
-                direction={sortDirection}
-                onClick={() => updateSort("studentCount")}
-              />
-              <SortableHeadCell
-                label="Instructors"
-                active={sortKey === "instructorCount"}
-                direction={sortDirection}
-                onClick={() => updateSort("instructorCount")}
-              />
-              <SortableHeadCell
-                label="Requests"
-                active={sortKey === "requestCount"}
-                direction={sortDirection}
-                onClick={() => updateSort("requestCount")}
-              />
-              <SortableHeadCell
-                label="Groups"
-                active={sortKey === "groupCount"}
-                direction={sortDirection}
-                onClick={() => updateSort("groupCount")}
-              />
-              <SortableHeadCell
-                label="Items"
-                active={sortKey === "itemCount"}
-                direction={sortDirection}
-                onClick={() => updateSort("itemCount")}
-              />
-              <SortableHeadCell
-                label="Solved"
-                active={sortKey === "totalSolvedProblems"}
-                direction={sortDirection}
-                onClick={() => updateSort("totalSolvedProblems")}
-              />
+              {eventTableColumns.map((column) => (
+                <SortableHeadCell
+                  key={column.sortKey}
+                  label={column.label}
+                  active={sortKey === column.sortKey}
+                  direction={sortDirection}
+                  onClick={() => updateSort(column.sortKey)}
+                />
+              ))}
             </Table.Head>
             <Table.Body className="divide-y">
               {sortedEvents.map((event) => (

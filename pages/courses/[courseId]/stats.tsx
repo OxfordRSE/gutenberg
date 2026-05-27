@@ -26,6 +26,20 @@ type CourseStatsDetailPageProps = {
 type SectionSortKey = "title" | "totalProblems" | "averageCompletionPercent"
 type LearnerSortKey = "userName" | "status" | "startedAt" | "completionPercent" | "completedProblems"
 
+const courseSectionTableColumns: Array<{ label: string; sortKey: SectionSortKey }> = [
+  { label: "Section", sortKey: "title" },
+  { label: "Problems", sortKey: "totalProblems" },
+  { label: "Avg completion", sortKey: "averageCompletionPercent" },
+]
+
+const courseLearnerTableColumns: Array<{ label: string; sortKey: LearnerSortKey; className?: string }> = [
+  { label: "User", sortKey: "userName", className: "px-2 py-2" },
+  { label: "Status", sortKey: "status", className: "px-2 py-2" },
+  { label: "Dates", sortKey: "startedAt", className: "px-2 py-2" },
+  { label: "Progress", sortKey: "completionPercent", className: "px-2 py-2" },
+  { label: "Problems", sortKey: "completedProblems", className: "px-2 py-2" },
+]
+
 function formatDate(value: Date | null): string {
   if (!value) return "—"
 
@@ -173,24 +187,15 @@ const CourseStatsDetailPage: NextPage<CourseStatsDetailPageProps> = ({ material,
             <Title text="Sections" className="text-2xl font-bold" style={{ marginBottom: "0px" }} />
             <SortableTable dataCy="course-section-stats-table">
               <Table.Head>
-                <SortableHeadCell
-                  label="Section"
-                  active={sectionSortKey === "title"}
-                  direction={sectionSortDirection}
-                  onClick={() => updateSectionSort("title")}
-                />
-                <SortableHeadCell
-                  label="Problems"
-                  active={sectionSortKey === "totalProblems"}
-                  direction={sectionSortDirection}
-                  onClick={() => updateSectionSort("totalProblems")}
-                />
-                <SortableHeadCell
-                  label="Avg completion"
-                  active={sectionSortKey === "averageCompletionPercent"}
-                  direction={sectionSortDirection}
-                  onClick={() => updateSectionSort("averageCompletionPercent")}
-                />
+                {courseSectionTableColumns.map((column) => (
+                  <SortableHeadCell
+                    key={column.sortKey}
+                    label={column.label}
+                    active={sectionSortKey === column.sortKey}
+                    direction={sectionSortDirection}
+                    onClick={() => updateSectionSort(column.sortKey)}
+                  />
+                ))}
               </Table.Head>
               <Table.Body className="divide-y">
                 {sortedSections.map((section) => (
@@ -217,41 +222,16 @@ const CourseStatsDetailPage: NextPage<CourseStatsDetailPageProps> = ({ material,
           <Title text="Learners" className="text-2xl font-bold" style={{ marginBottom: "0px" }} />
           <SortableTable dataCy="course-learner-stats-table" className="text-sm">
             <Table.Head>
-              <SortableHeadCell
-                label="User"
-                active={learnerSortKey === "userName"}
-                direction={learnerSortDirection}
-                onClick={() => updateLearnerSort("userName")}
-                className="px-2 py-2"
-              />
-              <SortableHeadCell
-                label="Status"
-                active={learnerSortKey === "status"}
-                direction={learnerSortDirection}
-                onClick={() => updateLearnerSort("status")}
-                className="px-2 py-2"
-              />
-              <SortableHeadCell
-                label="Dates"
-                active={learnerSortKey === "startedAt"}
-                direction={learnerSortDirection}
-                onClick={() => updateLearnerSort("startedAt")}
-                className="px-2 py-2"
-              />
-              <SortableHeadCell
-                label="Progress"
-                active={learnerSortKey === "completionPercent"}
-                direction={learnerSortDirection}
-                onClick={() => updateLearnerSort("completionPercent")}
-                className="px-2 py-2"
-              />
-              <SortableHeadCell
-                label="Problems"
-                active={learnerSortKey === "completedProblems"}
-                direction={learnerSortDirection}
-                onClick={() => updateLearnerSort("completedProblems")}
-                className="px-2 py-2"
-              />
+              {courseLearnerTableColumns.map((column) => (
+                <SortableHeadCell
+                  key={column.sortKey}
+                  label={column.label}
+                  active={learnerSortKey === column.sortKey}
+                  direction={learnerSortDirection}
+                  onClick={() => updateLearnerSort(column.sortKey)}
+                  className={column.className}
+                />
+              ))}
             </Table.Head>
             <Table.Body className="divide-y">
               {sortedLearners.map((learner) => (
