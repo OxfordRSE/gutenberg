@@ -2,7 +2,6 @@ import React from "react"
 import Link from "next/link"
 import { getSubtleTagColor, getTagColor } from "lib/tagColors"
 import { formatTagLabel } from "lib/tagLabels"
-import { basePath } from "lib/basePath"
 
 type Props = {
   tag: string
@@ -22,7 +21,7 @@ const TagChip: React.FC<Props> = ({ tag, variant = "solid", className, linkToFil
   if (linkToFilter) {
     return (
       <Link
-        href={`${basePath}/courses?tag=${encodeURIComponent(tag)}`}
+        href={{ pathname: "/courses", query: { tag } }}
         className={`${baseClass} hover:opacity-80 transition-opacity cursor-pointer no-underline`}
         style={style}
       >
