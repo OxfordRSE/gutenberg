@@ -5,6 +5,8 @@ import { getServerSession } from "next-auth/next"
 import { authOptions } from "pages/api/auth/[...nextauth]"
 import prisma from "lib/prisma"
 import Layout from "components/Layout"
+import PercentageMeter from "components/ui/PercentageMeter"
+import ProgressDistribution from "components/ui/ProgressDistribution"
 import Title from "components/ui/Title"
 import StatCard from "components/ui/StatCard"
 import SortableHeadCell from "components/ui/SortableHeadCell"
@@ -15,6 +17,12 @@ import { loadPageTemplate, PageTemplate } from "lib/pageTemplate"
 import { BreadcrumbItem } from "lib/breadcrumbs"
 import useSortableRows from "lib/hooks/useSortableRows"
 import { calculateEventStats, eventStatsInclude, type EventStats } from "lib/eventStats"
+import {
+  emptyProgressBandCounts,
+  getProgressBand,
+  progressBandLabels,
+  progressHistogramBandOrder,
+} from "lib/progressBands"
 import { formatPercent, formatRatioWithPercent } from "lib/stats"
 
 type EventStatsDetailPageProps = {
@@ -84,6 +92,22 @@ const EventStatsDetailPage: NextPage<EventStatsDetailPageProps> = ({ material, p
   })
 
   const totalPossibleProblems = eventStats.studentCount * eventStats.trackableProblems
+  const histogramCounts = eventStats.learnerStats.reduce((acc, learner) => {
+    if (learner.status !== "STUDENT") return acc
+    const band = getProgressBand(learner.completionPercent, learner.totalProblems)
+    acc[band] += 1
+    return acc
+  }, emptyProgressBandCounts())
+  const histogramBands = progressHistogramBandOrder.map((band) => ({
+    band,
+    label: progressBandLabels[band],
+    count: histogramCounts[band],
+  }))
+  const noTrackableCount = histogramCounts.noTrackable
+  const trackableLearnerCount = Math.max(
+    histogramBands.reduce((sum, entry) => sum + entry.count, 0),
+    1
+  )
 
   return (
     <Layout
@@ -132,6 +156,16 @@ const EventStatsDetailPage: NextPage<EventStatsDetailPageProps> = ({ material, p
 
         <div className="mt-8 grid grid-cols-1 gap-6 xl:grid-cols-2">
           <div>
+            <Title text="Progress" className="text-2xl font-bold" style={{ marginBottom: "0px" }} />
+            <ProgressDistribution
+              entries={histogramBands}
+              totalCount={trackableLearnerCount}
+              noTrackableCount={noTrackableCount}
+              noTrackableLabel={progressBandLabels.noTrackable}
+            />
+          </div>
+
+          <div>
             <Title text="Sections" className="text-2xl font-bold" style={{ marginBottom: "0px" }} />
             <SortableTable dataCy="event-section-stats-table">
               <Table.Head>
@@ -158,7 +192,9 @@ const EventStatsDetailPage: NextPage<EventStatsDetailPageProps> = ({ material, p
                       )}
                     </Table.Cell>
                     <Table.Cell>{section.totalProblems}</Table.Cell>
-                    <Table.Cell>{formatPercent(section.averageCompletionPercent)}</Table.Cell>
+                    <Table.Cell>
+                      <PercentageMeter value={section.averageCompletionPercent} />
+                    </Table.Cell>
                   </Table.Row>
                 ))}
               </Table.Body>

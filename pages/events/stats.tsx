@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth/next"
 import { authOptions } from "pages/api/auth/[...nextauth]"
 import prisma from "lib/prisma"
 import Layout from "components/Layout"
+import PercentageMeter from "components/ui/PercentageMeter"
 import Title from "components/ui/Title"
 import StatCard from "components/ui/StatCard"
 import SortableHeadCell from "components/ui/SortableHeadCell"
@@ -39,6 +40,7 @@ type EventSortKey =
   | "requestCount"
   | "groupCount"
   | "itemCount"
+  | "averageProgressPercent"
   | "totalSolvedProblems"
 
 const eventTableColumns: Array<{ label: string; sortKey: EventSortKey }> = [
@@ -48,6 +50,7 @@ const eventTableColumns: Array<{ label: string; sortKey: EventSortKey }> = [
   { label: "Requests", sortKey: "requestCount" },
   { label: "Groups", sortKey: "groupCount" },
   { label: "Items", sortKey: "itemCount" },
+  { label: "Avg progress", sortKey: "averageProgressPercent" },
   { label: "Solved", sortKey: "totalSolvedProblems" },
 ]
 
@@ -69,6 +72,8 @@ const EventStatsPage: NextPage<EventStatsPageProps> = ({ material, pageInfo, ove
       requestCount: (left, right) => left.requestCount - right.requestCount,
       groupCount: (left, right) => left.groupCount - right.groupCount,
       itemCount: (left, right) => left.itemCount - right.itemCount,
+      averageProgressPercent: (left, right) =>
+        (left.averageProgressPercent ?? -1) - (right.averageProgressPercent ?? -1),
       totalSolvedProblems: (left, right) => left.totalSolvedProblems - right.totalSolvedProblems,
     },
     tieBreaker: (left, right) => left.name.localeCompare(right.name),
@@ -157,6 +162,9 @@ const EventStatsPage: NextPage<EventStatsPageProps> = ({ material, pageInfo, ove
                   <Table.Cell>{event.requestCount}</Table.Cell>
                   <Table.Cell>{event.groupCount}</Table.Cell>
                   <Table.Cell>{event.itemCount}</Table.Cell>
+                  <Table.Cell>
+                    <PercentageMeter value={event.averageProgressPercent} />
+                  </Table.Cell>
                   <Table.Cell>
                     {formatRatioWithPercent(event.totalSolvedProblems, event.studentCount * event.trackableProblems)}
                   </Table.Cell>

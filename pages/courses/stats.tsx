@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth/next"
 import { authOptions } from "pages/api/auth/[...nextauth]"
 import prisma from "lib/prisma"
 import Layout from "components/Layout"
+import PercentageMeter from "components/ui/PercentageMeter"
 import Title from "components/ui/Title"
 import StatCard from "components/ui/StatCard"
 import SortableHeadCell from "components/ui/SortableHeadCell"
@@ -168,7 +169,9 @@ const CourseStatsPage: NextPage<CourseStatsPageProps> = ({ material, pageInfo, o
                   <Table.Cell>{course.droppedCount}</Table.Cell>
                   <Table.Cell>{formatPercent(course.completionRate)}</Table.Cell>
                   <Table.Cell>{formatDays(course.averageCompletionDays)}</Table.Cell>
-                  <Table.Cell>{formatPercent(course.averageProgressPercent)}</Table.Cell>
+                  <Table.Cell>
+                    <PercentageMeter value={course.averageProgressPercent} />
+                  </Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>

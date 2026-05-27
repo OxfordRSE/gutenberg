@@ -5,6 +5,8 @@ import { getServerSession } from "next-auth/next"
 import { authOptions } from "pages/api/auth/[...nextauth]"
 import prisma from "lib/prisma"
 import Layout from "components/Layout"
+import PercentageMeter from "components/ui/PercentageMeter"
+import ProgressDistribution from "components/ui/ProgressDistribution"
 import Title from "components/ui/Title"
 import StatCard from "components/ui/StatCard"
 import SortableHeadCell from "components/ui/SortableHeadCell"
@@ -15,6 +17,12 @@ import { loadPageTemplate, PageTemplate } from "lib/pageTemplate"
 import { BreadcrumbItem } from "lib/breadcrumbs"
 import useSortableRows from "lib/hooks/useSortableRows"
 import { calculateCourseStats, courseStatsInclude, type CourseStats } from "lib/courseStats"
+import {
+  emptyProgressBandCounts,
+  getProgressBand,
+  progressBandLabels,
+  progressHistogramBandOrder,
+} from "lib/progressBands"
 import { formatCountWithPercent, formatDays, formatPercent } from "lib/stats"
 
 type CourseStatsDetailPageProps = {
@@ -49,16 +57,6 @@ function formatDate(value: Date | null): string {
   const year = date.getUTCFullYear()
 
   return `${day}/${month}/${year}`
-}
-
-const progressBandLabels: Record<keyof CourseStats["progressBands"], string> = {
-  noTrackable: "No trackable problems",
-  notStarted: "0%",
-  oneToTwentyFive: "1-25%",
-  twentySixToFifty: "26-50%",
-  fiftyOneToSeventyFive: "51-75%",
-  seventySixToNinetyNine: "76-99%",
-  complete: "100%",
 }
 
 const CourseStatsDetailPage: NextPage<CourseStatsDetailPageProps> = ({ material, pageInfo, courseStats }) => {
@@ -100,6 +98,23 @@ const CourseStatsDetailPage: NextPage<CourseStatsDetailPageProps> = ({ material,
     },
     tieBreaker: (left, right) => left.userEmail.localeCompare(right.userEmail),
   })
+
+  const histogramCounts = courseStats.learners.reduce((acc, learner) => {
+    const band = getProgressBand(learner.completionPercent, learner.totalProblems)
+    acc[band] += 1
+    return acc
+  }, emptyProgressBandCounts())
+
+  const histogramBands = progressHistogramBandOrder.map((band) => ({
+    band,
+    label: progressBandLabels[band],
+    count: histogramCounts[band],
+  }))
+  const noTrackableCount = histogramCounts.noTrackable
+  const trackableLearnerCount = Math.max(
+    histogramBands.reduce((sum, entry) => sum + entry.count, 0),
+    1
+  )
 
   const breadcrumbs: BreadcrumbItem[] = [
     { label: "Courses", href: "/courses" },
@@ -166,21 +181,13 @@ const CourseStatsDetailPage: NextPage<CourseStatsDetailPageProps> = ({ material,
 
         <div className="mt-8 grid grid-cols-1 gap-6 xl:grid-cols-2">
           <div>
-            <Title text="Progress Bands" className="text-2xl font-bold" style={{ marginBottom: "0px" }} />
-            <SortableTable dataCy="course-progress-bands-table">
-              <Table.Head>
-                <Table.HeadCell>Band</Table.HeadCell>
-                <Table.HeadCell>Learners</Table.HeadCell>
-              </Table.Head>
-              <Table.Body className="divide-y">
-                {Object.entries(courseStats.progressBands).map(([band, count]) => (
-                  <Table.Row key={band}>
-                    <Table.Cell>{progressBandLabels[band as keyof CourseStats["progressBands"]]}</Table.Cell>
-                    <Table.Cell>{count}</Table.Cell>
-                  </Table.Row>
-                ))}
-              </Table.Body>
-            </SortableTable>
+            <Title text="Progress" className="text-2xl font-bold" style={{ marginBottom: "0px" }} />
+            <ProgressDistribution
+              entries={histogramBands}
+              totalCount={trackableLearnerCount}
+              noTrackableCount={noTrackableCount}
+              noTrackableLabel={progressBandLabels.noTrackable}
+            />
           </div>
 
           <div>
@@ -210,7 +217,9 @@ const CourseStatsDetailPage: NextPage<CourseStatsDetailPageProps> = ({ material,
                       )}
                     </Table.Cell>
                     <Table.Cell>{section.totalProblems}</Table.Cell>
-                    <Table.Cell>{formatPercent(section.averageCompletionPercent)}</Table.Cell>
+                    <Table.Cell>
+                      <PercentageMeter value={section.averageCompletionPercent} />
+                    </Table.Cell>
                   </Table.Row>
                 ))}
               </Table.Body>
