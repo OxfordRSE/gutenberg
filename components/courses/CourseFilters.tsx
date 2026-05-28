@@ -105,6 +105,7 @@ const CourseFilters: React.FC<Props> = ({
                   key={tag}
                   type="button"
                   onClick={() => toggleTag(tag)}
+                  data-cy={`active-tag-${tag}`}
                   className="flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold shadow-sm"
                   style={{ backgroundColor: color.background, borderColor: "transparent", color: color.text }}
                 >
@@ -116,7 +117,7 @@ const CourseFilters: React.FC<Props> = ({
           )}
         </div>
         {hasFilters && (
-          <Button size="xs" color="gray" onClick={clearFilters}>
+          <Button size="xs" color="gray" onClick={clearFilters} data-cy="clear-filters">
             Clear
           </Button>
         )}
@@ -130,7 +131,7 @@ const CourseFilters: React.FC<Props> = ({
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Search courses..."
             />
-            <Select value={selectedLevel} onChange={(event) => setSelectedLevel(event.target.value)}>
+            <Select data-cy="level-filter" value={selectedLevel} onChange={(event) => setSelectedLevel(event.target.value)}>
               <option value="">All levels</option>
               <option value="beginner">Beginner</option>
               <option value="intermediate">Intermediate</option>

@@ -22,6 +22,7 @@ const TagChip: React.FC<Props> = ({ tag, variant = "solid", className, linkToFil
     return (
       <Link
         href={{ pathname: "/courses", query: { tag } }}
+        data-cy={`tag-filter-link-${tag}`}
         className={`${baseClass} hover:opacity-80 transition-opacity cursor-pointer no-underline`}
         style={style}
       >
