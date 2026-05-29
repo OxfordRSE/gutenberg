@@ -51,12 +51,17 @@ const EventUsers = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     (userOnEvent: UsersWithUserOnEvents) =>
       userOnEvent?.user?.name === user?.name && userOnEvent.status === "INSTRUCTOR"
   )
+  const isCoordinator = event?.UserOnEvent.some(
+    (userOnEvent: UsersWithUserOnEvents) =>
+      userOnEvent?.user?.email === userEmail && userOnEvent.status === "COORDINATOR"
+  )
   const isAdmin = currentUser?.admin === true
+  const canManage = isInstructor || isCoordinator || isAdmin
 
   let users: UsersWithUserOnEvents[] = []
   switch (method) {
     case "GET":
-      if (isInstructor || isAdmin) {
+      if (canManage) {
         const onEvent = event?.UserOnEvent
         const emails = onEvent.map((userOnEvent: UsersWithUserOnEvents) => userOnEvent?.userEmail || "")
         users = await prisma.userOnEvent.findMany({
@@ -68,7 +73,7 @@ const EventUsers = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
       res.status(200).json({ users })
       break
     case "PUT":
-      if (!isInstructor && !isAdmin) {
+      if (!canManage) {
         return res.status(403).json({ error: "Forbidden" })
       }
       users = req.body.users
@@ -79,9 +84,14 @@ const EventUsers = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
         const userEmail = userOnEvent.userEmail as string
         const existingUserOnEvent = await prisma.userOnEvent.findUnique({
           where: { userEmail_eventId: { userEmail, eventId } },
+          include: { user: true },
         })
         if (!existingUserOnEvent) {
           return "UserOnEvent not found"
+        }
+        // Only an admin may assign the COORDINATOR role.
+        if (userOnEvent.status === "COORDINATOR" && !isAdmin) {
+          return existingUserOnEvent
         }
         // only update status
         const updatedUserOnEvent = await prisma.userOnEvent.update({
