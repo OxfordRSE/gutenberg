@@ -131,7 +131,11 @@ const CourseFilters: React.FC<Props> = ({
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Search courses..."
             />
-            <Select data-cy="level-filter" value={selectedLevel} onChange={(event) => setSelectedLevel(event.target.value)}>
+            <Select
+              data-cy="level-filter"
+              value={selectedLevel}
+              onChange={(event) => setSelectedLevel(event.target.value)}
+            >
               <option value="">All levels</option>
               <option value="beginner">Beginner</option>
               <option value="intermediate">Intermediate</option>

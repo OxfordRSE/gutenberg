@@ -7,12 +7,14 @@ describe("courses tag filters", () => {
 
   it("clicking a tag chip navigates to /courses with correct tag param", () => {
     cy.visit("/courses")
-    cy.get("[data-cy^='tag-filter-link-']").first().then(($link) => {
-      const tag = $link.attr("data-cy").replace("tag-filter-link-", "")
-      cy.wrap($link).click()
-      cy.location("pathname").should("eq", "/courses")
-      cy.location("search").should("include", `tag=${tag}`)
-    })
+    cy.get("[data-cy^='tag-filter-link-']")
+      .first()
+      .then(($link) => {
+        const tag = $link.attr("data-cy").replace("tag-filter-link-", "")
+        cy.wrap($link).click()
+        cy.location("pathname").should("eq", "/courses")
+        cy.location("search").should("include", `tag=${tag}`)
+      })
   })
 
   it("visiting /courses?tag=X shows filtered content with active tag pill", () => {
