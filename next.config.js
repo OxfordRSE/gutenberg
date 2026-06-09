@@ -29,6 +29,12 @@ const nextConfig = {
   },
   webpack: (config) => {
     config.resolve.fallback = { fs: false }
+
+    config.watchOptions = {
+      ...config.watchOptions,
+      ignored: ["**/node_modules/**", "**/.git/**", "**/.next/**", "**/coverage/**", "**/docs/_site/**"],
+    }
+
     return config
   },
   basePath: process.env.NEXT_PUBLIC_BASEPATH,
