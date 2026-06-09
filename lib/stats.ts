@@ -37,3 +37,8 @@ export function formatCountWithPercent(count: number, total: number): string {
   if (total <= 0) return `${count}`
   return `${count} (${Math.round((count / total) * 100)}%)`
 }
+
+export function formatRatioWithPercent(count: number, total: number): string {
+  if (total <= 0) return "N/A"
+  return `${count}/${total} (${Math.round((count / total) * 100)}%)`
+}

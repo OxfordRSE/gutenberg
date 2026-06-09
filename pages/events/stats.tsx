@@ -5,12 +5,16 @@ import { getServerSession } from "next-auth/next"
 import { authOptions } from "pages/api/auth/[...nextauth]"
 import prisma from "lib/prisma"
 import Layout from "components/Layout"
+import PercentageMeter from "components/ui/PercentageMeter"
 import Title from "components/ui/Title"
 import StatCard from "components/ui/StatCard"
+import SortableHeadCell from "components/ui/SortableHeadCell"
+import SortableTable from "components/ui/SortableTable"
 import { Material, getMaterial, removeMarkdown } from "lib/material"
 import { makeSerializable } from "lib/utils"
 import { loadPageTemplate, PageTemplate } from "lib/pageTemplate"
 import { BreadcrumbItem } from "lib/breadcrumbs"
+import useSortableRows from "lib/hooks/useSortableRows"
 import {
   calculateEventStats,
   eventStatsInclude,
@@ -18,7 +22,7 @@ import {
   type EventStats,
   type EventStatsOverview,
 } from "lib/eventStats"
-import { formatCountWithPercent, formatPercent } from "lib/stats"
+import { formatCountWithPercent, formatPercent, formatRatioWithPercent } from "lib/stats"
 
 type EventStatsPageProps = {
   material: Material
@@ -29,8 +33,51 @@ type EventStatsPageProps = {
 
 const breadcrumbs: BreadcrumbItem[] = [{ label: "Events", href: "/events" }, { label: "Stats" }]
 
+type EventSortKey =
+  | "name"
+  | "studentCount"
+  | "instructorCount"
+  | "requestCount"
+  | "groupCount"
+  | "itemCount"
+  | "averageProgressPercent"
+  | "totalSolvedProblems"
+
+const eventTableColumns: Array<{ label: string; sortKey: EventSortKey }> = [
+  { label: "Event", sortKey: "name" },
+  { label: "Students", sortKey: "studentCount" },
+  { label: "Instructors", sortKey: "instructorCount" },
+  { label: "Requests", sortKey: "requestCount" },
+  { label: "Groups", sortKey: "groupCount" },
+  { label: "Items", sortKey: "itemCount" },
+  { label: "Avg progress", sortKey: "averageProgressPercent" },
+  { label: "Solved", sortKey: "totalSolvedProblems" },
+]
+
 const EventStatsPage: NextPage<EventStatsPageProps> = ({ material, pageInfo, overview, eventStats }) => {
-  const sortedEvents = [...eventStats].sort((a, b) => b.studentCount - a.studentCount || a.name.localeCompare(b.name))
+  const {
+    sortedRows: sortedEvents,
+    sortKey,
+    sortDirection,
+    updateSort,
+  } = useSortableRows<EventStats, EventSortKey>({
+    rows: eventStats,
+    initialSortKey: "studentCount",
+    initialDirection: "desc",
+    getDefaultDirection: (key) => (key === "name" ? "asc" : "desc"),
+    compareMap: {
+      name: (left, right) => left.name.localeCompare(right.name),
+      studentCount: (left, right) => left.studentCount - right.studentCount,
+      instructorCount: (left, right) => left.instructorCount - right.instructorCount,
+      requestCount: (left, right) => left.requestCount - right.requestCount,
+      groupCount: (left, right) => left.groupCount - right.groupCount,
+      itemCount: (left, right) => left.itemCount - right.itemCount,
+      averageProgressPercent: (left, right) =>
+        (left.averageProgressPercent ?? -1) - (right.averageProgressPercent ?? -1),
+      totalSolvedProblems: (left, right) => left.totalSolvedProblems - right.totalSolvedProblems,
+    },
+    tieBreaker: (left, right) => left.name.localeCompare(right.name),
+  })
 
   return (
     <Layout
@@ -61,6 +108,11 @@ const EventStatsPage: NextPage<EventStatsPageProps> = ({ material, pageInfo, ove
           />
           <StatCard label="Requests" value={overview.totalRequests} dataCy="event-stats-total-requests" />
           <StatCard
+            label="Problems solved"
+            value={overview.totalSolvedProblems}
+            dataCy="event-stats-total-solved-problems"
+          />
+          <StatCard
             label="Avg students / event"
             value={overview.averageStudentsPerEvent === null ? "N/A" : overview.averageStudentsPerEvent.toFixed(1)}
             dataCy="event-stats-average-students"
@@ -80,41 +132,46 @@ const EventStatsPage: NextPage<EventStatsPageProps> = ({ material, pageInfo, ove
 
         <div className="mt-8">
           <Title text="By Event" className="text-2xl font-bold" style={{ marginBottom: "0px" }} />
-          <div className="mt-3 overflow-x-auto">
-            <Table data-cy="event-stats-table">
-              <Table.Head>
-                <Table.HeadCell>Event</Table.HeadCell>
-                <Table.HeadCell>Students</Table.HeadCell>
-                <Table.HeadCell>Instructors</Table.HeadCell>
-                <Table.HeadCell>Requests</Table.HeadCell>
-                <Table.HeadCell>Groups</Table.HeadCell>
-                <Table.HeadCell>Items</Table.HeadCell>
-                <Table.HeadCell>Avg progress</Table.HeadCell>
-              </Table.Head>
-              <Table.Body className="divide-y">
-                {sortedEvents.map((event) => (
-                  <Table.Row key={event.eventId}>
-                    <Table.Cell className="font-medium text-gray-900 dark:text-white">
-                      <Link href={`/event/${event.eventId}/stats`} className="hover:underline">
-                        {event.name}
-                      </Link>
-                      {event.hidden && (
-                        <Badge color="gray" className="ml-2 inline-flex">
-                          Hidden
-                        </Badge>
-                      )}
-                    </Table.Cell>
-                    <Table.Cell>{event.studentCount}</Table.Cell>
-                    <Table.Cell>{event.instructorCount}</Table.Cell>
-                    <Table.Cell>{event.requestCount}</Table.Cell>
-                    <Table.Cell>{event.groupCount}</Table.Cell>
-                    <Table.Cell>{event.itemCount}</Table.Cell>
-                    <Table.Cell>{formatPercent(event.averageProgressPercent)}</Table.Cell>
-                  </Table.Row>
-                ))}
-              </Table.Body>
-            </Table>
-          </div>
+          <SortableTable dataCy="event-stats-table">
+            <Table.Head>
+              {eventTableColumns.map((column) => (
+                <SortableHeadCell
+                  key={column.sortKey}
+                  label={column.label}
+                  active={sortKey === column.sortKey}
+                  direction={sortDirection}
+                  onClick={() => updateSort(column.sortKey)}
+                />
+              ))}
+            </Table.Head>
+            <Table.Body className="divide-y">
+              {sortedEvents.map((event) => (
+                <Table.Row key={event.eventId}>
+                  <Table.Cell className="font-medium text-gray-900 dark:text-white">
+                    <Link href={`/event/${event.eventId}/stats`} className="hover:underline">
+                      {event.name}
+                    </Link>
+                    {event.hidden && (
+                      <Badge color="gray" className="ml-2 inline-flex">
+                        Hidden
+                      </Badge>
+                    )}
+                  </Table.Cell>
+                  <Table.Cell>{event.studentCount}</Table.Cell>
+                  <Table.Cell>{event.instructorCount}</Table.Cell>
+                  <Table.Cell>{event.requestCount}</Table.Cell>
+                  <Table.Cell>{event.groupCount}</Table.Cell>
+                  <Table.Cell>{event.itemCount}</Table.Cell>
+                  <Table.Cell>
+                    <PercentageMeter value={event.averageProgressPercent} />
+                  </Table.Cell>
+                  <Table.Cell>
+                    {formatRatioWithPercent(event.totalSolvedProblems, event.studentCount * event.trackableProblems)}
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </SortableTable>
         </div>
       </div>
     </Layout>
