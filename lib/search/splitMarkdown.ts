@@ -33,6 +33,7 @@ const MATERIAL_JSON_PATH =
   process.env.NODE_ENV === "production" ? "/tmp/material.json" : path.resolve(process.cwd(), "material.json")
 
 const optionalByteOrderMark = "\\ufeff?"
+// prettier-ignore
 const frontMatterPattern =
   "^(" +
   optionalByteOrderMark +

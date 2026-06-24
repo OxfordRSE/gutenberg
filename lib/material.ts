@@ -78,6 +78,7 @@ type MaterialContent = {
 const materialCache = new Map<string, MaterialContent>()
 
 const optionalByteOrderMark = "\\ufeff?"
+// prettier-ignore
 const frontMatterPattern =
   "^(" +
   optionalByteOrderMark +
