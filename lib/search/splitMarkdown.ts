@@ -2,7 +2,7 @@ import { v4 as uuid } from "uuid"
 import fs from "fs"
 import path from "path"
 import fsPromises from "fs/promises"
-import fm from "front-matter"
+import { load } from "js-yaml"
 import { getDocsList, readPageMarkdown } from "./readMarkdown"
 import { createSectionVector } from "./createVectors"
 import { hasMaterialChanged } from "./manageMaterial"
@@ -22,10 +22,45 @@ export type SectionObj = {
   }
 }
 
+type FrontMatterContent = {
+  attributes: Record<string, unknown>
+  body: string
+}
+
 const materialDir = (process.env.MATERIAL_DIR as string) || ".material"
 
 const MATERIAL_JSON_PATH =
   process.env.NODE_ENV === "production" ? "/tmp/material.json" : path.resolve(process.cwd(), "material.json")
+
+const optionalByteOrderMark = "\\ufeff?"
+const frontMatterPattern =
+  "^(" +
+  optionalByteOrderMark +
+  "(= yaml =|---)" +
+  "$([\\s\\S]*?)" +
+  "^(?:\\2|\\.\\.\\.)\\s*" +
+  "$" +
+  "(?:\\r?\\n)?)"
+const frontMatterRegex = new RegExp(frontMatterPattern, "m")
+
+function parseFrontMatter(source: string): FrontMatterContent {
+  const match = frontMatterRegex.exec(source)
+
+  if (!match) {
+    return {
+      attributes: {},
+      body: source,
+    }
+  }
+
+  const frontmatter = match[match.length - 1].trim()
+  const attributes = (load(frontmatter) as Record<string, unknown> | null) ?? {}
+
+  return {
+    attributes,
+    body: source.replace(match[0], ""),
+  }
+}
 
 export async function materialToJson() {
   let sections = await parsePages()
@@ -171,10 +206,9 @@ async function getThemeTitle(file: string): Promise<string> {
     return ""
   }
   const buffer = await fsPromises.readFile(`${dir}/index.md`, { encoding: "utf8" })
-  const material = fm(buffer)
+  const material = parseFrontMatter(buffer)
 
-  // @ts-expect-error
-  const themeTitle = (await material.attributes.name) as string
+  const themeTitle = material.attributes.name as string
   return themeTitle
 }
 
@@ -184,17 +218,15 @@ async function getCourseTitle(file: string): Promise<string> {
     return ""
   }
   const buffer = await fsPromises.readFile(`${dir}/index.md`, { encoding: "utf8" })
-  const material = fm(buffer)
+  const material = parseFrontMatter(buffer)
 
-  // @ts-expect-error
   const course = material.attributes.name as string
   return course
 }
 
 async function getPageTitle(file: string): Promise<string> {
   const buffer = await fsPromises.readFile(file, { encoding: "utf8" })
-  const material = fm(buffer)
-  // @ts-expect-error
+  const material = parseFrontMatter(buffer)
   const section = material.attributes.name as string
   return section
 }
