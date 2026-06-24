@@ -69,6 +69,8 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
       - name: Install dependencies
         run: ${{ env.MANAGER }} install
+      - name: Run unit tests
+        run: ${{ env.MANAGER }} test
       - name: Create test database
         env:
           PGPASSWORD: postgres

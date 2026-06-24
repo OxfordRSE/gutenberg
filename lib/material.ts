@@ -1,8 +1,8 @@
 import { symlink } from "fs"
 import { readFile } from "fs/promises"
-import { load } from "js-yaml"
 import { basePath } from "./basePath"
 import { EventItem } from "@prisma/client"
+import { type FrontMatterContent, parseFrontMatter } from "./frontMatter"
 import { loadConfig } from "./pageTemplate"
 
 export type Attribution = {
@@ -68,61 +68,9 @@ export type Material = {
   sectionNames?: {}
 }
 
-type MaterialContent = {
-  attributes: Record<string, unknown>
-  body: string
-  bodyBegin: number
-  frontmatter?: string
-}
+type MaterialContent = FrontMatterContent
 
 const materialCache = new Map<string, MaterialContent>()
-
-const optionalByteOrderMark = "\\ufeff?"
-// prettier-ignore
-const frontMatterPattern =
-  "^(" +
-  optionalByteOrderMark +
-  "(= yaml =|---)" +
-  "$([\\s\\S]*?)" +
-  "^(?:\\2|\\.\\.\\.)\\s*" +
-  "$" +
-  "(?:\\r?\\n)?)"
-const frontMatterRegex = new RegExp(frontMatterPattern, "m")
-
-function computeBodyBegin(matchIndex: number, matchLength: number, source: string): number {
-  const offset = matchIndex + matchLength
-  let line = 1
-
-  for (let i = 0; i < source.length && i < offset; i += 1) {
-    if (source[i] === "\n") {
-      line += 1
-    }
-  }
-
-  return line
-}
-
-function parseFrontMatter(source: string): MaterialContent {
-  const match = frontMatterRegex.exec(source)
-
-  if (!match) {
-    return {
-      attributes: {},
-      body: source,
-      bodyBegin: 1,
-    }
-  }
-
-  const frontmatter = match[match.length - 1].trim()
-  const attributes = (load(frontmatter) as Record<string, unknown> | null) ?? {}
-
-  return {
-    attributes,
-    body: source.replace(match[0], ""),
-    bodyBegin: computeBodyBegin(match.index, match[0].length, source),
-    frontmatter,
-  }
-}
 
 async function loadMaterial(path: string): Promise<MaterialContent> {
   if (materialCache.has(path)) {

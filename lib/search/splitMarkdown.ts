@@ -2,7 +2,7 @@ import { v4 as uuid } from "uuid"
 import fs from "fs"
 import path from "path"
 import fsPromises from "fs/promises"
-import { load } from "js-yaml"
+import { parseFrontMatter } from "lib/frontMatter"
 import { getDocsList, readPageMarkdown } from "./readMarkdown"
 import { createSectionVector } from "./createVectors"
 import { hasMaterialChanged } from "./manageMaterial"
@@ -22,46 +22,10 @@ export type SectionObj = {
   }
 }
 
-type FrontMatterContent = {
-  attributes: Record<string, unknown>
-  body: string
-}
-
 const materialDir = (process.env.MATERIAL_DIR as string) || ".material"
 
 const MATERIAL_JSON_PATH =
   process.env.NODE_ENV === "production" ? "/tmp/material.json" : path.resolve(process.cwd(), "material.json")
-
-const optionalByteOrderMark = "\\ufeff?"
-// prettier-ignore
-const frontMatterPattern =
-  "^(" +
-  optionalByteOrderMark +
-  "(= yaml =|---)" +
-  "$([\\s\\S]*?)" +
-  "^(?:\\2|\\.\\.\\.)\\s*" +
-  "$" +
-  "(?:\\r?\\n)?)"
-const frontMatterRegex = new RegExp(frontMatterPattern, "m")
-
-function parseFrontMatter(source: string): FrontMatterContent {
-  const match = frontMatterRegex.exec(source)
-
-  if (!match) {
-    return {
-      attributes: {},
-      body: source,
-    }
-  }
-
-  const frontmatter = match[match.length - 1].trim()
-  const attributes = (load(frontmatter) as Record<string, unknown> | null) ?? {}
-
-  return {
-    attributes,
-    body: source.replace(match[0], ""),
-  }
-}
 
 export async function materialToJson() {
   let sections = await parsePages()
