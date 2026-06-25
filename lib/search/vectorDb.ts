@@ -41,7 +41,7 @@ async function createIndex(qdrantCollection: string = qdrantCollectionName) {
 
 export async function countIndex(qdrantCollection: string = qdrantCollectionName) {
   const collectionInfo = await client.getCollection(qdrantCollection)
-  return collectionInfo.vectors_count
+  return collectionInfo.points_count ?? 0
 }
 
 export async function jsonToIndex(json: any[]) {
