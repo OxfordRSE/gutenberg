@@ -46,7 +46,7 @@
     "@types/react-copy-to-clipboard": "^5.0.7",
     "autoprefixer": "^10.4.21",
     "cron": "^2.4.4",
-    "dompurify": "^3.4.9",
+    "dompurify": "^3.4.11",
     "dotenv": "^16.6.1",
     "dotenv-cli": "^7.4.4",
     "elkjs": "^0.8.2",
@@ -108,7 +108,7 @@
   "resolutions": {
     "js-yaml": "4.2.0",
     "react": "^19.2.3",
-    "dompurify": "^3.4.9",
+    "dompurify": "^3.4.11",
     "brace-expansion@npm:^1.1.7": "npm:1.1.14",
     "prismjs": "^1.30.0",
     "qs": "^6.15.2"
