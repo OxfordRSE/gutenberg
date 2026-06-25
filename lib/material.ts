@@ -1,8 +1,8 @@
 import { symlink } from "fs"
 import { readFile } from "fs/promises"
-import fm, { FrontMatterResult } from "front-matter"
 import { basePath } from "./basePath"
 import { EventItem } from "@prisma/client"
+import { type FrontMatterContent, parseFrontMatter } from "./frontMatter"
 import { loadConfig } from "./pageTemplate"
 
 export type Attribution = {
@@ -68,7 +68,7 @@ export type Material = {
   sectionNames?: {}
 }
 
-type MaterialContent = FrontMatterResult<unknown>
+type MaterialContent = FrontMatterContent
 
 const materialCache = new Map<string, MaterialContent>()
 
@@ -80,7 +80,7 @@ async function loadMaterial(path: string): Promise<MaterialContent> {
     }
   }
   const buffer = await readFile(path, { encoding: "utf8" })
-  const material = fm(buffer)
+  const material = parseFrontMatter(buffer)
   materialCache.set(path, material)
   return material
 }
@@ -201,7 +201,6 @@ export async function getMaterial(no_markdown = false): Promise<Material> {
     })
     const material = await loadMaterial(`${dir}/index.md`)
 
-    // @ts-expect-error
     const themesId = material.attributes.themes as [string]
 
     let themes = await Promise.all(themesId.map((theme) => getTheme(repo, theme, no_markdown)))
@@ -220,13 +219,10 @@ export async function getMaterial(no_markdown = false): Promise<Material> {
 export async function getTheme(repo: string, theme: string, no_markdown = false): Promise<MaterialTheme> {
   const dir = `${materialDir}/${repo}/${theme}`
   const themeObject = await loadMaterial(`${dir}/index.md`)
-  // @ts-expect-error
   const name = themeObject.attributes.name as string
-  // @ts-expect-error
   const summary = themeObject.attributes.summary as string
   const markdown = no_markdown ? "" : (themeObject.body as string)
   const id = theme
-  // @ts-expect-error
   const coursesId = themeObject.attributes.courses as [string]
   let courses = await Promise.all(coursesId.map((course) => getCourse(repo, theme, course)))
   const excludeCourses = getExcludes(repo).courses
@@ -245,23 +241,17 @@ export async function getCourse(
 ): Promise<MaterialCourse> {
   const dir = `${materialDir}/${repo}/${theme}/${course}`
   const courseObject = await loadMaterial(`${dir}/index.md`)
-  // @ts-expect-error
   const name = courseObject.attributes.name as string
-  // @ts-expect-error
   const summary = (courseObject.attributes.summary as string) || ""
-  // @ts-expect-error
   const learningOutcomes = (courseObject.attributes.learningOutcomes as string[]) || []
-  // @ts-expect-error
   const dependsOn = (courseObject.attributes.dependsOn as string[]) || []
   const markdown = no_markdown ? "" : (courseObject.body as string)
-  // @ts-expect-error
   let files = courseObject.attributes.files as string[][] | string[]
   if (typeof files[0] === "string") {
     files = [files] as string[][]
   } else {
     files = files as string[][]
   }
-  // @ts-expect-error
   const attribution = (courseObject.attributes.attribution as Attribution[]) || []
   const id = course
   let sections = await Promise.all(files.flatMap((x) => x).map((file, i) => getSection(repo, theme, course, i, file)))
@@ -293,15 +283,10 @@ export async function getSection(
   const id = file.replace(/\.[^/.]+$/, "")
   const dir = `${materialDir}/${repo}/${theme}/${course}`
   const sectionObject = await loadMaterial(`${dir}/${file}`)
-  // @ts-expect-error
   const dependsOn = (sectionObject.attributes.dependsOn as string[]) || []
-  // @ts-expect-error
   const tags = (sectionObject.attributes.tags as string[]) || []
-  // @ts-expect-error
   const name = (sectionObject.attributes.name as string) || humanize(file)
-  // @ts-expect-error
   const attribution = (sectionObject.attributes.attribution as Attribution[]) || []
-  // @ts-expect-error
   const learningOutcomes = (sectionObject.attributes.learningOutcomes as string[]) || []
   const markdown = no_markdown ? "" : (sectionObject.body as string)
   const type = "Section"

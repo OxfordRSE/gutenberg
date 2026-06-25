@@ -2,7 +2,7 @@ import { v4 as uuid } from "uuid"
 import fs from "fs"
 import path from "path"
 import fsPromises from "fs/promises"
-import fm from "front-matter"
+import { parseFrontMatter } from "lib/frontMatter"
 import { getDocsList, readPageMarkdown } from "./readMarkdown"
 import { createSectionVector } from "./createVectors"
 import { hasMaterialChanged } from "./manageMaterial"
@@ -171,10 +171,9 @@ async function getThemeTitle(file: string): Promise<string> {
     return ""
   }
   const buffer = await fsPromises.readFile(`${dir}/index.md`, { encoding: "utf8" })
-  const material = fm(buffer)
+  const material = parseFrontMatter(buffer)
 
-  // @ts-expect-error
-  const themeTitle = (await material.attributes.name) as string
+  const themeTitle = material.attributes.name as string
   return themeTitle
 }
 
@@ -184,17 +183,15 @@ async function getCourseTitle(file: string): Promise<string> {
     return ""
   }
   const buffer = await fsPromises.readFile(`${dir}/index.md`, { encoding: "utf8" })
-  const material = fm(buffer)
+  const material = parseFrontMatter(buffer)
 
-  // @ts-expect-error
   const course = material.attributes.name as string
   return course
 }
 
 async function getPageTitle(file: string): Promise<string> {
   const buffer = await fsPromises.readFile(file, { encoding: "utf8" })
-  const material = fm(buffer)
-  // @ts-expect-error
+  const material = parseFrontMatter(buffer)
   const section = material.attributes.name as string
   return section
 }
