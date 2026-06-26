@@ -1,4 +1,4 @@
-import type { NextPage, GetStaticProps } from "next"
+import type { NextPage, GetServerSideProps } from "next"
 import Layout from "components/Layout"
 import { Material, getMaterial, removeMarkdown } from "lib/material"
 import { makeSerializable } from "lib/utils"
@@ -8,13 +8,13 @@ import { Button, Card } from "flowbite-react"
 import { Modal } from "flowbite-react"
 import CourseGrid from "components/courses/CourseGrid"
 import useProfile from "lib/hooks/useProfile"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { useRouter } from "next/router"
 import { basePath } from "lib/basePath"
 import { HiRefresh } from "react-icons/hi"
 import Link from "next/link"
 import useSWR, { Fetcher } from "swr"
 import type { Course } from "pages/api/course"
-import revalidateTimeout from "lib/revalidateTimeout"
 import { sortCourses } from "lib/courseSort"
 import { CourseStatus } from "@prisma/client"
 import CourseFilters from "components/courses/CourseFilters"
@@ -29,6 +29,7 @@ type CoursesProps = {
   material: Material
   courses: Course[]
   pageInfo: PageTemplate
+  initialFilters: { tags: string[]; level: string; search: string; languages: string[] }
 }
 
 type CoursesData = { courses?: Course[]; error?: string }
@@ -50,7 +51,7 @@ type SyncDefaultsReviewResponse =
 const coursesFetcher: Fetcher<CoursesData, string> = (url) => fetch(url).then((r) => r.json())
 const breadcrumbs: BreadcrumbItem[] = [{ label: "Courses" }]
 
-const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pageInfo }) => {
+const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pageInfo, initialFilters }) => {
   const { userProfile, isLoading: profileLoading } = useProfile()
   const [syncError, setSyncError] = useState<string | null>(null)
   const [syncing, setSyncing] = useState(false)
@@ -63,10 +64,26 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
   } | null>(null)
   const [selectedSyncExternalIds, setSelectedSyncExternalIds] = useState<string[]>([])
   const [applySyncing, setApplySyncing] = useState(false)
-  const [search, setSearch] = useState("")
-  const [selectedLevel, setSelectedLevel] = useState("")
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
-  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([])
+  const [search, setSearch] = useState(initialFilters.search)
+  const [selectedLevel, setSelectedLevel] = useState(initialFilters.level)
+  const [selectedTags, setSelectedTags] = useState<string[]>(initialFilters.tags)
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>(initialFilters.languages)
+  const router = useRouter()
+  const isFirstRender = useRef(true)
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
+    const query: Record<string, string | string[]> = {}
+    if (selectedTags.length > 0) query.tag = selectedTags
+    if (selectedLevel) query.level = selectedLevel
+    if (search.trim()) query.q = search.trim()
+    if (selectedLanguages.length > 0) query.lang = selectedLanguages
+    router.replace({ pathname: router.pathname, query }, undefined, { shallow: true })
+  }, [selectedTags, selectedLevel, search, selectedLanguages])
+
   const { data, isLoading, mutate } = useSWR(`${basePath}/api/course`, coursesFetcher, {
     fallbackData: { courses: initialCourses },
   })
@@ -381,15 +398,21 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
   )
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const pageInfo = loadPageTemplate()
   let material = await getMaterial()
   removeMarkdown(material, material)
 
+  const initialFilters = {
+    tags: query.tag ? (Array.isArray(query.tag) ? query.tag : [query.tag]) : [],
+    level: typeof query.level === "string" ? query.level : "",
+    search: typeof query.q === "string" ? query.q : "",
+    languages: query.lang ? (Array.isArray(query.lang) ? query.lang : [query.lang]) : [],
+  }
+
   if (!hasBuildDatabase()) {
     return {
-      props: makeSerializable({ material, courses: [], pageInfo }),
-      revalidate: revalidateTimeout,
+      props: makeSerializable({ material, courses: [], pageInfo, initialFilters }),
     }
   }
 
@@ -399,8 +422,7 @@ export const getStaticProps: GetStaticProps = async () => {
   })
 
   return {
-    props: makeSerializable({ material, courses: sortCourses(coursesWithUser), pageInfo }),
-    revalidate: revalidateTimeout,
+    props: makeSerializable({ material, courses: sortCourses(coursesWithUser), pageInfo, initialFilters }),
   }
 }
 
