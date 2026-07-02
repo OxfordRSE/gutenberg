@@ -1,3 +1,4 @@
+import * as espree from "espree"
 import nextCoreWebVitals from "eslint-config-next/core-web-vitals"
 import jsxA11y from "eslint-plugin-jsx-a11y"
 
@@ -7,11 +8,26 @@ const config = [
     rules: jsxA11y.flatConfigs.recommended.rules,
   },
   {
+    settings: {
+      react: {
+        version: "19",
+      },
+    },
+  },
+  {
+    files: ["**/*.{js,jsx,mjs,cjs}"],
+    languageOptions: {
+      parser: espree,
+    },
+  },
+  {
+    files: ["**/*.ts", "**/*.tsx"],
+    languageOptions: {
+      globals: {},
+    },
+  },
+  {
     rules: {
-      "react-hooks/gating": "off",
-      "react-hooks/globals": "off",
-      "react-hooks/immutability": "off",
-      "react-hooks/incompatible-library": "off",
       "react-hooks/preserve-manual-memoization": "off",
       "react-hooks/refs": "off",
       "react-hooks/set-state-in-effect": "off",
