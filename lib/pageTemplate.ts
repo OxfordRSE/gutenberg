@@ -1,5 +1,5 @@
 import { readFileSync } from "fs"
-import { load } from "js-yaml"
+import yaml from "js-yaml"
 
 const yamlTemplate = process.env.YAML_TEMPLATE || "config/oxford.yaml"
 
@@ -22,7 +22,7 @@ export type SiteConfig = {
 export function loadConfig(): SiteConfig | undefined {
   try {
     const fileContents = readFileSync(yamlTemplate, "utf8")
-    return load(fileContents) as SiteConfig
+    return yaml.load(fileContents) as SiteConfig
   } catch (e) {
     console.error(e)
   }

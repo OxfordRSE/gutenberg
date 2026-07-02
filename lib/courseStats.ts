@@ -1,6 +1,12 @@
 import { CourseStatus, Prisma } from "@prisma/client"
 import prisma from "lib/prisma"
 import { getMaterial, sectionSplit } from "lib/material"
+import {
+  emptyProgressBandCounts,
+  getProgressBand,
+  type ProgressBandCounts,
+  type ProgressBandKey,
+} from "lib/progressBands"
 import { differenceInDays, mean, median, percent, round } from "lib/stats"
 
 export const courseStatsInclude = {
@@ -20,16 +26,7 @@ export const courseStatsInclude = {
 
 export type CourseForStats = Prisma.CourseGetPayload<{ include: typeof courseStatsInclude }>
 
-export type ProgressBandKey =
-  | "noTrackable"
-  | "notStarted"
-  | "oneToTwentyFive"
-  | "twentySixToFifty"
-  | "fiftyOneToSeventyFive"
-  | "seventySixToNinetyNine"
-  | "complete"
-
-export type ProgressBands = Record<ProgressBandKey, number>
+export type ProgressBands = ProgressBandCounts
 
 export type LearnerCourseStats = {
   userEmail: string
@@ -87,16 +84,6 @@ export type CourseStatsOverview = {
   mostPopularCourse: { name: string; totalPeople: number } | null
 }
 
-const emptyProgressBands = (): ProgressBands => ({
-  noTrackable: 0,
-  notStarted: 0,
-  oneToTwentyFive: 0,
-  twentySixToFifty: 0,
-  fiftyOneToSeventyFive: 0,
-  seventySixToNinetyNine: 0,
-  complete: 0,
-})
-
 function uniqueCourseSections(course: CourseForStats): string[] {
   type CourseGroupWithItems = CourseForStats["CourseGroup"][number]
   type CourseItem = CourseForStats["CourseItem"][number]
@@ -104,18 +91,6 @@ function uniqueCourseSections(course: CourseForStats): string[] {
   const groupedItems = course.CourseGroup.flatMap((group: CourseGroupWithItems) => group.CourseItem)
   const allItems = [...course.CourseItem, ...groupedItems]
   return Array.from(new Set(allItems.map((item: CourseItem) => item.section).filter(Boolean)))
-}
-
-function progressBand(totalProblems: number, completedProblems: number): ProgressBandKey {
-  if (totalProblems <= 0) return "noTrackable"
-  if (completedProblems >= totalProblems) return "complete"
-
-  const completion = percent(completedProblems, totalProblems) ?? 0
-  if (completion <= 0) return "notStarted"
-  if (completion <= 25) return "oneToTwentyFive"
-  if (completion <= 50) return "twentySixToFifty"
-  if (completion <= 75) return "fiftyOneToSeventyFive"
-  return "seventySixToNinetyNine"
 }
 
 export async function calculateCourseStats(courses: CourseForStats[]): Promise<CourseStats[]> {
@@ -175,9 +150,10 @@ export async function calculateCourseStats(courses: CourseForStats[]): Promise<C
         (sum, sectionRef) => sum + (completedByUserSection.get(`${enrolment.userEmail}::${sectionRef}`) ?? 0),
         0
       )
-      const completionPercent = round(percent(completedProblems, totalProblems))
+      const isCompleted = enrolment.status === CourseStatus.COMPLETED
+      const completionPercent = isCompleted ? 100 : round(percent(completedProblems, totalProblems))
       const completionDays =
-        enrolment.status === CourseStatus.COMPLETED && enrolment.completedAt
+        isCompleted && enrolment.completedAt
           ? round(differenceInDays(new Date(enrolment.startedAt), new Date(enrolment.completedAt)))
           : null
 
@@ -190,7 +166,7 @@ export async function calculateCourseStats(courses: CourseForStats[]): Promise<C
         totalProblems,
         completedProblems,
         completionPercent,
-        progressBand: progressBand(totalProblems, completedProblems),
+        progressBand: getProgressBand(completionPercent, totalProblems),
         completionDays,
       }
     })
@@ -198,7 +174,7 @@ export async function calculateCourseStats(courses: CourseForStats[]): Promise<C
     const progressBands = learners.reduce<ProgressBands>((acc: ProgressBands, learner: LearnerCourseStats) => {
       acc[learner.progressBand] += 1
       return acc
-    }, emptyProgressBands())
+    }, emptyProgressBandCounts())
 
     const completionDays = learners
       .map((learner: LearnerCourseStats) => learner.completionDays)

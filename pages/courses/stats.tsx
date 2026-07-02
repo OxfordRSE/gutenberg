@@ -5,12 +5,16 @@ import { getServerSession } from "next-auth/next"
 import { authOptions } from "pages/api/auth/[...nextauth]"
 import prisma from "lib/prisma"
 import Layout from "components/Layout"
+import PercentageMeter from "components/ui/PercentageMeter"
 import Title from "components/ui/Title"
 import StatCard from "components/ui/StatCard"
+import SortableHeadCell from "components/ui/SortableHeadCell"
+import SortableTable from "components/ui/SortableTable"
 import { Material, getMaterial, removeMarkdown } from "lib/material"
 import { makeSerializable } from "lib/utils"
 import { loadPageTemplate, PageTemplate } from "lib/pageTemplate"
 import { BreadcrumbItem } from "lib/breadcrumbs"
+import useSortableRows from "lib/hooks/useSortableRows"
 import {
   calculateCourseStats,
   courseStatsInclude,
@@ -27,12 +31,56 @@ type CourseStatsPageProps = {
   courseStats: CourseStats[]
 }
 
+type CourseSortKey =
+  | "name"
+  | "level"
+  | "totalLearners"
+  | "enrolledCount"
+  | "completedCount"
+  | "droppedCount"
+  | "completionRate"
+  | "averageCompletionDays"
+  | "averageProgressPercent"
+
+const courseTableColumns: Array<{ label: string; sortKey: CourseSortKey }> = [
+  { label: "Course", sortKey: "name" },
+  { label: "Level", sortKey: "level" },
+  { label: "People", sortKey: "totalLearners" },
+  { label: "In progress", sortKey: "enrolledCount" },
+  { label: "Completed", sortKey: "completedCount" },
+  { label: "Dropped", sortKey: "droppedCount" },
+  { label: "Completion rate", sortKey: "completionRate" },
+  { label: "Avg completion", sortKey: "averageCompletionDays" },
+  { label: "Avg progress", sortKey: "averageProgressPercent" },
+]
+
 const breadcrumbs: BreadcrumbItem[] = [{ label: "Courses", href: "/courses" }, { label: "Stats" }]
 
 const CourseStatsPage: NextPage<CourseStatsPageProps> = ({ material, pageInfo, overview, courseStats }) => {
-  const sortedCourses = [...courseStats].sort(
-    (a, b) => b.totalLearners - a.totalLearners || a.name.localeCompare(b.name)
-  )
+  const {
+    sortedRows: sortedCourses,
+    sortKey,
+    sortDirection,
+    updateSort,
+  } = useSortableRows<CourseStats, CourseSortKey>({
+    rows: courseStats,
+    initialSortKey: "totalLearners",
+    initialDirection: "desc",
+    getDefaultDirection: (key) => (key === "name" || key === "level" ? "asc" : "desc"),
+    compareMap: {
+      name: (left, right) => left.name.localeCompare(right.name),
+      level: (left, right) => (left.level || "").localeCompare(right.level || ""),
+      totalLearners: (left, right) => left.totalLearners - right.totalLearners,
+      enrolledCount: (left, right) => left.enrolledCount - right.enrolledCount,
+      completedCount: (left, right) => left.completedCount - right.completedCount,
+      droppedCount: (left, right) => left.droppedCount - right.droppedCount,
+      completionRate: (left, right) => (left.completionRate ?? -1) - (right.completionRate ?? -1),
+      averageCompletionDays: (left, right) => (left.averageCompletionDays ?? -1) - (right.averageCompletionDays ?? -1),
+      averageProgressPercent: (left, right) =>
+        (left.averageProgressPercent ?? -1) - (right.averageProgressPercent ?? -1),
+    },
+    tieBreaker: (left, right) => left.name.localeCompare(right.name),
+  })
 
   return (
     <Layout
@@ -89,45 +137,45 @@ const CourseStatsPage: NextPage<CourseStatsPageProps> = ({ material, pageInfo, o
 
         <div className="mt-8">
           <Title text="By Course" className="text-2xl font-bold" style={{ marginBottom: "0px" }} />
-          <div className="mt-3 overflow-x-auto">
-            <Table data-cy="course-stats-table">
-              <Table.Head>
-                <Table.HeadCell>Course</Table.HeadCell>
-                <Table.HeadCell>Level</Table.HeadCell>
-                <Table.HeadCell>People</Table.HeadCell>
-                <Table.HeadCell>In progress</Table.HeadCell>
-                <Table.HeadCell>Completed</Table.HeadCell>
-                <Table.HeadCell>Dropped</Table.HeadCell>
-                <Table.HeadCell>Completion rate</Table.HeadCell>
-                <Table.HeadCell>Avg completion</Table.HeadCell>
-                <Table.HeadCell>Avg progress</Table.HeadCell>
-              </Table.Head>
-              <Table.Body className="divide-y">
-                {sortedCourses.map((course) => (
-                  <Table.Row key={course.courseId}>
-                    <Table.Cell className="font-medium text-gray-900 dark:text-white">
-                      <Link href={`/courses/${course.courseId}/stats`} className="hover:underline">
-                        {course.name}
-                      </Link>
-                      {course.hidden && (
-                        <Badge color="gray" className="ml-2 inline-flex">
-                          Hidden
-                        </Badge>
-                      )}
-                    </Table.Cell>
-                    <Table.Cell>{course.level || "N/A"}</Table.Cell>
-                    <Table.Cell>{course.totalLearners}</Table.Cell>
-                    <Table.Cell>{course.enrolledCount}</Table.Cell>
-                    <Table.Cell>{course.completedCount}</Table.Cell>
-                    <Table.Cell>{course.droppedCount}</Table.Cell>
-                    <Table.Cell>{formatPercent(course.completionRate)}</Table.Cell>
-                    <Table.Cell>{formatDays(course.averageCompletionDays)}</Table.Cell>
-                    <Table.Cell>{formatPercent(course.averageProgressPercent)}</Table.Cell>
-                  </Table.Row>
-                ))}
-              </Table.Body>
-            </Table>
-          </div>
+          <SortableTable dataCy="course-stats-table">
+            <Table.Head>
+              {courseTableColumns.map((column) => (
+                <SortableHeadCell
+                  key={column.sortKey}
+                  label={column.label}
+                  active={sortKey === column.sortKey}
+                  direction={sortDirection}
+                  onClick={() => updateSort(column.sortKey)}
+                />
+              ))}
+            </Table.Head>
+            <Table.Body className="divide-y">
+              {sortedCourses.map((course) => (
+                <Table.Row key={course.courseId}>
+                  <Table.Cell className="font-medium text-gray-900 dark:text-white">
+                    <Link href={`/courses/${course.courseId}/stats`} className="hover:underline">
+                      {course.name}
+                    </Link>
+                    {course.hidden && (
+                      <Badge color="gray" className="ml-2 inline-flex">
+                        Hidden
+                      </Badge>
+                    )}
+                  </Table.Cell>
+                  <Table.Cell>{course.level || "N/A"}</Table.Cell>
+                  <Table.Cell>{course.totalLearners}</Table.Cell>
+                  <Table.Cell>{course.enrolledCount}</Table.Cell>
+                  <Table.Cell>{course.completedCount}</Table.Cell>
+                  <Table.Cell>{course.droppedCount}</Table.Cell>
+                  <Table.Cell>{formatPercent(course.completionRate)}</Table.Cell>
+                  <Table.Cell>{formatDays(course.averageCompletionDays)}</Table.Cell>
+                  <Table.Cell>
+                    <PercentageMeter value={course.averageProgressPercent} />
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </SortableTable>
         </div>
       </div>
     </Layout>
