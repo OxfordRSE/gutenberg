@@ -117,7 +117,7 @@ describe("<CourseCard />", () => {
   it("renders tags as inert text when no onTagClick is provided", () => {
     cy.mount(<CourseCard course={baseCourse} />)
 
-    cy.contains("Basics").should("be.visible")
+    cy.contains("basics").should("be.visible")
     cy.get("[data-cy='tag-filter-button-basics']").should("not.exist")
     cy.get("[data-cy='tag-filter-link-basics']").should("not.exist")
   })

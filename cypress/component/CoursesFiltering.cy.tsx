@@ -127,4 +127,30 @@ describe("<CoursesFilteringHarness />", () => {
     cy.contains("Functional C++").should("be.visible")
     cy.contains("Python for Data").should("be.visible")
   })
+
+  it("filters the list when a tag chip on a course card is clicked, and keeps other filters when toggled off", () => {
+    cy.mount(<CoursesFilteringHarness />)
+
+    // Only "Intro to Python" has the "basics" tag, so this button is unique to
+    // its card. Clicking it must update the same filter state as the filter
+    // panel, not navigate away from it.
+    cy.get("[data-cy='tag-filter-button-basics']").click()
+
+    cy.contains("Intro to Python").should("be.visible")
+    cy.contains("Functional C++").should("not.exist")
+    cy.contains("Python for Data").should("not.exist")
+    cy.get("[data-cy='active-tag-basics']").should("be.visible")
+
+    // Selecting an unrelated filter afterwards must not drop the tag that was
+    // set via the card - both filters should apply together.
+    cy.contains("button", "Filters").click()
+    cy.get("select").select("beginner")
+    cy.contains("Intro to Python").should("be.visible")
+    cy.get("[data-cy='active-tag-basics']").should("be.visible")
+
+    cy.get("[data-cy='active-tag-basics']").click()
+    cy.contains("Intro to Python").should("be.visible")
+    cy.contains("Functional C++").should("not.exist")
+    cy.contains("Python for Data").should("not.exist")
+  })
 })

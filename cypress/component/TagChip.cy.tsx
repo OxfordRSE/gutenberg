@@ -5,7 +5,7 @@ describe("<TagChip />", () => {
   it("renders as plain text when neither onClick nor linkToFilter is given", () => {
     cy.mount(<TagChip tag="basics" />)
 
-    cy.contains("Basics").should("be.visible")
+    cy.contains("basics").should("be.visible")
     cy.get("a").should("not.exist")
     cy.get("button").should("not.exist")
   })
