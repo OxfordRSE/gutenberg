@@ -13,9 +13,7 @@ describe("<TagChip />", () => {
   it("renders as a link to the prefiltered course list when linkToFilter is set", () => {
     cy.mount(<TagChip tag="basics" linkToFilter />)
 
-    cy.get("[data-cy='tag-filter-link-basics']")
-      .should("have.attr", "href")
-      .and("include", "/courses?tag=basics")
+    cy.get("[data-cy='tag-filter-link-basics']").should("have.attr", "href").and("include", "/courses?tag=basics")
     cy.get("button").should("not.exist")
   })
 
