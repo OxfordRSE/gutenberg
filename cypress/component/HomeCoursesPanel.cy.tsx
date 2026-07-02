@@ -122,4 +122,26 @@ describe("<HomeCoursesPanel />", () => {
     cy.contains("Hidden Course").should("not.exist")
     cy.contains("Browse all 2 courses").should("be.visible")
   })
+
+  it("renders course tags as links to the prefiltered course list", () => {
+    cy.intercept("GET", "**/api/course", {
+      statusCode: 200,
+      body: { courses },
+    }).as("getCourses")
+
+    cy.intercept("GET", "**/api/course/progress", {
+      statusCode: 200,
+      body: { progressByCourseId: { 1: { total: 4, completed: 2, sections: [] } } },
+    }).as("getMyCourseProgress")
+
+    cy.mount(<HomeCoursesPanel initialCourses={courses} />)
+
+    cy.wait("@getCourses")
+    cy.wait("@getMyCourseProgress")
+
+    // "Intro to C++" (enrolled) shows tag "basics"; "Python for Data" (not
+    // enrolled) shows tag "data" - both should deep-link into /courses.
+    cy.get("[data-cy='tag-filter-link-basics']").should("have.attr", "href").and("include", "/courses?tag=basics")
+    cy.get("[data-cy='tag-filter-link-data']").should("have.attr", "href").and("include", "/courses?tag=data")
+  })
 })

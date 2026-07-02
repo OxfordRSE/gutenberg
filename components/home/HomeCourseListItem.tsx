@@ -54,7 +54,7 @@ const HomeCourseListItem: React.FC<Props> = ({ course, progress: providedProgres
           {displayTags.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-2">
               {displayTags.map((tag: string) => {
-                return <TagChip key={tag} tag={tag} />
+                return <TagChip key={tag} tag={tag} linkToFilter />
               })}
             </div>
           )}

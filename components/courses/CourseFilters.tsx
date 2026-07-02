@@ -10,6 +10,7 @@ type Props = {
   setSelectedLevel: (value: string) => void
   selectedTags: string[]
   setSelectedTags: (value: string[]) => void
+  toggleTag: (tag: string) => void
   selectedLanguages: string[]
   setSelectedLanguages: (value: string[]) => void
   tagOptions: string[]
@@ -23,6 +24,7 @@ const CourseFilters: React.FC<Props> = ({
   setSelectedLevel,
   selectedTags,
   setSelectedTags,
+  toggleTag,
   selectedLanguages,
   setSelectedLanguages,
   tagOptions,
@@ -36,14 +38,6 @@ const CourseFilters: React.FC<Props> = ({
     setSelectedLevel("")
     setSelectedTags([])
     setSelectedLanguages([])
-  }
-
-  const toggleTag = (tag: string) => {
-    if (selectedTags.includes(tag)) {
-      setSelectedTags(selectedTags.filter((t) => t !== tag))
-      return
-    }
-    setSelectedTags([...selectedTags, tag])
   }
 
   const toggleLanguage = (language: string) => {
@@ -66,6 +60,7 @@ const CourseFilters: React.FC<Props> = ({
             <button
               type="button"
               onClick={() => setSelectedLevel("")}
+              data-cy="active-level"
               className="flex items-center gap-1 rounded-full border border-gray-200 bg-white px-2.5 py-0.5 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
             >
               {selectedLevel}
@@ -89,6 +84,7 @@ const CourseFilters: React.FC<Props> = ({
                 key={language}
                 type="button"
                 onClick={() => toggleLanguage(language)}
+                data-cy={`active-language-${language}`}
                 className="flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold shadow-sm"
                 style={{ backgroundColor: color.background, borderColor: "transparent", color: color.text }}
               >
@@ -105,6 +101,7 @@ const CourseFilters: React.FC<Props> = ({
                   key={tag}
                   type="button"
                   onClick={() => toggleTag(tag)}
+                  data-cy={`active-tag-${tag}`}
                   className="flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold shadow-sm"
                   style={{ backgroundColor: color.background, borderColor: "transparent", color: color.text }}
                 >
@@ -116,7 +113,7 @@ const CourseFilters: React.FC<Props> = ({
           )}
         </div>
         {hasFilters && (
-          <Button size="xs" color="gray" onClick={clearFilters}>
+          <Button size="xs" color="gray" onClick={clearFilters} data-cy="clear-filters">
             Clear
           </Button>
         )}
@@ -130,7 +127,11 @@ const CourseFilters: React.FC<Props> = ({
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Search courses..."
             />
-            <Select value={selectedLevel} onChange={(event) => setSelectedLevel(event.target.value)}>
+            <Select
+              data-cy="level-filter"
+              value={selectedLevel}
+              onChange={(event) => setSelectedLevel(event.target.value)}
+            >
               <option value="">All levels</option>
               <option value="beginner">Beginner</option>
               <option value="intermediate">Intermediate</option>
@@ -152,6 +153,7 @@ const CourseFilters: React.FC<Props> = ({
                           key={language}
                           type="button"
                           onClick={() => toggleLanguage(language)}
+                          data-cy={`language-filter-${language}`}
                           className={`rounded-full border-2 px-3 py-1 text-xs font-semibold transition ${
                             isActive
                               ? "shadow-sm"
