@@ -72,17 +72,67 @@ describe("courses tag filters", () => {
     cy.location("search").should("include", "level=beginner")
   })
 
+  it("visiting /courses?level=X shows filtered content with active level pill", () => {
+    cy.visit("/courses?level=beginner")
+    cy.location("search").should("include", "level=beginner")
+    cy.get("[data-cy='active-level']").should("be.visible").and("contain.text", "beginner")
+    cy.contains("Intro to Python").should("be.visible")
+    cy.contains("Intro to C++").should("be.visible")
+    cy.contains("Software Architecture in Python").should("not.exist")
+    cy.contains("Software Architecture in C++").should("not.exist")
+  })
+
+  it("selecting a language updates the URL", () => {
+    cy.visit("/courses")
+    cy.contains("button", "Filters").click()
+    cy.get("[data-cy='language-filter-python']").click()
+    cy.location("search").should("include", "lang=python")
+  })
+
+  it("visiting /courses?lang=X shows filtered content with active language pill", () => {
+    cy.visit("/courses?lang=python")
+    cy.location("search").should("include", "lang=python")
+    cy.get("[data-cy='active-language-python']").should("be.visible")
+    cy.contains("Intro to Python").should("be.visible")
+    cy.contains("Software Architecture in Python").should("be.visible")
+    cy.contains("Intro to C++").should("not.exist")
+    cy.contains("Software Architecture in C++").should("not.exist")
+  })
+
   it("removing a tag updates the URL", () => {
     cy.visit("/courses?tag=programming")
     cy.get("[data-cy='active-tag-programming']").click()
     cy.location("search").should("not.include", "tag=programming")
   })
 
+  it("removing a language updates the URL", () => {
+    cy.visit("/courses?lang=python")
+    cy.get("[data-cy='active-language-python']").click()
+    cy.location("search").should("not.include", "lang=python")
+  })
+
+  it("sharing a URL with tag, level, and language filters all set hydrates every filter at once", () => {
+    cy.visit("/courses?tag=programming&level=beginner&lang=python")
+    cy.location("search").should("include", "tag=programming")
+    cy.location("search").should("include", "level=beginner")
+    cy.location("search").should("include", "lang=python")
+
+    cy.get("[data-cy='active-tag-programming']").should("be.visible")
+    cy.get("[data-cy='active-level']").should("be.visible")
+    cy.get("[data-cy='active-language-python']").should("be.visible")
+
+    // Only "Intro to Python" is beginner, python, and tagged programming.
+    cy.contains("Intro to Python").should("be.visible")
+    cy.contains("Intro to C++").should("not.exist")
+    cy.contains("Software Architecture in Python").should("not.exist")
+  })
+
   it("clear filters removes all query params", () => {
-    cy.visit("/courses?tag=programming&level=beginner")
+    cy.visit("/courses?tag=programming&level=beginner&lang=python")
     cy.get("[data-cy='clear-filters']").click()
     cy.location("search").should("not.include", "tag=")
     cy.location("search").should("not.include", "level=")
+    cy.location("search").should("not.include", "lang=")
   })
 
   it("initial SSR render with tag param shows filter applied without layout shift", () => {

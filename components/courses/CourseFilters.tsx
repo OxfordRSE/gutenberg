@@ -60,6 +60,7 @@ const CourseFilters: React.FC<Props> = ({
             <button
               type="button"
               onClick={() => setSelectedLevel("")}
+              data-cy="active-level"
               className="flex items-center gap-1 rounded-full border border-gray-200 bg-white px-2.5 py-0.5 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
             >
               {selectedLevel}
@@ -83,6 +84,7 @@ const CourseFilters: React.FC<Props> = ({
                 key={language}
                 type="button"
                 onClick={() => toggleLanguage(language)}
+                data-cy={`active-language-${language}`}
                 className="flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold shadow-sm"
                 style={{ backgroundColor: color.background, borderColor: "transparent", color: color.text }}
               >
@@ -151,6 +153,7 @@ const CourseFilters: React.FC<Props> = ({
                           key={language}
                           type="button"
                           onClick={() => toggleLanguage(language)}
+                          data-cy={`language-filter-${language}`}
                           className={`rounded-full border-2 px-3 py-1 text-xs font-semibold transition ${
                             isActive
                               ? "shadow-sm"
