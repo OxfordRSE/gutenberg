@@ -116,6 +116,10 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
       selectedLanguages,
     })
 
+  const toggleTag = (tag: string) => {
+    setSelectedTags((current) => (current.includes(tag) ? current.filter((t) => t !== tag) : [...current, tag]))
+  }
+
   const filteredMyCourses = myCourses.filter(applyFilters).sort((a, b) => {
     const aStatus = a.UserOnCourse?.[0]?.status
     const bStatus = b.UserOnCourse?.[0]?.status
@@ -226,6 +230,7 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
           setSelectedLevel={setSelectedLevel}
           selectedTags={selectedTags}
           setSelectedTags={setSelectedTags}
+          toggleTag={toggleTag}
           selectedLanguages={selectedLanguages}
           setSelectedLanguages={setSelectedLanguages}
           tagOptions={tagOptions}
@@ -248,7 +253,11 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
               <div className="mb-8">
                 <Title text="My Courses" className="text-2xl font-bold" style={{ marginBottom: "0px" }} />
                 <div className="mt-3">
-                  <CourseGrid courses={filteredMyCourses} progressByCourseId={progressByCourseId} />
+                  <CourseGrid
+                    courses={filteredMyCourses}
+                    progressByCourseId={progressByCourseId}
+                    onTagClick={toggleTag}
+                  />
                 </div>
               </div>
             )}
@@ -256,7 +265,7 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
               <div>
                 <Title text="Available Courses" className="text-2xl font-bold" style={{ marginBottom: "0px" }} />
                 <div className="mt-3">
-                  <CourseGrid courses={filteredOtherCourses} />
+                  <CourseGrid courses={filteredOtherCourses} onTagClick={toggleTag} />
                 </div>
               </div>
             )}
@@ -266,7 +275,7 @@ const Courses: NextPage<CoursesProps> = ({ material, courses: initialCourses, pa
           <div className="mt-8">
             <Title text="Hidden Courses" className="text-2xl font-bold" style={{ marginBottom: "0px" }} />
             <div className="mt-3">
-              <CourseGrid courses={filteredHiddenCourses} />
+              <CourseGrid courses={filteredHiddenCourses} onTagClick={toggleTag} />
             </div>
           </div>
         )}

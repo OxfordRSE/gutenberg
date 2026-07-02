@@ -59,6 +59,10 @@ const CoursesFilteringHarness: React.FC = () => {
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([])
 
+  const toggleTag = (tag: string) => {
+    setSelectedTags((current) => (current.includes(tag) ? current.filter((t) => t !== tag) : [...current, tag]))
+  }
+
   const filteredCourses = courses.filter((course) =>
     matchesCourseFilters(course, {
       search,
@@ -80,13 +84,14 @@ const CoursesFilteringHarness: React.FC = () => {
         setSelectedLevel={setSelectedLevel}
         selectedTags={selectedTags}
         setSelectedTags={setSelectedTags}
+        toggleTag={toggleTag}
         selectedLanguages={selectedLanguages}
         setSelectedLanguages={setSelectedLanguages}
         tagOptions={tagOptions}
         languageOptions={languageOptions}
       />
       {filteredCourses.length > 0 ? (
-        <CourseGrid courses={filteredCourses} />
+        <CourseGrid courses={filteredCourses} onTagClick={toggleTag} />
       ) : (
         <Card>
           <p>No courses match your filters.</p>

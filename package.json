@@ -93,7 +93,7 @@
     "cypress": "^15.10.0",
     "cypress-real-events": "^1.15.0",
     "cypress-terminal-report": "^5.3.12",
-    "eslint": "10.4.0",
+    "eslint": "9.7.0",
     "eslint-config-next": "16.2.6",
     "jose": "^4.15.9",
     "node-gyp": "12.3.0",

@@ -5,8 +5,23 @@ describe("courses tag filters", () => {
     cy.login(admin)
   })
 
-  it("clicking a tag chip navigates to /courses with correct tag param", () => {
+  it("clicking a tag chip on a course card sets local filter state and syncs the URL", () => {
     cy.visit("/courses")
+    cy.get("[data-cy^='tag-filter-button-']")
+      .first()
+      .then(($button) => {
+        const tag = $button.attr("data-cy").replace("tag-filter-button-", "")
+        cy.wrap($button).click()
+        // The URL and the visible active-tag pill must agree - they're driven by the
+        // same local state, not a page navigation racing a separate filter state.
+        cy.location("pathname").should("eq", "/courses")
+        cy.location("search").should("include", `tag=${tag}`)
+        cy.get(`[data-cy='active-tag-${tag}']`).should("be.visible")
+      })
+  })
+
+  it("clicking a tag chip on the home page deep-links to the prefiltered course list", () => {
+    cy.visit("/")
     cy.get("[data-cy^='tag-filter-link-']")
       .first()
       .then(($link) => {
@@ -14,6 +29,7 @@ describe("courses tag filters", () => {
         cy.wrap($link).click()
         cy.location("pathname").should("eq", "/courses")
         cy.location("search").should("include", `tag=${tag}`)
+        cy.get(`[data-cy='active-tag-${tag}']`).should("be.visible")
       })
   })
 

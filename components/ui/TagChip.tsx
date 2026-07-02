@@ -8,15 +8,30 @@ type Props = {
   variant?: "solid" | "subtle"
   className?: string
   linkToFilter?: boolean
+  onClick?: () => void
 }
 
-const TagChip: React.FC<Props> = ({ tag, variant = "solid", className, linkToFilter = false }) => {
+const TagChip: React.FC<Props> = ({ tag, variant = "solid", className, linkToFilter = false, onClick }) => {
   const color = variant === "subtle" ? getSubtleTagColor(tag) : getTagColor(tag)
   const baseClass =
     variant === "subtle"
       ? `inline-flex items-center rounded-full border px-1.5 py-0.5 text-[11px] font-medium uppercase tracking-wide leading-none ${className ?? ""}`.trim()
       : `inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium leading-none ${className ?? ""}`.trim()
   const style = { backgroundColor: color.background, borderColor: color.border ?? color.background, color: color.text }
+
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        data-cy={`tag-filter-button-${tag}`}
+        className={`${baseClass} hover:opacity-80 transition-opacity cursor-pointer`}
+        style={style}
+      >
+        {formatTagLabel(tag)}
+      </button>
+    )
+  }
 
   if (linkToFilter) {
     return (

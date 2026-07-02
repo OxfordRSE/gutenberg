@@ -10,6 +10,7 @@ type Props = {
   setSelectedLevel: (value: string) => void
   selectedTags: string[]
   setSelectedTags: (value: string[]) => void
+  toggleTag: (tag: string) => void
   selectedLanguages: string[]
   setSelectedLanguages: (value: string[]) => void
   tagOptions: string[]
@@ -23,6 +24,7 @@ const CourseFilters: React.FC<Props> = ({
   setSelectedLevel,
   selectedTags,
   setSelectedTags,
+  toggleTag,
   selectedLanguages,
   setSelectedLanguages,
   tagOptions,
@@ -36,14 +38,6 @@ const CourseFilters: React.FC<Props> = ({
     setSelectedLevel("")
     setSelectedTags([])
     setSelectedLanguages([])
-  }
-
-  const toggleTag = (tag: string) => {
-    if (selectedTags.includes(tag)) {
-      setSelectedTags(selectedTags.filter((t) => t !== tag))
-      return
-    }
-    setSelectedTags([...selectedTags, tag])
   }
 
   const toggleLanguage = (language: string) => {

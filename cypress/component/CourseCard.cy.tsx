@@ -104,4 +104,21 @@ describe("<CourseCard />", () => {
     cy.wait("@getZeroProgressCourse")
     cy.contains("No trackable problems").should("be.visible")
   })
+
+  it("calls onTagClick with the tag instead of navigating when a tag is clicked", () => {
+    const onTagClick = cy.stub().as("onTagClick")
+    cy.mount(<CourseCard course={baseCourse} onTagClick={onTagClick} />)
+
+    cy.get("[data-cy='tag-filter-button-basics']").should("be.visible").click()
+    cy.get("@onTagClick").should("have.been.calledOnceWith", "basics")
+    cy.get("[data-cy='tag-filter-link-basics']").should("not.exist")
+  })
+
+  it("renders tags as inert text when no onTagClick is provided", () => {
+    cy.mount(<CourseCard course={baseCourse} />)
+
+    cy.contains("Basics").should("be.visible")
+    cy.get("[data-cy='tag-filter-button-basics']").should("not.exist")
+    cy.get("[data-cy='tag-filter-link-basics']").should("not.exist")
+  })
 })

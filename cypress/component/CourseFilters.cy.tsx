@@ -7,6 +7,10 @@ const CourseFiltersHarness: React.FC = () => {
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([])
 
+  const toggleTag = (tag: string) => {
+    setSelectedTags((current) => (current.includes(tag) ? current.filter((t) => t !== tag) : [...current, tag]))
+  }
+
   return (
     <CourseFilters
       search={search}
@@ -15,6 +19,7 @@ const CourseFiltersHarness: React.FC = () => {
       setSelectedLevel={setSelectedLevel}
       selectedTags={selectedTags}
       setSelectedTags={setSelectedTags}
+      toggleTag={toggleTag}
       selectedLanguages={selectedLanguages}
       setSelectedLanguages={setSelectedLanguages}
       tagOptions={["basics", "functional"]}

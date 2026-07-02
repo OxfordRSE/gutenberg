@@ -14,9 +14,10 @@ import useActiveCourse from "lib/hooks/useActiveCourse"
 type Props = {
   course: Course
   progress?: CourseProgress
+  onTagClick?: (tag: string) => void
 }
 
-const CourseCard: React.FC<Props> = ({ course, progress: providedProgress }) => {
+const CourseCard: React.FC<Props> = ({ course, progress: providedProgress, onTagClick }) => {
   const languageCount = course.language?.length ?? 0
   const languageLabel = languageCount === 1 ? "Language:" : "Languages:"
   const enrolment = course.UserOnCourse?.[0]
@@ -61,7 +62,7 @@ const CourseCard: React.FC<Props> = ({ course, progress: providedProgress }) => 
       <div className="mt-3 flex flex-wrap items-center gap-2">
         {course.tags.length > 0 &&
           course.tags.map((tag: string) => {
-            return <TagChip key={tag} tag={tag} linkToFilter />
+            return <TagChip key={tag} tag={tag} onClick={onTagClick ? () => onTagClick(tag) : undefined} />
           })}
         <div className="ml-auto flex items-center gap-2">
           <CourseActiveActions courseExternalId={course.externalId} status={enrolment?.status ?? null} />
