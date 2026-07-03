@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next"
 import prisma from "lib/prisma"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "../auth/[...nextauth]"
+import { EventStatus } from "@prisma/client"
 import type { UserOnEvent } from "@prisma/client"
 
 export type Data = {
@@ -63,26 +64,26 @@ const UserOnEvent = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
         return
       }
       break
-    case "PUT":
-      if (!isAdmin && userEmail !== req.body.userOnEvent.userEmail) {
-        res.status(401).send({ error: "Not authorised" })
+    case "PUT": {
+      // Changing a UserOnEvent's status is admin only
+      if (!isAdmin) {
+        res.status(403).json({ error: "Forbidden" })
         return
       }
-      userOnEvent = req.body.userOnEvent
-      if (userOnEvent) {
-        updatedUserOnEvent = await prisma.userOnEvent.update({
-          where: { userEmail_eventId: { userEmail: userOnEvent.userEmail, eventId: userOnEvent.eventId } },
-          data: req.body.userOnEvent,
-        })
-      }
-      if (updatedUserOnEvent) {
-        res.status(200).json({ userOnEvent: updatedUserOnEvent })
-        return
-      } else {
-        res.status(404).json({ error: "failed to update userOnEvent" })
+      const targetEmail = req.body?.userOnEvent?.userEmail
+      const status = req.body?.userOnEvent?.status
+      if (typeof targetEmail !== "string" || !Object.values(EventStatus).includes(status)) {
+        res.status(400).json({ error: "Invalid userEmail or status" })
         return
       }
-      break
+      // the record is pinned to the eventId in the URL — never a value from the request body.
+      updatedUserOnEvent = await prisma.userOnEvent.update({
+        where: { userEmail_eventId: { userEmail: targetEmail, eventId } },
+        data: { status },
+      })
+      res.status(200).json({ userOnEvent: updatedUserOnEvent })
+      return
+    }
     case "DELETE":
       if (!isAdmin && userEmail !== req.body.userOnEvent.userEmail) {
         res.status(401).json({ error: "Unauthorized" })
