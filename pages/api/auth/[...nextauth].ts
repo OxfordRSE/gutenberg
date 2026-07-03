@@ -107,7 +107,18 @@ export const authOptions: NextAuthOptions = {
       return true
     },
     async jwt({ token }) {
-      token.userRole = "admin"
+      // Reflect the persisted admin flag on the token rather than granting
+      // every signed-in user the admin role. (Server routes still authorize off
+      // the DB `user.admin` field; this keeps the token claim from lying.)
+      if (token.email) {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: token.email },
+          select: { admin: true },
+        })
+        token.userRole = dbUser?.admin ? "admin" : "user"
+      } else {
+        token.userRole = "user"
+      }
       return token
     },
   },
