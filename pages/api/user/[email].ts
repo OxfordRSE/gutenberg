@@ -66,10 +66,17 @@ const commentHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) =
       res.status(401).json({ error: "Unauthorized, not user owner or admin" })
       return
     }
+    // Whitelist editable fields.
+    const body = (req.body ?? {}) as { name?: unknown; image?: unknown }
+    const data: Prisma.UserUpdateInput = {}
+    if (typeof body.name === "string") data.name = body.name
+    if (typeof body.image === "string") data.image = body.image
+
     const user = await prisma.user.update({
       where: { email: reqEmail },
-      data: req.body,
+      data,
     })
+    res.status(200).json({ user })
   } else {
     res.status(405).json({ error: "Method not allowed" })
   }

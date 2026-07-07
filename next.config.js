@@ -11,6 +11,8 @@ const nextConfig = {
   output: "standalone",
   outputFileTracingRoot: fileURLToPath(new URL(".", import.meta.url)),
   reactStrictMode: true,
+  // Don't advertise the framework/version in the X-Powered-By header.
+  poweredByHeader: false,
   trailingSlash: false,
   logging: {
     fetches: {
@@ -50,6 +52,23 @@ const nextConfig = {
         ],
         destination: "https://train.rse.ox.ac.uk/:path*",
         permanent: true,
+      },
+    ]
+  },
+  async headers() {
+    const securityHeaders = [
+      // Force HTTPS.
+      { key: "Strict-Transport-Security", value: "max-age=86400" },
+      // Block cross-origin framing (clickjacking).
+      { key: "X-Frame-Options", value: "SAMEORIGIN" },
+      { key: "X-Content-Type-Options", value: "nosniff" },
+      { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+      { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+    ]
+    return [
+      {
+        source: "/:path*",
+        headers: securityHeaders,
       },
     ]
   },

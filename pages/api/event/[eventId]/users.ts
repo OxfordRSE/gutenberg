@@ -49,7 +49,7 @@ const EventUsers = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
   const isInstructor = event?.UserOnEvent.some(
     (userOnEvent: UsersWithUserOnEvents) =>
-      userOnEvent?.user?.name === user?.name && userOnEvent.status === "INSTRUCTOR"
+      userOnEvent?.user?.email === userEmail && userOnEvent.status === "INSTRUCTOR"
   )
   const isAdmin = currentUser?.admin === true
 
