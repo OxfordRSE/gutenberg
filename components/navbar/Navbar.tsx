@@ -470,7 +470,7 @@ const Navbar: React.FC<Props> = ({
             </Link>
           </li>
         )}
-        {enableSearch && (
+        {enableSearch && isLoggedIn && (
           <li>
             <Tooltip content="Search Material">
               <button
