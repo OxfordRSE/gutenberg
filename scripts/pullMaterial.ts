@@ -10,13 +10,13 @@ export async function initRepos() {
     fs.mkdirSync(baseMaterialDir)
   }
   const repos = readRepos()
-  Object.keys(repos).forEach((key: string) => {
-    {
+  await Promise.all(
+    Object.keys(repos).map((key: string) => {
       console.log(repos[key].url, repos[key].path)
       // @ts-ignore-error
-      initRepo(repos[key].path, repos[key].url)
-    }
-  })
+      return initRepo(repos[key].path, repos[key].url)
+    })
+  )
 }
 
 // for each repo defined in the yaml, make a git repo and pull the material into basematerial
@@ -37,15 +37,18 @@ async function initRepo(dir: string, url: string) {
   const git = simpleGit({ baseDir: materialDir })
   const remotes = await git.getRemotes()
   if (remotes.length === 0) {
-    git.init().addRemote("origin", url)
+    await git.init().addRemote("origin", url)
   }
   if (fs.readdirSync(materialDir).length === 0) {
-    await git.clone(url, ".").then(() => {
-      return git
-    })
+    await git.clone(url, ".")
   }
-  git.stash()
-  git.pull()
+  await git.stash()
+  await git.pull()
 }
 
-initRepos()
+// only run when this script is executed directly (e.g. `yarn pullmat`), not when
+// initRepos is imported elsewhere — importing used to trigger a second, racing pull
+const isMain = import.meta.url === `file://${process.argv[1]}`
+if (isMain) {
+  initRepos()
+}
