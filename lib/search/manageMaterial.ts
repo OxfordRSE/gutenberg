@@ -11,18 +11,16 @@ const materialDir = process.env.MATERIAL_DIR as string
 export async function refreshMaterial() {
   console.log("Material refresh running")
   // check if material directory exists
-  initRepos().then(() => {
-    console.log("Parsing pages into JSON")
-    materialToJson().then((sections) => {
-      if (sections[0].vector.length !== 0) {
-        // if this condition passes then it means that we have embedded vectors
-        // if we have embedded vectors then we should write the json to index
-        // otherwise we should not
-        console.log("Writing JSON to index")
-        jsonToIndex(sections)
-      }
-    })
-  })
+  await initRepos()
+  console.log("Parsing pages into JSON")
+  const sections = await materialToJson()
+  if (sections.length > 0 && sections[0].vector.length !== 0) {
+    // if this condition passes then it means that we have embedded vectors
+    // if we have embedded vectors then we should write the json to index
+    // otherwise we should not
+    console.log("Writing JSON to index")
+    await jsonToIndex(sections)
+  }
 }
 
 const MATERIAL_JSON_PATH =
