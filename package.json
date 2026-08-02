@@ -94,7 +94,7 @@
     "eslint-config-next": "^16.2.10",
     "jose": "^4.15.9",
     "node-gyp": "12.3.0",
-    "postcss": "^8.5.15",
+    "postcss": "^8.5.18",
     "prettier": "^3.6.2",
     "prisma": "^6.19.2",
     "start-server-and-test": "^3.0.11",
