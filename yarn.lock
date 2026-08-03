@@ -5891,7 +5891,7 @@ __metadata:
     jotai: ^2.15.1
     js-yaml: ^4.3.0
     next: ^16.2.9
-    next-auth: ^4.24.14
+    next-auth: ^4.24.15
     next-plausible: 3.12.5
     next-themes: 0.4.6
     node-gyp: 12.3.0
@@ -8209,9 +8209,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next-auth@npm:^4.24.14":
-  version: 4.24.14
-  resolution: "next-auth@npm:4.24.14"
+"next-auth@npm:^4.24.15":
+  version: 4.24.15
+  resolution: "next-auth@npm:4.24.15"
   dependencies:
     "@babel/runtime": ^7.20.13
     "@panva/hkdf": ^1.0.2
@@ -8221,7 +8221,7 @@ __metadata:
     openid-client: ^5.4.0
     preact: ^10.6.3
     preact-render-to-string: ^5.1.19
-    uuid: ^8.3.2
+    uuid: ^11.1.1
   peerDependencies:
     "@auth/core": 0.34.3
     next: ^12.2.5 || ^13 || ^14 || ^15 || ^16
@@ -8233,7 +8233,7 @@ __metadata:
       optional: true
     nodemailer:
       optional: true
-  checksum: fb1c8c8bbee8f2475c10369d2565f4af54a1a2d9f829eb164747c07995a7f01b4a14bc821eac6d04c82d3782b52fca9c5c8a2019a19cf015eda98f784c5cd565
+  checksum: 8ce20aff76fcdcd95deab322bce3adfa12f9858830689d56658c5cfb98e787aaddc85009dd39c2709f9664af14067638c906793cf17bed7d8a8c15b28d3df9f9
   languageName: node
   linkType: hard
 
