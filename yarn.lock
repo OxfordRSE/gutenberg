@@ -5896,7 +5896,7 @@ __metadata:
     next-themes: 0.4.6
     node-gyp: 12.3.0
     openai: ^4.104.0
-    postcss: ^8.5.15
+    postcss: ^8.5.18
     prettier: ^3.6.2
     prisma: ^6.19.2
     react: ^19.2.3
