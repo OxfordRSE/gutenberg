@@ -25,7 +25,7 @@ First, clone the repository:
 git clone https://github.com/OxfordRSE/gutenberg.git
 ```
 
-Then navigate to the newly created gutenberg base directory and clone the [material repository](https://github.com/UNIVERSE-HPC/course-material) into the `.material` folder.
+Then navigate to the newly created gutenberg base directory and clone the [material repository](https://github.com/UNIVERSE-HPC/course-material) into the `.material` folder. If you are changing the material itself, see the [course-material authoring guide]({{ "/authoring/" | relative_url }}) as well.
 
 ```bash
 git clone https://github.com/UNIVERSE-HPC/course-material .material
@@ -78,6 +78,8 @@ yarn prisma migrate reset --force
 ## Providing course material
 
 Course material is provided by git repositories defined by the "repos" in the [configuration yaml]({{ "/config/template" | relative_url }}).
+
+The [course-material authoring guide]({{ "/authoring/" | relative_url }}) documents the repository structure and metadata expected by Gutenberg.
 
 Once you have installed the dependencies, you can populate the material directory with:
 
