@@ -1,6 +1,6 @@
 import React from "react"
 import Link from "next/link"
-import { Grid, Paper, Typography, Box, Chip } from "@mui/material"
+import { ImageList, ImageListItem, Card, CardActionArea, Typography, Box, Chip, useTheme, useMediaQuery } from "@mui/material"
 import { MaterialCourse, MaterialTheme } from "lib/material"
 import { formatTagLabel } from "lib/tagLabels"
 
@@ -26,31 +26,37 @@ function CourseGrid({ course, theme }: { course: MaterialCourse; theme: Material
   let tagColorIndex = 0
   const tagColorMap: { [key: string]: string } = {}
 
+  const muiTheme = useTheme()
+  const isDark = muiTheme.palette.mode === "dark"
+  const isSm = useMediaQuery(muiTheme.breakpoints.up("sm"))
+  const cols = Math.min(files.length, isSm ? 2 : 1) || 1
+
+  const accentColor = muiTheme.palette.info.main
+
   return (
     <div className="mx-auto max-w-6xl prose-slate dark:prose-invert">
-      <Grid container spacing={2} sx={{ paddingBottom: "16px", justifyContent: "center" }}>
+      <ImageList variant="masonry" cols={cols} gap={16} sx={{ pb: 2 }}>
         {files.map((column, colIndex) => {
           const commonTag = findCommonTag(column)
           return (
-            <Grid
-              item
-              xs={12}
-              sm={8}
-              md={6}
-              lg={6}
-              key={colIndex}
-              sx={{ maxWidth: { xs: "100%", sm: "50%", md: "50%" }, flexBasis: "auto" }}
-            >
+            <ImageListItem key={colIndex}>
               {commonTag && (
                 <Box
-                  className="bg-slate-50 border-gray-200 text-black dark:bg-gray-800 dark:border-gray-700 dark:text-white p-2"
-                  sx={{ borderRadius: "8px 8px 0 0", textAlign: "center" }}
+                  sx={{
+                    borderRadius: "6px 6px 0 0",
+                    textAlign: "center",
+                    p: 1,
+                    bgcolor: "action.selected",
+                    borderTop: `3px solid ${accentColor}`,
+                  }}
                 >
-                  <Typography variant="h6">{formatTagLabel(commonTag).toUpperCase()}</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 600, textWrap: "balance" }}>
+                    {formatTagLabel(commonTag).toUpperCase()}
+                  </Typography>
                 </Box>
               )}
               <nav aria-label={commonTag || undefined}>
-                <Grid component="ul" container spacing={0}>
+                <Box component="ul" sx={{ listStyle: "none", m: 0, p: 0 }}>
                   {column.map((file, rowIndex) => {
                     const section = findSectionByName(file)
                     if (!section) return null
@@ -61,16 +67,18 @@ function CourseGrid({ course, theme }: { course: MaterialCourse; theme: Material
                     const isLastItem = rowIndex === column.length - 1
 
                     return (
-                      <Grid component="li" item xs={12} key={rowIndex}>
-                        <Link href={url}>
-                          <Paper
-                            elevation={3}
-                            sx={{
-                              borderRadius: isFirstItem ? "8px 8px 0 0" : isLastItem ? "0 0 8px 8px" : "0px",
-                              p: 2,
-                              textAlign: "center",
-                            }}
-                          >
+                      <Box component="li" key={rowIndex}>
+                        <Card
+                          elevation={0}
+                          sx={{
+                            borderRadius: isFirstItem ? "6px 6px 0 0" : isLastItem ? "0 0 6px 6px" : "0px",
+                            bgcolor: isDark ? "background.default" : undefined,
+                            border: "1px solid",
+                            borderColor: "divider",
+                            borderTop: rowIndex === 0 ? undefined : "none",
+                          }}
+                        >
+                          <CardActionArea component={Link} href={url} disableRipple sx={{ p: 2, textAlign: "center" }}>
                             <Box
                               sx={{
                                 width: "100%",
@@ -79,7 +87,10 @@ function CourseGrid({ course, theme }: { course: MaterialCourse; theme: Material
                                 alignItems: "center",
                               }}
                             >
-                              <Typography variant="body1" sx={{ flex: "1", textAlign: "left" }}>
+                              <Typography
+                                variant="body1"
+                                sx={{ flex: "1", textAlign: "left", color: isDark ? "#d1d5db" : "#4b5563" }}
+                              >
                                 {section.name}
                               </Typography>
                               <Box sx={{ display: "flex", gap: 0.5 }}>
@@ -100,17 +111,17 @@ function CourseGrid({ course, theme }: { course: MaterialCourse; theme: Material
                                 })}
                               </Box>
                             </Box>
-                          </Paper>
-                        </Link>
-                      </Grid>
+                          </CardActionArea>
+                        </Card>
+                      </Box>
                     )
                   })}
-                </Grid>
+                </Box>
               </nav>
-            </Grid>
+            </ImageListItem>
           )
         })}
-      </Grid>
+      </ImageList>
     </div>
   )
 }

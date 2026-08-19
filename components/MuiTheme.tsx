@@ -6,6 +6,9 @@ export const LightTheme = createTheme({
     primary: {
       main: "#000", // Primary text color
     },
+    info: {
+      main: "#0e7490", // cyan-700
+    },
     background: {
       default: "#fff", // Base canvas
       paper: "#f8fafc", // Slightly off-white like bg-slate-50
@@ -68,6 +71,9 @@ export const DarkTheme = createTheme({
     mode: "dark",
     primary: {
       main: "#fff", // Primary text color in dark mode
+    },
+    info: {
+      main: "#0e7490", // cyan-700 - same accent used for active-course borders (CourseCard)
     },
     background: {
       default: "#1f2937", // dark:bg-slate-800
