@@ -1,8 +1,7 @@
-@import "flowbite.min.css";
-@import "callouts.css";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "./flowbite.min.css";
+@import "./callouts.css";
+@import "tailwindcss";
+@config "../tailwind.config.js";
 
 body {
   @apply cursor-default antialiased bg-white dark:bg-slate-900 text-black dark:text-white;
