@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "../auth/[...nextauth]"
 import prisma from "lib/prisma"
+import { isEventCoordinator } from "lib/eventAccess"
 
 import type { NextApiRequest, NextApiResponse } from "next"
 import { Prisma } from "@prisma/client"
@@ -35,6 +36,9 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     return res.status(400).json({ error: "Invalid event id" })
   }
 
+  const isCoordinator = await isEventCoordinator(userEmail, eventId)
+  const canEdit = isAdmin || isCoordinator
+
   if (req.method === "GET") {
     const event = await prisma.event.findUnique({
       where: { id: eventId },
@@ -45,7 +49,7 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     })
 
     if (!event) return res.status(404).json({ error: "Event not found" })
-    if (!isAdmin) {
+    if (!canEdit) {
       delete (event as any).enrolKey
       delete (event as any).instructorKey
     }
@@ -55,7 +59,7 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     )
     const isStudent = event.UserOnEvent.some((u: UserOnEvent) => u.user?.email === userEmail && u.status === "STUDENT")
 
-    if (!isAdmin && !isInstructor && !isStudent) {
+    if (!canEdit && !isInstructor && !isStudent) {
       return res.status(401).json({ error: "Unauthorized" })
     }
 
@@ -67,7 +71,7 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
   }
 
   if (req.method === "PUT") {
-    if (!isAdmin) return res.status(401).json({ error: "Unauthorized" })
+    if (!canEdit) return res.status(401).json({ error: "Unauthorized" })
 
     const { name, enrol, content, enrolKey, instructorKey, start, end, summary, hidden } = req.body.event
     const eventGroupData: EventGroup[] = req.body.event.EventGroup ?? []
@@ -89,6 +93,8 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
 
     for (const user of req.body.event.UserOnEvent ?? []) {
       if (user.userEmail && user.status) {
+        // Only an admin may assign the COORDINATOR role.
+        if (user.status === "COORDINATOR" && !isAdmin) continue
         await prisma.userOnEvent.updateMany({
           where: {
             userEmail: user.userEmail,
