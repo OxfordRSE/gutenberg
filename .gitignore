@@ -69,3 +69,7 @@ material.json
 # Python-specific
 .venv/
 venv/
+
+# ruby / jekyll (docs site)
+docs/vendor/
+docs/.bundle/
