@@ -20,9 +20,7 @@ For example, a section titled "Arrays" that depends on the `functions_python` se
 
 ```yaml
 name: Arrays
-dependsOn: [
-    software_architecture_and_design.procedural.functions_python,
-]
+dependsOn: [software_architecture_and_design.procedural.functions_python]
 ```
 
 `dependsOn` can be set at course level (the whole course depends on something) or section level (just this section does). Leave it as an empty list (`dependsOn: []`) if there's no prerequisite.
