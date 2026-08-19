@@ -20,32 +20,32 @@ A section's `id` is implicit: `variables.md` has the id `variables`. Theme and c
 
 ## Material-level (`index.md`)
 
-| field | required | type | notes |
-| --- | --- | --- | --- |
-| `id` | yes | string | unique id for this material repo |
-| `name` | yes | string | material title |
-| `themes` | yes | string[] | folder names of the themes to include, in order |
+| field    | required | type     | notes                                           |
+| -------- | -------- | -------- | ----------------------------------------------- |
+| `id`     | yes      | string   | unique id for this material repo                |
+| `name`   | yes      | string   | material title                                  |
+| `themes` | yes      | string[] | folder names of the themes to include, in order |
 
 ## Theme-level (`[theme.id]/index.md`)
 
-| field | required | type | notes |
-| --- | --- | --- | --- |
-| `id` | yes | string | unique within the material |
-| `name` | yes | string | theme title |
-| `summary` | no | string | short description shown on theme cards |
-| `courses` | yes | string[] | folder names of the courses to include, in order |
+| field     | required | type     | notes                                            |
+| --------- | -------- | -------- | ------------------------------------------------ |
+| `id`      | yes      | string   | unique within the material                       |
+| `name`    | yes      | string   | theme title                                      |
+| `summary` | no       | string   | short description shown on theme cards           |
+| `courses` | yes      | string[] | folder names of the courses to include, in order |
 
 ## Course-level (`[theme.id]/[course.id]/index.md`)
 
-| field | required | type | notes |
-| --- | --- | --- | --- |
-| `id` | yes | string | unique within the theme |
-| `name` | yes | string | course title |
-| `summary` | no | string | short description shown on course cards |
-| `files` | yes | see [Course Tracks]({{ "/authoring/course-tracks/" | relative_url }}) | section filenames, in teaching order and/or grouped into tracks |
-| `dependsOn` | no | string[] | prerequisite courses/sections — see [Dependencies and Navigation]({{ "/authoring/dependencies-and-navigation/" | relative_url }}) |
-| `learningOutcomes` | no | string[] or null | shown as a collapsible "Learning outcomes" list on the course page |
-| `attribution` | no | object[] | see below |
+| field              | required | type                                               | notes                                                                                                          |
+| ------------------ | -------- | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `id`               | yes      | string                                             | unique within the theme                                                                                        |
+| `name`             | yes      | string                                             | course title                                                                                                   |
+| `summary`          | no       | string                                             | short description shown on course cards                                                                        |
+| `files`            | yes      | see [Course Tracks]({{ "/authoring/course-tracks/" | relative_url }})                                                                                               | section filenames, in teaching order and/or grouped into tracks |
+| `dependsOn`        | no       | string[]                                           | prerequisite courses/sections — see [Dependencies and Navigation]({{ "/authoring/dependencies-and-navigation/" | relative_url }})                                                |
+| `learningOutcomes` | no       | string[] or null                                   | shown as a collapsible "Learning outcomes" list on the course page                                             |
+| `attribution`      | no       | object[]                                           | see below                                                                                                      |
 
 An `attribution` entry looks like:
 
@@ -62,13 +62,13 @@ Every attribution object must contain the four string fields shown above. Use an
 
 ## Section-level (each `.md` file in a course folder)
 
-| field | required | type | notes |
-| --- | --- | --- | --- |
-| `name` | no | string | section title (defaults to a title-cased version of the filename if omitted) |
-| `dependsOn` | no | string[] | prerequisites — same format as course-level |
-| `tags` | no | string[] | short labels shown as chips next to the section, and used to auto-derive a track heading — see [Course Tracks]({{ "/authoring/course-tracks/" | relative_url }}) |
-| `learningOutcomes` | no | string[] or null | same as course-level, scoped to this section |
-| `attribution` | no | object[] | same shape as course-level |
+| field              | required | type             | notes                                                                                                                                         |
+| ------------------ | -------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| `name`             | no       | string           | section title (defaults to a title-cased version of the filename if omitted)                                                                  |
+| `dependsOn`        | no       | string[]         | prerequisites — same format as course-level                                                                                                   |
+| `tags`             | no       | string[]         | short labels shown as chips next to the section, and used to auto-derive a track heading — see [Course Tracks]({{ "/authoring/course-tracks/" | relative_url }}) |
+| `learningOutcomes` | no       | string[] or null | same as course-level, scoped to this section                                                                                                  |
+| `attribution`      | no       | object[]         | same shape as course-level                                                                                                                    |
 
 The section body is standard [GitHub-flavored Markdown](https://docs.github.com/en/get-started/writing-on-github), plus the directives and link rules described in [Directives and Links]({{ "/authoring/directives-and-links/" | relative_url }}).
 

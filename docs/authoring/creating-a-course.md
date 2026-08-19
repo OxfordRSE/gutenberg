@@ -32,11 +32,10 @@ A useful starting point is:
 id: my_new_course
 name: My New Course
 summary: |
-    One or two sentences describing what this course covers.
+  One or two sentences describing what this course covers.
 files: []
 dependsOn: []
 ---
-
 ## Overview
 
 A longer, markdown-formatted description of the course.
@@ -54,7 +53,6 @@ name: Introduction
 dependsOn: []
 tags: []
 ---
-
 ## Introduction
 
 Section content goes here, using the directives and link syntax from

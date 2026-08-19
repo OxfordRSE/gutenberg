@@ -12,11 +12,14 @@ A course's `files:` field lists which section files belong to it, in the order t
 If every entry is a plain filename, the whole course is one track, rendered as a single column:
 
 ```yaml
-files: [
+files:
+  [
     01_running_python.md,
     02_variables_and_types.md,
     03_writing_and_running_ide.md,
-]
+    04_another_section.md,
+    05_final_section.md,
+  ]
 ```
 
 ## Multiple untitled tracks
@@ -34,10 +37,7 @@ Each list becomes its own column. If every section in a track shares a common [t
 To give a track an explicit heading instead of relying on a shared tag, precede its file list with a title string:
 
 ```yaml
-files: [
-    "Main Track", [intro.md, basics.md],
-    "Advanced Topics", [deep_dive.md, edge_cases.md],
-]
+files: ["Main Track", [intro.md, basics.md], "Advanced Topics", [deep_dive.md, edge_cases.md]]
 ```
 
 This is the way to group content like "core material" vs. "for people who want to go further" without having to tag every file in the track the same way. A title only applies to the array immediately after it; an untitled track can still appear alongside named ones:

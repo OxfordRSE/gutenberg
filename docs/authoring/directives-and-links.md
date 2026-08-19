@@ -77,14 +77,14 @@ Text
 
 Available variants: `danger`, `warning`, `tip`, `discussion`, `note`, `keypoints`. Leaving `variant` off renders a plain, unstyled callout box.
 
-| variant | use it for |
-| --- | --- |
-| `danger` | an action that could break the learner's environment or lose data if done wrong |
-| `warning` | a risk of a breaking change, or a precaution worth taking |
-| `tip` | a useful tip that helps with the task or in a wider context |
-| `discussion` | a discussion prompt or thinking point |
-| `note` | extra information worth bearing in mind |
-| `keypoints` | a summary of the most essential takeaways |
+| variant      | use it for                                                                      |
+| ------------ | ------------------------------------------------------------------------------- |
+| `danger`     | an action that could break the learner's environment or lose data if done wrong |
+| `warning`    | a risk of a breaking change, or a precaution worth taking                       |
+| `tip`        | a useful tip that helps with the task or in a wider context                     |
+| `discussion` | a discussion prompt or thinking point                                           |
+| `note`       | extra information worth bearing in mind                                         |
+| `keypoints`  | a summary of the most essential takeaways                                       |
 
 ## Internal links
 
