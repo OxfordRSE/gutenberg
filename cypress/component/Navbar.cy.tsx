@@ -18,7 +18,7 @@ const renderNavbar = () => (
 
 describe("Navbar search icon", () => {
   beforeEach(() => {
-    cy.stub(enableSearchModule, "enableSearch").value(true)
+    cy.stub(enableSearchModule, "enableSearch").returns(true)
   })
 
   it("shows the search icon when logged in", () => {
