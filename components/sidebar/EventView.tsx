@@ -44,17 +44,12 @@ const EventView: React.FC<EventsProps> = ({ material, event }) => {
       >
         {event.name}
       </Link>
-      <p className="mb-3 text-lg font-normal text-gray-700 dark:text-gray-400">
-        <span className="font-bold">Description:</span> {event.summary}
-      </p>
+      <p className="mb-3 text-lg font-normal text-gray-700 dark:text-gray-400">{event.summary}</p>
       <Timeline>
         {event.EventGroup.map((group: EventGroupWithItems) => (
           <Timeline.Item key={group.id}>
             <Timeline.Point />
             <Timeline.Content>
-              <Timeline.Time>
-                {new Date(group.start).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}
-              </Timeline.Time>
               <Timeline.Title>
                 <Link
                   href={`${basePath}/event/${event.id}/${group.id}`}
@@ -63,29 +58,21 @@ const EventView: React.FC<EventsProps> = ({ material, event }) => {
                   {group.name}
                 </Link>
               </Timeline.Title>
+              <Timeline.Time>
+                {new Date(group.start).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}
+              </Timeline.Time>
               <Timeline.Body>
-                <div className="ml-5">
-                  <p className="text-gray-700 dark:text-gray-400">
-                    <span className="font-bold">Description:</span> {group.summary}
-                  </p>
-                  <p className="text-gray-700 dark:text-gray-400">
-                    <span className="font-bold">Location:</span> {group.location}
-                  </p>
-                  {group.EventItem.length > 0 && (
-                    <>
-                      <p>
-                        <span className="font-bold">Material:</span>
-                      </p>
-                      <div className="flex">
-                        <ul>
-                          {group.EventItem.map((item: EventItem) => (
-                            <EventItemView key={item.id} item={item} material={material} problems={problems} />
-                          ))}
-                        </ul>
-                      </div>
-                    </>
-                  )}
-                </div>
+                <p className="text-gray-700 dark:text-gray-400">{group.summary}</p>
+                <p className="text-gray-700 dark:text-gray-400">{group.location}</p>
+                {group.EventItem.length > 0 && (
+                  <div className="flex">
+                    <ul>
+                      {group.EventItem.map((item: EventItem) => (
+                        <EventItemView key={item.id} item={item} material={material} problems={problems} />
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </Timeline.Body>
             </Timeline.Content>
           </Timeline.Item>
