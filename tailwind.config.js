@@ -17,10 +17,5 @@ module.exports = {
     "./components/**/*.{js,jsx,ts,tsx,vue}",
     "./pages/**/*.{js,jsx,ts,tsx,vue}",
   ],
-  plugins: [
-    require("@tailwindcss/typography"),
-    require("@tailwindcss/forms"),
-    require("@tailwindcss/aspect-ratio"),
-    require("flowbite/plugin"),
-  ],
+  plugins: [require("@tailwindcss/typography"), require("@tailwindcss/forms"), require("flowbite/plugin")],
 }
