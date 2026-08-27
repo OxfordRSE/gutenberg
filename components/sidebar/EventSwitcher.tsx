@@ -164,12 +164,12 @@ const EventSwitcher: React.FC<EventSwitcherProps> = ({ pageInfo }) => {
               <span>{buttonTargetLabel}</span>
             </span>
           </button>
-          <div className="flex-1 px-3">
+          <div className="flex-1 min-w-0 px-3">
             <div className="truncate text-sm text-gray-800 dark:text-gray-200" data-cy="learning-context-summary">
               {currentContextLabel}
             </div>
           </div>
-          <div className="flex justify-end">
+          <div className="flex flex-shrink-0 justify-end">
             <Link href="/" className="hover:opacity-80">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={pageInfo.logo.src} alt={pageInfo.logo.alt} className="h-8 w-auto" />
