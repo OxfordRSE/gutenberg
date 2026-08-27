@@ -1,4 +1,3 @@
-@import "./flowbite.min.css" layer(base);
 @import "./callouts.css";
 @import "tailwindcss";
 @config "../tailwind.config.js";
