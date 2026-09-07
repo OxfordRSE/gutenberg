@@ -82,6 +82,7 @@ enum EventStatus {
   REQUEST
   STUDENT
   INSTRUCTOR
+  COORDINATOR
   REJECTED
 }
 
