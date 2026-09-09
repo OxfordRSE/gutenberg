@@ -1,0 +1,36 @@
+name: Docs Build
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - ".github/workflows/docs-build.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          sparse-checkout: docs
+      - name: Move docs to root
+        run: mv docs/* .
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+      - name: Build with Jekyll
+        run: bundle exec jekyll build --strict_front_matter
+      - name: Upload built site
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-site-pr-${{ github.event.pull_request.number }}
+          path: _site
+          retention-days: 14
