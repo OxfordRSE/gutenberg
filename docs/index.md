@@ -36,6 +36,15 @@ permalink: /
   </a>
 </div>
 
+## Writing Course Material
+
+<div class="home-grid">
+  <a class="home-card" href="{{ '/authoring/' | relative_url }}">
+    <span class="home-card-title">Writing Course Material</span>
+    <span class="home-card-body">Folder structure, frontmatter fields, course tracks, challenge/solution/callout directives, dependencies, and every check material goes through — for people writing course content, not running a deployment.</span>
+  </a>
+</div>
+
 ## Deploying and Configuring
 
 <div class="home-grid">

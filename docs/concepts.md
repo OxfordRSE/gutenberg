@@ -12,6 +12,8 @@ Gutenberg renders authored markdown learning material from one or more configure
 
 Gutenberg adds teaching tools on top of that material rather than replacing it.
 
+For the folder structure, metadata, track formats, and Markdown extensions used when writing material, see the [course-material authoring guide]({{ "/authoring/" | relative_url }}).
+
 ## Courses
 
 Courses are reusable, self-paced learning paths built from grouped material sections.
