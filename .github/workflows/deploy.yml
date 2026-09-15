@@ -4,6 +4,9 @@ name: Fly deploy
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
     name: Deploy app
@@ -29,7 +32,7 @@ jobs:
           pip install --upgrade pip setuptools wheel
           pip install -r scripts/python_requirements.txt
           python scripts/pull_material.py
-      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - uses: superfly/flyctl-actions/setup-flyctl@fc53c09e1bc3be6f54706524e3b82c4f462f77be # v1.5
       - run: flyctl deploy --remote-only
           --build-arg DATABASE_URL=${{secrets.DATABASE_URL}}
           --build-arg NEXT_PUBLIC_PLAUSIBLE_DOMAIN=${{secrets.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}}
