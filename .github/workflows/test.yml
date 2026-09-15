@@ -49,6 +49,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          persist-credentials: false
       - name: Enable corepack
         shell: bash
         run: corepack enable
@@ -102,6 +104,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          persist-credentials: false
       - name: Enable corepack
         shell: bash
         run: corepack enable
@@ -183,6 +187,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
       - name: docker compose build
         run: docker compose -f docker-compose.yml build
       - name: docker compose up
@@ -199,6 +205,8 @@ jobs:
     needs: build-and-test
     steps:
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
       - name: Enable corepack
         shell: bash
         run: corepack enable
@@ -218,7 +226,7 @@ jobs:
           python scripts/pull_material.py
       - name: Check course material
         shell: bash
-        run: ls ${{ env.MATERIAL_DIR }}
+        run: ls ${MATERIAL_DIR}
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy -a gutenberg-staging --remote-only
           --build-arg DATABASE_URL=${{secrets.DATABASE_URL_TEST}}
