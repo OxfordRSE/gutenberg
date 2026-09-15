@@ -19,12 +19,15 @@ env:
   MATERIAL_REPO: "UNIVERSE-HPC/course-material"
   MANAGER: "yarn"
 
+permissions:
+  contents: read
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres
+        image: postgres:16
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -115,9 +118,6 @@ jobs:
           node-version-file: .nvmrc
           cache: ${{ env.MANAGER }}
 
-      - name: Install broken-link-checker
-        run: npm install -g broken-link-checker
-
       - name: Start the site
         run: |
           yarn install
@@ -130,7 +130,7 @@ jobs:
         id: blc
         run: |
           echo "Checking for broken links..."
-          OUTPUT=$(npx broken-link-checker http://localhost:3000/ -rof \
+          OUTPUT=$(npx --yes broken-link-checker http://localhost:3000/ -rof \
             --exclude "github.com" \
             --exclude "discuss.python.org" \
             --exclude "intel.com" \
@@ -227,7 +227,7 @@ jobs:
       - name: Check course material
         shell: bash
         run: ls ${MATERIAL_DIR}
-      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - uses: superfly/flyctl-actions/setup-flyctl@fc53c09e1bc3be6f54706524e3b82c4f462f77be # v1.5
       - run: flyctl deploy -a gutenberg-staging --remote-only
           --build-arg DATABASE_URL=${{secrets.DATABASE_URL_TEST}}
           --build-arg NEXT_PUBLIC_PLAUSIBLE_DOMAIN=${{secrets.NEXT_PUBLIC_PLAUSIBLE_DOMAIN_TEST}}
