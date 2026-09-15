@@ -227,7 +227,7 @@ jobs:
       - name: Check course material
         shell: bash
         run: ls ${MATERIAL_DIR}
-      - uses: superfly/flyctl-actions/setup-flyctl@fc53c09e1bc3be6f54706524e3b82c4f462f77be # v1.5
+      - uses: superfly/flyctl-actions/setup-flyctl@fc53c09e1bc3be6f54706524e3b82c4f462f77be # 1.5
       - run: flyctl deploy -a gutenberg-staging --remote-only
           --build-arg DATABASE_URL=${{secrets.DATABASE_URL_TEST}}
           --build-arg NEXT_PUBLIC_PLAUSIBLE_DOMAIN=${{secrets.NEXT_PUBLIC_PLAUSIBLE_DOMAIN_TEST}}
