@@ -1,125 +1,130 @@
 # CHARTED Fund 3 application draft — idea #7 (learner feedback / suitability tool)
 
-Drafted against the actual Good Grants form structure (Sections A–G). Fields you need to fill in yourself are marked **[YOU]**; everything else is a ready-to-paste draft.
+Drafted against the actual Good Grants form structure (Sections A–G). Fields you need to fill in yourself are marked [YOU]; everything else is a ready-to-paste draft.
 
-**Framing note:** this is deliberately written as a community-benefit pitch throughout — no reference to Gutenberg or UNIVERSE-HPC lacking anything, no "this closes our gap" language. The same underlying facts (issue #65, the Southampton survey content) are recast as *why the community-level opportunity is credible and low-risk* — proven content, a live pilot platform, a real methodology to share — never as an admission of a shortfall on our end. Internally we're doing this because it benefits our own ecosystem; the application itself should read as if community impact were the whole motivation.
+Framing note: this is deliberately written as a community-benefit pitch throughout — no reference to Gutenberg or UNIVERSE-HPC lacking anything, no "this closes our gap" language. The same underlying facts (issue #65, the Southampton survey content) are recast as *why the community-level opportunity is credible and low-risk* — proven content, a live pilot platform, a real methodology to share — never as an admission of a shortfall on our end. Internally we're doing this because it benefits our own ecosystem; the application itself should read as if community impact were the whole motivation.
 
 ---
 
 ## Section A: Start
 
-**Category:** CHARTED Fund 3
+Category: CHARTED Fund 3
 
-**Application name:** A Reusable Learner Feedback & Training-Suitability Toolkit for dRTP Trainers
+Application name: A Reusable Toolkit for Learner Feedback and Training-Resource Suitability
 
 ---
 
 ## Section B: Applicant Information
 
-**B1 — Job Title** **[YOU]**
+B1 — Job Title Senior Research Software Engineer
 
-**B2 — Institution**
+B2 — Institution
 Oxford Research Software Engineering Group (OxRSE), University of Oxford.
 
-**B3 — Collaborators/Partners** (optional) **[YOU — decide first]**
-The survey content this toolkit builds on was originally developed by Steve Crouch (University of Southampton, UNIVERSE-HPC) from the Southampton training pilots. You can cite that as the methodology's provenance without naming him as a collaborator, or loop him in and name him here — **only if actually confirmed with him**, since reviewers may expect evidence of real engagement (a letter of support, at minimum) for anyone named.
+B3 — Collaborators/Partners (optional) [YOU — decide first]
+The survey content this toolkit builds on was originally developed by Steve Crouch (University of Southampton, UNIVERSE-HPC) from the Southampton training pilots. You can cite that as the methodology's provenance without naming him as a collaborator, or loop him in and name him here — only if actually confirmed with him, since reviewers may expect evidence of real engagement (a letter of support, at minimum) for anyone named.
 
-**B4 — Collaborator/Partner Details** (optional)
+B4 — Collaborator/Partner Details (optional)
 Leave blank if B3 is blank.
 
 ---
 
 ## Section C: Project Details
 
-**C1 — Project Title**
-A Reusable Learner Feedback & Training-Suitability Toolkit for dRTP Trainers
+C1 — Project Title
+A Reusable Toolkit for Learner Feedback and Training-Resource Suitability
 
-**C2 — Description** (~500 words: Motivation / Scope / Objectives / Expected Outcomes)
+C2 — Description (~500 words: Motivation / Scope / Objectives / Expected Outcomes)
 
-> **Motivation.** Across the dRTP training landscape, trainers routinely have no systematic way to find out whether their material suited the learners it reached, or to gather structured feedback at all — most rely on ad hoc, informal impressions rather than evidence. A genuinely useful survey methodology for exactly this purpose already exists and has been piloted: question sets covering event feedback and training-resource suitability were developed and tested during real UNIVERSE-HPC training delivery (the Southampton pilots), but this proven content has never been packaged into an open, reusable tool that other trainers or training platforms could simply adopt. This project does that packaging, turning validated survey design into working, shareable infrastructure.
->
-> **Scope.** Two components, both built as open, documented, reusable pieces rather than one-off scripts: (1) a generic event-level feedback mechanism — schema, form, and storage — using the piloted Southampton question set; (2) a per-course suitability/rating widget letting learners flag whether a given training resource suited their level or background, with a trainer-facing aggregation view. Both are implemented and piloted on the open-source Gutenberg training platform, chosen as the reference deployment because it already serves a real, active, multi-institution training catalogue (UNIVERSE-HPC, 209 sections across 46 courses) and is designed to host material from further institutions beyond it.
->
-> **Objectives.**
-> 1. Package the piloted event-feedback and suitability-rating methodology as an open, documented, adoptable toolkit — not tied to any single platform's internals.
-> 2. Validate it in a live production pilot on Gutenberg, so other adopters see proven behaviour, not just a specification.
-> 3. Publish the toolkit, the underlying question bank, and a methodology write-up to the CHARTED hub, so any dRTP trainer or platform maintainer can adopt the same evidence-based approach without redoing the survey-design work themselves.
->
-> **Expected outcomes.** An open-source, documented feedback-and-suitability toolkit usable by any dRTP training provider; a working, in-production reference deployment demonstrating it at real scale; and a CHARTED hub methodology resource that meaningfully lowers the barrier for the wider community to start collecting the same kind of evidence about their own training.
+Motivation. Trainers need evidence about whether their resources suit the learners who use them, but feedback is often collected inconsistently and is difficult to compare across events or platforms. A survey methodology for event feedback and training-resource suitability has already been developed and tested through UNIVERSE-HPC training delivery, including the Southampton pilots. However, the question sets and lessons from that work have not yet been packaged as an open, reusable tool that other trainers and platforms can adopt. This project will turn that existing methodology into practical, shareable infrastructure.
 
-**C3 — Start Date**
-**[YOU]** — suggested wording: *"Within three months of an award decision following the 30 September 2026 deadline; anticipated start [Month Year]."*
+Scope. The project will deliver two connected components as open, documented and reusable pieces rather than one-off scripts: (1) an event-level feedback mechanism comprising a schema, form and storage model, based on the Southampton question set; and (2) a per-course suitability-rating feature allowing learners to indicate whether a resource suited their level or background, with a trainer-facing aggregation view. The components will be implemented and piloted on the open-source Gutenberg training platform. Gutenberg is a suitable reference deployment because it serves a substantial training catalogue and is designed to host material from institutions beyond the current contributors. The underlying schemas, question bank and interface contracts will be documented so that the approach can be adapted to other platforms.
 
-**C4 — Context** (~500 words: alignment with CHARTED's goals, fit with the wider dRTP ecosystem)
+Objectives.
 
-> This project answers two of Fund 3's own named example activities directly: "instruments evaluating training resource suitability for specific cohorts or learner types" and "learner rating systems for training content evaluation." More broadly, it speaks to CHARTED's core goal of improving the navigability and quality signals across the whole dRTP training landscape — most trainers currently have no structured way to know whether their material is working for the cohorts it reaches, and this toolkit gives them one, ready to adopt rather than built from scratch.
->
-> The methodology itself already carries real community pedigree rather than being an untested design: the underlying survey questions were developed collaboratively across UNIVERSE-HPC partner institutions and refined through real training delivery (the Southampton pilots), so this project is about making already-validated work reusable, not experimenting with something unproven. Piloting the implementation on Gutenberg is a deliberate choice for the same reason — it's an open-source training platform that served over 25,000 unique visitors and 1,480 enrolled students across 62 training events in the past year alone, and is explicitly designed to host material from institutions beyond the ones currently using it, making it a credible testbed for a tool meant for community-wide reuse rather than a single closed platform.
->
-> We checked this project against the sibling DRIFT initiative's own roadmap (same programme, overlapping partner institutions) to avoid duplicating committed work elsewhere in the ecosystem — no open DRIFT item covers this ground, so there's no overlap risk here.
+1. Package the existing event-feedback and suitability-rating methodology as an open, documented toolkit that is not tied to a single platform’s internals.
+2. Implement and evaluate the toolkit in a live pilot on Gutenberg, producing evidence about its usability and usefulness for learners and trainers.
+3. Publish the toolkit, question bank, implementation guidance and evaluation findings to the CHARTED HUB, so that dRTP trainers and platform maintainers can adapt the approach without repeating the survey-design work.
+
+Expected outcomes. An open-source toolkit that helps trainers collect comparable evidence about event delivery and resource suitability; a working reference deployment on Gutenberg; and open documentation, a question bank and evaluation findings that lower the barrier for other dRTP providers to adopt or adapt the approach.
+
+C3 — Start Date
+[YOU] — suggested wording: "Within three months of an award decision following the 30 September 2026 deadline; anticipated start [Month Year]."
+
+C4 — Context (~500 words: alignment with CHARTED's goals, fit with the wider dRTP ecosystem)
+
+This project directly addresses two of Fund 3’s named example activities: tools for evaluating training-resource suitability for specific cohorts or learner types, and learner rating systems for training-content evaluation. It also supports CHARTED’s wider goal of making the dRTP training ecosystem easier to navigate. Suitability information gives learners a quality and relevance signal, while structured feedback gives trainers evidence they can use to improve resources and understand which audiences they serve well.
+
+The project builds on question sets developed and used during real UNIVERSE-HPC training delivery, including the Southampton pilots. This provides a credible starting point while leaving a clear role for evaluation: the project will test how well the methodology translates into reusable software, how easily learners can provide useful feedback, and what information trainers can act on. Gutenberg is an appropriate reference deployment because it is open source, supports both scheduled events and self-paced courses, and is designed to host material from institutions beyond the current contributors. Its existing catalogue and learner base provide a realistic setting in which to test the tool, while the open implementation and documentation will support reuse elsewhere.
+
+The project has also been checked against the sibling DRIFT initiative’s roadmap, given the overlap in programme partners. No identified DRIFT activity covers this combination of event feedback, resource-suitability ratings and an open implementation, so the proposed work is complementary rather than duplicative.
 
 ---
 
 ## Section D: Costs & Plans
 
-**D1 — Total Amount Requested**
-**[YOU — pick a figure]**. Effort estimate: 2–3 weeks for the event-feedback component, +1–2 weeks for the course-suitability layer, at your actual day rate. A request in the **£7,500–£10,000** range is well justified and comfortably inside the £15,000 small-project cap.
+D1 — Total Amount Requested
+[YOU — insert final figure], based on approximately 0.8 FTE-months of staff effort at the Oxford-approved Full Economic Cost rate. The requested amount should represent 80% of the project’s Full Economic Cost, in line with the fund’s funding policy.
 
-**D2 — Project Outline** (attachment — milestones / budget / resourcing / risk analysis)
+D2 — Project Outline (attachment — milestones / budget / resourcing / risk analysis)
 
-> **Milestones**
-> 1. Month 1: Finalise the reusable event-feedback schema and adapt the piloted question set into it.
-> 2. Month 2: Build and deploy the event-feedback form and storage on the Gutenberg pilot; validate against a live training event.
-> 3. Month 3: Build the course-suitability widget and trainer aggregation view; publish the toolkit, question bank, and CHARTED hub methodology write-up.
->
-> **Budget:** [YOU — staff days × your actual day rate]
->
-> **Resourcing:** [YOU]
->
-> **Risk analysis**
-> - *Adoption/response-volume risk:* feedback tools are only as useful as the responses they collect — mitigated by validating against a real, already-scheduled training event with a known audience during the pilot phase, rather than waiting for organic uptake to prove the concept.
-> - *Scope risk:* a broader "surveys embeddable in any context" vision exists as an idea in the wider community discussion and is known to be substantially harder to build well — mitigated by scoping this project tightly to the two proven, well-defined components above, with anything broader treated explicitly as future work.
+Milestones
+1. Month 1 — Event feedback: finalise the reusable schema, adapt the piloted question set and implement the form and storage model.
+2. Month 2 — Pilot deployment: deploy the event-feedback component on Gutenberg and evaluate it against a live training event.
+3. Month 3 — Suitability and reuse: implement the course-suitability feature and trainer aggregation view; publish the toolkit, question bank, evaluation findings and CHARTED HUB methodology write-up.
 
-**D3 — Costing Breakdown** (attachment)
+Budget: Approximately 0.8 FTE-months in total, costed at the Oxford-approved Full Economic Cost rate of [£X per FTE-month], giving a total project cost of [£Y] and a requested CHARTED contribution of [£Z] at 80% FEC.
 
-> | Item | Days | Rate | Cost |
-> |---|---|---|---|
-> | Event-feedback mechanism (schema, storage, form) | ~10 | [your day rate] | [—] |
-> | Course-suitability widget + aggregation view | ~5 | [your day rate] | [—] |
-> | Documentation, question-bank publication, CHARTED hub write-up | ~2 | [your day rate] | [—] |
-> | **Total** | ~17 days | | **[—]** |
->
-> 80% FEC coverage under UKRI policy — confirm with your institution's grants office how the remaining 20% is accounted for before finalising.
+Resourcing: The project will be delivered by the applicant, a Senior Research Software Engineer in the Oxford Research Software Engineering Group, using the existing Gutenberg platform and UNIVERSE-HPC training materials. No equipment costs are requested. The pilot will use an available live training event, with feedback from learners and trainers informing the evaluation and documentation.
+
+Risk analysis
+- *Adoption and response-volume risk:* feedback tools are only useful if learners and trainers can use them with low friction. This will be mitigated by testing the event component during a scheduled training event and using the pilot to refine the interaction and question presentation.
+- *Evaluation risk:* a small pilot may not generate enough responses to support broad conclusions. The project will therefore evaluate usability and implementation as well as response data, and will document the limitations and conditions needed for a larger follow-up.
+- *Scope risk:* a broader vision of surveys embeddable in any context would be substantially harder to build and evaluate. The project is tightly scoped to the two defined components, with broader survey infrastructure treated as future work.
+
+D3 — Costing Breakdown (attachment)
+
+Event-feedback mechanism (schema, storage and form): 0.5 FTE-months
+
+Course-suitability feature and trainer aggregation view: 0.2 FTE-months
+
+Documentation, evaluation findings, question-bank publication and CHARTED HUB write-up: 0.1 FTE-months
+
+Total staff effort: 0.8 FTE-months
+
+Total cost: £________________
+
+80% FEC coverage under UKRI policy — confirm with your institution's grants office how the remaining 20% is accounted for before finalising.
 
 ---
 
 ## Section E: Supporting Information
 
-**E1 — Project Benefits** (~500 words: expected benefits/impact, including support for the dRTP community)
+E1 — Project Benefits (~500 words: expected benefits/impact, including support for the dRTP community)
 
-> The primary benefit is to the wider dRTP community: this toolkit gives any trainer or platform maintainer a proven, ready-to-adopt way to gather learner feedback and assess training-resource suitability, without needing to design surveys or feedback infrastructure themselves. Because the underlying methodology was developed and tested through real training delivery across UNIVERSE-HPC partner institutions, adopters get community-validated content, not a first draft.
->
-> The live pilot deployment matters for adoption in its own right: rather than publishing a specification, this project demonstrates the toolkit operating in production on a real, active, multi-course training catalogue — something other trainers and platform maintainers can point to and directly evaluate before committing their own time to adopting it. The open-sourced question bank is also a standalone community asset independent of the tool itself, usable by anyone running training feedback surveys regardless of what platform they use.
->
-> Taken together, this project turns an existing but under-used piece of community knowledge — a validated feedback and suitability methodology — into genuinely reusable, documented infrastructure, directly advancing CHARTED's goal of a more navigable, evidence-informed dRTP training ecosystem.
+The immediate benefit will be to learners and trainers using the Gutenberg pilot. Learners will have a straightforward way to report whether a resource suited their level, background and goals. Trainers will receive structured feedback about event delivery and resource suitability, giving them evidence to use when revising material and deciding which audiences a resource serves well. The event feedback and course-suitability data will be kept as separate but related uses of the same underlying approach, so the project can test both without conflating them.
 
-**E2 — Additional Information** (optional)
-**[YOU]**
+The wider community benefit will come from the concrete outputs: an open question bank, documented schemas for collecting feedback, an implementation on Gutenberg, and findings about what worked in the pilot. These will be most directly useful to training providers and repositories that want to collect structured feedback but do not yet have a defined question set or an implementation pattern. Other platforms will be able to use the question bank and adapt the documented data model and methods to their own systems.
+
+The project will contribute a description, progress or methods post, and final outputs to the CHARTED HUB, with open repositories linked where appropriate. The pilot findings will also make clear the limitations of the approach and what further work would be needed before wider adoption, supporting CHARTED's goal of a more navigable and evidence-informed dRTP training ecosystem.
+
+E2 — Additional Information (optional)
+[YOU]
 
 ---
 
 ## Section F: Terms & Conditions
 
-**F1** — Confirm: employed by a UK university (University of Oxford). ✅
-**F2** — Confirm: commit to engaging with your local community to disseminate outcomes. ✅
-**F3** — Confirm: commit to disseminating on the dRTP skills HUB and sharing outputs. ✅ (built into C2/E1 above)
-**F5 — Where did you hear about this fund?** **[YOU]**
+F1 — Confirm: employed by a UK university (University of Oxford). ✅
+F2 — Confirm: commit to engaging with your local community to disseminate outcomes. ✅
+F3 — Confirm: commit to disseminating on the dRTP skills HUB and sharing outputs. ✅ (built into C2/E1 above)
+F5 — Where did you hear about this fund? [YOU]
 
 ---
 
 ## Section G: Demographic Details
 
-Optional, personal, not used in review — **[YOU]** entirely.
+Optional, personal, not used in review — [YOU] entirely.
 
 ---
 
