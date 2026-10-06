@@ -34,6 +34,11 @@ export type MaterialSection = {
   learningOutcomes: string[]
 }
 
+export type MaterialTrack = {
+  title?: string
+  files: string[]
+}
+
 export type MaterialCourse = {
   id: string
   theme: string
@@ -44,7 +49,7 @@ export type MaterialCourse = {
   type: string
   attribution: Attribution[]
   summary: string
-  files: string[][]
+  files: MaterialTrack[]
   learningOutcomes: string[]
 }
 
@@ -233,6 +238,27 @@ export async function getTheme(repo: string, theme: string, no_markdown = false)
   return { repo, id, name, markdown, courses, type, summary }
 }
 
+// files: frontmatter accepts three shapes, mixable within one course:
+//   [a.md, b.md]                                    -> one untitled track (legacy shorthand)
+//   [[a.md, b.md], [c.md]]                          -> untitled tracks (legacy)
+//   ["Main Track", [a.md, b.md], "Advanced", [c.md]] -> named tracks, for grouping course content
+export function parseTracks(raw: unknown[]): MaterialTrack[] {
+  if (raw.every((entry) => typeof entry === "string")) {
+    return [{ files: raw as string[] }]
+  }
+  const tracks: MaterialTrack[] = []
+  let pendingTitle: string | undefined
+  for (const entry of raw) {
+    if (Array.isArray(entry)) {
+      tracks.push(pendingTitle ? { title: pendingTitle, files: entry as string[] } : { files: entry as string[] })
+      pendingTitle = undefined
+    } else if (typeof entry === "string") {
+      pendingTitle = entry
+    }
+  }
+  return tracks
+}
+
 export async function getCourse(
   repo: string,
   theme: string,
@@ -246,15 +272,12 @@ export async function getCourse(
   const learningOutcomes = (courseObject.attributes.learningOutcomes as string[]) || []
   const dependsOn = (courseObject.attributes.dependsOn as string[]) || []
   const markdown = no_markdown ? "" : (courseObject.body as string)
-  let files = courseObject.attributes.files as string[][] | string[]
-  if (typeof files[0] === "string") {
-    files = [files] as string[][]
-  } else {
-    files = files as string[][]
-  }
+  const files = parseTracks(courseObject.attributes.files as unknown[])
   const attribution = (courseObject.attributes.attribution as Attribution[]) || []
   const id = course
-  let sections = await Promise.all(files.flatMap((x) => x).map((file, i) => getSection(repo, theme, course, i, file)))
+  let sections = await Promise.all(
+    files.flatMap((track) => track.files).map((file, i) => getSection(repo, theme, course, i, file))
+  )
   const excludeSections = getExcludes(repo).sections
   sections = sections.filter((section) => !excludeSections.includes(section.id))
   const type = "Course"
