@@ -1,8 +1,7 @@
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useRef, useState, useCallback } from "react"
 import { Material } from "lib/material"
 import type { EventFull } from "lib/types"
 import EventSwitcher from "./EventSwitcher"
-import { Fetcher } from "swr"
 import EventView from "./EventView"
 import CourseView from "./CourseView"
 import { MdKeyboardArrowLeft } from "react-icons/md"
@@ -17,19 +16,73 @@ type SidebarProps = {
   pageInfo: PageTemplate
 }
 
-const fetcher: Fetcher<EventFull[], string> = (url) => fetch(url).then((r) => r.json())
+const MIN_WIDTH = 200
+const MAX_WIDTH = 480
+const DEFAULT_WIDTH = 320 // matches previous w-80
+const WIDTH_STORAGE_KEY = "sidebarWidth"
 
-const MySidebar: React.FC<SidebarProps> = ({ material, activeEvent, sidebarOpen, handleClose, pageInfo }) => {
+const MySidebar: React.FC<SidebarProps> = ({
+  material,
+  activeEvent,
+  sidebarOpen,
+  handleClose,
+  pageInfo,
+}) => {
   const sidebarRef = useRef<HTMLDivElement>(null)
   const [learningContext] = useLearningContext()
 
-  useEffect(() => {
-    const componentId = "sidebar" // Unique identifier for this component
+  const [width, setWidth] = useState(DEFAULT_WIDTH)
+  const isResizing = useRef(false)
 
+  // Load persisted width on mount
+  useEffect(() => {
+    const savedWidth = localStorage.getItem(WIDTH_STORAGE_KEY)
+    if (savedWidth) {
+      const parsed = parseInt(savedWidth, 10)
+      if (!isNaN(parsed) && parsed >= MIN_WIDTH && parsed <= MAX_WIDTH) {
+        setWidth(parsed)
+      }
+    }
+  }, [])
+
+  const startResizing = useCallback(() => {
+    isResizing.current = true
+  }, [])
+
+  const stopResizing = useCallback(() => {
+    if (isResizing.current) {
+      localStorage.setItem(WIDTH_STORAGE_KEY, width.toString())
+    }
+    isResizing.current = false
+  }, [width])
+
+  const resize = useCallback((e: MouseEvent) => {
+    if (!isResizing.current) return
+    const newWidth = e.clientX
+    if (newWidth >= MIN_WIDTH && newWidth <= MAX_WIDTH) {
+      setWidth(newWidth)
+    }
+  }, [])
+
+  useEffect(() => {
+    window.addEventListener("mousemove", resize)
+    window.addEventListener("mouseup", stopResizing)
+    return () => {
+      window.removeEventListener("mousemove", resize)
+      window.removeEventListener("mouseup", stopResizing)
+    }
+  }, [resize, stopResizing])
+
+  // Existing scroll-position persistence for the inner scrollable panel
+  useEffect(() => {
+    const componentId = "sidebar"
     const sidebarElement = sidebarRef.current
 
     const saveScrollPosition = () => {
-      localStorage.setItem(`scrollPosition_${componentId}`, sidebarElement?.scrollTop.toString() || "0")
+      localStorage.setItem(
+        `scrollPosition_${componentId}`,
+        sidebarElement?.scrollTop.toString() || "0"
+      )
     }
 
     const loadScrollPosition = () => {
@@ -39,47 +92,60 @@ const MySidebar: React.FC<SidebarProps> = ({ material, activeEvent, sidebarOpen,
       }
     }
 
-    // Save scroll position when the component is unmounted
+    loadScrollPosition()
     window.addEventListener("beforeunload", saveScrollPosition)
 
-    // Load scroll position when the component is mounted
-    loadScrollPosition()
-
     return () => {
-      // Clean up the event listener when the component is unmounted
       window.removeEventListener("beforeunload", saveScrollPosition)
     }
   }, [])
 
   return (
-    <>
-      {sidebarOpen && (
-        <div className="pointer-events-auto fixed top-0 pl-2 h-screen overflow-x-hidden border top-15 left-0 text-gray-700 border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 w-96">
-          <div id="sidebar" ref={sidebarRef} className="p-1 overflow-y-auto h-full">
-            <EventSwitcher pageInfo={pageInfo} />
+    <div
+      style={{ width: sidebarOpen ? width : 0 }}
+      className="relative h-[calc(100vh-64px)] border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200 overflow-hidden transition-[width] duration-200 flex-shrink-0"
+    >
+      <div
+        id="sidebar"
+        ref={sidebarRef}
+        className="relative p-2 overflow-y-auto h-full"
+        style={{ width: `${width}px` }}
+      >
+        <EventSwitcher pageInfo={pageInfo} />
 
-            {learningContext?.type === "event" && activeEvent ? (
-              <EventView material={material} event={activeEvent} />
-            ) : learningContext?.type === "course" ? (
-              <CourseView material={material} externalId={learningContext.externalId} />
-            ) : (
-              <div className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                No active learning context
-              </div>
-            )}
-
-            <button
-              onClick={handleClose}
-              aria-label="Close sidebar"
-              data-cy="close-sidebar"
-              className="absolute top-3 right-1 z-50 text-gray-500 hover:text-gray-400 opacity-50 w-10 h-10"
-            >
-              <MdKeyboardArrowLeft className="w-full h-full" />
-            </button>
+        {learningContext?.type === "event" && activeEvent ? (
+          <EventView material={material} event={activeEvent} />
+        ) : learningContext?.type === "course" ? (
+          <CourseView
+            material={material}
+            externalId={learningContext.externalId}
+          />
+        ) : (
+          <div className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
+            No active learning context
           </div>
-        </div>
+        )}
+
+        <button
+          onClick={handleClose}
+          aria-label="Close sidebar"
+          data-cy="close-sidebar"
+          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+        >
+          <MdKeyboardArrowLeft className="w-7 h-7" />
+        </button>
+      </div>
+
+      {sidebarOpen && (
+        <div
+          onMouseDown={startResizing}
+          role="separator"
+          aria-orientation="vertical"
+          aria-label="Resize sidebar"
+          className="absolute top-0 right-0 h-full w-1 cursor-col-resize hover:bg-blue-400 active:bg-blue-500 z-10"
+        />
       )}
-    </>
+    </div>
   )
 }
 
