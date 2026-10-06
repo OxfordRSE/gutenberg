@@ -13,6 +13,7 @@ import { useSession } from "next-auth/react"
 interface ParagraphProps {
   content: React.ReactNode
   section: string
+  dataCy?: string
 }
 
 const normalize = (s: string) => s.replace(/\s+/g, " ").trim()
@@ -28,7 +29,7 @@ function getSimilarThreads(
     })
 }
 
-const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
+const Paragraph: React.FC<ParagraphProps> = ({ content, section, dataCy = "paragraph" }) => {
   const ref = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const [activeEvent, setActiveEvent] = useActiveEvent()
@@ -139,7 +140,7 @@ const Paragraph: React.FC<ParagraphProps> = ({ content, section }) => {
   }
 
   return (
-    <div data-cy="paragraph" ref={ref} className="relative pb-2">
+    <div data-cy={dataCy} ref={ref} className="relative pb-2">
       <div ref={contentRef} className="m-0 pb-0">
         {content}
       </div>

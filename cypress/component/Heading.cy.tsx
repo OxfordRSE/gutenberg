@@ -1,5 +1,8 @@
 import React from "react"
 import Heading from "components/content/Heading"
+import { Event } from "pages/api/event/[eventId]"
+import { User } from "pages/api/user/[email]"
+import { CommentThread } from "pages/api/commentThread"
 
 const stubClipboard = (alias: string) => {
   cy.window().then((win) => {
@@ -65,5 +68,71 @@ describe("<Heading />", () => {
     cy.get("@expectedHeadingUrlFromNode").then((expectedHeadingUrl) => {
       cy.get("@writeHeadingLinkFromNode").should("have.been.calledOnceWith", expectedHeadingUrl)
     })
+  })
+
+  it("renders a matching comment thread for an active event", () => {
+    const currentUser: User = {
+      id: "2",
+      email: "test@test.com",
+      name: "Test User",
+      image: "https://www.example.com/image.png",
+      admin: false,
+      emailVerified: new Date(),
+    }
+    const event: Event = {
+      content: "test",
+      end: new Date(),
+      start: new Date(),
+      id: 1,
+      enrol: "",
+      enrolKey: "test",
+      instructorKey: "instructortest",
+      name: "test",
+      EventGroup: [],
+      hidden: false,
+      summary: "",
+      UserOnEvent: [
+        {
+          eventId: 1,
+          status: "STUDENT",
+          userEmail: "test@test.com",
+          user: currentUser,
+        },
+      ],
+    }
+    const thread: CommentThread = {
+      id: 1,
+      eventId: 1,
+      groupId: null,
+      section: "course.section",
+      problemTag: "",
+      textRef: "Commentable heading",
+      textRefStart: 0,
+      textRefEnd: 11,
+      createdByEmail: "test@test.com",
+      created: new Date(),
+      resolved: false,
+      instructorOnly: false,
+      Comment: [
+        {
+          id: 1,
+          threadId: 1,
+          createdByEmail: "test@test.com",
+          created: new Date(),
+          index: 0,
+          markdown: "Heading comment",
+        },
+      ],
+    }
+
+    cy.stub(localStorage, "getItem").returns("1")
+    cy.intercept("/api/event/1", { event })
+    cy.intercept("/api/commentThread?eventId=1", { commentThreads: [thread] })
+    cy.intercept("/api/commentThread/1", { commentThread: thread })
+
+    cy.mount(<Heading content="Commentable heading" section="course.section" tag="h2" />)
+
+    cy.get("h2#Commentable-heading").should("exist")
+    cy.get('[data-cy="Thread:1:OpenCloseButton"]').should("exist")
   })
 })

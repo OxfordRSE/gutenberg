@@ -2,6 +2,7 @@ import React from "react"
 import CopyToClipboard from "components/ui/CopyToClipboard"
 import { FaLink } from "react-icons/fa"
 import { reduceRepeatingPatterns } from "lib/utils"
+import Paragraph from "./Paragraph"
 
 interface HeadingProps {
   content: React.ReactNode
@@ -45,30 +46,34 @@ const Heading: React.FC<HeadingProps> = ({ content, section, tag, spanId }) => {
   }
 
   return (
-    <>
-      <Tag id={generateHeadingContent()} className="inline-flex items-center space-x-2">
-        <span id={spanId}>{content}</span>
-        <CopyToClipboard text={generateHeadingURL()}>
-          {({ copy, copied }) => (
-            <span className="relative inline-flex">
-              <button type="button" className="text-xs flex items-center space-x-1" onClick={() => void copy()}>
-                <FaLink className="group-hover:text-white" />
-              </button>
-              {copied && (
-                <span
-                  data-cy="copy-feedback"
-                  role="status"
-                  aria-live="polite"
-                  className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-900 px-2 py-1 text-xs font-medium text-white shadow-lg dark:bg-gray-100 dark:text-gray-900"
-                >
-                  Copied to clipboard!
-                </span>
-              )}
-            </span>
-          )}
-        </CopyToClipboard>
-      </Tag>
-    </>
+    <Paragraph
+      section={section}
+      dataCy="heading"
+      content={
+        <Tag id={generateHeadingContent()} className="inline-flex items-center space-x-2">
+          <span id={spanId}>{content}</span>
+          <CopyToClipboard text={generateHeadingURL()}>
+            {({ copy, copied }) => (
+              <span className="relative inline-flex">
+                <button type="button" className="text-xs flex items-center space-x-1" onClick={() => void copy()}>
+                  <FaLink className="group-hover:text-white" />
+                </button>
+                {copied && (
+                  <span
+                    data-cy="copy-feedback"
+                    role="status"
+                    aria-live="polite"
+                    className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-900 px-2 py-1 text-xs font-medium text-white shadow-lg dark:bg-gray-100 dark:text-gray-900"
+                  >
+                    Copied to clipboard!
+                  </span>
+                )}
+              </span>
+            )}
+          </CopyToClipboard>
+        </Tag>
+      }
+    />
   )
 }
 
