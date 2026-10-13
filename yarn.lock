@@ -5942,7 +5942,7 @@ __metadata:
     js-yaml: ^4.3.2
     next: ^16.3.6
     next-auth: ^4.24.15
-    next-plausible: 3.12.5
+    next-plausible: 4.0.0
     next-themes: 0.4.6
     node-gyp: 12.3.0
     openai: ^4.104.0
@@ -8344,14 +8344,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next-plausible@npm:3.12.5":
-  version: 3.12.5
-  resolution: "next-plausible@npm:3.12.5"
+"next-plausible@npm:4.0.0":
+  version: 4.0.0
+  resolution: "next-plausible@npm:4.0.0"
   peerDependencies:
     next: "^11.1.0 || ^12.0.0 || ^13.0.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 "
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: ca9cc5b121d45dadc3c949dab4dc0e93893b0518992ac09162426a39eb24a01ea9dc3b11ab4898bb81669134a236280f1d1de30d885fced11587b36db6190ed1
+  checksum: 3c8518af58a72bbf5f16145d4393a8353b41ee475dd578b40d8e9955055698aa49948412e3367aa3108cd3be1dcd06c6cde89c3a108a00f9a1499f05c24dd444
   languageName: node
   linkType: hard
 

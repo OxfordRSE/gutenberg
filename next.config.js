@@ -5,12 +5,15 @@ const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 })
 import { withPlausibleProxy } from "next-plausible"
-import plausibleHost from "./lib/plausibleHost.js"
+import { plausibleScript } from "./lib/plausibleHost.js"
 
 const nextConfig = {
   output: "standalone",
   outputFileTracingRoot: fileURLToPath(new URL(".", import.meta.url)),
   reactStrictMode: true,
+  // next-plausible reads process.env.next_plausible_* set by withPlausibleProxy;
+  // those are only inlined if the package is bundled rather than externalised.
+  transpilePackages: ["next-plausible"],
   // Don't advertise the framework/version in the X-Powered-By header.
   poweredByHeader: false,
   trailingSlash: false,
@@ -74,6 +77,4 @@ const nextConfig = {
   },
 }
 
-export default withPlausibleProxy({
-  customDomain: plausibleHost,
-})(nextConfig)
+export default plausibleScript ? withPlausibleProxy({ src: plausibleScript })(nextConfig) : nextConfig

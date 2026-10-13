@@ -78,6 +78,6 @@ The following variables are used for the search functionality, you need both an 
 : Default: None
 : This is the domain name necessary to use analytics with plausible e.g "train.rse.ox.ac.uk". This might produce build errors due to the way the environment variables are set up, if this happens please set this variable in the github secrets.
 
-`NEXT_PUBLIC_PLAUSIBLE_HOST`
-: Default: "<https://plausible.io>"
-: This is the host for the plausible analytics service. This needs set to your custom domain if you are using a self-hosted version of plausible.
+`NEXT_PUBLIC_PLAUSIBLE_SCRIPT`
+: Default: None
+: Set this to the full site-specific Plausible script URL from the Plausible dashboard, for example `https://plausible.example.com/js/pa-XXXXX.js`. Required to enable analytics with `next-plausible` 4.
