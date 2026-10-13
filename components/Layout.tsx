@@ -21,7 +21,7 @@ import { useTheme } from "next-themes"
 import { ThemeProvider } from "@mui/material/styles"
 import useSWR, { Fetcher } from "swr"
 import { LightTheme, DarkTheme } from "./MuiTheme"
-import plausibleHost from "lib/plausibleHost"
+import { plausibleScript } from "lib/plausibleHost"
 import { BreadcrumbItem } from "lib/breadcrumbs"
 import { basePath } from "lib/basePath"
 import type { Data as ActiveCourseData } from "pages/api/course/byExternal/[externalId]"
@@ -105,15 +105,13 @@ const Layout: React.FC<Props> = ({
               sectionLinks={sectionLinks}
               pageInfo={pageInfo}
             />
-            <PlausibleProvider
-              domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN ?? ""}
-              customDomain={plausibleHost}
-              enabled={true}
-              trackLocalhost={true}
-              trackOutboundLinks={true}
-            >
+            {plausibleScript ? (
+              <PlausibleProvider init={{ captureOnLocalhost: true }}>
+                <div data-testid="plausible-provider">{children}</div>
+              </PlausibleProvider>
+            ) : (
               <div data-testid="plausible-provider">{children}</div>
-            </PlausibleProvider>
+            )}
           </main>
           <Footer pageInfo={pageInfo} />
         </div>

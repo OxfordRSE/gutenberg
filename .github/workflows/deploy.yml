@@ -36,7 +36,7 @@ jobs:
       - run: flyctl deploy --remote-only
           --build-arg DATABASE_URL=${{secrets.DATABASE_URL}}
           --build-arg NEXT_PUBLIC_PLAUSIBLE_DOMAIN=${{secrets.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}}
-          --build-arg NEXT_PUBLIC_PLAUSIBLE_HOST=${{secrets.NEXT_PUBLIC_PLAUSIBLE_HOST}}
+          --build-arg NEXT_PUBLIC_PLAUSIBLE_SCRIPT=https://plausible-oxrse.fly.dev/js/pa-F0C-04pVN9ufsD7IcfPqQ.js
           --wait-timeout 240
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
