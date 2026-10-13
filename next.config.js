@@ -77,4 +77,7 @@ const nextConfig = {
   },
 }
 
-export default plausibleScript ? withPlausibleProxy({ src: plausibleScript })(nextConfig) : nextConfig
+// apiPath must not collide with pages/api/event.ts, which would shadow the proxy rewrite.
+export default plausibleScript
+  ? withPlausibleProxy({ src: plausibleScript, apiPath: "/api/plausible/event" })(nextConfig)
+  : nextConfig
