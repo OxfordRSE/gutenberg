@@ -1,5 +1,6 @@
 import { MaterialCourse, MaterialSection, MaterialTheme } from "lib/material"
 import Link from "next/link"
+import MySidebar from "./sidebar/Sidebar"
 
 import { useSession } from "next-auth/react"
 import { useState } from "react"
@@ -7,7 +8,6 @@ import React, { ReactNode } from "react"
 import Footer from "./Footer"
 import Header from "./Header"
 import { Material, Excludes } from "lib/material"
-import Overlay from "./Overlay"
 import Navbar from "./navbar/Navbar"
 import { useSidebarOpen } from "lib/hooks/useSidebarOpen"
 import useActiveEvent from "lib/hooks/useActiveEvents"
@@ -26,7 +26,8 @@ import { BreadcrumbItem } from "lib/breadcrumbs"
 import { basePath } from "lib/basePath"
 import type { Data as ActiveCourseData } from "pages/api/course/byExternal/[externalId]"
 
-const activeCourseFetcher: Fetcher<ActiveCourseData, string> = (url) => fetch(url).then((r) => r.json())
+const activeCourseFetcher: Fetcher<ActiveCourseData, string> = (url) =>
+  fetch(url).then((r) => r.json())
 
 type Props = {
   material: Material
@@ -55,25 +56,45 @@ const Layout: React.FC<Props> = ({
 }) => {
   const [activeEvent] = useActiveEvent()
   const [activeCourseExternalId] = useActiveCourse()
+
   useSession()
+
   const { theme: currentTheme } = useTheme()
   const [showAttribution, setShowAttribution] = useState(false)
+
   const { data: activeCourseData } = useSWR(
-    activeCourseExternalId ? `${basePath}/api/course/byExternal/${activeCourseExternalId}` : undefined,
+    activeCourseExternalId
+      ? `${basePath}/api/course/byExternal/${activeCourseExternalId}`
+      : undefined,
     activeCourseFetcher
   )
-  const [sidebarOpen, setSidebarOpen] = useSidebarOpen(true)
-  const sectionLinks: SectionLink[] = findLinks(material, theme, course, section, activeEvent, activeCourseData?.course)
 
-  const muiTheme = React.useMemo(() => (currentTheme === "light" ? LightTheme : DarkTheme), [currentTheme])
+  const [sidebarOpen, setSidebarOpen] = useSidebarOpen(true)
+
+  const sectionLinks: SectionLink[] = findLinks(
+    material,
+    theme,
+    course,
+    section,
+    activeEvent,
+    activeCourseData?.course
+  )
+
+  const muiTheme = React.useMemo(
+    () => (currentTheme === "light" ? LightTheme : DarkTheme),
+    [currentTheme]
+  )
+
   return (
     <Provider>
       <ThemeProvider theme={muiTheme}>
-        <div className="container mx-auto">
+        <div className="w-full">
           <Link href="#main" className="sr-only focus:not-sr-only">
             Skip to main content
           </Link>
+
           <Header pageInfo={pageInfo} pageTitle={pageTitle} />
+
           <header>
             <Navbar
               material={material}
@@ -91,30 +112,29 @@ const Layout: React.FC<Props> = ({
               breadcrumbs={breadcrumbs}
             />
           </header>
-          <main id="main">
-            <Overlay
+
+          <main id="main" className="flex">
+            <MySidebar
               material={material}
-              course={course}
-              theme={theme}
               activeEvent={activeEvent}
-              section={section}
               sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-              showAttribution={showAttribution}
-              setShowAttribution={setShowAttribution}
-              sectionLinks={sectionLinks}
+              handleClose={() => setSidebarOpen(false)}
               pageInfo={pageInfo}
             />
-            <PlausibleProvider
-              domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN ?? ""}
-              customDomain={plausibleHost}
-              enabled={true}
-              trackLocalhost={true}
-              trackOutboundLinks={true}
-            >
-              <div data-testid="plausible-provider">{children}</div>
-            </PlausibleProvider>
+
+            <div className="flex-1 min-w-0 p-6">
+              <PlausibleProvider
+                domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN ?? ""}
+                customDomain={plausibleHost}
+                enabled={true}
+                trackLocalhost={true}
+                trackOutboundLinks={true}
+              >
+                <div data-testid="plausible-provider">{children}</div>
+              </PlausibleProvider>
+            </div>
           </main>
+
           <Footer pageInfo={pageInfo} />
         </div>
       </ThemeProvider>
