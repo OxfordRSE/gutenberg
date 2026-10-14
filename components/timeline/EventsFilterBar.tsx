@@ -38,11 +38,8 @@ const EventsFilterBar: React.FC<EventsFilterBarProps> = ({
   const [open, setOpen] = React.useState<boolean>(Boolean(value))
   const inputRef = React.useRef<HTMLInputElement | null>(null)
 
-  // keep RHF form in sync if parent value changes externally
-  React.useEffect(() => {
-    setValue("q", value, { shouldDirty: false, shouldTouch: false })
-  }, [value, setValue])
-
+  // `value` only seeds the form: the parent's value is an echo of `q` that lags a render behind,
+  // so we don't want to update the form value on every render, only on mount.
   const q = watch("q") ?? ""
 
   // bubble changes up (immediate)
