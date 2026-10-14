@@ -152,6 +152,13 @@ jobs:
             --exclude "medium.com" \
             --exclude "unsplash.com" \
             --exclude "en.cppreference.com" \
+            --exclude "openai.com" \
+            --exclude "openmp.org" \
+            --exclude "crascit.com" \
+            --exclude "programiz.com" \
+            --exclude "ora.ox.ac.uk" \
+            --exclude "pubs.rsc.org" \
+            --exclude "opencv.org" \
           ; true)
           echo "$OUTPUT"
 
