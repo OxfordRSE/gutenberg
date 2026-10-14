@@ -46,8 +46,9 @@ Cypress.Commands.add("login", (userObj: JWTPayload) => {
       cy.clearCookie("__Host-next-auth.csrf-token")
       cy.clearLocalStorage()
     })
-    .then(() => {
-      return encode(userObj, Cypress.env("NEXTAUTH_SECRET"))
+    .then(() => cy.env(["NEXTAUTH_SECRET"]))
+    .then(({ NEXTAUTH_SECRET }) => {
+      return encode(userObj, NEXTAUTH_SECRET)
     })
     .then((encryptedToken) => cy.setCookie("next-auth.session-token", encryptedToken))
 
