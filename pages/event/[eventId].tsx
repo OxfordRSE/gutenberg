@@ -86,6 +86,8 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
   )
   const isInstructor = myUserOnEvent?.status === "INSTRUCTOR"
   const isAdmin = !!userProfile?.admin
+  const isCoordinator = myUserOnEvent?.status === "COORDINATOR"
+  const canEdit = isAdmin || isCoordinator
   const sectionsOptions = useMemo(() => buildSectionsOptions(material), [material])
 
   const onSubmit = async (data: EventForm) => {
@@ -156,6 +158,7 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
   const statusOptions = [
     { label: "student", value: "STUDENT" },
     { label: "instructor", value: "INSTRUCTOR" },
+    ...(isAdmin ? [{ label: "coordinator", value: "COORDINATOR" }] : []),
     { label: "request", value: "REQUEST" },
     { label: "reject", value: "REJECTED" },
   ]
@@ -166,7 +169,7 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
       eventWithRelations={eventData}
       material={material}
       isAdmin={isAdmin}
-      isInstructor={!!isInstructor}
+      isInstructor={!!isInstructor || isCoordinator}
     />
   )
 
@@ -245,7 +248,7 @@ const Event: NextPage<EventProps> = ({ material, event, pageInfo }) => {
           </Link>
         </div>
       )}
-      {eventData && isAdmin ? (
+      {eventData && canEdit ? (
         <Tabs.Group style="underline" ref={tabsRef} onActiveTabChange={handleTabChange}>
           <Tabs.Item active={activeTabIndex === 0} icon={MdPreview} title="Event">
             {eventView}
