@@ -135,6 +135,8 @@ const Content: React.FC<Props> = ({ markdown, theme, course, section }) => {
   const transformLink = (href: string): string => {
     if (!href) return href
     if (href.startsWith("#")) return href // anchor link — don't rewrite
+    // Non-http schemes (mailto:, tel:, ...); otherwise caught by isLikelyExternal and prefixed with https://
+    if (/^(?!https?:)[a-z][a-z0-9+.-]*:/i.test(href)) return href
 
     const cleanedHref = href.replace(/\.md$/i, "")
 
