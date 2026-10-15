@@ -94,7 +94,14 @@ const Overlay: NextPage<Props> = ({
     setSidebarOpen(!sidebarOpen)
   }
   const sectionTitle = section ? section.name : ""
-  const attribution = section ? section.attribution : course ? course.attribution : []
+  // Resolve relative images against a fixed directory (theme dir for a course index, course dir for a
+  // section) rather than the page URL, which differs between course, section and /diagram pages
+  const attributionBase = theme && `/material/${theme.repo}/${theme.id}/${section && course ? `${course.id}/` : ""}`
+  const attribution = (section ? section.attribution : course ? course.attribution : []).map((citation) =>
+    attributionBase && citation.image && !/^([a-z][a-z0-9+.-]*:|\/)/i.test(citation.image)
+      ? { ...citation, image: new URL(citation.image, `http://x${attributionBase}`).pathname }
+      : citation
+  )
 
   return (
     <div className="z-10 pointer-events-none fixed top-0 container mx-auto">

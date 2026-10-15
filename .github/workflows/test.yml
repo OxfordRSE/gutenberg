@@ -144,7 +144,6 @@ jobs:
             --exclude "stackexchange.com" \
             --exclude "mathworks.com" \
             --exclude "shinyapps.io" \
-            --exclude "essential_maths/essential_maths/" \
             --exclude "sitepoint.com" \
             --exclude "gitbooks.io" \
             --exclude "docs.python.org" \
