@@ -29,8 +29,9 @@ function CourseGrid({ course, theme }: { course: MaterialCourse; theme: Material
   return (
     <div className="mx-auto max-w-6xl prose-slate dark:prose-invert">
       <Grid container spacing={2} sx={{ paddingBottom: "16px", justifyContent: "center" }}>
-        {files.map((column, colIndex) => {
-          const commonTag = findCommonTag(column)
+        {files.map((track, colIndex) => {
+          const commonTag = track.title ? null : findCommonTag(track.files)
+          const heading = track.title || (commonTag ? formatTagLabel(commonTag).toUpperCase() : null)
           return (
             <Grid
               item
@@ -41,24 +42,24 @@ function CourseGrid({ course, theme }: { course: MaterialCourse; theme: Material
               key={colIndex}
               sx={{ maxWidth: { xs: "100%", sm: "50%", md: "50%" }, flexBasis: "auto" }}
             >
-              {commonTag && (
+              {heading && (
                 <Box
                   className="bg-slate-50 border-gray-200 text-black dark:bg-gray-800 dark:border-gray-700 dark:text-white p-2"
                   sx={{ borderRadius: "8px 8px 0 0", textAlign: "center" }}
                 >
-                  <Typography variant="h6">{formatTagLabel(commonTag).toUpperCase()}</Typography>
+                  <Typography variant="h6">{heading}</Typography>
                 </Box>
               )}
-              <nav aria-label={commonTag || undefined}>
+              <nav aria-label={heading || undefined}>
                 <Grid component="ul" container spacing={0}>
-                  {column.map((file, rowIndex) => {
+                  {track.files.map((file, rowIndex) => {
                     const section = findSectionByName(file)
                     if (!section) return null
                     const url = `/material/${repo}/${course.theme}/${course.id}/${section.id}`
 
                     // Determine if this is the first or last item
-                    const isFirstItem = rowIndex === 0 && !commonTag
-                    const isLastItem = rowIndex === column.length - 1
+                    const isFirstItem = rowIndex === 0 && !heading
+                    const isLastItem = rowIndex === track.files.length - 1
 
                     return (
                       <Grid component="li" item xs={12} key={rowIndex}>
