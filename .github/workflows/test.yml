@@ -158,6 +158,8 @@ jobs:
             --exclude "ora.ox.ac.uk" \
             --exclude "pubs.rsc.org" \
             --exclude "opencv.org" \
+            --exclude "pngwing.com" \
+            --exclude "supercomputing.epcc.ed.ac.uk" \
           ; true)
           echo "$OUTPUT"
 
