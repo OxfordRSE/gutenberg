@@ -19,8 +19,14 @@ test("parses a list of lists as untitled tracks (legacy)", () => {
   ])
 })
 
-test("pairs a title string with the array that follows it into a named track", () => {
-  const tracks = parseTracks(["Main Track", ["a.md", "b.md"], "Advanced Topics", ["c.md", "d.md"]])
+test("applies trackTitles to tracks by position", () => {
+  const tracks = parseTracks(
+    [
+      ["a.md", "b.md"],
+      ["c.md", "d.md"],
+    ],
+    ["Main Track", "Advanced Topics"]
+  )
 
   assert.deepEqual(tracks, [
     { title: "Main Track", files: ["a.md", "b.md"] },
@@ -28,10 +34,37 @@ test("pairs a title string with the array that follows it into a named track", (
   ])
 })
 
-test("allows mixing named and untitled tracks in the same course", () => {
-  const tracks = parseTracks(["Main Track", ["a.md", "b.md"], ["c.md"]])
+test("applies a single title to a flat file list", () => {
+  assert.deepEqual(parseTracks(["a.md", "b.md"], ["Main Track"]), [{ title: "Main Track", files: ["a.md", "b.md"] }])
+})
 
-  assert.deepEqual(tracks, [{ title: "Main Track", files: ["a.md", "b.md"] }, { files: ["c.md"] }])
+test("leaves tracks without a title untitled when trackTitles is shorter", () => {
+  const tracks = parseTracks([["a.md"], ["b.md"]], ["Main Track"])
+
+  assert.deepEqual(tracks, [{ title: "Main Track", files: ["a.md"] }, { files: ["b.md"] }])
+})
+
+test("treats null and empty titles as untitled, so a track can be skipped", () => {
+  const tracks = parseTracks([["a.md"], ["b.md"], ["c.md"], ["d.md"]], ["First", null, "", "Last"])
+
+  assert.deepEqual(tracks, [
+    { title: "First", files: ["a.md"] },
+    { files: ["b.md"] },
+    { files: ["c.md"] },
+    { title: "Last", files: ["d.md"] },
+  ])
+})
+
+test("ignores extra titles beyond the number of tracks", () => {
+  assert.deepEqual(parseTracks([["a.md"]], ["One", "Two"]), [{ title: "One", files: ["a.md"] }])
+})
+
+test("ignores trackTitles that is not a list", () => {
+  assert.deepEqual(parseTracks([["a.md"]], "Main Track"), [{ files: ["a.md"] }])
+})
+
+test("accepts numeric titles", () => {
+  assert.deepEqual(parseTracks([["a.md"]], [2024]), [{ title: "2024", files: ["a.md"] }])
 })
 
 test("returns no tracks for an empty files list", () => {

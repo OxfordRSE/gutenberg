@@ -238,26 +238,23 @@ export async function getTheme(repo: string, theme: string, no_markdown = false)
   return { repo, id, name, markdown, courses, type, summary }
 }
 
-// files: frontmatter accepts three shapes, mixable within one course:
-//   [a.md, b.md]                                    -> one untitled track (legacy shorthand)
-//   [[a.md, b.md], [c.md]]                          -> untitled tracks (legacy)
-//   ["Main Track", [a.md, b.md], "Advanced", [c.md]] -> named tracks, for grouping course content
-export function parseTracks(raw: unknown[] | undefined): MaterialTrack[] {
+// files: frontmatter accepts the two legacy shapes, unchanged:
+//   [a.md, b.md]           -> one track
+//   [[a.md, b.md], [c.md]] -> one track per list
+// Titles live in a separate trackTitles: list, matched to tracks by position, so that
+// material using titles still builds on older Gutenberg versions (which ignore the key).
+// A missing, null or empty title leaves that track untitled.
+export function parseTracks(raw: unknown[] | undefined, titles?: unknown): MaterialTrack[] {
   if (!raw || raw.length === 0) return []
-  if (raw.every((entry) => typeof entry === "string")) {
-    return [{ files: raw as string[] }]
-  }
-  const tracks: MaterialTrack[] = []
-  let pendingTitle: string | undefined
-  for (const entry of raw) {
-    if (Array.isArray(entry)) {
-      tracks.push(pendingTitle ? { title: pendingTitle, files: entry as string[] } : { files: entry as string[] })
-      pendingTitle = undefined
-    } else if (typeof entry === "string") {
-      pendingTitle = entry
+  const groups = typeof raw[0] === "string" ? [raw as string[]] : (raw as string[][])
+  const titleList = Array.isArray(titles) ? titles : []
+  return groups.map((files, i) => {
+    const title = titleList[i]
+    if ((typeof title === "string" && title.trim() !== "") || typeof title === "number") {
+      return { title: String(title), files }
     }
-  }
-  return tracks
+    return { files }
+  })
 }
 
 export async function getCourse(
@@ -273,7 +270,15 @@ export async function getCourse(
   const learningOutcomes = (courseObject.attributes.learningOutcomes as string[]) || []
   const dependsOn = (courseObject.attributes.dependsOn as string[]) || []
   const markdown = no_markdown ? "" : (courseObject.body as string)
-  const files = parseTracks(courseObject.attributes.files as unknown[] | undefined)
+  const trackTitles = courseObject.attributes.trackTitles
+  const files = parseTracks(courseObject.attributes.files as unknown[] | undefined, trackTitles)
+  if (trackTitles != null && !Array.isArray(trackTitles)) {
+    console.warn(`${dir}/index.md: trackTitles should be a list; ignoring it`)
+  } else if (Array.isArray(trackTitles) && trackTitles.length > files.length) {
+    console.warn(
+      `${dir}/index.md: trackTitles has ${trackTitles.length} entries but there are only ${files.length} tracks; extra titles ignored`
+    )
+  }
   const attribution = (courseObject.attributes.attribution as Attribution[]) || []
   const id = course
   let sections = await Promise.all(

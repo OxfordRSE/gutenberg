@@ -12,7 +12,7 @@ Course material lives in its own git repository, separate from the Gutenberg app
 ## Pages
 
 - [Structure and Metadata]({{ "/authoring/structure-and-metadata/" | relative_url }}) — folder layout for themes, courses, and sections, and every frontmatter field each level supports.
-- [Course Tracks]({{ "/authoring/course-tracks/" | relative_url }}) — the shapes a course's `files:` list can take, including grouping content into named tracks.
+- [Course Tracks]({{ "/authoring/course-tracks/" | relative_url }}) — the shapes a course's `files:` list can take, including grouping content into tracks with headings.
 - [Directives and Links]({{ "/authoring/directives-and-links/" | relative_url }}) — challenge, solution, and callout syntax, and how internal links get resolved.
 - [Dependencies and Navigation]({{ "/authoring/dependencies-and-navigation/" | relative_url }}) — how `dependsOn` works and what it drives.
 - [Checks and Linting]({{ "/authoring/checks-and-linting/" | relative_url }}) — every automated check material goes through, and how to run each one locally.
