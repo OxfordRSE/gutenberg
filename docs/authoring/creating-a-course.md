@@ -70,7 +70,7 @@ Back in the course's `index.md`, list the section filenames in teaching order:
 files: [introduction.md, basics.md, advanced.md]
 ```
 
-If you want the course split into tracks — a short and a long version, say, or a main track plus optional extras — see [Course Tracks]({{ "/authoring/course-tracks/" | relative_url }}) for the list-of-lists and named-track shapes.
+If you want the course split into tracks — a short and a long version, say, or a main track plus optional extras — see [Course Tracks]({{ "/authoring/course-tracks/" | relative_url }}) for the list-of-lists shape and how to give tracks headings with `trackTitles`.
 
 ## 7. Register the course in its theme
 

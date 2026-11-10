@@ -5,9 +5,11 @@ parent: Writing Course Material
 nav_order: 2
 ---
 
-A course's `files:` field lists which section files belong to it, in the order they should be taught. It also controls how those sections are grouped into columns ("tracks") on the course page. Three shapes are supported, and can be mixed within one course.
+A course's `files:` field lists which section files belong to it, in the order they should be taught.
+It also controls how those sections are grouped into columns ("tracks") on the course page.
+Two shapes are supported, and tracks can optionally be given headings with a separate `trackTitles:` field.
 
-## A single track (most courses)
+## A single track
 
 If every entry is a plain filename, the whole course is one track, rendered as a single column:
 
@@ -30,24 +32,35 @@ Nest the filenames into separate lists to split the course into parallel tracks 
 files: [[setup.md, basics.md, advanced.md], [short.md]]
 ```
 
-Each list becomes its own column. If every section in a track shares a common [tag]({{ "/authoring/structure-and-metadata/" | relative_url }}), that tag is used as the track's heading automatically; otherwise the track has no heading.
+Each list becomes its own column.
+If every section in a track shares a common [tag]({{ "/authoring/structure-and-metadata/" | relative_url }}), that tag is used as the track's heading automatically; otherwise the track has no heading.
 
-## Named tracks
+## Track titles
 
-To give a track an explicit heading instead of relying on a shared tag, precede its file list with a title string:
-
-```yaml
-files: ["Main Track", [intro.md, basics.md], "Advanced Topics", [deep_dive.md, edge_cases.md]]
-```
-
-This is the way to group content like "core material" vs. "for people who want to go further" without having to tag every file in the track the same way. A title only applies to the array immediately after it; an untitled track can still appear alongside named ones:
+To give tracks explicit headings instead of relying on a shared tag, add a `trackTitles:` list.
+Titles are matched to tracks by position: the first title goes on the first track, and so on.
+Putting `trackTitles:` directly above `files:`, one entry per line, makes it easy to check that the two lists line up:
 
 ```yaml
-files: ["Main Track", [intro.md, basics.md], [bonus.md]]
+trackTitles:
+  - Main Track
+  - Advanced Topics
+files:
+  - [intro.md, basics.md]
+  - [deep_dive.md, edge_cases.md]
 ```
 
-Here `bonus.md` is its own untitled track (falling back to the shared-tag heading if one applies), while `intro.md`/`basics.md` are grouped under "Main Track".
+This is the way to group content like "core material" vs. "for people who want to go further" without having to tag every file in the track the same way.
+
+- If there are fewer titles than tracks, the remaining tracks are untitled.
+- A `null` or empty entry leaves that track untitled, so you can skip one in the middle: `trackTitles: [Main Track, null, Extras]`.
+- An untitled track can fall back to the shared-tag heading if one applies, as above.
+- A flat file list is a single track, so it takes at most one title.
+
+Extra titles beyond the number of tracks are ignored, with a warning in the build log.
+If you add, remove or reorder tracks in `files:`, update `trackTitles:` to match.
 
 ## Which shape should I use?
 
-Use the plain flat list unless you have a reason not to — it's what almost all existing courses use. Reach for multiple tracks when you have genuinely parallel content (e.g. a fast track and a deep-dive track), and give a track a manual title as soon as "the sections happen to share a tag" isn't a good enough reason for its heading.
+You can use a single track for most courses, and multiple tracks when you have genuinely parallel or distinct content.
+Reach for multiple tracks when you have genuinely parallel content (e.g. a fast track and a deep-dive track), and give a track a manual title as soon as "the sections happen to share a tag" isn't a good enough reason for its heading.

@@ -34,6 +34,11 @@ export type MaterialSection = {
   learningOutcomes: string[]
 }
 
+export type MaterialTrack = {
+  title?: string
+  files: string[]
+}
+
 export type MaterialCourse = {
   id: string
   theme: string
@@ -44,7 +49,7 @@ export type MaterialCourse = {
   type: string
   attribution: Attribution[]
   summary: string
-  files: string[][]
+  files: MaterialTrack[]
   learningOutcomes: string[]
 }
 
@@ -233,6 +238,25 @@ export async function getTheme(repo: string, theme: string, no_markdown = false)
   return { repo, id, name, markdown, courses, type, summary }
 }
 
+// files: frontmatter accepts the two legacy shapes, unchanged:
+//   [a.md, b.md]           -> one track
+//   [[a.md, b.md], [c.md]] -> one track per list
+// Titles live in a separate trackTitles: list, matched to tracks by position, so that
+// material using titles still builds on older Gutenberg versions (which ignore the key).
+// A missing, null or empty title leaves that track untitled.
+export function parseTracks(raw: unknown[] | undefined, titles?: unknown): MaterialTrack[] {
+  if (!raw || raw.length === 0) return []
+  const groups = typeof raw[0] === "string" ? [raw as string[]] : (raw as string[][])
+  const titleList = Array.isArray(titles) ? titles : []
+  return groups.map((files, i) => {
+    const title = titleList[i]
+    if ((typeof title === "string" && title.trim() !== "") || typeof title === "number") {
+      return { title: String(title), files }
+    }
+    return { files }
+  })
+}
+
 export async function getCourse(
   repo: string,
   theme: string,
@@ -246,15 +270,20 @@ export async function getCourse(
   const learningOutcomes = (courseObject.attributes.learningOutcomes as string[]) || []
   const dependsOn = (courseObject.attributes.dependsOn as string[]) || []
   const markdown = no_markdown ? "" : (courseObject.body as string)
-  let files = courseObject.attributes.files as string[][] | string[]
-  if (typeof files[0] === "string") {
-    files = [files] as string[][]
-  } else {
-    files = files as string[][]
+  const trackTitles = courseObject.attributes.trackTitles
+  const files = parseTracks(courseObject.attributes.files as unknown[] | undefined, trackTitles)
+  if (trackTitles != null && !Array.isArray(trackTitles)) {
+    console.warn(`${dir}/index.md: trackTitles should be a list; ignoring it`)
+  } else if (Array.isArray(trackTitles) && trackTitles.length > files.length) {
+    console.warn(
+      `${dir}/index.md: trackTitles has ${trackTitles.length} entries but there are only ${files.length} tracks; extra titles ignored`
+    )
   }
   const attribution = (courseObject.attributes.attribution as Attribution[]) || []
   const id = course
-  let sections = await Promise.all(files.flatMap((x) => x).map((file, i) => getSection(repo, theme, course, i, file)))
+  let sections = await Promise.all(
+    files.flatMap((track) => track.files).map((file, i) => getSection(repo, theme, course, i, file))
+  )
   const excludeSections = getExcludes(repo).sections
   sections = sections.filter((section) => !excludeSections.includes(section.id))
   const type = "Course"
