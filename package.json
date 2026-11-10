@@ -115,7 +115,7 @@
     "postcss": "^8.5.23",
     "postcss-selector-parser": "^7.1.6",
     "prismjs": "^1.30.0",
-    "qs": "^6.16.0",
+    "qs": "^6.17.1",
     "tar": "^7.5.22"
   },
   "prettier": {
