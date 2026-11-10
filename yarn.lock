@@ -5893,7 +5893,7 @@ __metadata:
     eslint-config-next: ^16.2.10
     flowbite: ^1.8.1
     flowbite-react: ^0.5.0
-    isomorphic-git: ^1.35.0
+    isomorphic-git: ^1.38.6
     jose: ^4.15.9
     jotai: ^2.15.1
     js-yaml: ^4.3.2
@@ -6817,9 +6817,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"isomorphic-git@npm:^1.35.0":
-  version: 1.35.0
-  resolution: "isomorphic-git@npm:1.35.0"
+"isomorphic-git@npm:^1.38.6":
+  version: 1.38.6
+  resolution: "isomorphic-git@npm:1.38.6"
   dependencies:
     async-lock: ^1.4.1
     clean-git-ref: ^2.0.1
@@ -6834,7 +6834,7 @@ __metadata:
     simple-get: ^4.0.1
   bin:
     isogit: cli.cjs
-  checksum: 74ec534aa0d493e2c7a530479d56de4ba752bd2f57e6c4ec27e7efd927f67ee0afbb3c40177ba12b98f4757b3641235d5033ccb2e5dbcb7ee85815dd4dfdfeee
+  checksum: 3cf3c0642671537a8a11274967fbfccd8564a4adf5e4a47b35ef2da350765ebea5713c729e8f14014498f27b338a56d48c13fda7982c9008a05c42fcfffac499
   languageName: node
   linkType: hard
 
@@ -9455,15 +9455,15 @@ __metadata:
   linkType: hard
 
 "readable-stream@npm:^4.0.0":
-  version: 4.7.0
-  resolution: "readable-stream@npm:4.7.0"
+  version: 4.8.0
+  resolution: "readable-stream@npm:4.8.0"
   dependencies:
     abort-controller: ^3.0.0
     buffer: ^6.0.3
     events: ^3.3.0
     process: ^0.11.10
     string_decoder: ^1.3.0
-  checksum: 03ec762faed8e149dc6452798b60394a8650861a1bb4bf936fa07b94044826bc25abe73696f5f45372abc404eec01876c560f64b479eba108b56397312dbe2ae
+  checksum: 82df0a94deb2702037e5a5a3b46c03135f81d7cf7bc3e7f5e159fad4a8551954e5fd556c5b47fec13b15fe90c4f8522b5b178a6e1fde0a4df5d168bef1660670
   languageName: node
   linkType: hard
 
