@@ -47,7 +47,7 @@
     "elkjs": "^0.8.2",
     "flowbite": "^1.8.1",
     "flowbite-react": "^0.5.0",
-    "isomorphic-git": "^1.35.0",
+    "isomorphic-git": "^1.38.6",
     "jotai": "^2.15.1",
     "js-yaml": "^4.3.2",
     "next": "^16.4.1",
