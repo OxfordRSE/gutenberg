@@ -242,7 +242,8 @@ export async function getTheme(repo: string, theme: string, no_markdown = false)
 //   [a.md, b.md]                                    -> one untitled track (legacy shorthand)
 //   [[a.md, b.md], [c.md]]                          -> untitled tracks (legacy)
 //   ["Main Track", [a.md, b.md], "Advanced", [c.md]] -> named tracks, for grouping course content
-export function parseTracks(raw: unknown[]): MaterialTrack[] {
+export function parseTracks(raw: unknown[] | undefined): MaterialTrack[] {
+  if (!raw || raw.length === 0) return []
   if (raw.every((entry) => typeof entry === "string")) {
     return [{ files: raw as string[] }]
   }
@@ -272,7 +273,7 @@ export async function getCourse(
   const learningOutcomes = (courseObject.attributes.learningOutcomes as string[]) || []
   const dependsOn = (courseObject.attributes.dependsOn as string[]) || []
   const markdown = no_markdown ? "" : (courseObject.body as string)
-  const files = parseTracks(courseObject.attributes.files as unknown[])
+  const files = parseTracks(courseObject.attributes.files as unknown[] | undefined)
   const attribution = (courseObject.attributes.attribution as Attribution[]) || []
   const id = course
   let sections = await Promise.all(

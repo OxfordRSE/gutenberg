@@ -33,3 +33,11 @@ test("allows mixing named and untitled tracks in the same course", () => {
 
   assert.deepEqual(tracks, [{ title: "Main Track", files: ["a.md", "b.md"] }, { files: ["c.md"] }])
 })
+
+test("returns no tracks for an empty files list", () => {
+  assert.deepEqual(parseTracks([]), [])
+})
+
+test("returns no tracks when files is missing", () => {
+  assert.deepEqual(parseTracks(undefined), [])
+})
