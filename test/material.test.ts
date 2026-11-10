@@ -11,10 +11,7 @@ test("parses a flat file list as one untitled track (legacy shorthand)", () => {
 })
 
 test("parses a list of lists as untitled tracks (legacy)", () => {
-  const tracks = parseTracks([
-    ["setup.md", "basics.md", "advanced.md", "additional_features.md"],
-    ["short.md"],
-  ])
+  const tracks = parseTracks([["setup.md", "basics.md", "advanced.md", "additional_features.md"], ["short.md"]])
 
   assert.deepEqual(tracks, [
     { files: ["setup.md", "basics.md", "advanced.md", "additional_features.md"] },
