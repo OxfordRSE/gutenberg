@@ -16,7 +16,7 @@ type HomeProps = {
 
 const Home: NextPage<HomeProps> = ({ material, events, pageInfo }) => {
   return (
-    <Layout material={material} pageInfo={pageInfo}>
+    <Layout material={material} pageInfo={pageInfo} pageTitle={`Material diagram: ${pageInfo.title}`}>
       <Content markdown={material.markdown} />
       <NavDiagram material={material} />
     </Layout>
@@ -37,6 +37,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     props: {
       material: makeSerializable(material),
       events: makeSerializable(events),
+      pageInfo: makeSerializable(pageInfo),
     },
   }
 }

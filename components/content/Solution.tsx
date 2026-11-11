@@ -61,6 +61,7 @@ const Solution: FC<SolutionProps> = ({ content }) => {
         role="region"
         aria-labelledby={headingId}
         aria-hidden={active ? "false" : "true"}
+        inert={!active}
         style={{ maxHeight: `${height}` }}
         className="overflow-hidden transition-max-height duration-700 ease-in-out"
       >

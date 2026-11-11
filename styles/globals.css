@@ -69,3 +69,15 @@ ul:has(li.mdli) {
   transform: rotate(90deg);
   transition: transform 0.3s ease;
 }
+
+/*
+ * flowbite-react's default "info" button uses white text on cyan-600 in the dark
+ * theme, which is below the WCAG 2.2 AA contrast ratio of 4.5:1. Use the light
+ * theme's cyan-700 (5.4:1) instead, and darken its hover state to match.
+ */
+.dark .bg-cyan-700.dark\:bg-cyan-600 {
+  background-color: var(--color-cyan-700);
+}
+.dark .bg-cyan-700.dark\:bg-cyan-600:enabled:hover {
+  background-color: var(--color-cyan-800);
+}

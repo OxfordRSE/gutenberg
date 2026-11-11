@@ -25,7 +25,7 @@ const ThemeComponent: NextPage<ThemeComponentProps> = ({ theme, material, events
   return (
     <Layout material={material} theme={theme} pageInfo={pageInfo} pageTitle={pageTitle}>
       <Title text={theme.name} style={{ marginBottom: "0px" }} />
-      <Link className="text-blue-500 italic" href={`/material/${theme.repo}/${theme.id}/diagram`}>
+      <Link className="text-blue-700 dark:text-blue-400 italic" href={`/material/${theme.repo}/${theme.id}/diagram`}>
         <SubTitle text="View Theme Diagram" />
       </Link>
       <ThemeGrid theme={theme} />
