@@ -34,6 +34,8 @@ export type PageTemplate = {
   description: string
   frontpage: { intro: string }
   footer: string
+  // Path to a markdown file containing the site's accessibility statement.
+  accessibilityStatement?: string
 }
 
 export function loadPageTemplate(): PageTemplate | undefined {

@@ -1,0 +1,32 @@
+# Linked from the accessibility statement (config/oxford-accessibility.md).
+name: Report an accessibility problem
+description: Something on the site is hard to use, or you cannot use it at all.
+title: "Accessibility: "
+labels: ["accessibility"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for telling us. A few details help us find and fix the problem.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: What were you trying to do, and what got in the way?
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: Where on the site?
+      description: The address of the page, or a description such as the course material, an event page or the sign-in page.
+  - type: textarea
+    id: setup
+    attributes:
+      label: What were you using?
+      description: Your device, browser, and any assistive technology, such as a screen reader, magnifier or voice control.
+      placeholder: For example, a Windows laptop with Firefox and NVDA.
+  - type: textarea
+    id: more
+    attributes:
+      label: Anything else you think would be helpful?
