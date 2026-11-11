@@ -32,6 +32,7 @@ template:
       learn more about running your own instance of Gutenberg, see the
       [documentation](https://blog.oxrse.uk/gutenberg).
   footer: University of Oxford, [Oxford Research Software Engineering](https://www.rse.ox.ac.uk/)
+  accessibilityStatement: .github/ACCESSIBILITY.md
 material:
   HPCu:
     path: HPCu
