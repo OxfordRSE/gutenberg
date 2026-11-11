@@ -34,6 +34,8 @@ export type PageTemplate = {
   description: string
   frontpage: { intro: string }
   footer: string
+  // Path to a markdown file containing the site's privacy policy.
+  privacyPolicy?: string
 }
 
 export function loadPageTemplate(): PageTemplate | undefined {

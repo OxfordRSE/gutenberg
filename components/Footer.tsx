@@ -1,4 +1,5 @@
 import React from "react"
+import Link from "next/link"
 import { ThemeButton } from "./ui/ThemeSwitcher"
 import { PageTemplate } from "lib/pageTemplate"
 import { Markdown } from "components/content/Content"
@@ -18,6 +19,16 @@ const Footer: React.FC<Props> = ({ pageInfo }) => {
       </span>
 
       <div className="flex justify-evenly gap-5 items-center mt-3 md:mt-0">
+        <nav aria-label="Site policies" className="flex flex-wrap items-center gap-3 text-sm">
+          {pageInfo?.privacyPolicy && (
+            <Link
+              href="/privacy"
+              className="text-gray-500 underline hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+            >
+              Privacy
+            </Link>
+          )}
+        </nav>
         <p className="flex flex-wrap items-center text-sm text-gray-500 dark:text-gray-400 sm:mt-0">
           For attribution and license information click the @ symbol on the top right
         </p>
