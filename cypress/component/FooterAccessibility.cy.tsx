@@ -11,7 +11,7 @@ const basePageInfo: PageTemplate = {
 
 describe("<Footer /> accessibility link", () => {
   it("links to the accessibility statement when configured", () => {
-    cy.mount(<Footer pageInfo={{ ...basePageInfo, accessibilityStatement: "config/oxford-accessibility.md" }} />)
+    cy.mount(<Footer pageInfo={{ ...basePageInfo, accessibilityStatement: ".github/ACCESSIBILITY.md" }} />)
     cy.contains("a", "Accessibility").should("have.attr", "href", "/accessibility")
   })
 

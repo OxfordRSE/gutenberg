@@ -23,7 +23,7 @@ The config yaml file has the following structure:
   - **footer**:
     : The footer text, this should be formatted as markdown.
   - **accessibilityStatement** (optional):
-    : Path to a markdown file containing the site's accessibility statement, e.g. `config/oxford-accessibility.md`.
+    : Path to a markdown file containing the site's accessibility statement, e.g. `.github/ACCESSIBILITY.md`.
     When set, the statement is served at `/accessibility` and linked from the footer.
     When omitted, the page returns a 404 and no footer link is shown.
 - **material**:
