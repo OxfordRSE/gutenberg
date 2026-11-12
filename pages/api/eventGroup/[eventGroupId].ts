@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "../auth/[...nextauth]"
 import prisma from "lib/prisma"
+import { isEventCoordinatorByGroup } from "lib/eventAccess"
 
 import type { NextApiRequest, NextApiResponse } from "next"
 import { Prisma } from "@prisma/client"
@@ -33,6 +34,8 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
 
   const eventGroupId = req.query.eventGroupId as string
 
+  const canEdit = isAdmin || (await isEventCoordinatorByGroup(userEmail, parseInt(eventGroupId)))
+
   if (req.method === "GET") {
     const isInstructorStudent = await prisma.userOnEvent.findFirst({
       where: {
@@ -42,7 +45,7 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
       },
     })
 
-    const hasAccess = isAdmin || isInstructorStudent
+    const hasAccess = canEdit || isInstructorStudent
 
     const eventGroup = await prisma.eventGroup.findUnique({
       where: { id: parseInt(eventGroupId) },
@@ -64,7 +67,7 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     const { name, content, start, end, summary, location } = req.body.eventGroup
     const eventItemData: EventItem[] = req.body.eventGroup.EventItem
 
-    if (!isAdmin) {
+    if (!canEdit) {
       res.status(401).json({ error: "Unauthorized" })
       return
     }
@@ -98,7 +101,7 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     }
     res.status(200).json({ eventGroup: updatedEventGroup })
   } else if (req.method === "DELETE") {
-    if (!isAdmin) {
+    if (!canEdit) {
       res.status(401).json({ error: "Unauthorized" })
       return
     }
