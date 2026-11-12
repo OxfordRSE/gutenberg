@@ -119,6 +119,7 @@ const EventsFilterBar: React.FC<EventsFilterBarProps> = ({
             : "relative transition-all duration-200 ease-in-out max-w-0 opacity-0 overflow-hidden"
         }
         aria-hidden={!open}
+        inert={!open}
       >
         <div className="flex items-center gap-1">
           <div className="flex-1 min-w-0">

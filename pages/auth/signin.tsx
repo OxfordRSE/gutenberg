@@ -3,6 +3,7 @@ import { GetServerSidePropsContext } from "next"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "../api/auth/[...nextauth]"
 import Image from "next/image"
+import Head from "next/head"
 import { getProviderConfig } from "lib/authConfig"
 
 type DisplayProvider = {
@@ -22,6 +23,9 @@ export default function SignIn({
 }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
+      <Head>
+        <title>Sign in to Gutenberg</title>
+      </Head>
       <div className="w-full max-w-md space-y-8 rounded-lg bg-white p-8 shadow-md">
         <div className="text-center">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900">Sign in to Gutenberg</h2>

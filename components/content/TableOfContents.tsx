@@ -133,47 +133,39 @@ const TableOfContents: FC<TableOfContentsProps> = ({ markdown, tocTitle }: Table
     >
       <div className="flex h-full flex-col">
         {/* Header with collapse toggle */}
-        <div
-          className="flex items-start gap-2 p-1 bg-transparent"
-          style={{ cursor: "pointer", pointerEvents: "auto" }}
-          role="button"
-          tabIndex={0}
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault()
-              window.scrollTo({ top: 0, behavior: "smooth" })
-            }
-          }}
-        >
+        <div className="flex items-start gap-2 p-1 bg-transparent" style={{ pointerEvents: "auto" }}>
           {collapsed ? (
-            <button
-              className="p-1"
-              onClick={(e) => {
-                e.stopPropagation()
-                setCollapsed(false)
-              }}
-            >
+            <button className="p-1" onClick={() => setCollapsed(false)} aria-label="Expand Table of Contents">
               <span className="flex items-center justify-center">
-                <Toc className="w-6 h-6" />
-                <KeyboardArrowLeftIcon className="w-4 h-4 hover:text-purple-600 dark:hover:text-purple-600" />
+                <Toc className="w-6 h-6" aria-hidden="true" />
+                <KeyboardArrowLeftIcon
+                  className="w-4 h-4 hover:text-purple-600 dark:hover:text-purple-600"
+                  aria-hidden="true"
+                />
               </span>
             </button>
           ) : (
             <>
-              <Toc className="mt-0.5 h-6 w-6 shrink-0" />
-              <span className="flex-1 text-sm font-bold leading-tight hover:text-purple-600 dark:hover:text-purple-600">
-                {tocTitle}
-              </span>
+              <button
+                type="button"
+                className="flex flex-1 items-start gap-2 text-left"
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                title="Scroll to top"
+              >
+                <Toc className="mt-0.5 h-6 w-6 shrink-0" aria-hidden="true" />
+                <span className="flex-1 text-sm font-bold leading-tight hover:text-purple-600 dark:hover:text-purple-600">
+                  {tocTitle}
+                </span>
+              </button>
               <button
                 className="ml-auto p-1 shrink-0"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setCollapsed(true)
-                }}
+                onClick={() => setCollapsed(true)}
                 aria-label="Collapse Table of Contents"
               >
-                <KeyboardArrowRightIcon className="w-4 h-4 hover:text-purple-600 dark:hover:text-purple-600" />
+                <KeyboardArrowRightIcon
+                  className="w-4 h-4 hover:text-purple-600 dark:hover:text-purple-600"
+                  aria-hidden="true"
+                />
               </button>
             </>
           )}
