@@ -1,4 +1,3 @@
-@import "./callouts.css";
 @import "tailwindcss";
 @config "../tailwind.config.js";
 
@@ -25,7 +24,10 @@ body {
 
 /* CSS to target the first h1 or h2 inside a Callout */
 .callout > h1:first-child,
-.callout > h2:first-child {
+.callout > h2:first-child,
+.callout > .callout-label + h1,
+.callout > .callout-label + h2,
+.callout > .callout-label + h3 {
   margin-top: 16px;
 }
 
