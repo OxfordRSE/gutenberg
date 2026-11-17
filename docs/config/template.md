@@ -22,6 +22,10 @@ The config yaml file has the following structure:
       : The text to display on the front page, this should be formatted as markdown.
   - **footer**:
     : The footer text, this should be formatted as markdown.
+  - **accessibilityStatement** (optional):
+    : Path to a markdown file containing the site's accessibility statement, e.g. `.github/ACCESSIBILITY.md`.
+    When set, the statement is served at `/accessibility` and linked from the footer.
+    When omitted, the page returns a 404 and no footer link is shown.
 - **material**:
   - [repo]:
     - the repo name, use a unique identifier for each repo you wish to fetch.
