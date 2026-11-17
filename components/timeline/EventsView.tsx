@@ -114,7 +114,7 @@ const EventsView: React.FC<EventsProps> = ({ material: _material, events }) => {
       <Timeline>
         {/* Empty state when filter finds nothing */}
         {filteredEvents.length === 0 && (
-          <div className="px-1 py-2 text-sm text-gray-500 dark:text-gray-400">No events match your filter</div>
+          <li className="px-1 py-2 text-sm text-gray-500 dark:text-gray-400">No events match your filter</li>
         )}
 
         {/* Render the filtered list */}
@@ -124,7 +124,7 @@ const EventsView: React.FC<EventsProps> = ({ material: _material, events }) => {
             <Timeline.Content>
               <div className="flex justify-between">
                 <Link href={`/event/${event.id}`} className="text-gray-600 dark:text-gray-200">
-                  <Timeline.Time dateTime={event.start.toISOString()}>
+                  <Timeline.Time className="text-gray-600 dark:text-gray-400" dateTime={event.start.toISOString()}>
                     {getFormattedDate(event.start as unknown as Date)}
                   </Timeline.Time>
                 </Link>

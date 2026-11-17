@@ -15,9 +15,17 @@ const TagChip: React.FC<Props> = ({ tag, variant = "solid", className, linkToFil
   const color = variant === "subtle" ? getSubtleTagColor(tag) : getTagColor(tag)
   const baseClass =
     variant === "subtle"
-      ? `inline-flex items-center rounded-full border px-1.5 py-0.5 text-[11px] font-medium uppercase tracking-wide leading-none ${className ?? ""}`.trim()
+      ? `inline-flex items-center rounded-full border px-1.5 py-0.5 text-[11px] font-medium uppercase tracking-wide leading-none text-(--tag-text) dark:text-(--tag-text-dark) ${className ?? ""}`.trim()
       : `inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium leading-none ${className ?? ""}`.trim()
-  const style = { backgroundColor: color.background, borderColor: color.border ?? color.background, color: color.text }
+  const style =
+    "darkText" in color
+      ? ({
+          backgroundColor: color.background,
+          borderColor: color.border,
+          "--tag-text": color.text,
+          "--tag-text-dark": color.darkText,
+        } as React.CSSProperties)
+      : { backgroundColor: color.background, borderColor: color.border ?? color.background, color: color.text }
 
   if (onClick) {
     return (

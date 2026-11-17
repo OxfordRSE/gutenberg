@@ -2,9 +2,18 @@ import React from "react"
 import { Prism, SyntaxHighlighterProps } from "react-syntax-highlighter"
 import CopyToClipboard from "components/ui/CopyToClipboard"
 import { FaClipboard } from "react-icons/fa"
-import { lucario as codeStyle } from "react-syntax-highlighter/dist/cjs/styles/prism"
+import { lucario } from "react-syntax-highlighter/dist/cjs/styles/prism"
 
 const SyntaxHighlighter = Prism as any as React.FC<SyntaxHighlighterProps>
+
+// lucario with some colors lightened to improve contrast for accessibility.
+const lighten: Record<string, string> = { "#5c98cd": "#8ab8e6", "#6EB26E": "#7ec87e", "#F05E5D": "#ff8a89" }
+const codeStyle = Object.fromEntries(
+  Object.entries(lucario as Record<string, React.CSSProperties>).map(([token, style]) => [
+    token,
+    style.color && lighten[style.color] ? { ...style, color: lighten[style.color] } : style,
+  ])
+)
 
 type Props = {
   code: string
@@ -43,6 +52,7 @@ const CodeBlock: React.FC<Props> = ({ code, language, className }) => {
         <SyntaxHighlighter
           language={language}
           PreTag="div"
+          tabIndex={0}
           style={codeStyle}
           codeTagProps={{ className: "text-sm" }}
           customStyle={{ margin: 0 }}

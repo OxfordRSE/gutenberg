@@ -8,7 +8,7 @@ type Props = {
 
 const HomeCourseMaterialPanel: React.FC<Props> = ({ intro }) => {
   return (
-    <Card className="z-60">
+    <Card>
       <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Course Material</h2>
       <div className="font-normal text-gray-700 dark:text-gray-400">{intro && <Markdown markdown={intro} />}</div>
       <Button href={`${basePath}/material`}>

@@ -32,6 +32,7 @@ interface Props {
   setSidebarOpen: (open: boolean) => void
   sidebarOpen: boolean
   showAttribution: boolean
+  hasAttribution?: boolean
   repoUrl?: string
   excludes?: Excludes
   pageInfo?: PageTemplate
@@ -48,6 +49,7 @@ const Navbar: React.FC<Props> = ({
   setSidebarOpen,
   sidebarOpen,
   showAttribution,
+  hasAttribution,
   repoUrl,
   excludes,
   pageInfo,
@@ -535,20 +537,22 @@ const Navbar: React.FC<Props> = ({
             )}
           </Dropdown>
         </li>
-        <li className="h-full border-l border-gray-500 ps-1 flex items-center">
-          <Tooltip content="Licensing and Attribution">
-            <button
-              aria-label="Licensing and Attribution"
-              onClick={openAttribution}
-              style={{
-                appearance: "none",
-                display: "flex",
-              }}
-            >
-              <HiAtSymbol className="pointer-events-auto cursor-pointer w-10 h-10 text-gray-500 hover:text-gray-400" />
-            </button>
-          </Tooltip>
-        </li>
+        {hasAttribution && (
+          <li className="h-full border-l border-gray-500 ps-1 flex items-center">
+            <Tooltip content="Licensing and Attribution">
+              <button
+                aria-label="Licensing and Attribution"
+                onClick={openAttribution}
+                style={{
+                  appearance: "none",
+                  display: "flex",
+                }}
+              >
+                <HiAtSymbol className="pointer-events-auto cursor-pointer w-10 h-10 text-gray-500 hover:text-gray-400" />
+              </button>
+            </Tooltip>
+          </li>
+        )}
       </ul>
     </div>
   )

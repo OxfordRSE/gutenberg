@@ -25,6 +25,9 @@ The config yaml file has the following structure:
   - **privacyPolicy** (optional):
     : Path to a markdown file containing the site's privacy policy, e.g. `config/oxford-privacy.md`.
     When set, the policy is served at `/privacy` and linked from the footer.
+  - **accessibilityStatement** (optional):
+    : Path to a markdown file containing the site's accessibility statement, e.g. `.github/ACCESSIBILITY.md`.
+    When set, the statement is served at `/accessibility` and linked from the footer.
     When omitted, the page returns a 404 and no footer link is shown.
 - **material**:
   - [repo]:

@@ -22,7 +22,7 @@ const Home: NextPage<HomeProps> = ({ material, events, pageInfo }) => {
   return (
     <Layout material={material} pageInfo={pageInfo} pageTitle={pageTitle}>
       <Title text="Material Themes" className="text-3xl font-bold text-center p-3" style={{ marginBottom: "0px" }} />
-      <Link className="text-blue-500 italic" href={`/material/diagram`}>
+      <Link className="text-blue-700 dark:text-blue-400 italic" href={`/material/diagram`}>
         <SubTitle text="view full diagram" />
       </Link>
       <ThemeCards material={material} />

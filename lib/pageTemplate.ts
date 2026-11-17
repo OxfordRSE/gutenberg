@@ -36,6 +36,8 @@ export type PageTemplate = {
   footer: string
   // Path to a markdown file containing the site's privacy policy.
   privacyPolicy?: string
+  // Path to a markdown file containing the site's accessibility statement.
+  accessibilityStatement?: string
 }
 
 export function loadPageTemplate(): PageTemplate | undefined {

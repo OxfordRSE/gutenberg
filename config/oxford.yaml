@@ -33,6 +33,7 @@ template:
       [documentation](https://blog.oxrse.uk/gutenberg).
   footer: University of Oxford, [Oxford Research Software Engineering](https://www.rse.ox.ac.uk/)
   privacyPolicy: config/oxford-privacy.md
+  accessibilityStatement: .github/ACCESSIBILITY.md
 material:
   HPCu:
     path: HPCu

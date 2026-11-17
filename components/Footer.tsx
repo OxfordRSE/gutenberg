@@ -8,9 +8,10 @@ interface Props {
   prevUrl?: string
   nextUrl?: string
   pageInfo?: PageTemplate
+  hasAttribution?: boolean
 }
 
-const Footer: React.FC<Props> = ({ pageInfo }) => {
+const Footer: React.FC<Props> = ({ pageInfo, hasAttribution }) => {
   const footerAttrib = pageInfo?.footer
   return (
     <footer className="mt-4 mb-2 mx-2 p-2 bg-white rounded-lg shadow md:flex md:items-center md:justify-between md:gap-2 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
@@ -28,10 +29,20 @@ const Footer: React.FC<Props> = ({ pageInfo }) => {
               Privacy
             </Link>
           )}
+          {pageInfo?.accessibilityStatement && (
+            <Link
+              href="/accessibility"
+              className="text-gray-500 underline hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+            >
+              Accessibility
+            </Link>
+          )}
         </nav>
-        <p className="flex flex-wrap items-center text-sm text-gray-500 dark:text-gray-400 sm:mt-0">
-          For attribution and license information click the @ symbol on the top right
-        </p>
+        {hasAttribution && (
+          <p className="flex flex-wrap items-center text-sm text-gray-500 dark:text-gray-400 sm:mt-0">
+            For attribution and license information click the @ symbol on the top right
+          </p>
+        )}
         <ThemeButton />
       </div>
     </footer>

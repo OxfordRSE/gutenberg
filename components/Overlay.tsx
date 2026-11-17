@@ -25,6 +25,7 @@ interface Props {
   activeEvent: EventFull | undefined
   showAttribution: boolean
   setShowAttribution: (show: boolean) => void
+  hasAttribution?: boolean
   sidebarOpen: boolean
   setSidebarOpen: (open: boolean) => void
   sectionLinks?: SectionLink[]
@@ -39,6 +40,7 @@ const Overlay: NextPage<Props> = ({
   activeEvent,
   showAttribution,
   setShowAttribution,
+  hasAttribution,
   sidebarOpen,
   setSidebarOpen,
   sectionLinks,
@@ -112,7 +114,7 @@ const Overlay: NextPage<Props> = ({
             onClick={handleToggle}
           />
         )}
-        {showTopButtons && (
+        {hasAttribution && showTopButtons && (
           <HiAtSymbol
             onClick={openAttribution}
             className="pointer-events-auto absolute top-0 right-0 cursor-pointer w-12 h-12 text-gray-600 hover:text-gray-500 opacity-50"
@@ -133,7 +135,9 @@ const Overlay: NextPage<Props> = ({
           </Stack>
           {section && <TableOfContents markdown={section.markdown} tocTitle={sectionTitle} />}
         </>
-        <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />
+        {hasAttribution && (
+          <AttributionDialog citations={attribution} isOpen={showAttribution} onClose={closeAttribution} />
+        )}
         <SearchDialog onClose={closeSearch} />
         <DeleteEventModal onClose={closeDeleteEvent} />
         <DeleteUserOnEventModal onClose={closeDeleteUserOnEvent} />
