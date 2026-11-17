@@ -51,8 +51,13 @@ const Heading: React.FC<HeadingProps> = ({ content, section, tag, spanId }) => {
         <CopyToClipboard text={generateHeadingURL()}>
           {({ copy, copied }) => (
             <span className="relative inline-flex">
-              <button type="button" className="text-xs flex items-center space-x-1" onClick={() => void copy()}>
-                <FaLink className="group-hover:text-white" />
+              <button
+                type="button"
+                className="text-xs flex items-center space-x-1"
+                aria-label="Copy link to this heading"
+                onClick={() => void copy()}
+              >
+                <FaLink className="group-hover:text-white" aria-hidden="true" />
               </button>
               {copied && (
                 <span

@@ -58,6 +58,8 @@ const Layout: React.FC<Props> = ({
   useSession()
   const { theme: currentTheme } = useTheme()
   const [showAttribution, setShowAttribution] = useState(false)
+  // Only course and section pages carry attribution; elsewhere the dialog would be empty
+  const hasAttribution = (section ? section.attribution : course ? course.attribution : []).length > 0
   const { data: activeCourseData } = useSWR(
     activeCourseExternalId ? `${basePath}/api/course/byExternal/${activeCourseExternalId}` : undefined,
     activeCourseFetcher
@@ -85,6 +87,7 @@ const Layout: React.FC<Props> = ({
               setSidebarOpen={setSidebarOpen}
               showAttribution={showAttribution}
               setShowAttribution={setShowAttribution}
+              hasAttribution={hasAttribution}
               repoUrl={repoUrl}
               excludes={excludes}
               pageInfo={pageInfo}
@@ -102,6 +105,7 @@ const Layout: React.FC<Props> = ({
               setSidebarOpen={setSidebarOpen}
               showAttribution={showAttribution}
               setShowAttribution={setShowAttribution}
+              hasAttribution={hasAttribution}
               sectionLinks={sectionLinks}
               pageInfo={pageInfo}
             />
@@ -113,7 +117,7 @@ const Layout: React.FC<Props> = ({
               <div data-testid="plausible-provider">{children}</div>
             )}
           </main>
-          <Footer pageInfo={pageInfo} />
+          <Footer pageInfo={pageInfo} hasAttribution={hasAttribution} />
         </div>
       </ThemeProvider>
     </Provider>

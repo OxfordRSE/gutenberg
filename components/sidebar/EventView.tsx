@@ -52,7 +52,7 @@ const EventView: React.FC<EventsProps> = ({ material, event }) => {
           <Timeline.Item key={group.id}>
             <Timeline.Point />
             <Timeline.Content>
-              <Timeline.Time>
+              <Timeline.Time className="text-gray-600 dark:text-gray-400">
                 {new Date(group.start).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}
               </Timeline.Time>
               <Timeline.Title>

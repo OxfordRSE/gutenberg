@@ -32,7 +32,10 @@ const CourseComponent: NextPage<CourseComponentProps> = ({
   return (
     <Layout theme={theme} course={course} material={material} pageInfo={pageInfo} pageTitle={pageTitle}>
       <Title text={course.name} style={{ marginBottom: "0px" }} />
-      <Link className="text-blue-500 italic" href={`/material/${theme.repo}/${theme.id}/${course.id}/diagram`}>
+      <Link
+        className="text-blue-700 dark:text-blue-400 italic"
+        href={`/material/${theme.repo}/${theme.id}/${course.id}/diagram`}
+      >
         <SubTitle text="View Course Diagram" />
       </Link>
       <LearningOutcomes learningOutcomes={course.learningOutcomes} />

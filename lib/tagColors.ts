@@ -8,19 +8,20 @@ type SubtleTagColor = {
   background: string
   border: string
   text: string
+  darkText: string
 }
 
 const palette = [
-  "#0ea5e9", // sky
-  "#22c55e", // green
-  "#f97316", // orange
-  "#e11d48", // rose
-  "#6366f1", // indigo
-  "#14b8a6", // teal
-  "#f59e0b", // amber
-  "#10b981", // emerald
-  "#8b5cf6", // violet
-  "#06b6d4", // cyan
+  { solid: "#0369a1", subtle: "#075985", subtleDark: "#7dd3fc" }, // sky
+  { solid: "#15803d", subtle: "#166534", subtleDark: "#86efac" }, // green
+  { solid: "#c2410c", subtle: "#9a3412", subtleDark: "#fdba74" }, // orange
+  { solid: "#be123c", subtle: "#9f1239", subtleDark: "#fda4af" }, // rose
+  { solid: "#4338ca", subtle: "#3730a3", subtleDark: "#a5b4fc" }, // indigo
+  { solid: "#0f766e", subtle: "#115e59", subtleDark: "#5eead4" }, // teal
+  { solid: "#b45309", subtle: "#92400e", subtleDark: "#fcd34d" }, // amber
+  { solid: "#047857", subtle: "#065f46", subtleDark: "#6ee7b7" }, // emerald
+  { solid: "#6d28d9", subtle: "#5b21b6", subtleDark: "#c4b5fd" }, // violet
+  { solid: "#0e7490", subtle: "#155e75", subtleDark: "#67e8f9" }, // cyan
 ]
 
 function hashString(value: string): number {
@@ -32,26 +33,20 @@ function hashString(value: string): number {
   return Math.abs(hash)
 }
 
-function getTextColor(background: string): string {
-  const hex = background.replace("#", "")
-  const r = parseInt(hex.slice(0, 2), 16) / 255
-  const g = parseInt(hex.slice(2, 4), 16) / 255
-  const b = parseInt(hex.slice(4, 6), 16) / 255
-  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b
-  return luminance > 0.6 ? "#111827" : "#ffffff"
+function getPaletteEntry(tag: string) {
+  return palette[hashString(tag.trim().toLowerCase()) % palette.length]
 }
 
 export function getTagColor(tag: string): TagColor {
-  const index = hashString(tag.trim().toLowerCase()) % palette.length
-  const background = palette[index]
-  return { background, text: getTextColor(background) }
+  return { background: getPaletteEntry(tag).solid, text: "#ffffff" }
 }
 
 export function getSubtleTagColor(tag: string): SubtleTagColor {
-  const { background } = getTagColor(tag)
+  const { solid, subtle, subtleDark } = getPaletteEntry(tag)
   return {
-    background: `${background}1A`,
-    border: `${background}55`,
-    text: background,
+    background: `${solid}1A`,
+    border: `${solid}55`,
+    text: subtle,
+    darkText: subtleDark,
   }
 }
