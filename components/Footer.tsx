@@ -21,6 +21,14 @@ const Footer: React.FC<Props> = ({ pageInfo, hasAttribution }) => {
 
       <div className="flex justify-evenly gap-5 items-center mt-3 md:mt-0">
         <nav aria-label="Site policies" className="flex flex-wrap items-center gap-3 text-sm">
+          {pageInfo?.privacyPolicy && (
+            <Link
+              href="/privacy"
+              className="text-gray-500 underline hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+            >
+              Privacy
+            </Link>
+          )}
           {pageInfo?.accessibilityStatement && (
             <Link
               href="/accessibility"
