@@ -63,32 +63,36 @@ const layoutOptionsTheme = {
 const labels = [{ width: 200, height: 70 }]
 const labelsTheme = [{ width: 200, height: 90 }]
 
-function generate_section_edges(section: MaterialSection, excludes: Excludes) {
-  const course = `${section.theme}.${section.course}`
-  // only create edges for this course
+function visible_sections(course: MaterialCourse, excludes: Excludes) {
+  return course.sections.filter((section) => !excludes.sections.includes(section.file.split(".")[0]))
+}
+
+// IDs of the section nodes drawn for a course. Edges must only reference these:
+// a dependsOn entry pointing anywhere else (a course, a renamed or excluded
+// section, another course's section) would make ELK throw and blank the diagram.
+function section_node_ids(course: MaterialCourse, excludes: Excludes) {
+  return new Set(visible_sections(course, excludes).map((section) => `${section.theme}.${course.id}.${section.file}`))
+}
+
+function generate_section_edges(section: MaterialSection, nodeIds: Set<string>) {
+  const target = `${section.theme}.${section.course}.${section.file}`
   const edges: Edge[] = section.dependsOn
-    .filter((dep) => dep.startsWith(course))
-    .map((dep) => {
-      const source = dep + ".md"
-      const target = `${section.theme}.${section.course}.${section.file}`
-      return { id: `e${source}-${target}`, source, target, zIndex: 3 }
-    })
+    .map((dep) => dep + ".md")
+    .filter((source) => nodeIds.has(source))
+    .map((source) => ({ id: `e${source}-${target}`, source, target, zIndex: 3 }))
   return edges
 }
 
 function generate_course_edges_elk(course: MaterialCourse, excludes: Excludes) {
   let edges: ElkExtendedEdge[] = []
-  const sections = course.sections.filter((section) => !excludes.sections.includes(section.file))
-  for (const section of sections) {
-    // only create edges for this course
+  const nodeIds = section_node_ids(course, excludes)
+  for (const section of visible_sections(course, excludes)) {
+    const target = `${section.theme}.${course.id}.${section.file}`
     edges = edges.concat(
       section.dependsOn
-        .filter((dep) => dep.startsWith(`${section.theme}.${course.id}`))
-        .map((dep) => {
-          const source = dep + ".md"
-          const target = `${section.theme}.${course.id}.${section.file}`
-          return { id: `e${source}-${target}`, sources: [source], targets: [target] }
-        })
+        .map((dep) => dep + ".md")
+        .filter((source) => nodeIds.has(source))
+        .map((source) => ({ id: `e${source}-${target}`, sources: [source], targets: [target] }))
     )
   }
   if (!edges) {
@@ -108,12 +112,13 @@ function generate_course_edges(course: MaterialCourse, excludes: Excludes) {
       const target = `${course.theme}.${course.id}`
       return { id: `e${source}-${target}`, source, target, zIndex: 3 }
     })
-  edges = edges.concat(...course.sections.map((section) => generate_section_edges(section, excludes)))
+  const nodeIds = section_node_ids(course, excludes)
+  edges = edges.concat(...visible_sections(course, excludes).map((section) => generate_section_edges(section, nodeIds)))
   return edges
 }
 
 function generate_course_nodes_elk(course: MaterialCourse, excludes: Excludes) {
-  const sections = course.sections.filter((section) => !excludes.sections.includes(section.file.split(".")[0]))
+  const sections = visible_sections(course, excludes)
   const nodes: ElkNode[] = sections.map((section) => ({
     id: `${section.theme}.${course.id}.${section.file}`,
     width: 150,
